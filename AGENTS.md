@@ -14,6 +14,7 @@
 | Claude | `src/game/`(iso, scenes, rpg, battle), `src/missions/`, `src/services/`, `src/ui/`, `src/teacher/`, `src/data/schema.ts`, `supabase/`, 설정 파일 |
 | Codex | `assets-src/`, `scripts/build-assets.mjs`, `public/assets/`, `src/fx/`, 지시서가 허락한 데이터 파일 |
 
+- 사용자가 지시서 경로를 알려 주면 그 지시서대로 작업하고, 마지막 메시지에 지시서의 "최종 보고" 항목을 남겨요.
 - 작업 지시서(`docs/tasks/codex-NN-*.md`)에 적힌 파일만 고쳐요.
 - 지시서에 없는 파일을 고쳐야 하면 고치지 말고, 최종 보고에 "필요한 변경"으로 적어 주세요.
 
