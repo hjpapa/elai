@@ -1,0 +1,495 @@
+{
+  "version": 1,
+  "palette": [
+    "#293044",
+    "#4c3848",
+    "#56657a",
+    "#8c9bab",
+    "#c7d6dc",
+    "#fff4d2",
+    "#ffffff",
+    "#344d78",
+    "#478bc7",
+    "#82cce0",
+    "#49b5b1",
+    "#a4e3c2",
+    "#285c4b",
+    "#4c8f4c",
+    "#8dc567",
+    "#d6e69a",
+    "#684b3f",
+    "#a76c46",
+    "#d39a62",
+    "#edc890",
+    "#86513e",
+    "#bd7959",
+    "#e3ab80",
+    "#f6d4a5",
+    "#b94751",
+    "#ed7463",
+    "#cf719d",
+    "#f5b1b0",
+    "#7962ab",
+    "#b5a0dc",
+    "#e7b64f",
+    "#ffe59a"
+  ],
+  "assets": [
+    {
+      "key": "tile-grass",
+      "file": "tile/tile-grass.png"
+    },
+    {
+      "key": "tile-flower",
+      "file": "tile/tile-flower.png"
+    },
+    {
+      "key": "tile-path",
+      "file": "tile/tile-path.png"
+    },
+    {
+      "key": "tile-water",
+      "file": "tile/tile-water.png"
+    },
+    {
+      "key": "tile-stone",
+      "file": "tile/tile-stone.png"
+    },
+    {
+      "key": "tile-wood",
+      "file": "tile/tile-wood.png"
+    },
+    {
+      "key": "tile-bridge",
+      "file": "tile/tile-bridge.png"
+    },
+    {
+      "key": "tile-sand",
+      "file": "tile/tile-sand.png"
+    },
+    {
+      "key": "block-hedge",
+      "file": "block/block-hedge.png"
+    },
+    {
+      "key": "block-wall",
+      "file": "block/block-wall.png"
+    },
+    {
+      "key": "prop-tree",
+      "file": "prop/prop-tree.png"
+    },
+    {
+      "key": "prop-pine",
+      "file": "prop/prop-pine.png"
+    },
+    {
+      "key": "prop-bush",
+      "file": "prop/prop-bush.png"
+    },
+    {
+      "key": "prop-rock",
+      "file": "prop/prop-rock.png"
+    },
+    {
+      "key": "prop-sign",
+      "file": "prop/prop-sign.png"
+    },
+    {
+      "key": "prop-chest",
+      "file": "prop/prop-chest.png"
+    },
+    {
+      "key": "prop-door",
+      "file": "prop/prop-door.png"
+    },
+    {
+      "key": "prop-key",
+      "file": "prop/prop-key.png"
+    },
+    {
+      "key": "prop-portal",
+      "file": "prop/prop-portal.png"
+    },
+    {
+      "key": "prop-house",
+      "file": "prop/prop-house.png"
+    },
+    {
+      "key": "prop-fountain",
+      "file": "prop/prop-fountain.png"
+    },
+    {
+      "key": "prop-bridge-broken",
+      "file": "prop/prop-bridge-broken.png"
+    },
+    {
+      "key": "prop-booth",
+      "file": "prop/prop-booth.png"
+    },
+    {
+      "key": "prop-lamp",
+      "file": "prop/prop-lamp.png"
+    },
+    {
+      "key": "prop-fence",
+      "file": "prop/prop-fence.png"
+    },
+    {
+      "key": "prop-stump",
+      "file": "prop/prop-stump.png"
+    },
+    {
+      "key": "prop-mushroom",
+      "file": "prop/prop-mushroom.png"
+    },
+    {
+      "key": "prop-gate",
+      "file": "prop/prop-gate.png"
+    },
+    {
+      "key": "char-player",
+      "file": "char/char-player.png"
+    },
+    {
+      "key": "char-robi",
+      "file": "char/char-robi.png"
+    },
+    {
+      "key": "char-zen",
+      "file": "char/char-zen.png"
+    },
+    {
+      "key": "char-elder",
+      "file": "char/char-elder.png"
+    },
+    {
+      "key": "char-chef",
+      "file": "char/char-chef.png"
+    },
+    {
+      "key": "char-ranger",
+      "file": "char/char-ranger.png"
+    },
+    {
+      "key": "equip-hat-cap",
+      "file": "overlay/equip-hat-cap.png"
+    },
+    {
+      "key": "equip-hat-leaf",
+      "file": "overlay/equip-hat-leaf.png"
+    },
+    {
+      "key": "equip-hat-ranger",
+      "file": "overlay/equip-hat-ranger.png"
+    },
+    {
+      "key": "equip-tool-stick",
+      "file": "overlay/equip-tool-stick.png"
+    },
+    {
+      "key": "equip-tool-hammer",
+      "file": "overlay/equip-tool-hammer.png"
+    },
+    {
+      "key": "equip-tool-brush",
+      "file": "overlay/equip-tool-brush.png"
+    },
+    {
+      "key": "robi-part-wheel",
+      "file": "overlay/robi-part-wheel.png"
+    },
+    {
+      "key": "mob-dummy",
+      "file": "mob/mob-dummy.png"
+    },
+    {
+      "key": "mob-vine-slime",
+      "file": "mob/mob-vine-slime.png"
+    },
+    {
+      "key": "mob-bug-worm",
+      "file": "mob/mob-bug-worm.png"
+    },
+    {
+      "key": "boss-forest-guardian",
+      "file": "mob/boss-forest-guardian.png"
+    },
+    {
+      "key": "icon-item-cap",
+      "file": "icon/icon-item-cap.png"
+    },
+    {
+      "key": "icon-item-leafhat",
+      "file": "icon/icon-item-leafhat.png"
+    },
+    {
+      "key": "icon-item-rangerhat",
+      "file": "icon/icon-item-rangerhat.png"
+    },
+    {
+      "key": "icon-item-stick",
+      "file": "icon/icon-item-stick.png"
+    },
+    {
+      "key": "icon-item-hammer",
+      "file": "icon/icon-item-hammer.png"
+    },
+    {
+      "key": "icon-item-brush",
+      "file": "icon/icon-item-brush.png"
+    },
+    {
+      "key": "icon-item-vest",
+      "file": "icon/icon-item-vest.png"
+    },
+    {
+      "key": "icon-item-cloak",
+      "file": "icon/icon-item-cloak.png"
+    },
+    {
+      "key": "icon-item-boots",
+      "file": "icon/icon-item-boots.png"
+    },
+    {
+      "key": "icon-item-windboots",
+      "file": "icon/icon-item-windboots.png"
+    },
+    {
+      "key": "icon-item-glasses",
+      "file": "icon/icon-item-glasses.png"
+    },
+    {
+      "key": "icon-item-flowmap",
+      "file": "icon/icon-item-flowmap.png"
+    },
+    {
+      "key": "icon-item-apple",
+      "file": "icon/icon-item-apple.png"
+    },
+    {
+      "key": "icon-item-jelly",
+      "file": "icon/icon-item-jelly.png"
+    },
+    {
+      "key": "icon-item-forestkey",
+      "file": "icon/icon-item-forestkey.png"
+    },
+    {
+      "key": "icon-item-vine",
+      "file": "icon/icon-item-vine.png"
+    },
+    {
+      "key": "icon-part-wheel",
+      "file": "icon/icon-part-wheel.png"
+    },
+    {
+      "key": "icon-card-up",
+      "file": "icon/icon-card-up.png"
+    },
+    {
+      "key": "icon-card-down",
+      "file": "icon/icon-card-down.png"
+    },
+    {
+      "key": "icon-card-left",
+      "file": "icon/icon-card-left.png"
+    },
+    {
+      "key": "icon-card-right",
+      "file": "icon/icon-card-right.png"
+    },
+    {
+      "key": "icon-card-forward",
+      "file": "icon/icon-card-forward.png"
+    },
+    {
+      "key": "icon-card-turnLeft",
+      "file": "icon/icon-card-turnLeft.png"
+    },
+    {
+      "key": "icon-card-turnRight",
+      "file": "icon/icon-card-turnRight.png"
+    },
+    {
+      "key": "icon-card-collect",
+      "file": "icon/icon-card-collect.png"
+    },
+    {
+      "key": "icon-card-attack",
+      "file": "icon/icon-card-attack.png"
+    },
+    {
+      "key": "icon-card-guard",
+      "file": "icon/icon-card-guard.png"
+    },
+    {
+      "key": "icon-card-heal",
+      "file": "icon/icon-card-heal.png"
+    },
+    {
+      "key": "icon-card-wait",
+      "file": "icon/icon-card-wait.png"
+    },
+    {
+      "key": "icon-card-repeat",
+      "file": "icon/icon-card-repeat.png"
+    },
+    {
+      "key": "icon-card-if",
+      "file": "icon/icon-card-if.png"
+    },
+    {
+      "key": "icon-intent-attack",
+      "file": "icon/icon-intent-attack.png"
+    },
+    {
+      "key": "icon-intent-guard",
+      "file": "icon/icon-intent-guard.png"
+    },
+    {
+      "key": "icon-intent-charge",
+      "file": "icon/icon-intent-charge.png"
+    },
+    {
+      "key": "icon-intent-smash",
+      "file": "icon/icon-intent-smash.png"
+    },
+    {
+      "key": "icon-intent-heal",
+      "file": "icon/icon-intent-heal.png"
+    },
+    {
+      "key": "icon-intent-idle",
+      "file": "icon/icon-intent-idle.png"
+    },
+    {
+      "key": "icon-robi",
+      "file": "icon/icon-robi.png"
+    },
+    {
+      "key": "icon-goal",
+      "file": "icon/icon-goal.png"
+    },
+    {
+      "key": "icon-gem",
+      "file": "icon/icon-gem.png"
+    },
+    {
+      "key": "icon-cell-tree",
+      "file": "icon/icon-cell-tree.png"
+    },
+    {
+      "key": "icon-cell-water",
+      "file": "icon/icon-cell-water.png"
+    },
+    {
+      "key": "icon-cell-rock",
+      "file": "icon/icon-cell-rock.png"
+    },
+    {
+      "key": "icon-star",
+      "file": "icon/icon-star.png"
+    },
+    {
+      "key": "icon-star-empty",
+      "file": "icon/icon-star-empty.png"
+    },
+    {
+      "key": "icon-coin",
+      "file": "icon/icon-coin.png"
+    },
+    {
+      "key": "icon-heart",
+      "file": "icon/icon-heart.png"
+    },
+    {
+      "key": "icon-energy",
+      "file": "icon/icon-energy.png"
+    },
+    {
+      "key": "icon-xp",
+      "file": "icon/icon-xp.png"
+    },
+    {
+      "key": "icon-bag",
+      "file": "icon/icon-bag.png"
+    },
+    {
+      "key": "icon-book",
+      "file": "icon/icon-book.png"
+    },
+    {
+      "key": "icon-gear",
+      "file": "icon/icon-gear.png"
+    },
+    {
+      "key": "icon-lock",
+      "file": "icon/icon-lock.png"
+    },
+    {
+      "key": "icon-check",
+      "file": "icon/icon-check.png"
+    },
+    {
+      "key": "icon-hint",
+      "file": "icon/icon-hint.png"
+    },
+    {
+      "key": "icon-badge-1",
+      "file": "icon/icon-badge-1.png"
+    },
+    {
+      "key": "icon-badge-2",
+      "file": "icon/icon-badge-2.png"
+    },
+    {
+      "key": "icon-badge-3",
+      "file": "icon/icon-badge-3.png"
+    },
+    {
+      "key": "icon-badge-4",
+      "file": "icon/icon-badge-4.png"
+    },
+    {
+      "key": "icon-badge-5",
+      "file": "icon/icon-badge-5.png"
+    },
+    {
+      "key": "icon-badge-6",
+      "file": "icon/icon-badge-6.png"
+    },
+    {
+      "key": "icon-badge-7",
+      "file": "icon/icon-badge-7.png"
+    },
+    {
+      "key": "icon-badge-8",
+      "file": "icon/icon-badge-8.png"
+    },
+    {
+      "key": "fx-hit",
+      "file": "fx/fx-hit.png"
+    },
+    {
+      "key": "fx-guard",
+      "file": "fx/fx-guard.png"
+    },
+    {
+      "key": "fx-heal",
+      "file": "fx/fx-heal.png"
+    },
+    {
+      "key": "fx-purify",
+      "file": "fx/fx-purify.png"
+    },
+    {
+      "key": "fx-levelup",
+      "file": "fx/fx-levelup.png"
+    },
+    {
+      "key": "fx-sparkle",
+      "file": "fx/fx-sparkle.png"
+    }
+  ]
+}
