@@ -6,7 +6,18 @@
 --       (기기를 바꿔도 이어하기 위해. 비밀 숫자는 bcrypt로 암호화해 저장해요)
 -- 교사: 이메일 로그인. 자기 학급의 학생 진도만 볼 수 있어요.
 
-create extension if not exists pgcrypto with schema extensions;
+-- 다른 앱도 쓰는 확장은 만들거나 옮기지 않고, 준비되어 있는지만 확인해요.
+do $$
+begin
+  if not exists (
+    select 1 from pg_catalog.pg_extension e
+    join pg_catalog.pg_namespace n on n.oid = e.extnamespace
+    where e.extname = 'pgcrypto' and n.nspname = 'extensions'
+  ) then
+    raise exception 'pgcrypto must already be installed in extensions';
+  end if;
+end;
+$$;
 
 -- ── 테이블 ───────────────────────────────────────────────
 create table if not exists public.elai_classes (
@@ -106,7 +117,7 @@ create policy elai_classes_teacher_all on public.elai_classes
 drop policy if exists elai_classes_student_read on public.elai_classes;
 create policy elai_classes_student_read on public.elai_classes
   for select to authenticated
-  using (exists (select 1 from public.elai_students s where s.class_id = elai_classes.id and s.auth_uid = auth.uid()));
+  using (exists (select 1 from public.elai_students s where s.class_id = elai_classes.id and s.id = public.elai_my_student_id()));
 
 -- 학생: 자기 행, 교사는 자기 학급 학생(추가·이어하기는 elai_join_class 함수로만)
 drop policy if exists elai_students_read on public.elai_students;
@@ -185,7 +196,7 @@ $$;
 
 -- 학생: 학급 입장(처음이면 학생을 만들고, 이미 있으면 비밀 숫자를 확인해 이 기기와 연결해요)
 create or replace function public.elai_join_class(p_code text, p_nickname text, p_pin text)
-returns table (student_id uuid, class_name text, unlocked_chapters text[], is_new boolean)
+returns table (student_id uuid, class_name text, unlocked_chapters text[], is_new boolean, error_code text)
 language plpgsql
 security definer
 set search_path = ''
@@ -199,10 +210,10 @@ begin
   if auth.uid() is null then
     raise exception 'not_signed_in' using errcode = '42501';
   end if;
-  if p_pin !~ '^[0-9]{4}$' then
+  if p_pin is null or p_pin !~ '^[0-9]{4}$' then
     raise exception 'bad_pin';
   end if;
-  if char_length(v_nick) not between 1 and 10 then
+  if v_nick is null or char_length(v_nick) not between 1 and 10 then
     raise exception 'bad_nickname';
   end if;
   select * into v_class from public.elai_classes c where c.code = upper(btrim(p_code));
@@ -210,32 +221,38 @@ begin
     raise exception 'no_class';
   end if;
 
-  select * into v_student from public.elai_students s where s.class_id = v_class.id and s.nickname = v_nick;
+  -- 같은 학생으로 동시에 시도해도 실패 횟수를 차례대로 확인하고 바꿔요.
+  select * into v_student from public.elai_students s where s.class_id = v_class.id and s.nickname = v_nick for update;
   if not found then
     update public.elai_students set auth_uid = null where auth_uid = auth.uid();
     insert into public.elai_students (class_id, nickname, pin_hash, auth_uid)
     values (v_class.id, v_nick, extensions.crypt(p_pin, extensions.gen_salt('bf')), auth.uid())
     returning * into v_student;
-    return query select v_student.id, v_class.name, v_class.unlocked_chapters, true;
+    return query select v_student.id, v_class.name, v_class.unlocked_chapters, true, null::text;
     return;
   end if;
 
   if v_student.locked_until is not null and v_student.locked_until > now() then
-    raise exception 'locked';
+    return query select null::uuid, null::text, null::text[], false, 'locked'::text;
+    return;
   end if;
-  if extensions.crypt(p_pin, v_student.pin_hash) <> v_student.pin_hash then
+  if extensions.crypt(p_pin, v_student.pin_hash) is distinct from v_student.pin_hash then
     update public.elai_students
       set failed_attempts = case when failed_attempts + 1 >= 5 then 0 else failed_attempts + 1 end,
           locked_until = case when failed_attempts + 1 >= 5 then now() + interval '10 minutes' else locked_until end
-      where id = v_student.id;
-    raise exception 'wrong_pin';
+      where id = v_student.id
+      returning * into v_student;
+    -- 예외를 일으키면 실패 횟수도 취소되므로 오류 코드를 돌려줘요.
+    return query select null::uuid, null::text, null::text[], false,
+      case when v_student.locked_until > now() then 'locked'::text else 'wrong_pin'::text end;
+    return;
   end if;
 
   update public.elai_students set auth_uid = null where auth_uid = auth.uid() and id <> v_student.id;
   update public.elai_students
     set auth_uid = auth.uid(), failed_attempts = 0, locked_until = null
     where id = v_student.id;
-  return query select v_student.id, v_class.name, v_class.unlocked_chapters, false;
+  return query select v_student.id, v_class.name, v_class.unlocked_chapters, false, null::text;
 end;
 $$;
 
@@ -250,7 +267,7 @@ begin
   if not public.elai_teaches(p_student) then
     raise exception 'not_your_student' using errcode = '42501';
   end if;
-  if p_pin !~ '^[0-9]{4}$' then
+  if p_pin is null or p_pin !~ '^[0-9]{4}$' then
     raise exception 'bad_pin';
   end if;
   update public.elai_students

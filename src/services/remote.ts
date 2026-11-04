@@ -45,8 +45,14 @@ export async function joinClass(code: string, nickname: string, pin: string): Pr
   }
   const { data, error } = await sb.rpc('elai_join_class', { p_code: code, p_nickname: nickname, p_pin: pin });
   if (error) throw error;
-  const row = (Array.isArray(data) ? data[0] : data) as { student_id: string; class_name: string; unlocked_chapters: string[] } | undefined;
-  if (!row) throw new Error('no_class');
+  const row = (Array.isArray(data) ? data[0] : data) as {
+    student_id: string | null;
+    class_name: string | null;
+    unlocked_chapters: string[] | null;
+    error_code: string | null;
+  } | undefined;
+  if (row?.error_code) throw new Error(row.error_code);
+  if (!row?.student_id || !row.class_name) throw new Error('no_class');
   const link: ClassLink = { studentId: row.student_id, className: row.class_name, nickname: nickname.trim(), unlocked: row.unlocked_chapters ?? [] };
   saveLink(link);
   return link;
