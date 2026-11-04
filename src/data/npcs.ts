@@ -1,0 +1,15 @@
+import type { NpcDef } from './schema';
+
+export const NPCS: Record<string, NpcDef> = {
+  elder: { id: 'elder', name: '촌장 다온', sprite: 'char-elder', role: '코딩 마을 촌장' },
+  robi: { id: 'robi', name: '로비', sprite: 'char-robi', role: '도우미 로봇' },
+  chef: { id: 'chef', name: '요리사 보리', sprite: 'char-chef', role: '숲속 요리사' },
+  ranger: { id: 'ranger', name: '숲지기 솔', sprite: 'char-ranger', role: '순서의 숲 지킴이' },
+  zen: { id: 'zen', name: '젠', sprite: 'char-zen', role: '프롬프트 공방의 AI' },
+  guardian: { id: 'guardian', name: '숲의 수호자', sprite: 'boss-forest-guardian', role: '순서의 숲 수호자' },
+};
+
+export function npcName(id: string): string {
+  if (id === 'player') return '나';
+  return NPCS[id]?.name ?? id;
+}

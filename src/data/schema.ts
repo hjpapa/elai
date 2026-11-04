@@ -138,6 +138,8 @@ export interface PromptData {
   client: string;
   request: string;
   slots: PromptSlot[];
+  /** 칸을 비웠을 때 나오는 결과(role 칸 → opening, task 칸 → body) */
+  fallback: { opening: string; body: string[] };
   explain?: string;
 }
 
@@ -263,7 +265,17 @@ interface ObjectBase {
   when?: Condition;
 }
 export type MapObject =
-  | (ObjectBase & { type: 'npc'; npc: string; mission?: string; talk?: string[] })
+  | (ObjectBase & {
+      type: 'npc';
+      npc: string;
+      /** 이 파트의 미션을 순서대로 줘요 */
+      part?: string;
+      /** 미션이 없거나 다 끝났을 때 하는 말 */
+      talk?: string[];
+      /** 다른 그림으로 보이기(예: 정화된 수호자) */
+      sprite?: string;
+      frame?: number;
+    })
   | (ObjectBase & { type: 'mob'; mob: string; wander?: number })
   | (ObjectBase & { type: 'chest'; reward: Reward })
   | (ObjectBase & { type: 'door'; key: string })
@@ -372,6 +384,8 @@ export interface RobiPartDef {
   chapter: string;
   ability: string;
   unlocks: { cards?: Cmd[]; conds?: Cond[] };
+  /** 전투 프로그램 칸 추가 */
+  slotBonus?: number;
   overlay: string;
   desc: string;
 }
