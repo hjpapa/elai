@@ -1,5 +1,6 @@
 import type Phaser from 'phaser';
 import type { MissionHost } from '../missions/core/MissionHost';
+import type { ClassLink } from '../services/remote';
 import type { Hud } from '../ui/hud';
 import type { UI } from '../ui/ui';
 import type { GameState } from './rpg/state';
@@ -11,4 +12,6 @@ export const app = {} as {
   ui: UI;
   hud: Hud;
   missions: MissionHost;
+  /** 학급으로 들어왔으면 학급 정보(체험 모드면 null) */
+  classLink: ClassLink | null;
 };

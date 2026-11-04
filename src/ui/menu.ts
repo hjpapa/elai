@@ -1,6 +1,6 @@
 import { app } from '../game/app';
 import { setSoundEnabled } from '../fx/sfx';
-import { clear, h } from './dom';
+import { clear, h, lines } from './dom';
 
 /** 메뉴: 소리, 저장 정보, 처음 화면으로 */
 export function openMenu(): void {
@@ -27,7 +27,15 @@ export function openMenu(): void {
           d.settings.sound ? '켜짐' : '꺼짐',
         ),
       ),
-      h('p', { class: 'muted' }, '게임은 자동으로 저장돼요.'),
+      h(
+        'p',
+        { class: 'muted' },
+        ...lines(
+          app.classLink
+            ? `학급: ${app.classLink.className} · ${app.classLink.nickname}\n게임은 자동으로 저장되고, 선생님 페이지에 진도가 기록돼요.`
+            : '체험 모드예요. 게임은 이 기기에만 자동으로 저장돼요.',
+        ),
+      ),
       h(
         'div',
         { class: 'row end', style: 'margin-top:16px' },

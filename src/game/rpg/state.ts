@@ -8,7 +8,8 @@ import { derivedStats, helpers, programSlots } from './stats';
 export type StateEvent =
   | { type: 'change' }
   | { type: 'levelUp'; level: number }
-  | { type: 'item'; id: string; qty: number };
+  | { type: 'item'; id: string; qty: number }
+  | { type: 'mission'; id: string; record: MissionRecord };
 
 /** 보상을 받은 뒤 화면에 보여 줄 요약 */
 export interface RewardSummary {
@@ -221,6 +222,7 @@ export class GameState {
       at: result.success && !prev?.done ? new Date().toISOString() : prev?.at,
     };
     this.data.missions[id] = rec;
+    this.emit({ type: 'mission', id, record: rec });
     this.changed();
     return rec;
   }

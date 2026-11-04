@@ -1,12 +1,20 @@
 import type { SaveData } from '../data/schema';
 import type { GameState } from '../game/rpg/state';
 
-const KEY = 'elai-save-v1';
+const BASE_KEY = 'elai-save-v1';
+/** 학급 학생이면 학생마다 따로 저장해요(한 기기를 여러 학생이 같이 쓰는 교실을 위해). */
+let profile: string | null = null;
+
+const keyOf = () => (profile ? `${BASE_KEY}:${profile}` : BASE_KEY);
+
+export function setSaveProfile(id: string | null): void {
+  profile = id;
+}
 
 /** 이 기기에 저장된 게임(없거나 읽을 수 없으면 null) */
 export function loadLocal(): SaveData | null {
   try {
-    const raw = localStorage.getItem(KEY);
+    const raw = localStorage.getItem(keyOf());
     if (!raw) return null;
     const data = JSON.parse(raw) as SaveData;
     return data?.version === 1 ? data : null;
@@ -17,18 +25,17 @@ export function loadLocal(): SaveData | null {
 
 export function saveLocal(data: SaveData): void {
   try {
-    localStorage.setItem(KEY, JSON.stringify(data));
+    localStorage.setItem(keyOf(), JSON.stringify(data));
   } catch {
     // 저장 공간이 막힌 환경(시크릿 창 등)에서는 저장 없이 계속해요.
   }
 }
 
-export function clearLocal(): void {
-  try {
-    localStorage.removeItem(KEY);
-  } catch {
-    // 무시
-  }
+/** 두 저장 중 더 최근 것 */
+export function newer(a: SaveData | null, b: SaveData | null): SaveData | null {
+  if (!a) return b;
+  if (!b) return a;
+  return a.updatedAt >= b.updatedAt ? a : b;
 }
 
 type Remote = (data: SaveData) => Promise<void>;
