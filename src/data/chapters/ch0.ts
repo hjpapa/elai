@@ -111,7 +111,7 @@ export const ch0: Chapter = {
           id: 'ch0-m5',
           kind: 'battle',
           title: '연습 전투',
-          npc: 'elder',
+          npc: 'dummy',
           reward: { xp: 10, coins: 10, flags: ['forest-open'] },
           data: {
             mob: 'dummy',

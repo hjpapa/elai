@@ -268,8 +268,8 @@ export type MapObject =
   | (ObjectBase & {
       type: 'npc';
       npc: string;
-      /** 이 파트의 미션을 순서대로 줘요 */
-      part?: string;
+      /** 이 NPC가 주는 미션(아직 안 끝낸 첫 미션을 줘요. 장 안에서는 앞 미션을 끝내야 열려요) */
+      missions?: string[];
       /** 미션이 없거나 다 끝났을 때 하는 말 */
       talk?: string[];
       /** 다른 그림으로 보이기(예: 정화된 수호자) */
@@ -288,6 +288,8 @@ export type MapObject =
       /** 들어갈 수 있는 조건(없으면 항상) */
       open?: Condition;
       lockedText?: string;
+      /** 입구 그림(없으면 prop-portal). 2프레임 그림은 0 닫힘, 1 열림 */
+      sprite?: string;
     })
   | (ObjectBase & { type: 'prop'; sprite: string; solid?: boolean; frame?: number });
 
@@ -299,6 +301,8 @@ export interface MapDef {
   /** 타일 글자 지도(모든 줄의 길이가 같아야 해요) */
   rows: string[];
   legend: Record<string, TileKind>;
+  /** 소품 글자: 이 글자 칸에는 바닥 타일과 소품을 함께 놓아요(예: 'T' → 풀 + 나무) */
+  glyphs?: Record<string, { tile: TileKind; sprite: string; solid?: boolean }>;
   objects: MapObject[];
   spawn: Point;
   /** 안개: 가 본 곳만 보여요 */

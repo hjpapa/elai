@@ -7,6 +7,8 @@ export const NPCS: Record<string, NpcDef> = {
   ranger: { id: 'ranger', name: '숲지기 솔', sprite: 'char-ranger', role: '순서의 숲 지킴이' },
   zen: { id: 'zen', name: '젠', sprite: 'char-zen', role: '프롬프트 공방의 AI' },
   guardian: { id: 'guardian', name: '숲의 수호자', sprite: 'boss-forest-guardian', role: '순서의 숲 수호자' },
+  dummy: { id: 'dummy', name: '허수아비 봇', sprite: 'mob-dummy', role: '마을 연습장' },
+  sign: { id: 'sign', name: '표지판', sprite: 'prop-sign', role: '안내' },
 };
 
 export function npcName(id: string): string {

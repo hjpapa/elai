@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { ASSET_BY_KEY, type Manifest } from '../assets';
+import { initIcons } from '../../ui/icons';
 import { makePlaceholders } from '../textures/placeholders';
 
 /** 매니페스트의 그림을 읽고, 없는 그림은 임시 그림으로 채운 뒤 다음 장면으로 가요. */
@@ -39,7 +40,8 @@ export class BootScene extends Phaser.Scene {
 
   private finish(): void {
     makePlaceholders(this);
+    initIcons(this.textures);
     const next = new URLSearchParams(location.search).has('gallery') ? 'Gallery' : 'Title';
-    this.scene.start(this.scene.get(next) ? next : 'Gallery');
+    this.scene.start(next);
   }
 }
