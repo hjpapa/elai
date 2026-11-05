@@ -4,6 +4,7 @@ import { NPCS } from '../src/data/npcs';
 import { ITEMS } from '../src/data/rpg/items';
 import { MOBS } from '../src/data/rpg/mobs';
 import { ROBI_PARTS } from '../src/data/rpg/robiParts';
+import { evaluateBinary, evaluateGroups, evaluateTable } from '../src/missions/classify/evaluate';
 import { GridEnv } from '../src/missions/core/gridEnv';
 import { countBlocks, run } from '../src/missions/core/interpreter';
 import type { Block, BlockCodeData, Reward } from '../src/data/schema';
@@ -199,5 +200,33 @@ describe('3장 조건과 센서', () => {
     const leaves=new Map<string,Set<string>>();
     for(const card of d.cards){const path=d.questions!.map(q=>Number(card.features.includes(q.feature))).join('');const groups=leaves.get(path)??new Set<string>();groups.add(card.group);leaves.set(path,groups);}
     expect([...leaves.values()].every(g=>g.size===1)).toBe(true);
+  });
+});
+
+
+describe('4장 데이터 학습', () => {
+  it('종류 나누기와 장부 고치기는 모든 카드의 정확한 조치를 요구해요', () => {
+    for(const id of ['ch4-p1-m1','ch4-p1-m2','ch4-boss-m1']) {
+      const m=allMissions().find(e=>e.mission.id===id)!.mission;
+      if(m.kind!=='classify')throw new Error(id);
+      const d=m.data!;const correct=Object.fromEntries(d.cards.map(c=>[c.id,c.group]));
+      expect(evaluateGroups(d,correct),id).toBe(true);
+      expect(evaluateGroups(d,{}),id).toBe(false);
+      const wrong={...correct,[d.cards[0].id]:d.groups.find(g=>g.id!==d.cards[0].group)!.id};
+      expect(evaluateGroups(d,wrong),id).toBe(false);
+    }
+  });
+  it('물결표의 빈도는 3·2·1이고 숫자를 바꾸면 통과하지 않아요', () => {
+    const m=allMissions().find(e=>e.mission.id==='ch4-p2-m1')!.mission;
+    if(m.kind!=='classify')throw new Error('table');
+    expect(evaluateTable(m.data!,{low:3,middle:2,high:1})).toBe(true);
+    expect(evaluateTable(m.data!,{low:2,middle:3,high:1})).toBe(false);
+  });
+  it('등대의 4비트 신호를 모두 맞혀야 문이 열려요', () => {
+    const m=allMissions().find(e=>e.mission.id==='ch4-p3-m1')!.mission;
+    if(m.kind!=='classify')throw new Error('binary');
+    expect(m.data!.groups.map(g=>Number(g.id))).toEqual([8,4,2,1]);
+    expect(evaluateBinary(m.data!,{gate3:'3',gate5:'5',gate10:'10'})).toBe(true);
+    expect(evaluateBinary(m.data!,{gate3:'3',gate5:'5',gate10:'11'})).toBe(false);
   });
 });

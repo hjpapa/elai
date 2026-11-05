@@ -12,6 +12,8 @@ export const NPCS: Record<string, NpcDef> = {
   batKing: { id: 'batKing', name: '메아리 박쥐 대장', sprite: 'boss-bat-king', role: '동굴의 메아리 지킴이' },
   guide: { id: 'guide', name: '길잡이 나루', sprite: 'char-guide', role: '사막 길잡이' },
   lizardChief: { id: 'lizardChief', name: '신기루 도마뱀 대장', sprite: 'boss-lizard-chief', role: '모래 미로 지킴이' },
+  harborKeeper: { id: 'harborKeeper', name: '항구지기 모아', sprite: 'char-harbor', role: '항구 기록 지킴이' },
+  ledgerOcto: { id: 'ledgerOcto', name: '장부 문어 대장', sprite: 'boss-ledger-octo', role: '등대 기록 지킴이' },
   sign: { id: 'sign', name: '표지판', sprite: 'prop-sign', role: '안내' },
 };
 

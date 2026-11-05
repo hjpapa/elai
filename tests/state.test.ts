@@ -143,3 +143,33 @@ it('센서를 받으면 강타 조건을 열고 슬롯은 그대로예요', () =
   state.completeMission('ch3-p2-m3',{success:true,stars:3,attempts:1,hints:0});
   expect(state.data.robiParts).toContain('sensor');expect(ROBI_PARTS.sensor.unlocks.conds).toContain('enemySmash');expect(state.slots).toBe(before);
 });
+
+
+describe('4장 관찰 기록 저장', () => {
+  it('옛 저장은 빈 관찰표로 열리고, 새 저장도 빈 표로 시작해요', () => {
+    const old = freshSave('별빛');delete old.observations;
+    expect(new GameState(old).data.observations).toEqual({});
+    expect(freshSave('별빛').observations).toEqual({});
+  });
+  it('실제 관찰은 중복 없이 남고 다시 불러와도 유지돼요', () => {
+    const s = new GameState(freshSave('별빛'));let changes = 0;
+    s.on(e => { if(e.type === 'change') changes++; });
+    s.recordObservations('fogJelly', [{value: 1, action:'idle'}, {value:3, action:'smash'}]);
+    s.recordObservations('fogJelly', [{value: 1, action:'idle'}]);
+    expect(s.data.observations?.fogJelly).toHaveLength(2);expect(changes).toBe(1);
+    const loaded = new GameState(JSON.parse(JSON.stringify(s.data)));
+    expect(loaded.data.observations).toEqual(s.data.observations);
+    loaded.recordObservations('fogJelly', [{value:2, action:'guard'}]);
+    expect(loaded.data.observations?.fogJelly).toHaveLength(3);
+    s.recordObservations('unknown-mob', [{value:1,action:'idle'}]);
+    s.recordObservations('fogJelly', [{value:999,action:'idle'}]);
+    expect(Object.keys(s.data.observations ?? {})).toEqual(['fogJelly']);
+    expect(s.data.observations?.fogJelly).toHaveLength(2);
+  });
+  it('데이터 렌즈 보상으로 살펴보기와 물결 조건이 열려요', () => {
+    const s = new GameState(freshSave('별빛'));s.applyReward({robiPart:'dataLens'});
+    expect(s.data.robiParts).toContain('dataLens');
+    expect(ROBI_PARTS.dataLens.unlocks.cards).toContain('scan');
+    expect(ROBI_PARTS.dataLens.unlocks.conds).toEqual(['waveHigh','waveMiddle']);
+  });
+});

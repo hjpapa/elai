@@ -160,3 +160,28 @@ describe('3장 길과 성장', () => {
     expect(xp).toBeGreaterThanOrEqual(xpForLevel(MOBS.lizardChief.recommendedLevel));
   });
 });
+
+
+describe('4장 항구 길과 성장', () => {
+  it('등불을 완성해 등대에 들어가면 대장과 상자에 갈 수 있어요', () => {
+    const q=world(['ch4-clear','ledger-fixed'],['ch4-p3-m1']);
+    for(const def of [MAPS.harbor,MAPS.lighthouse])for(const o of def.objects.filter(o=>['npc','chest','portal'].includes(o.type)&&q.check(o.when)))expect(canReach(def,q,def.spawn,o),def.id+'/'+o.id).toBe(true);
+    const gate=MAPS.harbor.objects.find(o=>o.id==='to-lighthouse')!;
+    expect(gate.type==='portal'&&gate.open?.mission).toBe('ch4-p3-m1');
+    const townGate=MAPS.village.objects.find(o=>o.id==='to-ch4')!;
+    expect(townGate.type==='portal'&&townGate.open?.flag).toBe('ch3-clear');
+  });
+  it('렌즈를 받기 전에는 해파리를 피해서 모아에게 갈 수 있어요', () => {
+    const def=MAPS.harbor;const cells=buildCells(def);
+    const pass=makePassable(def,cells,world());
+    const safe=(x:number,y:number)=>pass(x,y)&&def.objects.filter(o=>o.type==='mob').every(o=>Math.max(Math.abs(o.at.x-x),Math.abs(o.at.y-y))>2);
+    const keeper=def.objects.find(o=>o.id==='keeper')!;
+    expect(findPath(safe,def.spawn,(x,y)=>Math.abs(x-keeper.at.x)<=1&&Math.abs(y-keeper.at.y)<=1,keeper.at)).not.toBeNull();
+  });
+  it('4장 본편 경험치로 보스 권장 레벨 10에 닿아요', () => {
+    let xp=allMissions().filter(e=>e.chapter.index<=4&&!['ch4-boss-m2','ch4-boss-m3','ch4-boss-m4'].includes(e.mission.id)).reduce((n,e)=>n+(e.mission.reward?.xp??0),0);
+    for(const def of Object.values(MAPS).filter(d=>['ch0','ch1','ch2','ch3','ch4'].includes(d.chapter??'')))for(const o of def.objects){if(o.type==='mob')xp+=MOBS[o.mob].xp;if(o.type==='chest')xp+=o.reward.xp??0;}
+    expect(xp).toBeGreaterThanOrEqual(xpForLevel(MOBS.ledgerOcto.recommendedLevel));
+    expect(xp).toBe(905);
+  });
+});

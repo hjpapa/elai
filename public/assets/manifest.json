@@ -36,6 +36,46 @@
   ],
   "assets": [
     {
+      "key": "tile-dock",
+      "file": "tile/tile-dock.png"
+    },
+    {
+      "key": "block-crate",
+      "file": "block/block-crate.png"
+    },
+    {
+      "key": "prop-lighthouse",
+      "file": "prop/prop-lighthouse.png"
+    },
+    {
+      "key": "prop-buoy",
+      "file": "prop/prop-buoy.png"
+    },
+    {
+      "key": "char-harbor",
+      "file": "char/char-harbor.png"
+    },
+    {
+      "key": "mob-fog-jelly",
+      "file": "mob/mob-fog-jelly.png"
+    },
+    {
+      "key": "boss-ledger-octo",
+      "file": "mob/boss-ledger-octo.png"
+    },
+    {
+      "key": "robi-part-lens",
+      "file": "overlay/robi-part-lens.png"
+    },
+    {
+      "key": "icon-part-lens",
+      "file": "icon/icon-part-lens.png"
+    },
+    {
+      "key": "icon-card-scan",
+      "file": "icon/icon-card-scan.png"
+    },
+    {
       "key": "block-sandstone",
       "file": "block/block-sandstone.png"
     },

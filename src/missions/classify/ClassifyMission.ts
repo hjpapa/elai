@@ -1,13 +1,14 @@
 import type { ClassifyData } from '../../data/schema';
 import { clear, h, lines } from '../../ui/dom';
 import type { MissionContext, MissionEngine } from '../core/types';
-import { evaluateGroups, evaluateTree } from './evaluate';
+import { evaluateBinary, evaluateGroups, evaluateTable, evaluateTree } from './evaluate';
 
 export class ClassifyMission implements MissionEngine {
   private ctx!: MissionContext;
   private data!: ClassifyData;
   private questions: string[] = [];
   private groups: Record<string, string> = {};
+  private counts: Record<string, number> = {};
   private attempts = 0;
   private hints = 0;
   private message = '';
@@ -17,9 +18,35 @@ export class ClassifyMission implements MissionEngine {
   }
   private render(): void {
     const d = this.data, root = this.ctx.root;
+    const focusedLabel = document.activeElement?.getAttribute('aria-label');
     clear(root);
     root.append(h('div', { class: 'mission-intro' }, ...lines(d.intro)));
-    if (d.mode === 'tree') {
+    if (d.mode === 'table') {
+      root.append(h('p', {}, '기록: ' + d.cards.map(c => c.label).join(' · ')));
+      root.append(h('h3', {}, '종류별 개수와 막대그래프'));
+      for (const group of d.groups) {
+        const count = this.counts[group.id] ?? 0;
+        const adjust = (delta: number) => { this.counts[group.id] = Math.max(0, Math.min(d.cards.length, count + delta)); this.render(); };
+        root.append(h('div', { class: 'card', style: 'cursor:default' },
+          h('div', { class: 'row' }, h('b', {}, group.label),
+            h('button', { class: 'btn small', 'aria-label': group.label + ' 줄이기', onclick: () => adjust(-1) }, '−'),
+            h('span', {}, count + '개'), h('button', { class: 'btn small', 'aria-label': group.label + ' 늘리기', onclick: () => adjust(1) }, '+')),
+          h('div', { role: 'img', 'aria-label': group.label + ' ' + count + '개 막대', style: 'height:22px;background:#388e9e;max-width:100%;width:' + (count / Math.max(1, d.cards.length) * 100) + '%' })));
+      }
+    } else if (d.mode === 'binary') {
+      root.append(h('p', {}, '불이 켜지면 1, 꺼지면 0이에요.'));
+      for (const card of d.cards) {
+        const value = Number(this.groups[card.id] ?? 0);
+        const row = h('div', { class: 'card', style: 'cursor:default' }, h('b', {}, card.label));
+        const bits = h('div', { class: 'row', style: 'gap:6px;flex-wrap:wrap' });
+        for (const weight of [8, 4, 2, 1]) bits.append(h('button', {
+          class: 'btn small ' + (value & weight ? 'primary' : ''),
+          'aria-label': card.label + ' ' + weight + '의 자리', 'aria-pressed': value & weight ? 'true' : 'false',
+          onclick: () => { this.groups[card.id] = String(value ^ weight); this.render(); }
+        }, weight + ': ' + (value & weight ? '1' : '0')));
+        row.append(bits, h('p', {}, '현재 값: ' + value + ' (' + value.toString(2).padStart(4, '0') + ')')); root.append(row);
+      }
+    } else if (d.mode === 'tree') {
       root.append(h('p', {}, '질문을 골라 규칙 나무를 만들어요.'));
       const questions = h('div', { class: 'choices' });
       for (const q of d.questions ?? []) questions.append(h('button', { class: 'choice', 'data-question': q.id, 'aria-pressed': this.questions.includes(q.id) ? 'true' : 'false', onclick: () => {
@@ -49,22 +76,28 @@ export class ClassifyMission implements MissionEngine {
     root.append(h('div', { class: 'row end' },
       h('button', { class: 'btn', onclick: () => { this.hints++; this.message = d.hint; this.render(); } }, '힌트'),
       h('button', { class: 'btn primary', onclick: () => this.verify() }, '나눈 결과 확인')));
+    if (focusedLabel) [...root.querySelectorAll<HTMLElement>('[aria-label]')].find(el => el.getAttribute('aria-label') === focusedLabel)?.focus();
   }
   private verify(): void {
     this.attempts++;
-    const success = this.data.mode === 'tree' ? evaluateTree(this.data, this.questions).success : evaluateGroups(this.data, this.groups);
+    const success = this.data.mode === 'tree' ? evaluateTree(this.data, this.questions).success
+      : this.data.mode === 'table' ? evaluateTable(this.data, this.counts)
+      : this.data.mode === 'binary' ? evaluateBinary(this.data, this.groups) : evaluateGroups(this.data, this.groups);
     if (success) {
       this.ctx.sfx('success');
       this.ctx.finish({ success: true, stars: this.attempts === 1 ? 3 : this.attempts <= 3 ? 2 : 1, attempts: this.attempts, hints: this.hints });
       return;
     }
     this.ctx.sfx('fail');
-    this.message = '서로 다른 종류가 섞여 있어요.\n나누는 규칙을 다시 살펴봐요.';
+    this.message = this.data.mode === 'binary' ? '불빛의 값이 목표와 달라요.\n켜진 자리의 수를 더해 봐요.' : this.data.mode === 'table' ? '기록과 표의 수가 달라요.\n종류별로 하나씩 세어 봐요.' : '서로 다른 종류가 섞여 있어요.\n나누는 규칙을 다시 살펴봐요.';
     if (this.attempts === 2) { this.hints++; this.message = this.data.hint; }
     if (this.attempts >= 3) {
       this.hints++;
       const q = this.data.questions?.[0];
-      this.message = this.data.mode === 'tree' && q ? '첫 질문부터 살펴봐요.\n' + q.label : '첫 카드의 특징부터 살펴봐요.\n' + this.data.hint.split('\n')[0];
+      const firstGroup = this.data.groups[0], firstCard = this.data.cards[0];
+      this.message = this.data.mode === 'table' && firstGroup ? `${firstGroup.label}부터 세어 봐요.\n${this.data.cards.filter(card => card.group === firstGroup.id).length}개를 표에 놓으면 돼요.`
+        : this.data.mode === 'binary' && firstCard ? '첫 등불부터 살펴봐요.\n' + (Number(firstCard.group) === 0 ? '목표 0은 불을 모두 꺼요.' : `${[8,4,2,1].find(bit => Number(firstCard.group) & bit)}의 자리를 먼저 켜 봐요.`)
+        : this.data.mode === 'tree' && q ? '첫 질문부터 살펴봐요.\n' + q.label : '첫 카드의 특징부터 살펴봐요.\n' + this.data.hint.split('\n')[0];
     }
     this.render();
   }

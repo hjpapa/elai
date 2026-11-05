@@ -17,11 +17,13 @@ export type Dir = 'up' | 'right' | 'down' | 'left';
 /** 퍼즐 명령: 절대 방향 이동(1~2장) + 상대 방향 이동(3장~) + 줍기 */
 export type GridCmd = 'up' | 'down' | 'left' | 'right' | 'forward' | 'turnLeft' | 'turnRight' | 'collect';
 /** 전투 명령 */
-export type BattleCmd = 'attack' | 'guard' | 'heal' | 'wait';
+export type BattleCmd = 'scan' | 'attack' | 'guard' | 'heal' | 'wait';
 export type Cmd = GridCmd | BattleCmd;
 
 /** 조건 블록이 묻는 질문 */
 export type Cond =
+  | 'waveHigh'
+  | 'waveMiddle'
   | 'signalRed'
   | 'wallAhead'
   | 'pathAhead'
@@ -166,7 +168,7 @@ export interface PlannedData {
 }
 
 export interface ClassifyData {
-  mode: 'tree' | 'sort' | 'cluster';
+  mode: 'tree' | 'sort' | 'cluster' | 'table' | 'binary';
   intro: string;
   cards: { id: string; label: string; group: string; features: string[] }[];
   groups: { id: string; label: string }[];
@@ -262,6 +264,8 @@ export type TileKind =
   | 'hedge'
   | 'wall'
   | 'cave'
+  | 'dock'
+  | 'crate'
   | 'sandstone'
   | 'rockwall'
   | 'void';
@@ -313,7 +317,7 @@ export type MapObject =
 export interface MapDef {
   id: string;
   name: string;
-  theme: 'village' | 'forest' | 'dungeon' | 'workshop' | 'cave' | 'desert';
+  theme: 'village' | 'forest' | 'dungeon' | 'workshop' | 'cave' | 'desert' | 'harbor';
   chapter?: string;
   /** 타일 글자 지도(모든 줄의 길이가 같아야 해요) */
   rows: string[];
@@ -382,6 +386,7 @@ export interface MobDef {
   pattern: MobAction[];
   /** 씨앗과 차례로 정해지는 가려진 행동 */
   hiddenPattern?: { choices: MobAction[]; seed: number };
+  dataPattern?: { values: number[]; actions: MobAction[] };
   /** 한 번 실행할 때의 칸 수(없으면 플레이어 슬롯 수) */
   roundTicks?: number;
   /** 강타 피해 = 플레이어 최대 체력 × 비율(보스: 막지 않으면 버틸 수 없게) */
@@ -424,6 +429,7 @@ export interface MissionRecord {
 }
 export interface SaveData {
   version: 1;
+  observations?: Record<string, { value: number; action: MobAction }[]>;
   nickname: string;
   level: number;
   xp: number;

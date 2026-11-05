@@ -50,6 +50,18 @@ const mob = (size: 16 | 24 | 48) => spec('mob', size, size, 4);
 const fx = (w: number, h: number, frames: number) => spec('fx', w, h, frames);
 
 export const ASSETS: AssetSpec[] = [
+  // C6: 데이터 항구
+  tile('tile-dock', '바닷물에 닳은 항구 나무 바닥', 0xa76c46),
+  block('block-crate', '항구의 쌓은 나무 상자', 0xd39a62),
+  prop(32, 48, 2)('prop-lighthouse', '등대(꺼진 등불, 켜진 등불)', 0xc7d6dc),
+  prop(16, 24, 2)('prop-buoy', '물결에 흔들리는 부표', 0xed7463),
+  char('char-harbor', '항구지기 모아(구명 조끼와 기록장)', 0x478bc7),
+  mob(24)('mob-fog-jelly', '안개 속 물결을 읽는 해파리', 0x82cce0),
+  mob(48)('boss-ledger-octo', '장부를 정리하는 문어 대장', 0xcf719d),
+  overlay('robi-part-lens', '로비의 데이터 렌즈', 0x82cce0),
+  icon('icon-part-lens', '데이터 렌즈', 0x82cce0),
+  icon('icon-card-scan', '살펴보기(렌즈와 기록)', 0x82cce0),
+
   // C5: 갈림길 사막. tile-sand는 기존 키를 그대로 써요.
   block('block-sandstone', '따뜻한 빛의 사암 벽', 0xd39a62),
   prop(16, 24)('prop-cactus', '둥근 팔의 선인장', 0x8dc567),

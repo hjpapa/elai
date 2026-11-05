@@ -13,10 +13,13 @@ export const CMD_LABEL: Record<Cmd, string> = {
   guard: '막기',
   heal: '회복',
   wait: '쉬기',
+  scan: '살펴보기',
 };
 
 export const COND_LABEL: Record<Cond, string> = {
   signalRed: '앞 신호가 빨강이면',
+  waveHigh: '관찰한 물결이 3이면',
+  waveMiddle: '관찰한 물결이 2이면',
   wallAhead: '앞이 막혔다면',
   pathAhead: '앞에 길이 있다면',
   pathLeft: '왼쪽에 길이 있다면',

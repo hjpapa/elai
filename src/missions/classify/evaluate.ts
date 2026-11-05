@@ -23,3 +23,19 @@ export function evaluateGroups(data: ClassifyData, selected: Record<string, stri
   if (data.mode !== 'cluster') return data.cards.every(c => selected[c.id] === c.group);
   return data.cards.every(a => data.cards.every(b => (a.group === b.group) === (selected[a.id] === selected[b.id])));
 }
+
+
+export function evaluateTable(data: ClassifyData, counts: Record<string, number>): boolean {
+  const ids = new Set(data.groups.map(group => group.id));
+  return data.cards.length > 0 && data.groups.length > 0 && ids.size === data.groups.length
+    && data.cards.every(card => ids.has(card.group)) && Object.keys(counts).every(id => ids.has(id)) && data.groups.every(group =>
+    Number.isInteger(counts[group.id] ?? 0) && (counts[group.id] ?? 0) === data.cards.filter(c => c.group === group.id).length);
+}
+export function evaluateBinary(data: ClassifyData, values: Record<string, string>): boolean {
+  return data.cards.length > 0 && data.cards.every(card => {
+    const text = values[card.id] ?? '0';
+    if (!/^(0|[1-9][0-9]*)$/.test(card.group) || !/^(0|[1-9][0-9]*)$/.test(text)) return false;
+    const target = Number(card.group), actual = Number(text);
+    return Number.isInteger(target) && target >= 0 && target <= 15 && Number.isInteger(actual) && actual >= 0 && actual <= 15 && target === actual;
+  });
+}

@@ -185,6 +185,63 @@ const list: MobDef[] = [
   "dex": "방패 뒤의 다음 행동이 바뀌어요.\n센서로 살피고 조건으로 정해요.",
   "purified": "모래 바람이 잦아들었어요.\n친구들의 길을 함께 안내해요!"
 },
+{
+  "id": "fogJelly",
+  "name": "안개 해파리",
+  "sprite": "mob-fog-jelly",
+  "size": 24,
+  "chapter": "ch4",
+  "hp": 180,
+  "atk": 10,
+  "def": 3,
+  "pattern": [
+    "idle"
+  ],
+  "dataPattern": {
+    "values": [1, 3, 2, 1, 2, 3, 1, 3, 3, 2, 1, 3, 2],
+    "actions": [
+      "idle",
+      "guard",
+      "smash"
+    ]
+  },
+  "roundTicks": 12,
+  "smashRatio": 0.55,
+  "xp": 22,
+  "coins": 14,
+  "recommendedLevel": 10,
+  "dex": "물결에 맞춰 움직이는 친구예요.\n높이와 행동을 함께 기록해 봐요.",
+  "purified": "안개가 걷혀서 길이 잘 보여요.\n함께 물결을 살펴봐요!"
+},
+{
+  "id": "ledgerOcto",
+  "name": "장부 문어 대장",
+  "sprite": "boss-ledger-octo",
+  "size": 48,
+  "boss": true,
+  "chapter": "ch4",
+  "hp": 250,
+  "atk": 12,
+  "def": 4,
+  "pattern": [
+    "idle"
+  ],
+  "dataPattern": {
+    "values": [1, 3, 2, 1, 2, 3, 1, 3, 3, 2, 1, 3, 2],
+    "actions": [
+      "idle",
+      "guard",
+      "smash"
+    ]
+  },
+  "roundTicks": 12,
+  "smashRatio": 0.7,
+  "xp": 0,
+  "coins": 0,
+  "recommendedLevel": 10,
+  "dex": "엉킨 장부 때문에 헷갈리는 대장이에요.\n물결 기록표로 규칙을 찾아봐요.",
+  "purified": "장부가 다시 가지런해졌어요.\n함께 항구의 기록을 지켜요!"
+},
 ];
 
 export const MOBS: Record<string, MobDef> = Object.fromEntries(list.map((m) => [m.id, m]));

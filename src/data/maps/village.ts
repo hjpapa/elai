@@ -61,6 +61,8 @@ export const village: MapDef = {
     { id: 'restore-crystal-b', type: 'prop', at: { x: 14, y: 12 }, sprite: 'prop-crystal', frame: 1, when: { flag: 'village-restore-2' } },
     { id: 'to-ch3', type: 'portal', at: { x: 19, y: 19 }, to: { map: 'desert', at: { x: 2, y: 13 } }, label: '갈림길 사막', open: { flag: 'ch2-clear' }, lockedText: '2장을 끝내면\n사막으로 갈 수 있어요.', sprite: 'prop-gate' },
     { id: 'restore-signal', type: 'prop', at: { x: 14, y: 8 }, sprite: 'prop-signal', frame: 1, when: { flag: 'village-restore-3' } },
+    { id: 'to-ch4', type: 'portal', at: { x: 17, y: 19 }, to: { map: 'harbor', at: { x: 2, y: 13 } }, label: '데이터 항구', open: { flag: 'ch3-clear' }, lockedText: '3장을 마치면\n항구로 갈 수 있어요.', sprite: 'prop-gate' },
+    { id: 'restore-buoy', type: 'prop', at: { x: 14, y: 9 }, sprite: 'prop-buoy', frame: 1, when: { flag: 'village-restore-4' } },
     ...house('house-a', 8, 6),
     ...house('house-b', 16, 7),
     ...house('house-c', 8, 13),

@@ -28,6 +28,7 @@ export function cmdKind(c: Cmd): string {
   if (c === 'guard') return 'k-guard';
   if (c === 'heal') return 'k-heal';
   if (c === 'wait') return 'k-wait';
+  if (c === 'scan') return 'k-if';
   return 'k-move';
 }
 

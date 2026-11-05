@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { ClassifyData } from '../src/data/schema';
-import { evaluateGroups, evaluateTree } from '../src/missions/classify/evaluate';
+import { evaluateBinary, evaluateGroups, evaluateTable, evaluateTree } from '../src/missions/classify/evaluate';
 const data: ClassifyData = { mode: 'tree', intro: '', hint: '', maxQuestions: 2,
   cards: [{id:'a',label:'새',group:'bird',features:['wing']},{id:'b',label:'나비',group:'insect',features:['wing','six']},{id:'c',label:'참새',group:'bird',features:['wing']}],
   groups: [{id:'bird',label:'새'},{id:'insect',label:'곤충'}], questions: [{id:'wing',label:'날개가 있나요?',feature:'wing'},{id:'six',label:'다리가 여섯 개인가요?',feature:'six'}] };
@@ -23,4 +23,31 @@ describe('질문 규칙과 분류',()=>{
     expect(evaluateGroups({...data,mode:'cluster'},{a:'insect',b:'bird',c:'insect'})).toBe(true);
     expect(evaluateGroups({...data,mode:'cluster'},{a:'bird',b:'bird',c:'insect'})).toBe(false);
   });
+});
+
+
+describe('자료의 표와 이진수',()=>{
+  it('빈도표는 모든 종류의 정확한 개수를 요구해요',()=>{
+    expect(evaluateTable(data,{bird:2,insect:1})).toBe(true);
+    expect(evaluateTable(data,{bird:1,insect:2})).toBe(false);
+    expect(evaluateTable(data,{bird:2})).toBe(false);
+    expect(evaluateTable(data,{bird:1.5,insect:1})).toBe(false);
+  });
+  it('네 비트의 합과 목표를 맞추고 잘못된 숫자를 거절해요',()=>{
+    const binary: ClassifyData = {...data,mode:'binary',cards:[{id:'a',label:'등대5',group:'5',features:[]},{id:'b',label:'등대12',group:'12',features:[]}]};
+    expect(evaluateBinary(binary,{a:String(4|1),b:String(8|4)})).toBe(true);
+    for(const actual of ([{a:'4',b:'12'},{a:'5',b:'16'},{a:'NaN',b:'12'},{}] as Record<string,string>[]))expect(evaluateBinary(binary,actual)).toBe(false);
+    expect(evaluateBinary({...binary,cards:[{id:'a',label:'큰값',group:'16',features:[]}]},{a:'16'})).toBe(false);
+  });
+});
+
+
+it('표의 미지 종류와 이진수의 모호한 입력은 성공하지 않아요',()=>{
+  expect(evaluateTable({...data,cards:[{id:'x',label:'미지',group:'unknown',features:[]}]},{})).toBe(false);
+  expect(evaluateTable(data,{bird:2,insect:1,unknown:0})).toBe(false);
+  const zero: ClassifyData = {...data,mode:'binary',cards:[{id:'a',label:'0',group:'0',features:[]}]};
+  expect(evaluateBinary(zero,{})).toBe(true);
+  expect(evaluateBinary(zero,{a:''})).toBe(false);
+  expect(evaluateBinary(zero,{a:' '})).toBe(false);
+  expect(evaluateBinary({...zero,cards:[]},{})).toBe(false);
 });

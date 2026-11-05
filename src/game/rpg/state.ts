@@ -1,5 +1,7 @@
 import { getMission, getPart } from '../../data/chapters';
 import { ITEMS } from '../../data/rpg/items';
+import { MOBS } from '../../data/rpg/mobs';
+import type { Observation } from '../battle/sim';
 import { levelForXp } from '../../data/rpg/levels';
 import type { Condition, EquipSlot, MissionRecord, Reward, SaveData, Stats } from '../../data/schema';
 import type { MissionResult } from '../../missions/core/types';
@@ -38,6 +40,7 @@ export function freshSave(nickname: string): SaveData {
     missions: {},
     flags: {},
     dex: { mobs: [], items: [] },
+    observations: {},
     badges: [],
     titles: [],
     location: { ...START_MAP },
@@ -51,7 +54,35 @@ export function freshSave(nickname: string): SaveData {
 export class GameState {
   private listeners = new Set<(e: StateEvent) => void>();
 
-  constructor(public data: SaveData) {}
+  constructor(public data: SaveData) {
+    const saved = data.observations ?? {};
+    data.observations = {};
+    for (const [id, rows] of Object.entries(saved)) {
+      if (!MOBS[id]?.dataPattern || !Array.isArray(rows)) continue;
+      data.observations[id] = this.cleanObservations(rows);
+    }
+  }
+
+  private cleanObservations(rows: Observation[]): Observation[] {
+    const result: Observation[] = [];
+    for (const row of rows) {
+      if (!row || !Number.isInteger(row.value) || row.value < 1 || row.value > 3 || !['attack', 'guard', 'charge', 'smash', 'heal', 'idle'].includes(row.action)) continue;
+      if (!result.some(r => r.value === row.value && r.action === row.action)) result.push({ value: row.value, action: row.action });
+      if (result.length >= 24) break;
+    }
+    return result;
+  }
+
+  /** 실제로 본 기록만 저장하고, 같은 값과 행동은 한 줄로 모아요. */
+  recordObservations(mobId: string, rows: Observation[]): void {
+    if (!MOBS[mobId]?.dataPattern) return;
+    const all = this.data.observations ??= {};
+    const before = all[mobId] ?? [];
+    const merged = this.cleanObservations([...before, ...rows]);
+    if (merged.length === before.length) return;
+    all[mobId] = merged;
+    this.changed();
+  }
 
   on(fn: (e: StateEvent) => void): () => void {
     this.listeners.add(fn);

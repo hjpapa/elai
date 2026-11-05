@@ -2,7 +2,7 @@ import type { BattleCmd, Block, Cmd, Cond, MobAction, MobDef, Stats } from '../.
 import { run, type Env } from '../../missions/core/interpreter';
 
 /** 카드 에너지 비용 */
-export const CARD_COST: Record<BattleCmd, number> = { attack: 1, guard: 1, heal: 2, wait: 0 };
+export const CARD_COST: Record<BattleCmd, number> = { attack: 1, guard: 1, heal: 2, wait: 0, scan: 0 };
 /** 이만큼 지나도 끝나지 않으면 로비가 지쳐서 져요(막기만 반복하는 경우 방지) */
 export const MAX_ROUNDS = 12;
 
@@ -15,7 +15,11 @@ export const ACTION_LABEL: Record<MobAction, string> = {
   idle: '멍하니 있기',
 };
 
+export interface Observation { value: number; action: MobAction }
+
 export interface TickEvent {
+  /** 이 차례에 실제로 수집한 기록 */
+  observation?: Observation;
   /** 라운드 안의 차례(0부터) */
   tick: number;
   /** 실행한 카드의 위치. 카드가 모자라 쉰 차례는 null */
@@ -48,19 +52,21 @@ export interface RoundResult {
 }
 
 export interface BattleSetup {
+  observations?: Observation[];
   stats: Stats;
   hp: number;
   slots: number;
   mob: MobDef;
 }
 
-const BATTLE_CMDS: ReadonlySet<Cmd> = new Set<Cmd>(['attack', 'guard', 'heal', 'wait']);
+const BATTLE_CMDS: ReadonlySet<Cmd> = new Set<Cmd>(['attack', 'guard', 'heal', 'wait', 'scan']);
 
 /** 전투 계산(화면과 따로). 한 라운드 = 몹 행동 예고 칸 수만큼의 차례. */
 export class Battle {
   readonly mob: MobDef;
   readonly stats: Stats;
   readonly slots: number;
+  readonly observations: Observation[];
   playerHp: number;
   mobHp: number;
   round = 0;
@@ -70,6 +76,7 @@ export class Battle {
 
   constructor(setup: BattleSetup) {
     this.mob = setup.mob;
+    this.observations = (setup.observations ?? []).map(row => ({ ...row }));
     this.stats = setup.stats;
     this.slots = setup.slots;
     this.playerHp = Math.min(setup.hp, setup.stats.maxHp);
@@ -78,7 +85,7 @@ export class Battle {
 
   /** 미리 보기는 실제 전투 상태를 바꾸지 않아요. */
   clone(): Battle {
-    const copy = new Battle({ stats: { ...this.stats }, hp: this.playerHp, slots: this.slots, mob: this.mob });
+    const copy = new Battle({ stats: { ...this.stats }, hp: this.playerHp, slots: this.slots, mob: this.mob, observations: this.observations });
     copy.mobHp = this.mobHp;
     copy.round = this.round;
     copy.outcome = this.outcome;
@@ -93,6 +100,8 @@ export class Battle {
 
   /** 씨앗과 절대 차례를 섞어요. 복제·재실행에서도 같은 행동이에요. */
   private actionAt(index: number): MobAction {
+    const data = this.mob.dataPattern;
+    if (data?.values.length) return data.actions[data.values[index % data.values.length] - 1] ?? 'idle';
     const hidden = this.mob.hiddenPattern;
     if (hidden?.choices.length && index % 2 === 1) {
       let hash = (hidden.seed ^ Math.imul(index + 1, 0x9e3779b9)) >>> 0;
@@ -109,14 +118,21 @@ export class Battle {
     return Array.from({ length: n }, (_, i) => this.actionAt(this.patternIndex + i));
   }
 
+  /** 물결은 행동과 별개로 눈에 보이는 입력값이에요. */
+  values(n = this.ticksPerRound): (number | null)[] {
+    const values = this.mob.dataPattern?.values;
+    return Array.from({ length: n }, (_, i) => values?.length ? values[(this.patternIndex + i) % values.length] : null);
+  }
+
   /** 화면에는 가려진 차례를 null로 돌려줘요. */
   displayIntents(n = this.ticksPerRound): (MobAction | null)[] {
+    if (this.mob.dataPattern) return Array(n).fill(null);
     return this.intents(n).map((action, i) => this.mob.hiddenPattern?.choices.length && (this.patternIndex + i) % 2 === 1 ? null : action);
   }
 
   /** 숨은 행동의 조건 결과·생존 여부도 미리 보기로 새지 않게 해요. */
   preview(program: Block[]): (TickEvent | null)[] {
-    if (this.mob.hiddenPattern?.choices.length) return Array(this.ticksPerRound).fill(null);
+    if (this.mob.hiddenPattern?.choices.length || this.mob.dataPattern) return Array(this.ticksPerRound).fill(null);
     return this.clone().runRound(program).ticks;
   }
 
@@ -158,6 +174,7 @@ export class Battle {
     const ticks: TickEvent[] = [];
     const total = this.ticksPerRound;
     const paid = new Set<string>();
+    let scanning = false;
     let energy = this.energy;
     this.energyBonus = 0;
 
@@ -170,6 +187,7 @@ export class Battle {
         if (path !== null) paid.add(path);
       }
       const mobAction = this.intents(1)[0];
+      if (card === 'scan') scanning = true;
       const ev: TickEvent = {
         tick: ticks.length,
         path,
@@ -210,6 +228,14 @@ export class Battle {
           ev.mobHealed = this.mobHp - before;
         }
       }
+      const value = this.values(1)[0];
+      if (scanning && value !== null && this.mobHp > 0) {
+        ev.observation = { value, action: mobAction };
+        if (!this.observations.some(row => row.value === value && row.action === mobAction)) {
+          this.observations.push({ ...ev.observation });
+          if (this.observations.length > 24) this.observations.shift();
+        }
+      }
       this.patternIndex++;
       ev.playerHp = this.playerHp;
       ev.mobHp = this.mobHp;
@@ -233,6 +259,11 @@ export class Battle {
 
   test(cond: Cond): boolean {
     const now = this.intents(1)[0];
+    if (this.mob.dataPattern && cond.startsWith('enemy')) return false;
+    if (cond === 'waveHigh' || cond === 'waveMiddle') {
+      const value = this.values(1)[0];
+      return value !== null && this.observations.some(row => row.value === value) && value === (cond === 'waveHigh' ? 3 : 2);
+    }
     switch (cond) {
       case 'enemyAttack':
         return now === 'attack' || now === 'smash';

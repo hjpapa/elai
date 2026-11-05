@@ -6,6 +6,7 @@ import { app } from '../game/app';
 import { clear, h, lines } from './dom';
 import { icon, pxImg } from './icons';
 import { robiLook } from './portraits';
+import { INTENT_LABEL } from './labels';
 
 const TABS = [
   { id: 'mobs', label: '몹' },
@@ -48,15 +49,22 @@ export function openDex(): void {
     if (tab === 'mobs') {
       for (const m of Object.values(MOBS)) {
         const known = d.dex.mobs.includes(m.id);
+        const observations = d.observations?.[m.id] ?? [];
+        const observed = observations.length > 0;
+        const table = observed ? h('table', { class: 'observation-table' },
+          h('caption', {}, '살펴보기 기록'),
+          h('thead', {}, h('tr', {}, h('th', {}, '물결'), h('th', {}, '관찰한 행동'))),
+          h('tbody', {}, ...observations.map(row => h('tr', {}, h('td', {}, String(row.value)), h('td', {}, INTENT_LABEL[row.action]))))) : null;
         const size = m.size === 48 ? 72 : 48;
         grid.append(
           h(
             'div',
-            { class: `dex-card ${known ? '' : 'unknown'}` },
-            pxImg(icon(m.sprite, known ? 3 : 0), size, '', known ? '' : 'silhouette'),
-            h('h3', {}, known ? m.name : '???'),
+            { class: `dex-card ${known || observed ? '' : 'unknown'}` },
+            pxImg(icon(m.sprite, known ? 3 : 0), size, '', known || observed ? '' : 'silhouette'),
+            h('h3', {}, known || observed ? m.name : '???'),
             h('div', { class: 'muted' }, `권장 Lv ${m.recommendedLevel}${m.boss ? ' · 보스' : ''}`),
             known ? h('p', {}, ...lines(m.dex)) : h('p', { class: 'muted' }, '정화하면 정보가 기록돼요.'),
+            table,
           ),
         );
       }

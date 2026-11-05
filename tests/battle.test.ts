@@ -210,3 +210,60 @@ describe('3장 조건 학습과 숨은 행동', () => {
     expect(first.clone().runRound(conditional)).toEqual(first.runRound(conditional));
   });
 });
+
+const waveProgram: Block[] = [{ t: 'repeat', times: 12, body: [{ t: 'if', cond: 'waveHigh', yes: cards('guard'), no: [
+  { t: 'if', cond: 'waveMiddle', yes: cards('wait'), no: cards('attack') },
+] }] }];
+const observeProgram: Block[] = [...cards('scan'), ...repeat(11, cards('guard'))];
+
+describe('4장 데이터 관찰과 규칙', () => {
+  const setup = (mobId: string, level = 10) => {
+    const save = player(level, ['rangerhat', 'brush', 'cloak', 'windboots']);
+    save.robiParts = ['wheel', 'memoryChip', 'sensor', 'dataLens'];
+    const stats = derivedStats(save);
+    return new Battle({ stats, hp: stats.maxHp, slots: programSlots(save), mob: MOBS[mobId] });
+  };
+  const finish = (b: Battle, p: Block[]) => { while (b.outcome === 'continue') b.runRound(p); return b; };
+  it('Lv10~12에서 안전하게 관찰한 뒤 값 조건으로 무피해 승리해요', () => {
+    for (const level of [10, 11, 12]) for (const id of ['fogJelly', 'ledgerOcto']) {
+      const good = setup(id, level);
+      const observation = good.runRound(observeProgram);
+      expect(observation.ticks.reduce((n, t) => n + t.taken, 0)).toBe(0);
+      expect(good.observations).toHaveLength(3);
+      expect(observation.ticks.filter(t => t.observation)).toHaveLength(12);
+      expect(programCost(observeProgram)).toBe(1);
+      finish(good, waveProgram);
+      expect(good.outcome, id + ' Lv' + level).toBe('win');
+      expect(good.playerHp, id + ' Lv' + level).toBe(good.stats.maxHp);
+      expect(finish(setup(id, level), waveProgram).outcome, '기록 없이 ' + id + level).toBe('lose');
+      expect(finish(setup(id, level), conditional).outcome, '직접 행동 조건 ' + id + level).toBe('lose');
+      expect(finish(setup(id, level), repeat(12, cards('attack'))).outcome, '공격만 ' + id + level).toBe('lose');
+      const fixed = setup(id, level);fixed.runRound(observeProgram);
+      expect(finish(fixed, repeat(4, cards('attack', 'guard', 'guard'))).outcome, '고정 반복 ' + id + level).toBe('lose');
+    }
+  });
+  it('관찰 전에는 값 조건도 닫히고, 미리 보기와 복제는 기록을 누설·변경하지 않아요', () => {
+    const battle = setup('ledgerOcto');
+    expect(battle.values()).toEqual(MOBS.ledgerOcto.dataPattern!.values.slice(0, 12));
+    expect(battle.displayIntents()).toEqual(Array(12).fill(null));
+    expect(battle.preview(observeProgram)).toEqual(Array(12).fill(null));
+    expect(battle.observations).toEqual([]);
+    expect(battle.test('waveHigh')).toBe(false);
+    const copy = battle.clone();copy.runRound(observeProgram);
+    expect(copy.observations).toHaveLength(3);
+    expect(battle.observations).toEqual([]);
+    expect(battle.runRound(observeProgram)).toEqual(setup('ledgerOcto').runRound(observeProgram));
+    const learnedCopy = battle.clone();learnedCopy.observations[0].value = 99;
+    expect(battle.observations[0].value).toBe(1);
+    expect(battle.preview(waveProgram)).toEqual(Array(12).fill(null));
+    expect(battle.test('enemyGuard')).toBe(false);
+  });
+  it('관찰 카드를 쓰기 전의 차례는 기록하지 않고, 같은 관찰을 중복하지 않아요', () => {
+    const b = setup('fogJelly');
+    const r = b.runRound([...cards('wait','guard','scan'), ...repeat(9, cards('guard'))]);
+    expect(r.ticks[0].observation).toBeUndefined();expect(r.ticks[1].observation).toBeUndefined();
+    expect(r.ticks[2].observation).toEqual({ value: 2, action: 'guard' });
+    expect(b.observations).toHaveLength(3);
+    b.runRound(observeProgram);expect(b.observations).toHaveLength(3);
+  });
+});
