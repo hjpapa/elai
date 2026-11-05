@@ -100,7 +100,7 @@ function robot(f) {
   g.stamp(['...OOOOOO...', '..OaaWWaaO..', '.OaaaaaAAAO.', '.OaaaaaAAAO.', '..OAAAAAAO..', '...OOOOOO...'], 2, 14 + b);
   g.rect(2, 15 + b + p.swing, 2, 3, 'O').set(2, 16 + b + p.swing, 'a');
   g.rect(13, 15 + b - p.swing, 2, 3, 'O').set(13, 16 + b - p.swing, 'A');
-  g.line(8, 2 + b, 8, 5 + b, 'O').set(8, 2 + b, 'Y').set(7, 1 + b, 'y');
+  g.line(8, 2 + b, 8, 5 + b, 'A').set(8, 2 + b, 'Y').set(8, 1 + b, 'Y').set(7, 1 + b, 'y');
   g.stamp(['..OOOOOOOO..', '.OaaaWWaaaO.', 'OaaAAAAAAaaO', 'OaONNNNNNOaO', 'OaONNNNNNOAO', 'OaONNNNNNOAO', 'OAAOOOOOOAAO', '.OAAAAAAAAO.', '..OOOOOOOO..'], 2, 5 + b);
   if (p.back) {
     g.rect(5, 8 + b, 7, 4, 'A').rect(5, 8 + b, 1, 3, 'a');

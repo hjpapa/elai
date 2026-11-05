@@ -491,5 +491,9 @@
       "key": "fx-sparkle",
       "file": "fx/fx-sparkle.png"
     }
-  ]
+  ],
+  "atlas": {
+    "image": "atlas.png",
+    "data": "atlas.json"
+  }
 }
