@@ -7,8 +7,10 @@ import { harbor } from './harbor';
 import { lighthouse } from './lighthouse';
 import { lab } from './lab';
 import { labdeep } from './labdeep';
+import { observatory } from './observatory';
+import { starmaze } from './starmaze';
 import { forest } from './forest';
 import { maze } from './maze';
 import { village } from './village';
 
-export const MAPS: Record<string, MapDef> = { village, forest, maze, cave, cavedeep, desert, desertmaze, harbor, lighthouse, lab, labdeep };
+export const MAPS: Record<string, MapDef> = { village, forest, maze, cave, cavedeep, desert, desertmaze, harbor, lighthouse, lab, labdeep, observatory, starmaze };

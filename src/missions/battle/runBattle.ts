@@ -5,7 +5,7 @@ import { ROBI_PARTS } from '../../data/rpg/robiParts';
 import { MAPS } from '../../data/maps';
 import type { BattleCmd, Block, Mission, MobAction } from '../../data/schema';
 import { app } from '../../game/app';
-import { Battle, CARD_COST, programCost, type TickEvent } from '../../game/battle/sim';
+import { Battle, CARD_COST, programCost, type Forecast, type TickEvent } from '../../game/battle/sim';
 import type { BattleScene, BattleSceneData } from '../../game/scenes/BattleScene';
 import { currentMusic, playMusic, playSfx } from '../../fx/sfx';
 import { clear, h, lines, sleep } from '../../ui/dom';
@@ -52,7 +52,8 @@ export async function runBattle(mobId: string, opts: BattleOptions = {}): Promis
   const mob = MOBS[mobId];
   const s = app.state;
   const stats = s.stats;
-  const battle = new Battle({ stats, hp: s.data.hp, slots: s.slots, mob, observations: s.data.observations?.[mobId], classificationModel: s.data.classificationModel });
+  const forecastUnlocked = s.data.robiParts.some(id => ROBI_PARTS[id]?.unlocks.forecast);
+  const battle = new Battle({ stats, hp: s.data.hp, slots: s.slots, mob, observations: s.data.observations?.[mobId], classificationModel: s.data.classificationModel, forecast: forecastUnlocked });
   const battleCards: BattleCmd[] = s.data.robiParts.some(id => ROBI_PARTS[id]?.unlocks.cards?.includes('scan')) ? [...CARDS, 'scan'] : CARDS;
   const repeatUnlocked = s.data.robiParts.some(id => ROBI_PARTS[id]?.unlocks.repeat);
   const conditions = [...new Set(s.data.robiParts.flatMap(id => ROBI_PARTS[id]?.unlocks.conds ?? []))];
@@ -68,7 +69,7 @@ export async function runBattle(mobId: string, opts: BattleOptions = {}): Promis
 
   const scene = sm.getScene('Battle') as BattleScene;
   const ready = new Promise<void>((r) => scene.events.once(Phaser.Scenes.Events.CREATE, () => r()));
-  sm.run('Battle', { mob, save: s.data, floor: opts.floor ?? (MAPS[s.data.location.map]?.theme === 'cave' ? 'tile-cave' : MAPS[s.data.location.map]?.theme === 'desert' ? 'tile-sand' : MAPS[s.data.location.map]?.theme === 'harbor' ? 'tile-dock' : MAPS[s.data.location.map]?.theme === 'lab' ? 'tile-lab' : 'tile-grass') } satisfies BattleSceneData);
+  sm.run('Battle', { mob, save: s.data, floor: opts.floor ?? (MAPS[s.data.location.map]?.theme === 'cave' ? 'tile-cave' : MAPS[s.data.location.map]?.theme === 'desert' ? 'tile-sand' : MAPS[s.data.location.map]?.theme === 'harbor' ? 'tile-dock' : MAPS[s.data.location.map]?.theme === 'lab' ? 'tile-lab' : MAPS[s.data.location.map]?.theme === 'observatory' ? 'tile-observatory' : 'tile-grass') } satisfies BattleSceneData);
   await ready;
 
   // ── DOM ──
@@ -84,6 +85,7 @@ export async function runBattle(mobId: string, opts: BattleOptions = {}): Promis
   const palette = h('div', { class: 'palette' });
   const recordTable = h('table', { class: 'observation-table' });
   const records = h('details', { class: 'battle-records', hidden: !mob.dataPattern }, h('summary', {}, '관찰 기록 보기'), recordTable);
+  const forecastBox = h('section', { class: 'battle-forecast', hidden: !mob.forecastPattern, 'aria-label': '다음 행동 예측' });
   const say = h('div', { class: 'robi-say' });
   const runBtn = h('button', { class: 'btn primary' }, '▶ 실행');
   const hintBtn = h('button', { class: 'btn accent' }, pxImg(icon('icon-hint'), 22), '힌트');
@@ -98,6 +100,7 @@ export async function runBattle(mobId: string, opts: BattleOptions = {}): Promis
     h('div', { style: 'height:8px' }),
     editor?.el ?? palette,
     records,
+    forecastBox,
     h('div', { style: 'height:8px' }),
     say,
     h('div', { class: 'row end', style: 'margin-top:8px' }, fleeBtn, appleBtn, jellyBtn, hintBtn, runBtn),
@@ -158,7 +161,29 @@ export async function runBattle(mobId: string, opts: BattleOptions = {}): Promis
   let shownFeatures: (number[] | null)[] | null = null;
   let shownPredictions: (string | null)[] | null = null;
   let shownTicks: TickEvent[] | null = null;
+  let shownForecast: Forecast | null = null;
+  const renderForecast = () => {
+    clear(forecastBox);
+    if (!mob.forecastPattern) return;
+    if (!forecastUnlocked) {
+      forecastBox.append(h('p', {}, '예측 모듈을 찾으면 기록으로 다음 행동을 짐작할 수 있어요.'));
+      return;
+    }
+    const prediction = shownForecast ?? battle.forecast();
+    forecastBox.append(h('p', {}, `직전: ${prediction.previous ? INTENT_LABEL[prediction.previous] : '관찰 전'} · 전이 기록 ${prediction.samples}개`));
+    forecastBox.append(h('strong', {}, prediction.samples
+      ? `다음 강타 비율 ${Math.round(prediction.smashRate * 100)}% · ${prediction.risk ? '조심해서 막아요' : '관찰된 강타가 없어요'}`
+      : '자료가 부족해요. 먼저 막기로 관찰해요.'));
+    const body = h('tbody');
+    for (const [action, count] of Object.entries(prediction.counts) as [MobAction, number][]) {
+      if (count) body.append(h('tr', {}, h('td', {}, INTENT_LABEL[action]), h('td', {}, String(count)), h('td', {}, Math.round(count / prediction.samples * 100) + '%')));
+    }
+    const details = h('details', {}, h('summary', {}, '전이 횟수·비율 보기'),
+      h('table', { class: 'observation-table' }, h('thead', {}, h('tr', {}, h('th', {}, '다음 행동'), h('th', {}, '횟수'), h('th', {}, '비율'))), body));
+    forecastBox.append(details, h('p', { class: 'muted' }, '처음 보는 행동도 나올 수 있어요. 기록은 확실한 정답이 아니에요.'));
+  };
   const renderGrid = (marks: Map<number, 'run' | 'err'> = new Map()) => {
+    renderForecast();
     const n = battle.ticksPerRound;
     const intents = shownIntents ?? battle.displayIntents(n);
     grid.style.gridTemplateColumns = `56px repeat(${n}, minmax(40px, 1fr))`;
@@ -168,7 +193,10 @@ export async function runBattle(mobId: string, opts: BattleOptions = {}): Promis
     const features = shownFeatures ?? battle.features(n);
     const predictions = shownPredictions ?? battle.predictions(n);
     intents.forEach((a, i) => grid.append(a === null
-      ? features[i]
+      ? mob.forecastPattern
+        ? h('div', { class: 'intent unknown', 'aria-label': i === 0 && !shownIntents ? '이번 차례 예측' : '진행하며 예측' },
+          i === 0 && !shownIntents && forecastUnlocked ? h('small', {}, battle.forecast().samples ? '강타 ' + Math.round(battle.forecast().smashRate * 100) + '%' : '자료 부족') : h('small', {}, '진행하며 예측'))
+        : features[i]
         ? h('div', { class: 'intent unknown', 'aria-label': '뛰는 높이 ' + features[i]?.[0] + ', 점무늬 수 ' + features[i]?.[1] },
           h('span', {}, '높이 ' + features[i]?.[0]), h('span', {}, '점 ' + features[i]?.[1]),
           h('small', {}, '내 모델: ' + (predictions[i] === 'playful' ? '장난' : predictions[i] === 'friend' ? '친구' : '미학습')))
@@ -177,11 +205,11 @@ export async function runBattle(mobId: string, opts: BattleOptions = {}): Promis
     grid.append(h('div', { class: 'muted', style: 'align-self:center' }, editor ? '미리 보기' : '나'));
     if (editor) {
       const preview = shownTicks
-        ? Array.from({ length: n }, (_, i) => (mob.hiddenPattern || mob.dataPattern || mob.classifyPattern) && i >= revealedTicks ? null : shownTicks?.[i] ?? null)
+        ? Array.from({ length: n }, (_, i) => (mob.hiddenPattern || mob.dataPattern || mob.classifyPattern || mob.forecastPattern) && i >= revealedTicks ? null : shownTicks?.[i] ?? null)
         : battle.preview(editor.value);
       for (let i = 0; i < n; i++) {
         const t = preview[i];
-        if (!t && (mob.hiddenPattern || mob.dataPattern || mob.classifyPattern)) {
+        if (!t && (mob.hiddenPattern || mob.dataPattern || mob.classifyPattern || mob.forecastPattern)) {
           grid.append(h('div', { class: 'tick' }, h('div', { class: 'bslot unknown', 'aria-label': (i + 1) + '번째: 실행하며 결정' }, '?', h('small', {}, '실행하며 결정'))));
           continue;
         }
@@ -311,12 +339,14 @@ export async function runBattle(mobId: string, opts: BattleOptions = {}): Promis
       shownFeatures = battle.features();
       shownPredictions = battle.predictions();
       revealedTicks = 0;
+      shownForecast = mob.forecastPattern ? battle.forecast() : null;
       const result = battle.runRound(program());
       shownTicks = result.ticks;
 
       let shownMobHp = battle.mobHp + result.ticks.reduce((n, t) => n + t.dealt - t.mobHealed, 0);
       let shownHp = battle.playerHp + result.ticks.reduce((n, t) => n + t.taken - t.healed, 0);
       for (const t of result.ticks) {
+        shownForecast = t.forecast ?? null;
         revealedTicks = t.tick + 1;
         shownIntents[t.tick] = t.mobAction;
         renderGrid(new Map([[t.tick, 'run']]));
@@ -350,6 +380,7 @@ export async function runBattle(mobId: string, opts: BattleOptions = {}): Promis
         return;
       }
       const fb = feedbackFor(result.ticks);
+      if (fb && mob.forecastPattern) fb.text = '예측은 틀릴 수 있어요.\n기록의 강타 위험을 보고 막아요.';
       if (fb) {
         const glasses = s.helpers.debugGlasses;
         if (glasses && editor) editor.highlight(result.ticks[fb.index]?.path ?? null, 'err');
@@ -363,6 +394,7 @@ export async function runBattle(mobId: string, opts: BattleOptions = {}): Promis
       shownFeatures = null;
       shownPredictions = null;
       shownTicks = null;
+      shownForecast = null;
       revealedTicks = 0;
       editor?.highlight(null);
       newRound();

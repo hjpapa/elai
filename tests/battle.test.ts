@@ -3,7 +3,7 @@ import { ITEMS } from '../src/data/rpg/items';
 import { getMission } from '../src/data/chapters';
 import { MOBS } from '../src/data/rpg/mobs';
 import type { BattleCmd, Block, ClassificationModel, MobAction, SaveData } from '../src/data/schema';
-import { Battle, programCost, type BattleOutcome } from '../src/game/battle/sim';
+import { Battle, forecastFromHistory, programCost, type BattleOutcome } from '../src/game/battle/sim';
 import { freshSave } from '../src/game/rpg/state';
 import { derivedStats, programSlots } from '../src/game/rpg/stats';
 import { xpForLevel } from '../src/data/rpg/levels';
@@ -312,5 +312,91 @@ describe('5장 내 분류 모델 전투', () => {
     const mistakes=r.ticks.filter(t=>t.classification?.actual==='friend');
     expect(mistakes.length).toBeGreaterThan(0);
     expect(mistakes.every(t=>t.blocked&&t.dealt===0&&t.taken>0)).toBe(true);
+  });
+});
+
+
+const forecastProgram: Block[] = repeat(12, [{ t: 'if', cond: 'forecastRisk', yes: cards('guard'), no: cards('attack') }]);
+
+describe('6장 실제 과거 기록으로 예측하기', () => {
+  const setup = (id: string, level = 12, seed = 1, forecast = true) => {
+    const save = player(level, ['rangerhat', 'brush', 'dataVest', 'researchBoots']);
+    save.robiParts = ['wheel', 'memoryChip', 'sensor', 'dataLens', 'learningChip', 'predictModule'];
+    const stats = derivedStats(save);
+    return new Battle({ stats, hp: stats.maxHp, slots: programSlots(save), mob: { ...MOBS[id], forecastPattern: { seed } }, forecast });
+  };
+  const finish = (b: Battle, program: Block[]) => { while (b.outcome === 'continue') b.runRound(program); return b; };
+
+  it('전이 횟수는 실제 과거만 세고, 자료 부족·강타 가능성을 구분해요', () => {
+    expect(forecastFromHistory([])).toMatchObject({ previous: null, samples: 0, risk: true });
+    expect(forecastFromHistory(['charge'])).toMatchObject({ previous: 'charge', samples: 0, risk: true });
+    const history: MobAction[] = ['charge', 'charge', 'smash', 'charge', 'idle', 'charge'];
+    const before = [...history], prediction = forecastFromHistory(history);
+    expect(prediction).toMatchObject({ previous: 'charge', samples: 3, smashRate: 1 / 3, risk: true });
+    expect(prediction.counts).toMatchObject({ charge: 1, smash: 1, idle: 1, guard: 0 });
+    expect(history).toEqual(before);
+    expect(forecastFromHistory(['guard', 'idle', 'guard'])).toMatchObject({ samples: 1, smashRate: 0, risk: false });
+  });
+
+  it('Lv12~15·씨앗1~20에서 관찰 후 예측은 무피해 승리하고 우회는 실패해요', () => {
+    for (const level of [12, 13, 14, 15]) for (const id of ['cometFox', 'starFox']) for (let seed = 1; seed <= 20; seed++) {
+      const message = `${id} Lv${level} seed${seed}`;
+      const good = setup(id, level, seed);
+      const observed = good.runRound(repeat(12, cards('guard')));
+      expect(observed.ticks.every(t => t.taken === 0), message).toBe(true);
+      expect(good.actionHistory).toHaveLength(12);
+      finish(good, forecastProgram);
+      expect(good.outcome, message).toBe('win');
+      expect(good.playerHp, message).toBe(good.stats.maxHp);
+      expect(finish(setup(id, level, seed), repeat(12, cards('attack'))).outcome, '공격 반복 ' + message).toBe('lose');
+      expect(finish(setup(id, level, seed), conditional).outcome, '행동 조건 ' + message).toBe('lose');
+      expect(finish(setup(id, level, seed), waveProgram).outcome, '물결 조건 ' + message).toBe('lose');
+      expect(finish(setup(id, level, seed), modelProgram).outcome, '모델 조건 ' + message).toBe('timeout');
+      expect(finish(setup(id, level, seed, false), forecastProgram).outcome, '모듈 없이 ' + message).toBe('lose');
+      expect(finish(setup(id, level, seed), repeat(6, cards('attack', 'guard'))).outcome, '고정 반복 ' + message).not.toBe('win');
+    }
+  });
+
+  it('미래·미리 보기는 예측을 바꾸지 않고 틱 스냅샷과 복제는 기록을 공유하지 않아요', () => {
+    const b = setup('starFox');
+    expect(b.displayIntents()).toEqual(Array(12).fill(null));
+    expect(b.preview(forecastProgram)).toEqual(Array(12).fill(null));
+    expect(b.actionHistory).toEqual([]);
+    const result = b.runRound(repeat(12, cards('guard')));
+    const history: MobAction[] = [];
+    for (const tick of result.ticks) {
+      expect(tick.forecast).toEqual(forecastFromHistory(history));
+      history.push(tick.mobAction);
+    }
+    expect(b.actionHistory).toEqual(history);
+    const prediction = b.forecast();
+    const beforeFuture = b.intents(24);
+    const changed = setup('starFox', 12, 19);changed.actionHistory.push(...history);
+    expect(changed.intents(24)).not.toEqual(beforeFuture);
+    expect(changed.forecast()).toEqual(prediction);
+    expect(b.preview(forecastProgram)).toEqual(Array(12).fill(null));
+    expect(b.forecast()).toEqual(prediction);
+    const clone = b.clone();
+    expect(clone.runRound(forecastProgram)).toEqual(b.clone().runRound(forecastProgram));
+    clone.actionHistory[0] = 'heal';
+    expect(b.actionHistory).toEqual(history);
+    result.ticks[0].forecast!.counts.smash = 99;
+    expect(b.forecast()).toEqual(prediction);
+    expect(['enemyAttack', 'enemyGuard', 'enemyCharge', 'enemySmash', 'waveHigh', 'waveMiddle', 'modelPlayful'].every(cond => !b.test(cond as Parameters<Battle['test']>[0]))).toBe(true);
+  });
+
+  it('변동 구간과 예외 때문에 짧은 고정 반복 하나가 모든 씨앗을 풀 수 없어요', () => {
+    for (let length = 2; length <= 4; length++) for (let bits = 1; bits < 2 ** length - 1; bits++) {
+      const body = Array.from({ length }, (_, i): BattleCmd => bits & (1 << i) ? 'attack' : 'guard');
+      const program = repeat(12, cards(...body));
+      const outcomes = Array.from({ length: 20 }, (_, i) => finish(setup('starFox', 15, i + 1), program).outcome);
+      expect(outcomes.some(outcome => outcome !== 'win'), body.join(',')).toBe(true);
+    }
+    const varied = setup('starFox', 12, 5).intents(144);
+    const prediction = forecastFromHistory([...varied, 'charge']);
+    expect(prediction.counts.smash).toBeGreaterThan(0);
+    expect(prediction.counts.idle).toBeGreaterThan(0);
+    expect(prediction.smashRate).toBeGreaterThan(0);
+    expect(prediction.smashRate).toBeLessThan(1);
   });
 });

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { TrainData } from '../src/data/schema';
-import { evaluateTraining, predictLabel, trainSelection } from '../src/missions/train/evaluate';
+import { evaluateTraining, evaluateComparison, predictLabel, trainSelection } from '../src/missions/train/evaluate';
 const data: TrainData = { intro:'',features:['높이','점'],labels:[{id:'friend',label:'친구'},{id:'playful',label:'장난꾸러기'}],
   examples:[{id:'a',features:[1,1],label:'friend'},{id:'b',features:[2,1],label:'friend'},{id:'c',features:[1,2],label:'friend'},
     {id:'d',features:[8,8],label:'playful'},{id:'e',features:[9,8],label:'playful'},{id:'f',features:[8,9],label:'playful'}],
@@ -30,4 +30,19 @@ describe('가까운 이웃으로 분류 학습',()=>{
     model.samples[0].features[0]=99;expect(data.examples[0].features[0]).toBe(1);
     expect(evaluateTraining(data,model,selected).success).toBe(false);
   });
+});
+
+it('같은 시험 자료로 소량과 충분한 예시를 모두 시험하고 비교해야 해요',()=>{
+ const compare={...data,comparison:{smallCount:2,question:'어느 결과가 더 잘 맞았나요?',choices:['소량','전체'],answer:1}};
+ const trials=[{count:2,accuracy:.5},{count:6,accuracy:1}];
+ expect(evaluateComparison(compare,trials,1)).toBe(true);expect(evaluateComparison(compare,trials,0)).toBe(false);
+ expect(evaluateComparison(compare,[trials[1]],1)).toBe(false);expect(evaluateComparison(compare,[trials[0]],1)).toBe(false);
+ expect(evaluateComparison(compare,[trials[0],{count:6,accuracy:NaN}],1)).toBe(false);
+ expect(evaluateComparison(compare,[{count:2,accuracy:1},trials[1]],1)).toBe(false);
+});
+
+it('비교 미션은 최소 표본만 채워도 전체 표본 비교를 생략할 수 없어요',()=>{
+ const compare={...data,minExamples:4,comparison:{smallCount:2,question:'',choices:['전체'],answer:0}};
+ expect(evaluateComparison(compare,[{count:2,accuracy:.5},{count:4,accuracy:1}],0)).toBe(false);
+ expect(evaluateComparison(compare,[{count:2,accuracy:.5},{count:6,accuracy:1}],0)).toBe(true);
 });

@@ -204,3 +204,20 @@ describe('5장 연구소 길과 성장',()=>{
   expect(xp).toBeGreaterThanOrEqual(xpForLevel(MOBS.shiftKing.recommendedLevel));expect(xp).toBe(1157);
  });
 });
+
+
+describe('6장 천문대 길과 성장',()=>{
+ it('비교 미션 뒤 미궁과 보스에 갈 수 있어요',()=>{
+  const q=world(['ch6-clear','star-fixed'],['ch6-p3-m1']);for(const def of [MAPS.observatory,MAPS.starmaze])for(const o of def.objects.filter(o=>['npc','chest','portal'].includes(o.type)&&q.check(o.when)))expect(canReach(def,q,def.spawn,o),def.id+'/'+o.id).toBe(true);
+  const gate=MAPS.observatory.objects.find(o=>o.id==='to-starmaze')!;expect(gate.type==='portal'&&gate.open?.mission).toBe('ch6-p3-m1');const town=MAPS.village.objects.find(o=>o.id==='to-ch6')!;expect(town.type==='portal'&&town.open?.flag).toBe('ch5-clear');
+ });
+ it('예측 모듈 전 여우를 피해 온유에게 갈 수 있어요',()=>{
+  const def=MAPS.observatory;const pass=makePassable(def,buildCells(def),world());const safe=(x:number,y:number)=>pass(x,y)&&def.objects.filter(o=>o.type==='mob').every(o=>Math.max(Math.abs(o.at.x-x),Math.abs(o.at.y-y))>2);const npc=def.objects.find(o=>o.id==='astronomer')!;
+  expect(findPath(safe,def.spawn,(x,y)=>Math.abs(x-npc.at.x)<=1&&Math.abs(y-npc.at.y)<=1,npc.at)).not.toBeNull();
+ });
+ it('6장 보스 전 본편 경험치가 권장 레벨12에 충분해요',()=>{
+  let xp=allMissions().filter(e=>e.chapter.index<=6&&!['ch6-boss-m1','ch6-boss-quiz','ch6-boss-m2'].includes(e.mission.id)).reduce((n,e)=>n+(e.mission.reward?.xp??0),0);
+  for(const def of Object.values(MAPS).filter(d=>['ch0','ch1','ch2','ch3','ch4','ch5','ch6'].includes(d.chapter??'')))for(const o of def.objects){if(o.type==='mob')xp+=MOBS[o.mob].xp;if(o.type==='chest')xp+=o.reward.xp??0;}
+  expect(xp).toBeGreaterThanOrEqual(xpForLevel(MOBS.starFox.recommendedLevel));expect(xp).toBe(1432);
+ });
+});

@@ -1,4 +1,5 @@
-import type { ClassifyData } from '../../data/schema';
+import { evaluateSearch, searchGrid } from './search';
+import type { Point, ClassifyData } from '../../data/schema';
 import { clear, h, lines } from '../../ui/dom';
 import type { MissionContext, MissionEngine } from '../core/types';
 import { evaluateBinary, evaluatePixels, evaluateGroups, evaluateTable, evaluateTree } from './evaluate';
@@ -9,6 +10,8 @@ export class ClassifyMission implements MissionEngine {
   private questions: string[] = [];
   private groups: Record<string, string> = {};
   private counts: Record<string, number> = {};
+  private wave = 0;
+  private path: Point[] = [];
   private attempts = 0;
   private hints = 0;
   private message = '';
@@ -21,7 +24,30 @@ export class ClassifyMission implements MissionEngine {
     const focusedLabel = document.activeElement?.getAttribute('aria-label');
     clear(root);
     root.append(h('div', { class: 'mission-intro' }, ...lines(d.intro)));
-    if (d.mode === 'pixels') {
+    if (d.mode === 'search') {
+      const grid = d.cards[0]?.features ?? [], result = searchGrid(grid);
+      if (!result) { root.append(h('p', {}, '길 자료를 다시 확인해요.')); return; }
+      if (!this.path.length) this.path = [{ ...result.start }];
+      root.append(h('p', {}, '물결을 한 칸씩 퍼뜨린 뒤,\n출발부터 가장 짧은 길을 눌러요.'),
+        h('div', { class: 'row' }, h('button', { class: 'btn', 'aria-label': '물결 한 칸 퍼뜨리기', onclick: () => { this.wave = Math.min(this.wave + 1, Math.max(...result.distances.flat())); this.render(); } }, '물결 한 칸 퍼뜨리기'),
+        h('button', { class: 'btn', 'aria-label': '길 다시 고르기', onclick: () => { this.path = [{ ...result.start }]; this.render(); } }, '길 다시 고르기')),
+        h('p', {}, '지금 물결: ' + this.wave + '칸 · 고른 길: ' + (this.path.length - 1) + '칸'));
+      const board = h('div', { role: 'group', 'aria-label': '물결 탐색 지도', style: 'display:grid;grid-template-columns:repeat(' + grid[0].length + ',32px);gap:2px;max-width:100%' });
+      grid.forEach((row, y) => [...row].forEach((cell, x) => {
+        const distance = result.distances[y][x], visible = distance >= 0 && distance <= this.wave;
+        const chosen = this.path.some(p => p.x === x && p.y === y);
+        board.append(h('button', { class: 'btn small', disabled: cell === '#' || !visible,
+          style: 'padding:0;width:32px;height:32px;background:' + (chosen ? '#388e9e' : cell === '#' ? '#0e1420' : '#273d52'),
+          'aria-label': (y + 1) + '행 ' + (x + 1) + '열 ' + (cell === '#' ? '벽' : cell === 'S' ? '출발' : cell === 'G' ? '목표' : visible ? distance + '칸' : '아직 안 본 길'),
+          onclick: () => {
+            const last = this.path.at(-1)!;
+            if (Math.abs(last.x - x) + Math.abs(last.y - y) === 1) { this.path.push({ x, y }); this.message = ''; }
+            else this.message = '마지막 칸 옆의 길을 골라요.\n다시 고르기로 처음부터 시작해요.';
+            this.render();
+          }
+        }, cell === '#' ? '■' : !visible ? '·' : cell === 'S' ? '출발' : cell === 'G' ? '목표' : String(distance)));
+      })); root.append(board);
+    } else if (d.mode === 'pixels') {
       root.append(h('p', {}, '숫자 1은 켜고, 0은 꺼요.'));
       for (const card of d.cards) {
         const target = card.features.join(''), current = this.groups[card.id] ?? '0'.repeat(target.length);
@@ -88,12 +114,12 @@ export class ClassifyMission implements MissionEngine {
     if (this.message) root.append(h('div', { class: 'robi-say', role: 'status' }, ...lines(this.message)));
     root.append(h('div', { class: 'row end' },
       h('button', { class: 'btn', onclick: () => { this.hints++; this.message = d.hint; this.render(); } }, '힌트'),
-      h('button', { class: 'btn primary', onclick: () => this.verify() }, '나눈 결과 확인')));
+      h('button', { class: 'btn primary', 'aria-label': d.mode === 'search' ? '고른 길 확인' : '나눈 결과 확인', onclick: () => this.verify() }, d.mode === 'search' ? '고른 길 확인' : '나눈 결과 확인')));
     if (focusedLabel) [...root.querySelectorAll<HTMLElement>('[aria-label]')].find(el => el.getAttribute('aria-label') === focusedLabel)?.focus();
   }
   private verify(): void {
     this.attempts++;
-    const success = this.data.mode === 'pixels' ? evaluatePixels(this.data, this.groups) : this.data.mode === 'tree' ? evaluateTree(this.data, this.questions).success
+    const success = this.data.mode === 'search' ? evaluateSearch(this.data.cards[0]?.features ?? [], this.path) : this.data.mode === 'pixels' ? evaluatePixels(this.data, this.groups) : this.data.mode === 'tree' ? evaluateTree(this.data, this.questions).success
       : this.data.mode === 'table' ? evaluateTable(this.data, this.counts)
       : this.data.mode === 'binary' ? evaluateBinary(this.data, this.groups) : evaluateGroups(this.data, this.groups);
     if (success) {
@@ -102,13 +128,14 @@ export class ClassifyMission implements MissionEngine {
       return;
     }
     this.ctx.sfx('fail');
-    this.message = this.data.mode === 'pixels' ? '숫자 1의 자리만 켜 봐요.\n줄과 칸의 위치도 살펴봐요.' : this.data.mode === 'binary' ? '불빛의 값이 목표와 달라요.\n켜진 자리의 수를 더해 봐요.' : this.data.mode === 'table' ? '기록과 표의 수가 달라요.\n종류별로 하나씩 세어 봐요.' : '서로 다른 종류가 섞여 있어요.\n나누는 규칙을 다시 살펴봐요.';
+    this.message = this.data.mode === 'search' ? '가장 짧게 목표까지 이어 봐요.\n물결의 숫자가 하나씩 커지는 길이에요.' : this.data.mode === 'pixels' ? '숫자 1의 자리만 켜 봐요.\n줄과 칸의 위치도 살펴봐요.' : this.data.mode === 'binary' ? '불빛의 값이 목표와 달라요.\n켜진 자리의 수를 더해 봐요.' : this.data.mode === 'table' ? '기록과 표의 수가 달라요.\n종류별로 하나씩 세어 봐요.' : '서로 다른 종류가 섞여 있어요.\n나누는 규칙을 다시 살펴봐요.';
     if (this.attempts === 2) { this.hints++; this.message = this.data.hint; }
     if (this.attempts >= 3) {
       this.hints++;
       const q = this.data.questions?.[0];
       const firstGroup = this.data.groups[0], firstCard = this.data.cards[0];
-      this.message = this.data.mode === 'pixels' && firstCard ? '첫째 줄부터 맞춰 봐요.\n' + firstCard.features[0].split('').join(' ') : this.data.mode === 'table' && firstGroup ? `${firstGroup.label}부터 세어 봐요.\n${this.data.cards.filter(card => card.group === firstGroup.id).length}개를 표에 놓으면 돼요.`
+      const firstStep = this.data.mode === 'search' ? searchGrid(firstCard?.features ?? [])?.path[1] : undefined;
+      this.message = firstStep ? `출발 다음은 ${firstStep.y + 1}행 ${firstStep.x + 1}열이에요.\n길 다시 고르기로 새로 시작해요.` : this.data.mode === 'pixels' && firstCard ? '첫째 줄부터 맞춰 봐요.\n' + firstCard.features[0].split('').join(' ') : this.data.mode === 'table' && firstGroup ? `${firstGroup.label}부터 세어 봐요.\n${this.data.cards.filter(card => card.group === firstGroup.id).length}개를 표에 놓으면 돼요.`
         : this.data.mode === 'binary' && firstCard ? '첫 등불부터 살펴봐요.\n' + (Number(firstCard.group) === 0 ? '목표 0은 불을 모두 꺼요.' : `${[8,4,2,1].find(bit => Number(firstCard.group) & bit)}의 자리를 먼저 켜 봐요.`)
         : this.data.mode === 'tree' && q ? '첫 질문부터 살펴봐요.\n' + q.label : '첫 카드의 특징부터 살펴봐요.\n' + this.data.hint.split('\n')[0];
     }

@@ -8,7 +8,7 @@ import { isoToScreen } from '../iso/iso';
 export interface BattleSceneData {
   mob: MobDef;
   save: SaveData;
-  floor: 'tile-grass' | 'tile-stone' | 'tile-wood' | 'tile-cave' | 'tile-sand' | 'tile-dock' | 'tile-lab';
+  floor: 'tile-grass' | 'tile-stone' | 'tile-wood' | 'tile-cave' | 'tile-sand' | 'tile-dock' | 'tile-lab' | 'tile-observatory';
 }
 
 const wait = (scene: Phaser.Scene, ms: number) => new Promise<void>((r) => scene.time.delayedCall(ms, r));

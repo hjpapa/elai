@@ -50,6 +50,17 @@ const mob = (size: 16 | 24 | 48) => spec('mob', size, size, 4);
 const fx = (w: number, h: number, frames: number) => spec('fx', w, h, frames);
 
 export const ASSETS: AssetSpec[] = [
+  // C8: 길잡이 천문대
+  tile('tile-observatory', '별자리가 새겨진 천문대 바닥', 0x344d78),
+  block('block-observatory', '금빛 테두리 천문대 벽', 0x7962ab),
+  prop(32, 32)('prop-telescope', '별을 살피는 망원경', 0xe7b64f),
+  prop(16, 32, 2)('prop-starlamp', '별 등불(은은한 빛, 반짝임)', 0xffe59a),
+  char('char-astronomer', '별 지도를 든 천문학자', 0xb5a0dc),
+  mob(24)('mob-meteor-fox', '별 꼬리 장난꾸러기 여우', 0xd39a62),
+  mob(48)('boss-star-fox', '별자리를 두른 여우 대장', 0xb5a0dc),
+  overlay('robi-part-predictor', '로비 별 안테나 예측 모듈', 0xffe59a),
+  icon('icon-part-predictor', '예측 모듈', 0xffe59a),
+
   // C7: 인식의 연구소
   tile('tile-lab', '연구소의 숫자 격자 바닥', 0xc7d6dc),
   block('block-lab', '연구소의 푸른 수납벽', 0x478bc7),

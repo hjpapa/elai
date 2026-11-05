@@ -110,7 +110,7 @@ export class WorldScene extends Phaser.Scene {
     s.setLocation(mapId, at.x, at.y);
 
     const cam = this.cameras.main;
-    cam.setBackgroundColor(this.def.theme === 'lab' ? '#344d78' : this.def.theme === 'harbor' ? '#344d78' : this.def.theme === 'desert' ? '#684b3f' : this.def.theme === 'cave' ? '#0d101c' : this.def.theme === 'dungeon' ? '#10161a' : '#1b1f2a');
+    cam.setBackgroundColor(this.def.theme === 'observatory' ? '#293044' : this.def.theme === 'lab' ? '#344d78' : this.def.theme === 'harbor' ? '#344d78' : this.def.theme === 'desert' ? '#684b3f' : this.def.theme === 'cave' ? '#0d101c' : this.def.theme === 'dungeon' ? '#10161a' : '#1b1f2a');
     cam.setRoundPixels(true);
     this.fitZoom();
     cam.startFollow(this.player.sprite, true, 0.2, 0.2);
@@ -139,7 +139,7 @@ export class WorldScene extends Phaser.Scene {
       window.removeEventListener('blur', this.onBlur);
     });
 
-    playMusic(this.def.theme === 'lab' ? 'village' : this.def.theme === 'harbor' ? 'village' : this.def.theme === 'desert' ? 'forest' : this.def.theme === 'cave' ? 'dungeon' : this.def.theme === 'dungeon' ? 'dungeon' : this.def.theme === 'forest' ? 'forest' : 'village');
+    playMusic(this.def.theme === 'observatory' ? 'village' : this.def.theme === 'lab' ? 'village' : this.def.theme === 'harbor' ? 'village' : this.def.theme === 'desert' ? 'forest' : this.def.theme === 'cave' ? 'dungeon' : this.def.theme === 'dungeon' ? 'dungeon' : this.def.theme === 'forest' ? 'forest' : 'village');
     this.faded = [];
     this.reveal(at.x, at.y);
     this.updateOcclusion();
@@ -689,7 +689,7 @@ export class WorldScene extends Phaser.Scene {
     }
     const report = await runBattle(v.obj.mob, {
       canFlee: true,
-      floor: this.def.theme === 'lab' ? 'tile-lab' : this.def.theme === 'harbor' ? 'tile-dock' : this.def.theme === 'desert' ? 'tile-sand' : this.def.theme === 'cave' ? 'tile-cave' : this.def.theme === 'dungeon' ? 'tile-stone' : 'tile-grass',
+      floor: this.def.theme === 'observatory' ? 'tile-observatory' : this.def.theme === 'lab' ? 'tile-lab' : this.def.theme === 'harbor' ? 'tile-dock' : this.def.theme === 'desert' ? 'tile-sand' : this.def.theme === 'cave' ? 'tile-cave' : this.def.theme === 'dungeon' ? 'tile-stone' : 'tile-grass',
       prefill: mob.prefill,
       intro: mob.prefill ? `${mob.name}가 카드 순서를 뒤섞어 놓았어요!\n틀린 카드를 찾아 고쳐요.` : undefined,
     });

@@ -65,6 +65,8 @@ export const village: MapDef = {
     { id: 'restore-buoy', type: 'prop', at: { x: 14, y: 9 }, sprite: 'prop-buoy', frame: 1, when: { flag: 'village-restore-4' } },
     { id: 'to-ch5', type: 'portal', at: { x: 15, y: 19 }, to: { map: 'lab', at: { x: 2, y: 11 } }, label: '인식의 연구소', open: { flag: 'ch4-clear' }, lockedText: '4장을 마치면\n연구소로 갈 수 있어요.', sprite: 'prop-gate' },
     { id: 'restore-scope', type: 'prop', at: { x: 10, y: 12 }, sprite: 'prop-microscope', when: { flag: 'village-restore-5' } },
+    { id: 'to-ch6', type: 'portal', at: { x: 13, y: 19 }, to: { map: 'observatory', at: { x: 2, y: 13 } }, label: '길잡이 천문대', open: { flag: 'ch5-clear' }, lockedText: '5장을 마치면\n천문대로 갈 수 있어요.', sprite: 'prop-gate' },
+    { id: 'restore-star', type: 'prop', at: { x: 10, y: 9 }, sprite: 'prop-starlamp', frame: 1, when: { flag: 'village-restore-6' } },
     ...house('house-a', 8, 6),
     ...house('house-b', 16, 7),
     ...house('house-c', 8, 13),

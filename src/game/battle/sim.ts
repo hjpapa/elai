@@ -18,7 +18,37 @@ export const ACTION_LABEL: Record<MobAction, string> = {
 
 export interface Observation { value: number; action: MobAction }
 
+export interface Forecast {
+  previous: MobAction | null;
+  /** 바로 전 행동에서 이어진 실제 전이 횟수 */
+  counts: Record<MobAction, number>;
+  samples: number;
+  smashRate: number;
+  risk: boolean;
+}
+
+/** 실제로 본 기록만 받으며 몹·씨앗·미래 행동에는 접근하지 않아요. */
+export function forecastFromHistory(history: readonly MobAction[]): Forecast {
+  const counts: Record<MobAction, number> = { attack: 0, guard: 0, charge: 0, smash: 0, heal: 0, idle: 0 };
+  const previous = history[history.length - 1] ?? null;
+  for (let i = 1; i < history.length; i++) {
+    if (history[i - 1] === previous) counts[history[i]]++;
+  }
+  const samples = Object.values(counts).reduce((total, count) => total + count, 0);
+  const smashRate = samples ? counts.smash / samples : 0;
+  return { previous, counts, samples, smashRate, risk: samples === 0 || smashRate > 0 };
+}
+
+function seededHash(seed: number, index: number): number {
+  let hash = (seed ^ Math.imul(index + 1, 0x9e3779b9)) >>> 0;
+  hash = Math.imul(hash ^ (hash >>> 16), 0x85ebca6b);
+  hash = Math.imul(hash ^ (hash >>> 13), 0xc2b2ae35);
+  return (hash ^ (hash >>> 16)) >>> 0;
+}
+
 export interface TickEvent {
+  /** 이 틱이 시작되기 전 기록으로 계산한 값. 연출 중 미래 기록을 읽지 않아요. */
+  forecast?: Forecast;
   /** 이 차례에 실제로 수집한 기록 */
   observation?: Observation;
   classification?: { features: number[]; prediction: string | null; actual: string };
@@ -54,6 +84,7 @@ export interface RoundResult {
 }
 
 export interface BattleSetup {
+  forecast?: boolean;
   observations?: Observation[];
   classificationModel?: ClassificationModel;
   stats: Stats;
@@ -71,6 +102,8 @@ export class Battle {
   readonly slots: number;
   readonly observations: Observation[];
   readonly classificationModel: ClassificationModel;
+  readonly forecastEnabled: boolean;
+  readonly actionHistory: MobAction[] = [];
   playerHp: number;
   mobHp: number;
   round = 0;
@@ -80,6 +113,7 @@ export class Battle {
 
   constructor(setup: BattleSetup) {
     this.mob = setup.mob;
+    this.forecastEnabled = setup.forecast ?? false;
     this.classificationModel = { k: setup.classificationModel?.k ?? 3, samples: (setup.classificationModel?.samples ?? []).map(sample => ({ features: [...sample.features], label: sample.label })) };
     this.observations = (setup.observations ?? []).map(row => ({ ...row }));
     this.stats = setup.stats;
@@ -90,7 +124,8 @@ export class Battle {
 
   /** 미리 보기는 실제 전투 상태를 바꾸지 않아요. */
   clone(): Battle {
-    const copy = new Battle({ stats: { ...this.stats }, hp: this.playerHp, slots: this.slots, mob: this.mob, observations: this.observations, classificationModel: this.classificationModel });
+    const copy = new Battle({ stats: { ...this.stats }, hp: this.playerHp, slots: this.slots, mob: this.mob, observations: this.observations, classificationModel: this.classificationModel, forecast: this.forecastEnabled });
+    copy.actionHistory.push(...this.actionHistory);
     copy.mobHp = this.mobHp;
     copy.round = this.round;
     copy.outcome = this.outcome;
@@ -126,8 +161,26 @@ export class Battle {
     return this.features(n).map(features => features ? predictLabel(this.classificationModel.samples, features, this.classificationModel.k) : null);
   }
 
+  /** 현재까지 실제 관찰한 전이로만 다음 한 차례를 예측해요. */
+  forecast(): Forecast { return forecastFromHistory(this.actionHistory); }
+
+  private forecastActionAt(index: number): MobAction {
+    const seed = this.mob.forecastPattern!.seed;
+    let remaining = index;
+    for (let segment = 0; ; segment++) {
+      const hash = seededHash(seed, segment);
+      const charge = segment % 2 === 0;
+      const length = charge ? 1 + hash % 3 : 1 + hash % 2;
+      if (remaining < length) return charge ? 'charge' : 'guard';
+      // 첫 안전 관찰 라운드에는 강타 전이를 꼭 경험해요. 이후에는 예외도 생겨요.
+      if (remaining === length) return charge && (segment === 0 || (hash >>> 8) % 5 !== 0) ? 'smash' : 'idle';
+      remaining -= length + 1;
+    }
+  }
+
   /** 씨앗과 절대 차례를 섞어요. 복제·재실행에서도 같은 행동이에요. */
   private actionAt(index: number): MobAction {
+    if (this.mob.forecastPattern) return this.forecastActionAt(index);
     const sample = this.sampleAt(index);
     if (sample) return sample.label === 'playful' ? 'idle' : 'smash';
     const data = this.mob.dataPattern;
@@ -156,13 +209,13 @@ export class Battle {
 
   /** 화면에는 가려진 차례를 null로 돌려줘요. */
   displayIntents(n = this.ticksPerRound): (MobAction | null)[] {
-    if (this.mob.dataPattern || this.mob.classifyPattern) return Array(n).fill(null);
+    if (this.mob.dataPattern || this.mob.classifyPattern || this.mob.forecastPattern) return Array(n).fill(null);
     return this.intents(n).map((action, i) => this.mob.hiddenPattern?.choices.length && (this.patternIndex + i) % 2 === 1 ? null : action);
   }
 
   /** 숨은 행동의 조건 결과·생존 여부도 미리 보기로 새지 않게 해요. */
   preview(program: Block[]): (TickEvent | null)[] {
-    if (this.mob.hiddenPattern?.choices.length || this.mob.dataPattern || this.mob.classifyPattern) return Array(this.ticksPerRound).fill(null);
+    if (this.mob.hiddenPattern?.choices.length || this.mob.dataPattern || this.mob.classifyPattern || this.mob.forecastPattern) return Array(this.ticksPerRound).fill(null);
     return this.clone().runRound(program).ticks;
   }
 
@@ -220,6 +273,7 @@ export class Battle {
       const sample = this.sampleAt(this.patternIndex);
       if (card === 'scan') scanning = true;
       const ev: TickEvent = {
+        forecast: this.mob.forecastPattern ? this.forecast() : undefined,
         classification: sample ? { features: [...sample.features], prediction: this.predictions(1)[0], actual: sample.label } : undefined,
         tick: ticks.length,
         path,
@@ -268,6 +322,7 @@ export class Battle {
           if (this.observations.length > 24) this.observations.shift();
         }
       }
+      if (this.mob.forecastPattern && this.mobHp > 0) this.actionHistory.push(mobAction);
       this.patternIndex++;
       ev.playerHp = this.playerHp;
       ev.mobHp = this.mobHp;
@@ -290,7 +345,8 @@ export class Battle {
   }
 
   test(cond: Cond): boolean {
-    const now = this.intents(1)[0];
+    if (cond === 'forecastRisk') return !!this.mob.forecastPattern && this.forecastEnabled && this.forecast().risk;
+    if (this.mob.forecastPattern && (cond.startsWith('enemy') || cond === 'modelPlayful' || cond === 'waveHigh' || cond === 'waveMiddle')) return false;
     if ((this.mob.dataPattern || this.mob.classifyPattern) && cond.startsWith('enemy')) return false;
     if (cond === 'modelPlayful') return !!this.mob.classifyPattern && this.predictions(1)[0] === 'playful';
     if (this.mob.classifyPattern && (cond === 'waveHigh' || cond === 'waveMiddle')) return false;
@@ -298,6 +354,7 @@ export class Battle {
       const value = this.values(1)[0];
       return value !== null && this.observations.some(row => row.value === value) && value === (cond === 'waveHigh' ? 3 : 2);
     }
+    const now = this.intents(1)[0];
     switch (cond) {
       case 'enemyAttack':
         return now === 'attack' || now === 'smash';

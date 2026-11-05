@@ -4,6 +4,7 @@ import { NPCS } from '../src/data/npcs';
 import { ITEMS } from '../src/data/rpg/items';
 import { MOBS } from '../src/data/rpg/mobs';
 import { ROBI_PARTS } from '../src/data/rpg/robiParts';
+import { evaluateSearch, searchGrid } from '../src/missions/classify/search';
 import { evaluateTraining, trainSelection } from '../src/missions/train/evaluate';
 import { evaluateBinary, evaluateGroups, evaluateTable, evaluatePixels } from '../src/missions/classify/evaluate';
 import { GridEnv } from '../src/missions/core/gridEnv';
@@ -255,5 +256,23 @@ describe('5장 인식 학습 데이터',()=>{
   const biased=Object.fromEntries(d.examples.filter(e=>e.label==='friend').map(e=>[e.id,e.label]));
   expect(evaluateTraining(d,trainSelection(d,biased),biased)).toMatchObject({success:false,accuracy:.5});
   const changed={...choices,[d.examples[0].id]:'playful'};expect(evaluateTraining(d,model,changed).success).toBe(false);
+ });
+});
+
+
+describe('6장 탐색과 예측 자료',()=>{
+ it('두 탐색 미션은 실제 최단 거리와 올바른 경로를 가져요',()=>{
+  for(const [id,distance] of [['ch6-p1-m1',8],['ch6-boss-maze',10]] as const){
+   const m=allMissions().find(e=>e.mission.id===id)!.mission;if(m.kind!=='classify')throw new Error(id);const grid=m.data!.cards[0].features;const result=searchGrid(grid)!;
+   expect(result.path.length-1,id).toBe(distance);expect(evaluateSearch(grid,result.path),id).toBe(true);
+   expect(evaluateSearch(grid,[result.start,result.goal]),id).toBe(false);
+  }
+ });
+ it('같은 시험에 두 예시는50%, 여덟 예시는100%를 맞혀 비교할 수 있어요',()=>{
+  const m=allMissions().find(e=>e.mission.id==='ch6-p3-m1')!.mission;if(m.kind!=='train')throw new Error('comparison');const d=m.data!;
+  const small=Object.fromEntries(d.examples.slice(0,d.comparison!.smallCount).map(e=>[e.id,e.label]));const full=Object.fromEntries(d.examples.map(e=>[e.id,e.label]));
+  expect(evaluateTraining(d,trainSelection(d,small),small).accuracy).toBe(.5);expect(evaluateTraining(d,trainSelection(d,full),full)).toMatchObject({success:true,accuracy:1});
+  const p2=allMissions().find(e=>e.mission.id==='ch6-p2-m1')!.mission;if(p2.kind!=='train')throw new Error('forecast');
+  expect(d.tests).toEqual(p2.data!.tests);expect(d.saveModel).toBe(false);expect(d.presetLabels).toBe(true);
  });
 });

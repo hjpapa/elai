@@ -377,6 +377,53 @@ const list: MobDef[] = [
   "dex": "친구와 장난꾸러기 모습이 섞여 있어요.\n모델의 판단으로 카드를 골라요.",
   "purified": "고르게 배운 모델이 도움이 됐어요.\n함께 새로운 표본을 살펴봐요!"
 },
+{
+  "id": "cometFox",
+  "name": "별똥 여우",
+  "sprite": "mob-meteor-fox",
+  "size": 24,
+  "chapter": "ch6",
+  "hp": 480,
+  "atk": 14,
+  "def": 5,
+  "pattern": [
+    "idle"
+  ],
+  "forecastPattern": {
+    "seed": 19
+  },
+  "roundTicks": 12,
+  "smashRatio": 0.65,
+  "xp": 30,
+  "coins": 18,
+  "recommendedLevel": 12,
+  "dex": "행동 사이의 간격이 달라지는 친구예요.\n지난 기록으로 위험을 가늠해 봐요.",
+  "purified": "함께 별을 기다려 줘서 고마워요.\n다음 하늘도 살펴봐요!"
+},
+{
+  "id": "starFox",
+  "name": "별자리 여우 대장",
+  "sprite": "boss-star-fox",
+  "size": 48,
+  "boss": true,
+  "chapter": "ch6",
+  "hp": 520,
+  "atk": 16,
+  "def": 6,
+  "pattern": [
+    "idle"
+  ],
+  "forecastPattern": {
+    "seed": 41
+  },
+  "roundTicks": 12,
+  "smashRatio": 0.75,
+  "xp": 0,
+  "coins": 0,
+  "recommendedLevel": 12,
+  "dex": "같아 보여도 행동 간격이 바뀌어요.\n예측을 믿기 전에 기록을 살펴봐요.",
+  "purified": "별길이 다시 환해졌어요.\n앞일을 함께 조심스레 살펴봐요!"
+},
 ];
 
 export const MOBS: Record<string, MobDef> = Object.fromEntries(list.map((m) => [m.id, m]));

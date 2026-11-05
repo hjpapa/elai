@@ -36,6 +36,42 @@
   ],
   "assets": [
     {
+      "key": "tile-observatory",
+      "file": "tile/tile-observatory.png"
+    },
+    {
+      "key": "block-observatory",
+      "file": "block/block-observatory.png"
+    },
+    {
+      "key": "prop-telescope",
+      "file": "prop/prop-telescope.png"
+    },
+    {
+      "key": "prop-starlamp",
+      "file": "prop/prop-starlamp.png"
+    },
+    {
+      "key": "char-astronomer",
+      "file": "char/char-astronomer.png"
+    },
+    {
+      "key": "mob-meteor-fox",
+      "file": "mob/mob-meteor-fox.png"
+    },
+    {
+      "key": "boss-star-fox",
+      "file": "mob/boss-star-fox.png"
+    },
+    {
+      "key": "robi-part-predictor",
+      "file": "overlay/robi-part-predictor.png"
+    },
+    {
+      "key": "icon-part-predictor",
+      "file": "icon/icon-part-predictor.png"
+    },
+    {
       "key": "tile-lab",
       "file": "tile/tile-lab.png"
     },

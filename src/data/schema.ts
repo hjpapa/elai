@@ -22,6 +22,7 @@ export type Cmd = GridCmd | BattleCmd;
 
 /** 조건 블록이 묻는 질문 */
 export type Cond =
+  | 'forecastRisk'
   | 'modelPlayful'
   | 'waveHigh'
   | 'waveMiddle'
@@ -169,7 +170,7 @@ export interface PlannedData {
 }
 
 export interface ClassifyData {
-  mode: 'tree' | 'sort' | 'cluster' | 'table' | 'binary' | 'pixels';
+  mode: 'tree' | 'sort' | 'cluster' | 'table' | 'binary' | 'pixels' | 'search';
   intro: string;
   cards: { id: string; label: string; group: string; features: string[] }[];
   groups: { id: string; label: string }[];
@@ -182,6 +183,8 @@ export interface ClassifyData {
 export interface TrainingSample { features: number[]; label: string }
 export interface ClassificationModel { samples: TrainingSample[]; k: number }
 export interface TrainData {
+  comparison?: { smallCount: number; question: string; choices: string[]; answer: number };
+  presetLabels?: boolean;
   intro: string;
   features: string[];
   labels: { id: string; label: string }[];
@@ -281,6 +284,8 @@ export type TileKind =
   | 'hedge'
   | 'wall'
   | 'cave'
+  | 'observatory'
+  | 'observatorywall'
   | 'lab'
   | 'labwall'
   | 'dock'
@@ -336,7 +341,7 @@ export type MapObject =
 export interface MapDef {
   id: string;
   name: string;
-  theme: 'village' | 'forest' | 'dungeon' | 'workshop' | 'cave' | 'desert' | 'harbor' | 'lab';
+  theme: 'village' | 'forest' | 'dungeon' | 'workshop' | 'cave' | 'desert' | 'harbor' | 'lab' | 'observatory';
   chapter?: string;
   /** 타일 글자 지도(모든 줄의 길이가 같아야 해요) */
   rows: string[];
@@ -405,6 +410,7 @@ export interface MobDef {
   pattern: MobAction[];
   /** 씨앗과 차례로 정해지는 가려진 행동 */
   hiddenPattern?: { choices: MobAction[]; seed: number };
+  forecastPattern?: { seed: number };
   classifyPattern?: { samples: TrainingSample[]; seed: number };
   dataPattern?: { values: number[]; actions: MobAction[] };
   /** 한 번 실행할 때의 칸 수(없으면 플레이어 슬롯 수) */
@@ -431,7 +437,7 @@ export interface RobiPartDef {
   name: string;
   chapter: string;
   ability: string;
-  unlocks: { cards?: Cmd[]; conds?: Cond[]; repeat?: boolean };
+  unlocks: { forecast?: boolean; cards?: Cmd[]; conds?: Cond[]; repeat?: boolean };
   icon?: string;
   /** 전투 프로그램 칸 추가 */
   slotBonus?: number;

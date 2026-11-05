@@ -1480,3 +1480,8 @@ h3 {
 .observation-table th, .observation-table td { border: 1px solid #596479; padding: 3px 6px; text-align: center; }
 .battle-records { margin-top: 6px; font-size: 13px; }
 .battle-records summary { cursor: pointer; padding: 4px; }
+
+.battle-forecast { margin-top: 8px; padding: 8px; border: 1px solid var(--line, #4b5563); border-radius: 8px; }
+.battle-forecast p { margin: 4px 0; font-size: 12px; line-height: 1.5; }
+.battle-forecast strong, .battle-forecast summary { font-size: 12px; line-height: 1.5; }
+.battle-forecast details { margin-top: 6px; }

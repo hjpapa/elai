@@ -34,3 +34,12 @@ export function evaluateTraining(data: TrainData, model: ClassificationModel | n
   const correctLabels = data.examples.filter(s => idIn(selected, s.id)).every(s => selected[s.id] === s.label);
   return { rows, accuracy, success: !!matchingSnapshot && correctLabels && rows.length > 0 && (model?.samples.length ?? 0) >= data.minExamples && accuracy >= data.threshold };
 }
+
+export interface ComparisonTrial { count: number; accuracy: number }
+export function evaluateComparison(data: TrainData, trials: ComparisonTrial[], answer: number | null): boolean {
+  const rule = data.comparison;
+  if (!rule) return true;
+  const valid = trials.filter(t => Number.isInteger(t.count) && t.count > 0 && Number.isFinite(t.accuracy) && t.accuracy >= 0 && t.accuracy <= 1);
+  const small = valid.find(t => t.count === rule.smallCount), large = valid.find(t => t.count === data.examples.length);
+  return !!small && !!large && large.accuracy > small.accuracy && answer === rule.answer;
+}
