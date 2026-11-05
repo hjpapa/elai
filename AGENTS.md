@@ -23,7 +23,7 @@ Claude 할당량을 아끼는 동안 Codex가 2~8장을 만들어요(`docs/tasks
 - 지시서·로드맵이 허락하면 엔진 파일(`src/game/**`, `src/missions/**`, `src/ui/**`, `src/data/**`)도 고쳐요.
 - 계약 파일은 지시서·로드맵의 "미리 승인한 계약 변경"에 적힌 것만 바꿔요.
 - 이 기간에도 `supabase/**`, `src/services/**`, `src/teacher/**`, `package.json`·잠금 파일, `vercel.json`, `vite.config.ts`, `src/missions/core/types.ts`, `docs/asset-spec.md`는 고치지 않아요.
-- 커밋은 **사용자가 요청할 때만** 작업 브랜치(`codex/…`)에 단계마다 하나씩 해요. main 브랜치, push, 머지, 브랜치 바꾸기는 하지 않아요.
+- 커밋은 **사용자가 요청할 때만** 작업 브랜치(`codex/…`)에 단계마다 하나씩 해요. `docs/tasks/codex-run-all.md`대로 하라는 부탁도 그 요청이에요. main 브랜치, push, 머지, 브랜치 바꾸기는 하지 않아요.
 
 ## 계약 파일 (Claude 승인 없이 바꾸지 않아요)
 - `src/data/schema.ts` — 게임 데이터 타입

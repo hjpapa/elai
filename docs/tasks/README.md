@@ -9,6 +9,10 @@ Claude가 지시서를 쓰고, 사용자가 Codex 앱에서 실행해요.
 3. Codex가 끝나면 Claude에게 "C1 끝났어"처럼 알려 주세요. Claude가 검토하고, 테스트한 뒤 커밋·머지해요.
 
 ### 할당량 절약 기간(C4~C10)
+**한 번에 맡기기**: Codex 앱에서 `C:\code\elai-wt\codex-04`를 열고 이렇게만 부탁해요. 중간에 멈추면 같은 말을 다시 하면 이어서 해요.
+> `docs/tasks/codex-run-all.md`대로 C4부터 C10까지 끝까지 진행해 줘. `AGENTS.md` 규칙을 지켜 줘.
+
+**단계마다 맡기기**(Codex가 쓴 지시서를 중간에 보고 싶을 때):
 1. Codex 앱에서 `C:\code\elai-wt\codex-04`(브랜치 `codex/04-chapters`)를 열고 이렇게 부탁해요.
    > `docs/tasks/codex-04-ch2.md` 지시서대로 작업해 줘. `AGENTS.md` 규칙을 지켜 줘.
 2. 끝나면 최종 보고를 보고, 다음 단계로 넘어가요.
@@ -27,5 +31,6 @@ Claude가 지시서를 쓰고, 사용자가 Codex 앱에서 실행해요.
 | C3 | [codex-03-ch1-text.md](codex-03-ch1-text.md) — 0·1장 아이템·도감·NPC 대사·미션 안내 글 | 완료(검토 통과, main 병합) |
 | C4 | [codex-04-ch2.md](codex-04-ch2.md) — 2장 반복의 동굴 전체(엔진·데이터·그림·테스트) | 준비됨 |
 | C5~C10 | [codex-roadmap.md](codex-roadmap.md) — 3~8장과 엔딩(단계마다 Codex가 자세한 지시서를 먼저 써요) | 대기 |
+| 연속 실행 | [codex-run-all.md](codex-run-all.md) — C4~C10을 한 번에, 단계마다 커밋, 기록은 `codex-progress.md` | 준비됨 |
 
 고치는 파일이 겹치지 않는 작업은 동시에 돌려도 돼요. 이때는 꼭 **각자의 작업 폴더**를 열어 주세요.
