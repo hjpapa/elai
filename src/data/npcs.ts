@@ -18,6 +18,7 @@ export const NPCS: Record<string, NpcDef> = {
   shiftKing: { id: 'shiftKing', name: '변신 슬라임 대장', sprite: 'boss-shift-king', role: '표본실 지킴이' },
   astronomer: { id: 'astronomer', name: '별지기 온유', sprite: 'char-astronomer', role: '천문대 기록 연구원' },
   starFox: { id: 'starFox', name: '별자리 여우 대장', sprite: 'boss-star-fox', role: '별자리 미궁 지킴이' },
+  babbleKing: { id: 'babbleKing', name: '헛소리 앵무새 대장', sprite: 'boss-babble-king', role: '공방 자료실 지킴이' },
   sign: { id: 'sign', name: '표지판', sprite: 'prop-sign', role: '안내' },
 };
 

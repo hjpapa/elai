@@ -1,4 +1,9 @@
 import { describe, expect, it } from 'vitest';
+import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
+import { composePromptImage } from '../src/missions/prompt/image';
+import { evaluateNextWord, nextWords } from '../src/missions/nextWord/evaluate';
+import { evaluateFactCheck } from '../src/missions/factCheck/evaluate';
 import { CHAPTERS, allMissions } from '../src/data/chapters';
 import { NPCS } from '../src/data/npcs';
 import { ITEMS } from '../src/data/rpg/items';
@@ -137,6 +142,26 @@ describe('플레이할 수 있는 미션의 데이터', () => {
         const d = m.data!;
         expect(d.slots.map((s) => s.id), m.id).toEqual(['role', 'task', 'how', 'format']);
         for (const s of d.slots) expect(s.options.some((o) => o.quality === 'good'), `${m.id}/${s.id}`).toBe(true);
+        if (d.image) {
+          const palette: {colors: Record<string, string>} = JSON.parse(readFileSync(new URL('../assets-src/palette.json', import.meta.url), 'utf8'));
+          const commonColors = new Set(Object.values(palette.colors));
+          expect([d.image.width, d.image.height], m.id).toEqual([16, 16]);
+          expect(Object.values(d.image.palette).every(color => commonColors.has(color)), m.id).toBe(true);
+          for (const slot of d.slots) for (const option of slot.options) {
+            expect(d.image.layers.some(layer => layer.slot === slot.id && layer.option === option.id), `${m.id}/${slot.id}/${option.id}`).toBe(true);
+          }
+          for (const layer of d.image.layers) {
+            expect(d.slots.find(slot => slot.id === layer.slot)?.options.some(option => option.id === layer.option), m.id).toBe(true);
+            expect(layer.rows.length, m.id).toBe(16);
+            expect(layer.rows.every(row => row.length === 16 && [...row].every(value => value === '.' || d.image!.palette[value] !== undefined)), m.id).toBe(true);
+          }
+          const choice = Object.fromEntries(d.slots.map(slot => [slot.id, slot.options.find(option => option.quality === 'good')!.id]));
+          const pixels = composePromptImage(d, choice);
+          expect(pixels?.length, m.id).toBe(16);
+          expect(pixels?.every(row => row.length === 16 && row.every(color => color === null || commonColors.has(color))), m.id).toBe(true);
+          expect(pixels?.flat().some(color => color !== null), m.id).toBe(true);
+          continue;
+        }
         for (const o of d.slots[0].options) expect(o.opening, `${m.id}/role/${o.id}`).toBeTruthy();
         for (const o of d.slots[1].options) expect(o.body?.length, `${m.id}/task/${o.id}`).toBeGreaterThan(0);
         for (const o of d.slots[1].options.filter((o) => o.quality === 'good')) expect(o.hardBody?.length).toBeGreaterThan(0);
@@ -274,5 +299,25 @@ describe('6장 탐색과 예측 자료',()=>{
   expect(evaluateTraining(d,trainSelection(d,small),small).accuracy).toBe(.5);expect(evaluateTraining(d,trainSelection(d,full),full)).toMatchObject({success:true,accuracy:1});
   const p2=allMissions().find(e=>e.mission.id==='ch6-p2-m1')!.mission;if(p2.kind!=='train')throw new Error('forecast');
   expect(d.tests).toEqual(p2.data!.tests);expect(d.saveModel).toBe(false);expect(d.presetLabels).toBe(true);
+ });
+});
+
+
+describe('7장 생성과 사실 확인',()=>{
+ it('기존 글 체험 두 미션의 데이터·평가조건·보상을 그대로 보존해요',()=>{
+  const hashes:Record<string,string>={'ch7-p2-m1':'16ec78b87f72e75a3a982e52e0156829e3c4bdbb90d747617cb344b5da4370d9','ch7-p2-m2':'decedd9b44ca7baf590e9dea732fff9286b8b59f03d7a8d9ecc5319ab6eeb7ce'};
+  for(const [id,hash]of Object.entries(hashes)){const m=allMissions().find(e=>e.mission.id===id)!.mission;expect(createHash('sha256').update(JSON.stringify(m)).digest('hex'),id).toBe(hash);}
+ });
+ it('글 모음을 바꾸면 다음 말 분포가 바뀌고 두 문장과 비교 답을 요구해요',()=>{
+  const m=allMissions().find(e=>e.mission.id==='ch7-p1-m1')!.mission;if(m.kind!=='nextWord')throw new Error('words');const d=m.data!;
+  expect(nextWords(d.corpora[0].sentences,d.start)[0]).toMatchObject({word:'동굴에서',count:2});expect(nextWords(d.corpora[1].sentences,d.start)[0]).toMatchObject({word:'달에서',count:2});
+  const stories={island:['로비는','동굴에서','수정을','찾아요.'],pretend:['로비는','달에서','수정을','먹어요.']};expect(evaluateNextWord(d,stories,0)).toBe(true);expect(evaluateNextWord(d,{island:stories.island},0)).toBe(false);expect(evaluateNextWord(d,stories,1)).toBe(false);
+ });
+ it('대장의 다섯 문장 중 두 문장을 근거를 읽고 고쳐야 정화해요',()=>{
+  const m=allMissions().find(e=>e.mission.id==='ch7-boss-m1')!.mission;expect(m.kind).toBe('factCheck');if(m.kind!=='factCheck')throw new Error('facts');const d=m.data!;
+  expect(d.claims).toHaveLength(5);expect(d.claims.filter(c=>c.answer!==0)).toHaveLength(2);
+  const right=Object.fromEntries(d.claims.map(c=>[c.id,{choice:c.answer,source:c.source}]));const read=d.sources.map(s=>s.id);
+  expect(evaluateFactCheck(d,right,read)).toBe(true);expect(evaluateFactCheck(d,right,[])).toBe(false);
+  expect(evaluateFactCheck(d,Object.fromEntries(d.claims.map(c=>[c.id,{choice:0,source:c.source}])),read)).toBe(false);expect(evaluateFactCheck(d,{},read)).toBe(false);
  });
 });

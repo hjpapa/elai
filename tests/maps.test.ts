@@ -221,3 +221,16 @@ describe('6장 천문대 길과 성장',()=>{
   expect(xp).toBeGreaterThanOrEqual(xpForLevel(MOBS.starFox.recommendedLevel));expect(xp).toBe(1432);
  });
 });
+
+
+describe('7장 공방 길과 성장',()=>{
+ it('그림을 완성하면 자료실에서 대장과 근거 미션을 만나요',()=>{
+  const q=world(['ch7-clear','parrot-fixed'],['ch7-p3-m1']);for(const def of [MAPS.workshop,MAPS.bookmaze])for(const o of def.objects.filter(o=>['npc','chest','portal'].includes(o.type)&&q.check(o.when)))expect(canReach(def,q,def.spawn,o),def.id+'/'+o.id).toBe(true);
+  const gate=MAPS.workshop.objects.find(o=>o.id==='to-bookmaze')!;expect(gate.type==='portal'&&gate.open?.mission).toBe('ch7-p3-m1');const town=MAPS.village.objects.find(o=>o.id==='to-ch7')!;expect(town.type==='portal'&&town.open?.flag).toBe('ch6-clear');
+  const chief=MAPS.bookmaze.objects.find(o=>o.id==='chief')!;expect(chief.type).toBe('npc');expect(MAPS.bookmaze.objects.some(o=>o.type==='mob'&&o.mob==='babbleKing')).toBe(false);
+ });
+ it('7장 본편 경험치는 권장 레벨13에 충분해요',()=>{
+  let xp=allMissions().filter(e=>e.chapter.index<=7&&!e.mission.id.startsWith('ch7-boss')).reduce((n,e)=>n+(e.mission.reward?.xp??0),0);for(const def of Object.values(MAPS).filter(d=>['ch0','ch1','ch2','ch3','ch4','ch5','ch6','ch7'].includes(d.chapter??'')))for(const o of def.objects){if(o.type==='mob')xp+=MOBS[o.mob].xp;if(o.type==='chest')xp+=o.reward.xp??0;}
+  expect(xp).toBeGreaterThanOrEqual(xpForLevel(MOBS.babbleKing.recommendedLevel));expect(xp).toBe(1692);
+ });
+});

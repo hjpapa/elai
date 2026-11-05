@@ -1,3 +1,4 @@
+import { composePromptImage } from './image';
 import type { PromptData, PromptOption, PromptQuality, PromptRender, PromptSlotId } from '../../data/schema';
 import type { Stars } from '../core/types';
 
@@ -64,7 +65,8 @@ export function evaluatePrompt(data: PromptData, choice: PromptChoice): PromptOu
     lines = (easy ? task.body : task.hardBody) ?? task.body ?? [];
   } else lines = task.body ?? [];
 
-  const success = !privacy && task?.quality === 'good' && score >= 6;
+  const imageMatches = !data.image || (data.slots.every(slot => pick(slot.id)?.quality === 'good' && data.image?.layers.some(layer => layer.slot === slot.id && layer.option === choice[slot.id])) && composePromptImage(data, choice)?.some(row => row.some(Boolean)) === true);
+  const success = imageMatches && !privacy && task?.quality === 'good' && score >= 6;
   const stars: Stars = !success ? 0 : score === 8 ? 3 : score >= 7 ? 2 : 1;
   return { opening, lines, render: format?.render ?? 'paragraph', issues, score, privacy, success, stars };
 }

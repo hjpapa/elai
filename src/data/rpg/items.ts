@@ -27,6 +27,7 @@ const list: ItemDef[] = [
   { id: 'dataVest', name: '기록가 조끼', icon: 'icon-item-vest', kind: 'equip', slot: 'outfit', rarity: 'rare', stats: { maxHp: 8, def: 2 }, desc: '항구의 기록가가 준 조끼예요.\n체력과 몸을 지키는 힘이 늘어요.' },
   { id: 'researchBoots', name: '연구원 신발', icon: 'icon-item-windboots', kind: 'equip', slot: 'shoes', rarity: 'rare', stats: { maxHp: 5, maxEn: 1 }, desc: '표본을 살피며 걸을 때 편해요.\n최대 체력과 에너지가 늘어요.' },
   { id: 'starCap', name: '별길 모자', icon: 'icon-item-rangerhat', kind: 'equip', slot: 'hat', rarity: 'rare', stats: { maxHp: 7, def: 3 }, overlay: 'equip-hat-ranger', desc: '별지기가 건넨 따뜻한 모자예요.\n체력과 몸을 지키는 힘이 늘어요.' },
+  { id: 'scribeBrush', name: '정직한 기록 붓', icon: 'icon-item-brush', kind: 'equip', slot: 'tool', rarity: 'rare', stats: { atk: 4, maxEn: 2 }, overlay: 'equip-tool-brush', desc: '확인한 사실을 적는 기록 붓이에요.\n고치는 힘과 최대 에너지가 늘어요.' },
 ];
 
 export const ITEMS: Record<string, ItemDef> = Object.fromEntries(list.map((i) => [i.id, i]));

@@ -69,7 +69,7 @@ export async function runBattle(mobId: string, opts: BattleOptions = {}): Promis
 
   const scene = sm.getScene('Battle') as BattleScene;
   const ready = new Promise<void>((r) => scene.events.once(Phaser.Scenes.Events.CREATE, () => r()));
-  sm.run('Battle', { mob, save: s.data, floor: opts.floor ?? (MAPS[s.data.location.map]?.theme === 'cave' ? 'tile-cave' : MAPS[s.data.location.map]?.theme === 'desert' ? 'tile-sand' : MAPS[s.data.location.map]?.theme === 'harbor' ? 'tile-dock' : MAPS[s.data.location.map]?.theme === 'lab' ? 'tile-lab' : MAPS[s.data.location.map]?.theme === 'observatory' ? 'tile-observatory' : 'tile-grass') } satisfies BattleSceneData);
+  sm.run('Battle', { mob, save: s.data, floor: opts.floor ?? (MAPS[s.data.location.map]?.theme === 'workshop' ? 'tile-wood' : MAPS[s.data.location.map]?.theme === 'cave' ? 'tile-cave' : MAPS[s.data.location.map]?.theme === 'desert' ? 'tile-sand' : MAPS[s.data.location.map]?.theme === 'harbor' ? 'tile-dock' : MAPS[s.data.location.map]?.theme === 'lab' ? 'tile-lab' : MAPS[s.data.location.map]?.theme === 'observatory' ? 'tile-observatory' : 'tile-grass') } satisfies BattleSceneData);
   await ready;
 
   // ── DOM ──

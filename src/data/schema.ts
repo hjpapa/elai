@@ -142,6 +142,8 @@ export interface PromptSlot {
   missing: string;
 }
 export interface PromptData {
+  initialChoice?: Partial<Record<PromptSlotId, string>>;
+  image?: { width: number; height: number; palette: Record<string, string>; layers: { slot: PromptSlotId; option: string; rows: string[] }[] };
   client: string;
   request: string;
   slots: PromptSlot[];
@@ -198,6 +200,22 @@ export interface TrainData {
   saveModel?: boolean;
 }
 
+export interface NextWordData {
+  intro: string;
+  corpora: { id: string; label: string; sentences: string[] }[];
+  start: string;
+  steps: number;
+  question: { q: string; choices: string[]; answer: number };
+  hint: string;
+  explain?: string;
+}
+export interface FactCheckData {
+  intro: string;
+  sources: { id: string; title: string; text: string }[];
+  claims: { id: string; text: string; source: string; choices: string[]; answer: number; visual?: { key: string; frame?: number; caption: string } }[];
+  hint: string;
+  explain?: string;
+}
 export interface MissionDataMap {
   dialogue: DialogueData;
   blockCode: BlockCodeData;
@@ -208,8 +226,8 @@ export interface MissionDataMap {
   reflect: ReflectData;
   classify: ClassifyData;
   train: TrainData;
-  nextWord: PlannedData;
-  factCheck: PlannedData;
+  nextWord: NextWordData;
+  factCheck: FactCheckData;
 }
 export type MissionKind = keyof MissionDataMap;
 

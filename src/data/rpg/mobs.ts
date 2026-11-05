@@ -424,6 +424,47 @@ const list: MobDef[] = [
   "dex": "같아 보여도 행동 간격이 바뀌어요.\n예측을 믿기 전에 기록을 살펴봐요.",
   "purified": "별길이 다시 환해졌어요.\n앞일을 함께 조심스레 살펴봐요!"
 },
+{
+  "id": "babbleParrot",
+  "name": "수다 앵무새",
+  "sprite": "mob-babble-parrot",
+  "size": 24,
+  "chapter": "ch7",
+  "hp": 110,
+  "atk": 10,
+  "def": 3,
+  "pattern": [
+    "charge",
+    "smash",
+    "idle",
+    "guard"
+  ],
+  "smashRatio": 0.3,
+  "xp": 20,
+  "coins": 20,
+  "recommendedLevel": 13,
+  "dex": "남의 말을 따라 하는 장난꾸러기예요.\n번개 뒤 막기로 차분히 기다려요.",
+  "purified": "말하기 전에 한 번 더 생각할게요.\n함께 자료를 읽어요!"
+},
+{
+  "id": "babbleKing",
+  "name": "헛소리 앵무새 대장",
+  "sprite": "boss-babble-king",
+  "size": 48,
+  "boss": true,
+  "chapter": "ch7",
+  "hp": 1,
+  "atk": 0,
+  "def": 0,
+  "pattern": [
+    "idle"
+  ],
+  "xp": 0,
+  "coins": 0,
+  "recommendedLevel": 13,
+  "dex": "그럴듯하지만 틀린 말을 섞어요.\n자료로 확인해야 고칠 수 있어요.",
+  "purified": "근거를 확인하니 생각이 맑아졌어요.\n이제 함께 꼼꼼히 살펴봐요!"
+},
 ];
 
 export const MOBS: Record<string, MobDef> = Object.fromEntries(list.map((m) => [m.id, m]));

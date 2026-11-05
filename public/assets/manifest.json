@@ -36,6 +36,30 @@
   ],
   "assets": [
     {
+      "key": "prop-easel",
+      "file": "prop/prop-easel.png"
+    },
+    {
+      "key": "prop-bookshelf",
+      "file": "prop/prop-bookshelf.png"
+    },
+    {
+      "key": "mob-babble-parrot",
+      "file": "mob/mob-babble-parrot.png"
+    },
+    {
+      "key": "boss-babble-king",
+      "file": "mob/boss-babble-king.png"
+    },
+    {
+      "key": "robi-part-talk",
+      "file": "overlay/robi-part-talk.png"
+    },
+    {
+      "key": "icon-part-talk",
+      "file": "icon/icon-part-talk.png"
+    },
+    {
       "key": "tile-observatory",
       "file": "tile/tile-observatory.png"
     },

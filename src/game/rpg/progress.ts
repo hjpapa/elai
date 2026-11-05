@@ -11,7 +11,8 @@ import type { GameState } from './state';
 export function canStart(state: GameState, missionId: string): boolean {
   const e = getMission(missionId);
   if (!e?.mission.data) return false;
-  const scope = e.chapter.status === 'preview' ? [e.part] : e.chapter.parts;
+  const previewMission = missionId === 'ch7-p2-m1' || missionId === 'ch7-p2-m2';
+  const scope = e.chapter.status === 'preview' || previewMission ? [e.part] : e.chapter.parts;
   for (const part of scope) {
     for (const m of part.missions) {
       if (m.id === missionId) return true;
@@ -34,7 +35,7 @@ export function objective(state: GameState): string {
       }
       if (chapter.index >= 4 && part.kind === 'boss') {
         const dungeon = Object.values(MAPS).find(map => map.chapter === chapter.id && map.fog);
-        const battle = part.missions.find(mission => mission.kind === 'battle' && mission.npc);
+        const battle = part.missions.find(mission => mission.kind === 'battle' && mission.npc) ?? part.missions.find(mission => mission.npc);
         const who = battle?.npc ? npcName(battle.npc) : '안내자';
         return `${dungeon?.name ?? chapter.title}의 ${josa(who, '을', '를')} 찾아가요.`;
       }

@@ -1,3 +1,5 @@
+import { NextWordMission } from './nextWord/NextWordMission';
+import { FactCheckMission } from './factCheck/FactCheckMission';
 import { TrainMission } from './train/TrainMission';
 import { ClassifyMission } from './classify/ClassifyMission';
 import type { Mission, MissionKind } from '../data/schema';
@@ -13,6 +15,8 @@ import { SequenceMission } from './sequence/SequenceMission';
 
 /** 창 안에 그리는 미션 */
 export const ENGINES: MissionRegistry = {
+  nextWord: () => new NextWordMission(),
+  factCheck: () => new FactCheckMission(),
   train: () => new TrainMission(),
   classify: () => new ClassifyMission(),
   blockCode: () => new BlockCodeMission(),

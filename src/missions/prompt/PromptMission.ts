@@ -1,3 +1,4 @@
+import { composePromptImage } from './image';
 import { NPCS } from '../../data/npcs';
 import type { PromptData, PromptSlotId } from '../../data/schema';
 import { clear, h, lines, sleep } from '../../ui/dom';
@@ -41,6 +42,7 @@ export class PromptMission implements MissionEngine {
     if (ctx.mission.kind !== 'prompt' || !ctx.mission.data) return;
     this.ctx = ctx;
     this.data = ctx.mission.data;
+    this.choice = { ...this.data.initialChoice };
     this.ask.addEventListener('click', () => void this.request());
     this.done.addEventListener('click', () =>
       ctx.finish({
@@ -53,6 +55,8 @@ export class PromptMission implements MissionEngine {
     );
     clear(this.out);
     this.out.append(h('p', { class: 'muted' }, '주문서를 채우고 부탁하면 여기에 젠의 답이 나와요.'));
+    if (this.data.image && this.data.initialChoice) this.out.append(this.renderImage());
+    ctx.root.append(h('p', { class: 'muted' }, ...lines('이름·주소·전화번호는 넣지 않아요.\n학교·얼굴 사진도 넣지 않아요.')), h('p', { class: 'muted' }, 'AI 도움을 받으면 밝혀요.'));
     ctx.root.append(
       h(
         'div',
@@ -82,6 +86,7 @@ export class PromptMission implements MissionEngine {
   }
 
   private renderSlots(): void {
+    const focus = document.activeElement?.getAttribute('aria-label');
     clear(this.slotsEl);
     for (const slot of this.data.slots) {
       const row = h('div', { class: 'row' });
@@ -92,6 +97,7 @@ export class PromptMission implements MissionEngine {
             'button',
             {
               class: `chip ${on ? 'on' : ''}`,
+              'aria-label': slot.label + ': ' + opt.text,
               'aria-pressed': on ? 'true' : 'false',
               onclick: () => {
                 // 같은 칩을 다시 누르면 칸을 비워요.
@@ -108,6 +114,16 @@ export class PromptMission implements MissionEngine {
         h('div', { class: 'order-slot' }, h('span', { class: 'lbl' }, slot.label), h('span', { class: 'q' }, slot.question), row),
       );
     }
+    if (focus) [...this.slotsEl.querySelectorAll<HTMLElement>('[aria-label]')].find(el => el.getAttribute('aria-label') === focus)?.focus();
+  }
+
+  private renderImage(): HTMLElement {
+    const pixels = composePromptImage(this.data, this.choice);
+    if (!pixels) return h('p', {}, '그림 자료를 다시 살펴봐요.');
+    const canvas = h('canvas', { width: pixels[0].length, height: pixels.length, role: 'img', 'aria-label': '선택한 주문서의 픽셀 그림', style: 'width:256px;max-width:100%;height:auto;image-rendering:pixelated' });
+    const drawing = canvas.getContext('2d');
+    if (drawing) pixels.forEach((row, y) => row.forEach((color, x) => { if (color) { drawing.fillStyle = color; drawing.fillRect(x, y, 1, 1); } }));
+    return h('figure', { style: 'margin:8px 0' }, canvas, h('figcaption', {}, '그림 주문서 연습 결과'));
   }
 
   private async request(): Promise<void> {
@@ -120,10 +136,10 @@ export class PromptMission implements MissionEngine {
     if (!this.alive) return;
     const o = evaluatePrompt(this.data, this.choice);
     clear(this.out);
-    this.out.append(renderOutput(o));
+    this.out.append(this.data.image ? this.renderImage() : renderOutput(o));
     const list = h('ul', { class: 'issues' });
     for (const i of o.issues) {
-      list.append(h('li', { class: i.kind === 'privacy' ? 'privacy' : '' }, h('b', {}, SLOT_NAME[i.slot]), ...lines(i.text)));
+      list.append(h('li', { class: i.kind === 'privacy' ? 'privacy' : '' }, h('b', {}, this.data.image ? this.data.slots.find(slot => slot.id === i.slot)?.label ?? SLOT_NAME[i.slot] : SLOT_NAME[i.slot]), ...lines(i.text)));
     }
     if (o.success) {
       this.ctx.sfx('success');
@@ -138,7 +154,7 @@ export class PromptMission implements MissionEngine {
         h(
           'div',
           { class: 'robi-say bad', style: 'margin-top:8px' },
-          o.privacy ? '개인정보가 들어가서 부탁할 수 없어요. 주문서를 고쳐요.' : '의뢰인이 원하는 글이 아니에요. 주문서를 고쳐서 다시 부탁해 봐요.',
+          o.privacy ? '개인정보가 들어가서 부탁할 수 없어요. 주문서를 고쳐요.' : '의뢰의 조건과 달라요.\n주문서를 고쳐 다시 부탁해 봐요.',
         ),
       );
     }

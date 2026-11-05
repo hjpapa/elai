@@ -689,7 +689,7 @@ export class WorldScene extends Phaser.Scene {
     }
     const report = await runBattle(v.obj.mob, {
       canFlee: true,
-      floor: this.def.theme === 'observatory' ? 'tile-observatory' : this.def.theme === 'lab' ? 'tile-lab' : this.def.theme === 'harbor' ? 'tile-dock' : this.def.theme === 'desert' ? 'tile-sand' : this.def.theme === 'cave' ? 'tile-cave' : this.def.theme === 'dungeon' ? 'tile-stone' : 'tile-grass',
+      floor: this.def.theme === 'workshop' ? 'tile-wood' : this.def.theme === 'observatory' ? 'tile-observatory' : this.def.theme === 'lab' ? 'tile-lab' : this.def.theme === 'harbor' ? 'tile-dock' : this.def.theme === 'desert' ? 'tile-sand' : this.def.theme === 'cave' ? 'tile-cave' : this.def.theme === 'dungeon' ? 'tile-stone' : 'tile-grass',
       prefill: mob.prefill,
       intro: mob.prefill ? `${mob.name}가 카드 순서를 뒤섞어 놓았어요!\n틀린 카드를 찾아 고쳐요.` : undefined,
     });

@@ -50,6 +50,14 @@ const mob = (size: 16 | 24 | 48) => spec('mob', size, size, 4);
 const fx = (w: number, h: number, frames: number) => spec('fx', w, h, frames);
 
 export const ASSETS: AssetSpec[] = [
+  // C9: 프롬프트 공방. 기존 나무 바닥·벽·젠을 함께 써요.
+  prop(24, 32)('prop-easel', '그림을 고쳐 그리는 이젤', 0xd39a62),
+  prop(32, 40)('prop-bookshelf', '근거 자료를 모은 책장', 0xa76c46),
+  mob(24)('mob-babble-parrot', '말을 따라 하는 장난꾸러기 앵무새', 0xed7463),
+  mob(48)('boss-babble-king', '책 깃을 두른 앵무새 대장', 0x7962ab),
+  overlay('robi-part-talk', '로비의 말풍선 대화 모듈', 0x82cce0),
+  icon('icon-part-talk', '대화 모듈', 0x82cce0),
+
   // C8: 길잡이 천문대
   tile('tile-observatory', '별자리가 새겨진 천문대 바닥', 0x344d78),
   block('block-observatory', '금빛 테두리 천문대 벽', 0x7962ab),
