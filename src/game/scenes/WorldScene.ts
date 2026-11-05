@@ -5,13 +5,14 @@ import { NPCS } from '../../data/npcs';
 import { ITEMS } from '../../data/rpg/items';
 import { MOBS } from '../../data/rpg/mobs';
 import { ROBI_PARTS } from '../../data/rpg/robiParts';
-import type { MapDef, MapObject, Point } from '../../data/schema';
+import type { Chapter, MapDef, MapObject, Point } from '../../data/schema';
 import { playMusic, playSfx } from '../../fx/sfx';
 import { runBattle } from '../../missions/battle/runBattle';
+import { refreshUnlocked } from '../../services/remote';
 import { flushSave, requestSave } from '../../services/save';
 import { icon } from '../../ui/icons';
 import { showResult } from '../../ui/rewards';
-import { app } from '../app';
+import { app, classUnlock } from '../app';
 import { ASSET_BY_KEY, originOf } from '../assets';
 import { Actor } from '../iso/actor';
 import { isoToScreen, screenToIso } from '../iso/iso';
@@ -26,7 +27,8 @@ import {
   objectVisible,
   type Cell,
 } from '../iso/mapRuntime';
-import { canStart } from '../rpg/progress';
+import { canStart, entryChapter, portalGate } from '../rpg/progress';
+import { applySkipKit } from '../rpg/skip';
 
 export interface WorldData {
   map?: string;
@@ -148,6 +150,17 @@ export class WorldScene extends Phaser.Scene {
     app.hud.refresh();
     app.ui.toast(this.def.name, icon('icon-book'), 1600);
     if (this.def.id === 'village') this.time.delayedCall(400, () => { void showEnding(); });
+    // 마을에 올 때마다 선생님이 연 장을 다시 받아요(문 그림과 목표 안내가 바로 바뀌어요).
+    const link = app.classLink;
+    if (link && this.def.id === 'village') {
+      void refreshUnlocked(link)
+        .catch(() => false)
+        .then((changed) => {
+          if (!changed || !this.scene.isActive()) return;
+          this.dirty = true;
+          app.hud.refresh();
+        });
+    }
   }
 
   // ── 그리기 ──
@@ -257,7 +270,7 @@ export class WorldScene extends Phaser.Scene {
       v.image?.setVisible(show);
       if (o.type === 'chest') v.image?.setFrame(s.hasFlag(objFlag.chest(this.def.id, o.id)) ? 1 : 0);
       if (o.type === 'door') v.image?.setFrame(s.hasFlag(objFlag.door(this.def.id, o.id)) ? 1 : 0);
-      if (o.type === 'portal' && o.sprite) v.image?.setFrame(s.check(o.open) ? 1 : 0);
+      if (o.type === 'portal' && o.sprite) v.image?.setFrame(portalGate(s, classUnlock(), this.def.id, o).open ? 1 : 0);
       if (o.type === 'mob' && v.actor) {
         v.actor.frameOverride = s.hasFlag(objFlag.mob(this.def.id, o.id)) ? 3 : null;
         v.actor.sync();
@@ -665,12 +678,38 @@ export class WorldScene extends Phaser.Scene {
   }
 
   private async usePortal(v: View): Promise<void> {
-    if (v.obj.type !== 'portal') return;
-    if (!app.state.check(v.obj.open)) {
-      app.ui.toast(v.obj.lockedText ?? '아직 갈 수 없어요.', icon('icon-lock'), 3200);
+    const o = v.obj;
+    if (o.type !== 'portal') return;
+    let gate = portalGate(app.state, classUnlock(), this.def.id, o);
+    if (!gate.open && app.classLink && entryChapter(this.def.id, o)) {
+      // 선생님이 방금 장을 열었을 수도 있어요: 장 입구 문이면 서버에서 다시 받아 확인해요.
+      if (await refreshUnlocked(app.classLink).catch(() => false)) {
+        this.dirty = true;
+        app.hud.refresh();
+        gate = portalGate(app.state, classUnlock(), this.def.id, o);
+      }
+    }
+    if (!gate.open) {
+      app.ui.toast(gate.text ?? '아직 갈 수 없어요.', icon('icon-lock'), 3200);
       return;
     }
-    this.goTo(v.obj.to.map, v.obj.to.at);
+    if (gate.skip) await this.skipInto(gate.skip);
+    this.goTo(o.to.map, o.to.at);
+  }
+
+  /** 앞 장을 건너뛰고 들어갈 때: 로비가 앞 장의 준비물(부품·장비·레벨)을 채워 줘요. */
+  private async skipInto(chapter: Chapter): Promise<void> {
+    const got = applySkipKit(app.state, chapter);
+    if (!got) return;
+    this.dirty = true;
+    await app.ui.dialogue([{ who: 'robi', text: `선생님이 ${chapter.index}장부터 열어 주셨어요.\n앞 장 준비물을 챙겨 왔어요!` }]);
+    await showResult({
+      title: '앞 장 준비물',
+      success: true,
+      message: got.equipped.length ? '앞 장에서 얻는 부품과 장비예요.\n더 좋은 장비는 바로 꼈어요.' : '앞 장에서 얻는 부품과 장비예요.',
+      reward: { xp: got.xp, coins: 0, items: got.items.map((id) => ({ id, qty: 1 })), levelUps: got.levelUps },
+      parts: got.parts,
+    });
   }
 
   private goTo(map: string, at: Point): void {

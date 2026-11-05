@@ -1,6 +1,6 @@
 import { xpForLevel } from '../data/rpg/levels';
 import type { MapDef } from '../data/schema';
-import { app } from '../game/app';
+import { app, classUnlock } from '../game/app';
 import { objective } from '../game/rpg/progress';
 import { clear, h } from './dom';
 import { openDex } from './dex';
@@ -67,7 +67,7 @@ export class Hud {
     setBar(this.xp, (d.xp - from) / (to - from), `경험치 ${d.xp - from} / ${to - from}`);
     this.coins.textContent = String(d.coins);
     clear(this.goal);
-    this.goal.append(h('b', {}, '목표'), objective(s));
+    this.goal.append(h('b', {}, '목표'), objective(s, classUnlock()));
   }
 
   /** 던전 작은 지도: 가 본 칸만 그려요. */
