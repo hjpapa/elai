@@ -10,6 +10,8 @@ export const NPCS: Record<string, NpcDef> = {
   dummy: { id: 'dummy', name: '허수아비 봇', sprite: 'mob-dummy', role: '마을 연습장' },
   explorer: { id: 'explorer', name: '탐험가 하루', sprite: 'char-explorer', role: '동굴 탐험가' },
   batKing: { id: 'batKing', name: '메아리 박쥐 대장', sprite: 'boss-bat-king', role: '동굴의 메아리 지킴이' },
+  guide: { id: 'guide', name: '길잡이 나루', sprite: 'char-guide', role: '사막 길잡이' },
+  lizardChief: { id: 'lizardChief', name: '신기루 도마뱀 대장', sprite: 'boss-lizard-chief', role: '모래 미로 지킴이' },
   sign: { id: 'sign', name: '표지판', sprite: 'prop-sign', role: '안내' },
 };
 

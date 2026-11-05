@@ -36,6 +36,38 @@
   ],
   "assets": [
     {
+      "key": "block-sandstone",
+      "file": "block/block-sandstone.png"
+    },
+    {
+      "key": "prop-cactus",
+      "file": "prop/prop-cactus.png"
+    },
+    {
+      "key": "prop-signal",
+      "file": "prop/prop-signal.png"
+    },
+    {
+      "key": "char-guide",
+      "file": "char/char-guide.png"
+    },
+    {
+      "key": "mob-mirage-lizard",
+      "file": "mob/mob-mirage-lizard.png"
+    },
+    {
+      "key": "boss-lizard-chief",
+      "file": "mob/boss-lizard-chief.png"
+    },
+    {
+      "key": "robi-part-sensor",
+      "file": "overlay/robi-part-sensor.png"
+    },
+    {
+      "key": "icon-part-sensor",
+      "file": "icon/icon-part-sensor.png"
+    },
+    {
       "key": "tile-cave",
       "file": "tile/tile-cave.png"
     },

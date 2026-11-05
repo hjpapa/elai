@@ -91,10 +91,33 @@ export class Battle {
     return this.mob.roundTicks ?? this.slots;
   }
 
-  /** 다음 n차례 몹 행동 예고 */
+  /** 씨앗과 절대 차례를 섞어요. 복제·재실행에서도 같은 행동이에요. */
+  private actionAt(index: number): MobAction {
+    const hidden = this.mob.hiddenPattern;
+    if (hidden?.choices.length && index % 2 === 1) {
+      let hash = (hidden.seed ^ Math.imul(index + 1, 0x9e3779b9)) >>> 0;
+      hash = Math.imul(hash ^ (hash >>> 16), 0x85ebca6b);
+      hash = Math.imul(hash ^ (hash >>> 13), 0xc2b2ae35);
+      hash = (hash ^ (hash >>> 16)) >>> 0;
+      return hidden.choices[hash % hidden.choices.length];
+    }
+    return this.mob.pattern[index % this.mob.pattern.length];
+  }
+
+  /** 조건 인터프리터는 현재 차례의 진짜 행동을 읽어요. */
   intents(n = this.ticksPerRound): MobAction[] {
-    const p = this.mob.pattern;
-    return Array.from({ length: n }, (_, i) => p[(this.patternIndex + i) % p.length]);
+    return Array.from({ length: n }, (_, i) => this.actionAt(this.patternIndex + i));
+  }
+
+  /** 화면에는 가려진 차례를 null로 돌려줘요. */
+  displayIntents(n = this.ticksPerRound): (MobAction | null)[] {
+    return this.intents(n).map((action, i) => this.mob.hiddenPattern?.choices.length && (this.patternIndex + i) % 2 === 1 ? null : action);
+  }
+
+  /** 숨은 행동의 조건 결과·생존 여부도 미리 보기로 새지 않게 해요. */
+  preview(program: Block[]): (TickEvent | null)[] {
+    if (this.mob.hiddenPattern?.choices.length) return Array(this.ticksPerRound).fill(null);
+    return this.clone().runRound(program).ticks;
   }
 
   get energy(): number {

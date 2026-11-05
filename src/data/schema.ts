@@ -22,6 +22,7 @@ export type Cmd = GridCmd | BattleCmd;
 
 /** 조건 블록이 묻는 질문 */
 export type Cond =
+  | 'signalRed'
   | 'wallAhead'
   | 'pathAhead'
   | 'pathLeft'
@@ -164,6 +165,17 @@ export interface PlannedData {
   note: string;
 }
 
+export interface ClassifyData {
+  mode: 'tree' | 'sort' | 'cluster';
+  intro: string;
+  cards: { id: string; label: string; group: string; features: string[] }[];
+  groups: { id: string; label: string }[];
+  questions?: { id: string; label: string; feature: string }[];
+  maxQuestions?: number;
+  hint: string;
+  explain?: string;
+}
+
 export interface MissionDataMap {
   dialogue: DialogueData;
   blockCode: BlockCodeData;
@@ -172,7 +184,7 @@ export interface MissionDataMap {
   prompt: PromptData;
   battle: BattleData;
   reflect: ReflectData;
-  classify: PlannedData;
+  classify: ClassifyData;
   train: PlannedData;
   nextWord: PlannedData;
   factCheck: PlannedData;
@@ -250,6 +262,7 @@ export type TileKind =
   | 'hedge'
   | 'wall'
   | 'cave'
+  | 'sandstone'
   | 'rockwall'
   | 'void';
 
@@ -300,7 +313,7 @@ export type MapObject =
 export interface MapDef {
   id: string;
   name: string;
-  theme: 'village' | 'forest' | 'dungeon' | 'workshop' | 'cave';
+  theme: 'village' | 'forest' | 'dungeon' | 'workshop' | 'cave' | 'desert';
   chapter?: string;
   /** 타일 글자 지도(모든 줄의 길이가 같아야 해요) */
   rows: string[];
@@ -367,6 +380,8 @@ export interface MobDef {
   def: number;
   /** 되풀이되는 행동 순서 */
   pattern: MobAction[];
+  /** 씨앗과 차례로 정해지는 가려진 행동 */
+  hiddenPattern?: { choices: MobAction[]; seed: number };
   /** 한 번 실행할 때의 칸 수(없으면 플레이어 슬롯 수) */
   roundTicks?: number;
   /** 강타 피해 = 플레이어 최대 체력 × 비율(보스: 막지 않으면 버틸 수 없게) */

@@ -50,6 +50,16 @@ const mob = (size: 16 | 24 | 48) => spec('mob', size, size, 4);
 const fx = (w: number, h: number, frames: number) => spec('fx', w, h, frames);
 
 export const ASSETS: AssetSpec[] = [
+  // C5: 갈림길 사막. tile-sand는 기존 키를 그대로 써요.
+  block('block-sandstone', '따뜻한 빛의 사암 벽', 0xd39a62),
+  prop(16, 24)('prop-cactus', '둥근 팔의 선인장', 0x8dc567),
+  prop(16, 24, 2)('prop-signal', '신호등(빨강, 초록)', 0x49b5b1),
+  char('char-guide', '길잡이 나루(햇빛 가리개와 지도 주머니)', 0xedc890),
+  mob(24)('mob-mirage-lizard', '장난꾸러기 신기루 도마뱀', 0xd39a62),
+  mob(48)('boss-lizard-chief', '신기루 도마뱀 대장', 0xd39a62),
+  overlay('robi-part-sensor', '로비 머리 옆의 센서', 0x82cce0),
+  icon('icon-part-sensor', '센서 모듈', 0x82cce0),
+
   // C4: 반복의 동굴
   tile('tile-cave', '수정 조각이 박힌 동굴 바닥', 0x56657a),
   block('block-cave', '동굴 바위벽', 0x344d78),

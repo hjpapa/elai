@@ -9,6 +9,8 @@ export interface EditorConfig {
   /** 전투 팔레트의 카드별 에너지 비용 */
   costs?: Partial<Record<Cmd, number>>;
   allowRepeat?: boolean;
+  /** 전투에서는 한 라운드 전체를 반복할 수 있어요. 기본값은 9예요. */
+  maxRepeat?: number;
   allowIf?: Cond[];
   maxBlocks?: number;
   /** 최소 블록 수 안내(별점 기준) */
@@ -240,7 +242,7 @@ export class ProgramEditor {
     }
     if (b.t === 'repeat') {
       const setTimes = (n: number) => {
-        b.times = Math.max(2, Math.min(9, n));
+        b.times = Math.max(2, Math.min(this.cfg.maxRepeat ?? 9, n));
         this.render();
         this.emit();
       };

@@ -128,6 +128,63 @@ const list: MobDef[] = [
   "purified": "동굴 노래가 다시 들려요.\n함께 고쳐 줘서 고마워요!",
   "recommendedLevel": 6
 },
+{
+  "id": "mirageLizard",
+  "name": "신기루 도마뱀",
+  "sprite": "mob-mirage-lizard",
+  "size": 24,
+  "chapter": "ch3",
+  "hp": 150,
+  "atk": 8,
+  "def": 2,
+  "pattern": [
+    "guard",
+    "smash"
+  ],
+  "hiddenPattern": {
+    "choices": [
+      "idle",
+      "smash"
+    ],
+    "seed": 13
+  },
+  "roundTicks": 8,
+  "smashRatio": 0.5,
+  "xp": 18,
+  "coins": 12,
+  "recommendedLevel": 8,
+  "dex": "신기루 뒤로 행동을 숨기는 친구예요.\n조건 카드로 강타를 알아내요.",
+  "purified": "이제 숨바꼭질은 잠깐 쉴래요.\n함께 모래길을 걸어요!"
+},
+{
+  "id": "lizardChief",
+  "name": "신기루 도마뱀 대장",
+  "sprite": "boss-lizard-chief",
+  "size": 48,
+  "boss": true,
+  "chapter": "ch3",
+  "hp": 180,
+  "atk": 10,
+  "def": 3,
+  "pattern": [
+    "guard",
+    "smash"
+  ],
+  "hiddenPattern": {
+    "choices": [
+      "idle",
+      "smash"
+    ],
+    "seed": 31
+  },
+  "roundTicks": 12,
+  "smashRatio": 0.7,
+  "xp": 0,
+  "coins": 0,
+  "recommendedLevel": 8,
+  "dex": "방패 뒤의 다음 행동이 바뀌어요.\n센서로 살피고 조건으로 정해요.",
+  "purified": "모래 바람이 잦아들었어요.\n친구들의 길을 함께 안내해요!"
+},
 ];
 
 export const MOBS: Record<string, MobDef> = Object.fromEntries(list.map((m) => [m.id, m]));

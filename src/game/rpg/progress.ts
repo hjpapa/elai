@@ -32,6 +32,7 @@ export function objective(state: GameState): string {
         if (chapter.id === 'ch2') return '마을 동쪽 다리를 건너 반복의 동굴로 가요.';
         if (chapter.index > 0) return `${MAPS[chapter.entryMap]?.name ?? chapter.title} 입구로 가요.`;
       }
+      if (chapter.id === 'ch3' && part.kind === 'boss') return '모래 미로 끝의 도마뱀 대장을 찾아가요.';
       if (chapter.id === 'ch2' && part.kind === 'boss') return '되풀이 동굴 끝 방의 박쥐 대장을 찾아가요.';
       if (m.id === 'ch1-boss-m1') return '숲 미로 깊은 곳의 수호자를 찾아가요. 열쇠는 미로 어딘가에!';
       const who = m.npc ? npcName(m.npc) : '';

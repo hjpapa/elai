@@ -167,3 +167,37 @@ describe('2장 반복 학습', () => {
     }
   });
 });
+
+
+describe('3장 조건과 센서', () => {
+  const c = (cmd: 'forward' | 'turnRight' | 'turnLeft' | 'wait'): Block => ({t:'cmd',cmd});
+  const sensor: Block[] = [{t:'repeat',times:9,body:[{t:'if',cond:'wallAhead',yes:[c('turnRight')],no:[c('forward')]}]}];
+  const rightHand: Block[] = [{t:'repeat',times:9,body:[{t:'repeat',times:9,body:[{t:'if',cond:'pathRight',yes:[c('turnRight'),c('forward')],no:[{t:'if',cond:'pathAhead',yes:[c('forward')],no:[c('turnLeft')]}]}]}]}];
+  it('같은 네 블록 조건 프로그램이 세 길에서 모두 성공해요', () => {
+    for(const id of ['ch3-p2-m1','ch3-p2-m2','ch3-p2-m3']) {
+      const m=allMissions().find(e=>e.mission.id===id)!.mission;
+      if(m.kind!=='blockCode') throw new Error(id);
+      const env=new GridEnv(m.data!);const out=run(sensor,env);
+      expect(env.outcome(out.truncated),id).toBe('success');
+      expect(countBlocks(sensor)).toBe(m.data!.optimal);
+      const flat=new GridEnv(m.data!);
+      const short=run([c('forward'),c('forward'),c('turnRight'),c('forward')],flat);
+      expect(flat.outcome(short.truncated),id).not.toBe('success');
+    }
+  });
+  it('오른손 규칙으로 보스 퍼즐을 끝까지 나와요', () => {
+    const m=allMissions().find(e=>e.mission.id==='ch3-boss-m1')!.mission;
+    if(m.kind!=='blockCode') throw new Error('boss maze');
+    const env=new GridEnv(m.data!);const out=run(rightHand,env);
+    expect(env.outcome(out.truncated)).toBe('success');
+    expect(countBlocks(rightHand)).toBe(m.data!.optimal);
+  });
+  it('질문 세 개로 여덟 동물이 네 종류의 순수한 잎으로 나뉘어요', () => {
+    const m=allMissions().find(e=>e.mission.id==='ch3-p3-m1')!.mission;
+    if(m.kind!=='classify') throw new Error('tree');
+    const d=m.data!;expect(d.cards).toHaveLength(8);expect(d.groups).toHaveLength(4);
+    const leaves=new Map<string,Set<string>>();
+    for(const card of d.cards){const path=d.questions!.map(q=>Number(card.features.includes(q.feature))).join('');const groups=leaves.get(path)??new Set<string>();groups.add(card.group);leaves.set(path,groups);}
+    expect([...leaves.values()].every(g=>g.size===1)).toBe(true);
+  });
+});

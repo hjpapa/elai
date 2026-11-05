@@ -10,6 +10,7 @@ export interface GridFrame {
   /** 이번 걸음에서 생긴 일 */
   event: 'move' | 'turn' | 'collect' | 'bump' | 'goal' | 'none';
   collected: number;
+  signalRed: boolean;
 }
 
 export type GridOutcome = 'success' | 'bump' | 'notReached' | 'missingGems' | 'tooLong' | 'wrongPaint';
@@ -68,6 +69,8 @@ export class GridEnv implements Env {
     return c === undefined || c === '#' || c === '~';
   }
 
+  private signalRed(): boolean { return this.frames.length % 2 === 0; }
+
   private allGems(): boolean {
     return !this.data.mustCollect || this.collected.size === this.gems.size;
   }
@@ -76,7 +79,7 @@ export class GridEnv implements Env {
     const [dx, dy] = DELTA[d];
     const nx = this.x + dx;
     const ny = this.y + dy;
-    if (this.blocked(nx, ny)) {
+    if (this.blocked(nx, ny) || (this.cell(nx, ny) === '!' && this.signalRed())) {
       this.bumped = true;
       this.push('bump', path);
       return;
@@ -95,7 +98,7 @@ export class GridEnv implements Env {
   }
 
   private push(event: GridFrame['event'], path: string): void {
-    this.frames.push({ x: this.x, y: this.y, dir: this.dir, path, event, collected: this.collected.size });
+    this.frames.push({ x: this.x, y: this.y, dir: this.dir, path, event, collected: this.collected.size, signalRed: (this.frames.length + (event === 'bump' ? 0 : 1)) % 2 === 0 });
   }
 
   exec(cmd: Cmd, path: string): void {
@@ -138,6 +141,8 @@ export class GridEnv implements Env {
 
   test(cond: Cond): boolean {
     switch (cond) {
+      case 'signalRed':
+        return this.cell(...this.ahead(0)) === '!' && this.signalRed();
       case 'wallAhead':
         return this.blocked(...this.ahead(0));
       case 'pathAhead':

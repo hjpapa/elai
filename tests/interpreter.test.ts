@@ -127,3 +127,18 @@ describe('무늬 그리기', () => {
     expect(env.outcome(result.truncated)).toBe('tooLong');
   });
 });
+
+
+describe('신호 센서',()=>{
+  const d: BlockCodeData = { intro:'',grid:['S!..G'],startDir:'right',palette:['forward','wait'],allowRepeat:true,allowIf:['signalRed'],optimal:4,hint:'' };
+  it('빨간불에 바로 들어가면 실패하고 기다리면 지나가요',()=>{
+    const wrong = play(d,seq('forward'));
+    expect(wrong.outcome).toBe('bump');
+    expect(wrong.env.frames.at(-1)?.signalRed).toBe(true);
+    expect(play(d,seq('wait','forward','forward','forward','forward')).outcome).toBe('success');
+  });
+  it('같은 조건을 반복하며 신호를 살펴봐요',()=>{
+    const p: Block[] = [{t:'repeat',times:8,body:[{t:'if',cond:'signalRed',yes:seq('wait'),no:seq('forward')}]}];
+    expect(play(d,p).outcome).toBe('success');
+  });
+});

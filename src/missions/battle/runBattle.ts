@@ -52,8 +52,10 @@ export async function runBattle(mobId: string, opts: BattleOptions = {}): Promis
   const s = app.state;
   const stats = s.stats;
   const battle = new Battle({ stats, hp: s.data.hp, slots: s.slots, mob });
-  const programMode = s.data.robiParts.some(id => ROBI_PARTS[id]?.unlocks.repeat);
-  const editor = programMode ? new ProgramEditor({ palette: CARDS, allowRepeat: true, maxBlocks: s.slots, costs: CARD_COST }, opts.prefill) : null;
+  const repeatUnlocked = s.data.robiParts.some(id => ROBI_PARTS[id]?.unlocks.repeat);
+  const conditions = [...new Set(s.data.robiParts.flatMap(id => ROBI_PARTS[id]?.unlocks.conds ?? []))];
+  const programMode = repeatUnlocked || conditions.length > 0;
+  const editor = programMode ? new ProgramEditor({ palette: CARDS, allowRepeat: repeatUnlocked, allowIf: conditions, maxBlocks: s.slots, maxRepeat: battle.ticksPerRound, costs: CARD_COST }, opts.prefill) : null;
   editor?.el.classList.add('inline');
   const sm = app.game.scene;
   const worldOn = sm.isActive('World');
@@ -64,7 +66,7 @@ export async function runBattle(mobId: string, opts: BattleOptions = {}): Promis
 
   const scene = sm.getScene('Battle') as BattleScene;
   const ready = new Promise<void>((r) => scene.events.once(Phaser.Scenes.Events.CREATE, () => r()));
-  sm.run('Battle', { mob, save: s.data, floor: opts.floor ?? (MAPS[s.data.location.map]?.theme === 'cave' ? 'tile-cave' : 'tile-grass') } satisfies BattleSceneData);
+  sm.run('Battle', { mob, save: s.data, floor: opts.floor ?? (MAPS[s.data.location.map]?.theme === 'cave' ? 'tile-cave' : MAPS[s.data.location.map]?.theme === 'desert' ? 'tile-sand' : 'tile-grass') } satisfies BattleSceneData);
   await ready;
 
   // ── DOM ──
@@ -134,20 +136,27 @@ export async function runBattle(mobId: string, opts: BattleOptions = {}): Promis
   };
 
   /** 실행 중에는 이번 라운드에 몹이 실제로 한 행동을 보여 줘요(계산이 이미 다음 라운드로 넘어가 있어서). */
-  let shownIntents: MobAction[] | null = null;
+  let shownIntents: (MobAction | null)[] | null = null;
+  let revealedTicks = 0;
   let shownTicks: TickEvent[] | null = null;
   const renderGrid = (marks: Map<number, 'run' | 'err'> = new Map()) => {
     const n = battle.ticksPerRound;
-    const intents = shownIntents ?? battle.intents(n);
+    const intents = shownIntents ?? battle.displayIntents(n);
     grid.style.gridTemplateColumns = `56px repeat(${n}, minmax(40px, 1fr))`;
     clear(grid);
     grid.append(h('div', { class: 'muted', style: 'align-self:center' }, mob.name.length > 4 ? '몹' : mob.name));
-    intents.forEach((a) => grid.append(h('div', { class: `intent ${a}` }, pxImg(icon(intentIcon(a)), 32), INTENT_LABEL[a])));
+    intents.forEach((a) => grid.append(a === null ? h('div', { class: 'intent unknown', 'aria-label': '실행할 때 알 수 있어요' }, '?') : h('div', { class: 'intent ' + a }, pxImg(icon(intentIcon(a)), 32), INTENT_LABEL[a])));
     grid.append(h('div', { class: 'muted', style: 'align-self:center' }, editor ? '미리 보기' : '나'));
     if (editor) {
-      const preview = shownTicks ?? battle.clone().runRound(editor.value).ticks;
+      const preview = shownTicks
+        ? Array.from({ length: n }, (_, i) => mob.hiddenPattern && i >= revealedTicks ? null : shownTicks?.[i] ?? null)
+        : battle.preview(editor.value);
       for (let i = 0; i < n; i++) {
         const t = preview[i];
+        if (!t && mob.hiddenPattern) {
+          grid.append(h('div', { class: 'tick' }, h('div', { class: 'bslot unknown', 'aria-label': (i + 1) + '번째: 실행하며 결정' }, '?', h('small', {}, '실행하며 결정'))));
+          continue;
+        }
         const card = t?.card ?? 'wait';
         const cell = h('div', { class: ['bslot filled', cmdKind(card), t?.path == null ? 'empty' : '', t?.wanted ? 'err' : '', marks.get(i) ?? ''].join(' '),
           'aria-label': (i + 1) + '번째 미리 보기: ' + CMD_LABEL[card], title: t?.wanted ? '에너지가 모자라 쉬어요' : CMD_LABEL[card] },
@@ -269,13 +278,16 @@ export async function runBattle(mobId: string, opts: BattleOptions = {}): Promis
       busy = true;
       refreshBars();
       renderGrid();
-      shownIntents = battle.intents();
+      shownIntents = battle.displayIntents();
+      revealedTicks = 0;
       const result = battle.runRound(program());
       shownTicks = result.ticks;
 
       let shownMobHp = battle.mobHp + result.ticks.reduce((n, t) => n + t.dealt - t.mobHealed, 0);
       let shownHp = battle.playerHp + result.ticks.reduce((n, t) => n + t.taken - t.healed, 0);
       for (const t of result.ticks) {
+        revealedTicks = t.tick + 1;
+        shownIntents[t.tick] = t.mobAction;
         renderGrid(new Map([[t.tick, 'run']]));
         editor?.highlight(t.path);
         await scene.playerAct(t.card, t.dealt, t.blocked, t.healed);
@@ -316,6 +328,7 @@ export async function runBattle(mobId: string, opts: BattleOptions = {}): Promis
       busy = false;
       shownIntents = null;
       shownTicks = null;
+      revealedTicks = 0;
       editor?.highlight(null);
       newRound();
     });

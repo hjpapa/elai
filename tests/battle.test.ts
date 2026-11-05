@@ -168,3 +168,45 @@ describe('2장: 반복은 같은 카드 위치의 에너지를 한 번만 써요
     expect(bad.lostRatio).toBeGreaterThan(.2);
   });
 });
+
+const conditional: Block[] = [{ t: 'repeat', times: 12, body: [{ t: 'if', cond: 'enemySmash', yes: cards('guard'), no: cards('attack') }] }];
+
+describe('3장 조건 학습과 숨은 행동', () => {
+  const setup = (mobId: string, seed: number, level = 8) => {
+    const save = player(level, ['rangerhat', 'brush', 'cloak', 'windboots']);
+    save.robiParts = ['wheel', 'memoryChip', 'sensor'];
+    const stats = derivedStats(save);
+    const mob = { ...MOBS[mobId], hiddenPattern: { choices: ['idle', 'smash'] as MobAction[], seed } };
+    return new Battle({ stats, hp: stats.maxHp, slots: programSlots(save), mob });
+  };
+  const finish = (b: Battle, program: Block[]) => {
+    while (b.outcome === 'continue') b.runRound(program);
+    return b;
+  };
+  it('씨앗 1~20에서 조건은 무피해 승리하고, 고정 프로그램은 우회하지 못해요', () => {
+    for (const level of [8, 9, 10]) for (const mobId of ['mirageLizard', 'lizardChief']) for (let seed = 1; seed <= 20; seed++) {
+      const good = finish(setup(mobId, seed, level), conditional);
+      expect(good.outcome, mobId + ' Lv' + level + ' seed ' + seed).toBe('win');
+      expect(good.playerHp).toBe(good.stats.maxHp);
+      const spam = finish(setup(mobId, seed, level), repeat(12, cards('attack')));
+      expect(spam.outcome, '공격 ' + mobId + ' Lv' + level + ' seed ' + seed).toBe('lose');
+      const flat = finish(setup(mobId, seed, level), cards('wait', 'attack', 'wait', 'guard', 'wait', 'attack', 'guard'));
+      expect(flat.outcome, '고정 ' + mobId + ' Lv' + level + ' seed ' + seed).not.toBe('win');
+      const fixedRepeat = finish(setup(mobId, seed, level), repeat(6, cards('attack', 'guard')));
+      expect(fixedRepeat.outcome, '고정 반복 ' + mobId + ' Lv' + level + ' seed ' + seed).toBe('timeout');
+    }
+  });
+  it('같은 씨앗과 복제의 계산은 같고, 씨앗이 달라도 공개 미리 보기는 같아요', () => {
+    const first = setup('lizardChief', 1);
+    expect(first.displayIntents()).toEqual(Array.from({ length: 12 }, (_, i) => i % 2 ? null : 'guard'));
+    expect(first.preview(conditional)).toEqual(Array(12).fill(null));
+    expect(first.preview(cards('attack'))).toEqual(Array(12).fill(null));
+    const actual = first.clone().runRound(conditional);
+    expect(first.runRound(conditional)).toEqual(actual);
+    expect(setup('lizardChief', 1).runRound(conditional)).toEqual(actual);
+    const second = setup('lizardChief', 2);
+    expect(second.preview(conditional)).toEqual(Array(12).fill(null));
+    expect(second.intents()).not.toEqual(setup('lizardChief', 1).intents());
+    expect(first.clone().runRound(conditional)).toEqual(first.runRound(conditional));
+  });
+});

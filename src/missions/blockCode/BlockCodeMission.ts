@@ -111,6 +111,7 @@ export class BlockCodeMission implements MissionEngine {
         const cell = h('div', { class: `cell ${(x + y) % 2 ? 'alt' : ''} ${c === '#' ? 'wall' : c === '~' ? 'water' : ''}` });
         if (d.paint?.[y]?.[x] === 'x') { cell.style.outline = '2px dashed #f2c94c'; cell.style.outlineOffset = '-4px'; cell.setAttribute('aria-label', '칠할 칸'); }
         if (d.paint && x === env.start.x && y === env.start.y) cell.classList.add('trail');
+        if (c === '!') cell.append(h('span', { 'data-signal': '', style: 'background:#b43242;color:white;border-radius:50%;font-size:10px;padding:3px' }, '빨강'));
         const key = c === '#' ? 'icon-cell-tree' : c === '~' ? 'icon-cell-water' : c === 'G' ? 'icon-goal' : c === '*' ? 'icon-gem' : '';
         if (key) cell.append(pxImg(this.ctx.icon(key), 32));
         this.cells.push(cell);
@@ -138,6 +139,7 @@ export class BlockCodeMission implements MissionEngine {
     this.placeRobot(env.start.x, env.start.y, this.data.startDir ?? 'right');
     for (const c of this.cells) c.classList.remove('trail');
     if (this.data.paint) this.cells[env.start.y * env.width + env.start.x]?.classList.add('trail');
+    this.renderSignals(true);
     this.restoreGems();
     this.editor.highlight(null);
   }
@@ -158,7 +160,15 @@ export class BlockCodeMission implements MissionEngine {
     return { frames: env.frames, outcome: env.outcome(r.truncated) };
   }
 
+  private renderSignals(red: boolean): void {
+    for (const el of this.board.querySelectorAll<HTMLElement>('[data-signal]')) {
+      el.textContent = red ? '빨강' : '초록';
+      el.style.background = red ? '#b43242' : '#267046';
+    }
+  }
+
   private showFrame(f: GridFrame): void {
+    this.renderSignals(f.signalRed);
     const w = this.data.grid[0].length;
     this.editor.highlight(f.path, f.event === 'bump' ? 'err' : 'run');
     this.placeRobot(f.x, f.y, f.dir);

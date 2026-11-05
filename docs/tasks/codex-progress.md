@@ -19,3 +19,19 @@
 - Claude 검토 요청: 반복 에너지 path 규칙과 clone 부작용 없음, 12칸 UI 스크롤, 후속 장 능력 확장 때 학습 우회 방지 유지.
 - 필요한 변경: 승인 범위 밖 필수 변경 없음.
 - 문서: README.md, docs/curriculum.md, docs/tasks/README.md의 플레이 범위/상태 갱신.
+
+## C5 — 3장 갈림길 사막
+
+- 상태: 완료(검토 대기). 커밋 첫 줄 “C5: 3장 갈림길 사막”으로 해시를 확인해요.
+- 엔진: missions/classify/{evaluate,ClassifyMission}.ts 및 registry (질문나무/나누기/묶기 순수평가·입력UI·2/3회 실패도움·키보드포커스), gridEnv/BlockCodeMission 및 ui/labels (신호조건/빨강진입실패/기다리기/색·글자), game/battle/sim·missions/battle/runBattle·ui/programEditor·styles (씨앗숨은행동/센서조건/숨김미리보기/최대12회반복), mapRuntime/paint/WorldScene/BattleScene/progress (사막타일·바닥·길안내).
+- 데이터: chapters/ch3.ts의 기존 장메타/파트id·제목 유지, 실제9미션(신호1·센서3·질문나무1·보스미로/전투/퀴즈/설명하기4). maps/desert.ts(20×16)·desertmaze.ts(11×9 안개), maps/index·village, npcs, rpg/mobs·robiParts. 센서/배지3/조건의길잡이/숲지기모자/복구3 플래그 연결.
+- 계약: schema의 Cond.signalRed, TileKind.sandstone, theme.desert, 선택 MobDef.hiddenPattern, classify의 PlannedData→ClassifyData 구체화만 승인범위에서 추가. 기존 타일 tile-sand는 그대로 재사용. hiddenPattern의 0-based 홀수차례(2·4·6번째)는 씨앗으로 선택되고 나머지는 기존 패턴이에요.
+- 그림: assets-src/tools/draw-desert.mjs와8종텍스트/PNG, assets.ts 8키추가, manifest/atlas/원본README. 전체131키337프레임,512×512atlas,32색. 로비센서+기존부품10프레임정렬검토. 검토판 assets-preview/c5-art.png,c5-robi-parts.png.
+- 테스트: 기존61개 보존, classify/interpreter/battle/curriculum/maps/state/그림 포함 총75개 통과, assets생성/build/diff 검사 통과.
+- 밸런스: 일반도마뱀 HP150/공격8/방어2/8차례/강타0.5,대장HP180/공격10/방어3/12차례/강타0.7. 둘다 visible guard,hidden idle 또는smash. HP70/130에서 발견한공격우회는150으로수정. Lv8·9·10×씨앗1~20×두몹=120조건전투 모두0피해승리, 같은경우 공격반복패배·고정평평한프로그램승리불가·공격막기고정반복시간초과. clone동일결과와공개preview전부null로정보누출없음을검사.
+- 성장: 본편보스전누적655XP(이전421+2장보스60+3장미션100+3장몹54+상자20),Lv10까지도달하여권장Lv8충족. 실제도달Lv10도우회방지검사포함.
+- 화면: 전용테스트저장(C4완료이어하기),375×812. 신호/동일센서프로그램3길/질문나무/오른손규칙미로/조건보스/퀴즈/설명하기 전9미션3별기록과badge3,title,clear/restore확인. 일부프로그램/장면은개발인터페이스로준비하고 실제실행/선택/보상흐름을검증. Lv8조건보스0피해3별. 예고6칸은?, 미리보기12칸모두실행하며결정, 패널397.875px. 별도질문나무실패2회힌트/3회첫질문,Tab/Enter포커스,4개순수잎각2장,1별4시도2힌트보상검증. 질문나무가로넘침없음(357/357px),세로스크롤로완료접근,해당브라우저오류/경고0.
+- 화면자료: 외부검증폴더 output/playwright/c5-{signal-mobile,tree-leaves,tree-success,right-hand-win,hidden-battle,boss-win,complete}.png(C4와동일기본경로).
+- 확인못함: 모든맵을걸어다니는전체연속플레이,실물휴대폰,장시간. 맵접근/gate/보상/성장자동검증. 센서획득전안전NPC접근경로도읽기검토했어요.
+- Claude 검토요청: 숨은행동정보가미리보기로새지않는지,조건카드가씨앗에따라실행되는지,질문나무의이진경로표시와학년난이도. 미로보스제공NPC와HUD안내불일치는수정했어요.
+- 필요한변경: 승인범위밖필수변경없음. 문서 README/curriculum/tasks목록과 C5상세지시서를갱신했어요.

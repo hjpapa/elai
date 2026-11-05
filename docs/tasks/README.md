@@ -30,7 +30,8 @@ Claude가 지시서를 쓰고, 사용자가 Codex 앱에서 실행해요.
 | C2 | [codex-02-polish.md](codex-02-polish.md) — 아틀라스(로딩), 효과음·배경 음악, 전투 연출, 로비 안테나, 휴대폰 화면 | 완료(검토 통과, main 병합) |
 | C3 | [codex-03-ch1-text.md](codex-03-ch1-text.md) — 0·1장 아이템·도감·NPC 대사·미션 안내 글 | 완료(검토 통과, main 병합) |
 | C4 | [codex-04-ch2.md](codex-04-ch2.md) — 2장 반복의 동굴 전체(엔진·데이터·그림·테스트) | 완료(검토 대기) |
-| C5~C10 | [codex-roadmap.md](codex-roadmap.md) — 3~8장과 엔딩(단계마다 Codex가 자세한 지시서를 먼저 써요) | 대기 |
+| C5 | [codex-05-ch3.md](codex-05-ch3.md) — 3장 갈림길 사막 | 완료(검토 대기) |
+| C6~C10 | [codex-roadmap.md](codex-roadmap.md) — 3~8장과 엔딩(단계마다 Codex가 자세한 지시서를 먼저 써요) | 대기 |
 | 연속 실행 | [codex-run-all.md](codex-run-all.md) — C4~C10을 한 번에, 단계마다 커밋, 기록은 `codex-progress.md` | 준비됨 |
 
 고치는 파일이 겹치지 않는 작업은 동시에 돌려도 돼요. 이때는 꼭 **각자의 작업 폴더**를 열어 주세요.

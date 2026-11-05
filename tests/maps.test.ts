@@ -143,3 +143,20 @@ describe('2장 동굴 길과 성장', () => {
     expect(xp).toBeGreaterThanOrEqual(xpForLevel(MOBS.batKing.recommendedLevel));
   });
 });
+
+
+describe('3장 길과 성장', () => {
+  it('사막과 미로의 모든 NPC·상자·포털에 갈 수 있어요', () => {
+    const q=world(['ch3-clear','lizard-fixed'],['ch3-p3-m1']);
+    for(const def of [MAPS.desert,MAPS.desertmaze]) for(const o of def.objects.filter(o=>['npc','chest','portal'].includes(o.type)&&q.check(o.when))) expect(canReach(def,q,def.spawn,o),def.id+'/'+o.id).toBe(true);
+    const gate=MAPS.desert.objects.find(o=>o.id==='to-desertmaze')!;
+    expect(gate.type==='portal'&&gate.open?.mission).toBe('ch3-p3-m1');
+    const townGate=MAPS.village.objects.find(o=>o.id==='to-ch3')!;
+    expect(townGate.type==='portal'&&townGate.open?.flag).toBe('ch2-clear');
+  });
+  it('3장 보스 전 본편 경험치로 권장 레벨 8에 닿아요', () => {
+    let xp=allMissions().filter(e=>e.chapter.index<=3&&!['ch3-boss-m2','ch3-boss-m3','ch3-boss-m4'].includes(e.mission.id)).reduce((n,e)=>n+(e.mission.reward?.xp??0),0);
+    for(const def of Object.values(MAPS).filter(d=>['ch0','ch1','ch2','ch3'].includes(d.chapter??''))) for(const o of def.objects){if(o.type==='mob')xp+=MOBS[o.mob].xp;if(o.type==='chest')xp+=o.reward.xp??0;}
+    expect(xp).toBeGreaterThanOrEqual(xpForLevel(MOBS.lizardChief.recommendedLevel));
+  });
+});

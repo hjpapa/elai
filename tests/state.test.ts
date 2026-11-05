@@ -136,3 +136,10 @@ it('메모리 칩은 반복을 열고 슬롯을 늘리지 않아요', () => {
   expect(state.data.robiParts.some(id => ROBI_PARTS[id].unlocks.repeat)).toBe(true);
   expect(state.slots).toBe(slots);
 });
+
+
+it('센서를 받으면 강타 조건을 열고 슬롯은 그대로예요', () => {
+  const state=new GameState(freshSave('별빛'));state.addXp(500);const before=state.slots;
+  state.completeMission('ch3-p2-m3',{success:true,stars:3,attempts:1,hints:0});
+  expect(state.data.robiParts).toContain('sensor');expect(ROBI_PARTS.sensor.unlocks.conds).toContain('enemySmash');expect(state.slots).toBe(before);
+});

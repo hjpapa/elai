@@ -16,6 +16,7 @@ export const CMD_LABEL: Record<Cmd, string> = {
 };
 
 export const COND_LABEL: Record<Cond, string> = {
+  signalRed: '앞 신호가 빨강이면',
   wallAhead: '앞이 막혔다면',
   pathAhead: '앞에 길이 있다면',
   pathLeft: '왼쪽에 길이 있다면',

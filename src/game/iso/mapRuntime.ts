@@ -7,6 +7,7 @@ export const WALKABLE: Record<TileKind, boolean> = {
   flower: true,
   path: true,
   sand: true,
+  sandstone: false,
   stone: true,
   wood: true,
   bridge: true,
@@ -23,6 +24,7 @@ export const TILE_TEXTURE: Record<TileKind, string | null> = {
   flower: 'tile-flower',
   path: 'tile-path',
   sand: 'tile-sand',
+  sandstone: 'tile-sand',
   stone: 'tile-stone',
   wood: 'tile-wood',
   bridge: 'tile-bridge',
@@ -32,7 +34,7 @@ export const TILE_TEXTURE: Record<TileKind, string | null> = {
   void: null,
 };
 
-export const BLOCK_TEXTURE: Partial<Record<TileKind, string>> = { hedge: 'block-hedge', wall: 'block-wall', rockwall: 'block-cave' };
+export const BLOCK_TEXTURE: Partial<Record<TileKind, string>> = { hedge: 'block-hedge', wall: 'block-wall', rockwall: 'block-cave', sandstone: 'block-sandstone' };
 
 export interface Cell {
   kind: TileKind;
