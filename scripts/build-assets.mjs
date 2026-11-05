@@ -80,6 +80,34 @@ function contactSheet(images, background) {
   return sheet;
 }
 
+function packAtlas(images) {
+  const padding = 2;
+  const order = images.map((png, i) => ({ png, i })).sort((a, b) => b.png.height - a.png.height || b.png.width - a.png.width || a.i - b.i);
+  for (const size of [256, 512, 1024, 2048]) {
+    let x = padding, y = padding, rowH = 0;
+    const placements = [];
+    for (const { png, i } of order) {
+      if (png.width + padding * 2 > size) break;
+      if (x + png.width + padding > size) { x = padding; y += rowH + padding * 2; rowH = 0; }
+      if (y + png.height + padding > size) break;
+      placements.push({ png, i, x, y });
+      x += png.width + padding * 2;
+      rowH = Math.max(rowH, png.height);
+    }
+    if (placements.length !== images.length) continue;
+    const atlas = new PNG({ width: size, height: size });
+    const frames = {};
+    for (const { png, i, x, y } of placements) {
+      PNG.bitblt(png, atlas, 0, 0, png.width, png.height, x, y);
+      const w = png.width, h = png.height;
+      frames[ASSETS[i].key] = { frame: { x, y, w, h }, rotated: false, trimmed: false,
+        spriteSourceSize: { x: 0, y: 0, w, h }, sourceSize: { w, h } };
+    }
+    return { image: atlas, data: { frames, meta: { image: 'atlas.png', format: 'RGBA8888', size: { w: size, h: size }, scale: '1' } } };
+  }
+  throw new Error('그림 묶음이 2048×2048을 넘어요.');
+}
+
 async function main() {
   const palette = parsePalette(JSON.parse(await readFile(resolve(root, 'assets-src/palette.json'), 'utf8')));
   const seen = new Set();
@@ -94,6 +122,7 @@ async function main() {
     const frames = parseFrames(await readFile(source, 'utf8'), spec, palette.symbols);
     images.push(render(spec, frames, palette.symbols));
   }
+  const atlas = packAtlas(images);
   const sheet = contactSheet(images, palette.symbols.get('O') ?? [...palette.symbols.values()][0]);
   const entries = ASSETS.map(spec => ({ key: spec.key, file: `${spec.kind}/${spec.key}.png` }));
   for (let i = 0; i < entries.length; i++) {
@@ -104,7 +133,10 @@ async function main() {
   const preview = resolve(root, 'assets-preview/contact-sheet.png');
   await mkdir(dirname(preview), { recursive: true });
   await writeFile(preview, PNG.sync.write(sheet));
-  const manifest = { version: 1, palette: palette.colors, assets: entries };
+  await writeFile(resolve(root, 'public/assets/atlas.png'), PNG.sync.write(atlas.image));
+  await writeFile(resolve(root, 'public/assets/atlas.json'), JSON.stringify(atlas.data, null, 2) + '\n');
+  console.log('아틀라스: ' + atlas.image.width + '×' + atlas.image.height);
+  const manifest = { version: 1, palette: palette.colors, assets: entries, atlas: { image: 'atlas.png', data: 'atlas.json' } };
   await writeFile(resolve(root, 'public/assets/manifest.json'), JSON.stringify(manifest, null, 2) + '\n');
   console.log(`그림 ${entries.length}개 · 팔레트 ${palette.colors.length}색 생성 완료`);
   console.log(`검토용 그림: assets-preview/contact-sheet.png (${sheet.width}×${sheet.height}, 4배)`);

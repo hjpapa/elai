@@ -75,13 +75,29 @@ export class BattleScene extends Phaser.Scene {
     this.mob.play(animKey);
   }
 
+  private get reducedMotion(): boolean {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
+  private celebrate(x: number, y: number): void {
+    for (let i = 0; i < 7; i++) {
+      const angle = i * Math.PI * 2 / 7;
+      const star = this.add.image(x + Math.cos(angle) * 9, y + Math.sin(angle) * 7, 'fx-sparkle', i % 4).setDepth(5001);
+      this.tweens.add({ targets: star, x: this.reducedMotion ? star.x : x + Math.cos(angle) * 23,
+        y: this.reducedMotion ? star.y : y + Math.sin(angle) * 18, alpha: 0, duration: 320,
+        ease: 'Quad.easeOut', onComplete: () => star.destroy() });
+    }
+  }
+
   private fx(key: string, x: number, y: number, frames: number): Promise<void> {
     if (!this.textures.exists(key)) return Promise.resolve();
     const img = this.add.image(x, y, key, 0).setDepth(5000);
+    if (!this.reducedMotion && key === 'fx-heal') this.tweens.add({ targets: img, y: y - 8, duration: frames * 60 });
+    if (!this.reducedMotion && key === 'fx-guard') this.tweens.add({ targets: img, scale: 1.12, duration: 90, yoyo: true });
     return new Promise((resolve) => {
       let f = 0;
       const timer = this.time.addEvent({
-        delay: 70,
+        delay: 60,
         repeat: frames - 1,
         callback: () => {
           f++;
@@ -95,7 +111,14 @@ export class BattleScene extends Phaser.Scene {
     });
   }
 
+  private recoil(targets: Phaser.GameObjects.GameObject[]): Promise<void> {
+    if (this.reducedMotion) return Promise.resolve();
+    return new Promise(resolve => this.tweens.add({ targets, x: '+=2', duration: 40,
+      yoyo: true, repeat: 1, onComplete: () => resolve() }));
+  }
+
   private lunge(targets: Phaser.GameObjects.GameObject[], dx: number, dy: number): Promise<void> {
+    if (this.reducedMotion) return Promise.resolve();
     return new Promise((resolve) =>
       this.tweens.add({ targets, x: `+=${dx}`, y: `+=${dy}`, duration: 110, yoyo: true, ease: 'Quad.easeOut', onComplete: () => resolve() }),
     );
@@ -119,7 +142,7 @@ export class BattleScene extends Phaser.Scene {
         this.floatText('막혔어요', this.mobPos.x, this.mobPos.y - 26, '#a8dcff');
       } else {
         this.mob.stop().setFrame(MOB_FRAMES.hit);
-        await this.fx('fx-hit', this.mobPos.x, this.mobPos.y - 12, 3);
+        await Promise.all([this.fx('fx-hit', this.mobPos.x, this.mobPos.y - 12, 3), this.recoil([this.mob])]);
         this.floatText(`-${dealt}`, this.mobPos.x, this.mobPos.y - 26, '#ff9a8f');
         this.mob.play(`${this.mobDef.sprite}-idle`);
       }
@@ -140,8 +163,8 @@ export class BattleScene extends Phaser.Scene {
         await this.fx('fx-guard', this.heroPos.x, this.heroPos.y - 12, 3);
         this.floatText('막았어요!', this.heroPos.x, this.heroPos.y - 26, '#a8dcff');
       } else {
-        this.cameras.main.shake(action === 'smash' ? 260 : 120, action === 'smash' ? 0.012 : 0.005);
-        await this.fx('fx-hit', this.heroPos.x, this.heroPos.y - 12, 3);
+        if (!this.reducedMotion) this.cameras.main.shake(action === 'smash' ? 150 : 90, action === 'smash' ? 0.004 : 0.002);
+        await Promise.all([this.fx('fx-hit', this.heroPos.x, this.heroPos.y - 12, 3), this.recoil(this.hero)]);
         this.floatText(`-${taken}`, this.heroPos.x, this.heroPos.y - 26, '#ff9a8f');
       }
     } else if (action === 'charge') {
@@ -159,11 +182,15 @@ export class BattleScene extends Phaser.Scene {
   }
 
   async purify(): Promise<void> {
-    this.mob.stop().setFrame(MOB_FRAMES.purified);
+    this.mob.stop().clearTint().setFrame(MOB_FRAMES.purified);
+    this.celebrate(this.mobPos.x, this.mobPos.y - 20);
+    this.floatText('친구가 됐어요!', this.mobPos.x, this.mobPos.y - 32, '#d6e69a');
     await this.fx('fx-purify', this.mobPos.x, this.mobPos.y - 14, 6);
   }
 
   async faint(): Promise<void> {
-    await new Promise<void>((r) => this.tweens.add({ targets: this.hero, alpha: 0.3, duration: 500, onComplete: () => r() }));
+    this.floatText('잠깐 쉬어요', this.heroPos.x, this.heroPos.y - 24, '#c7d6dc');
+    await new Promise<void>((r) => this.tweens.add({ targets: this.hero, alpha: 0.65,
+      y: this.reducedMotion ? this.heroPos.y : this.heroPos.y + 3, duration: 400, onComplete: () => r() }));
   }
 }
