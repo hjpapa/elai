@@ -13,8 +13,8 @@ const list: MobDef[] = [
     pattern: ['idle', 'attack', 'idle', 'charge', 'smash'],
     xp: 5,
     coins: 5,
-    dex: '마을 연습장의 허수아비 봇이에요.\n맞아도 끄떡없어요.',
-    purified: '삐빅! 연습 끝! 실력이 좋은걸요?',
+    dex: '연습을 좋아하는 마을 친구예요.\n번개 뒤 부딪힐 때 막아 봐요.',
+    purified: '삐빅! 함께 연습해서 즐거웠어요.\n숲에서도 순서를 잘 살펴봐요!',
     recommendedLevel: 1,
   },
   {
@@ -33,8 +33,8 @@ const list: MobDef[] = [
       { item: 'vine', chance: 0.5 },
       { item: 'apple', chance: 0.15 },
     ],
-    dex: '덩굴이 엉켜 생긴 장난꾸러기 슬라임이에요.\n번개를 모은 다음 세게 부딪혀요.',
-    purified: '말랑! 이제 장난 안 칠게요.',
+    dex: '덩굴을 꼬며 장난치는 친구예요.\n번개 뒤에는 세게 부딪혀요.',
+    purified: '말랑! 엉킨 덩굴이 풀렸어요.\n다음에는 함께 놀아요!',
     recommendedLevel: 1,
   },
   {
@@ -55,8 +55,8 @@ const list: MobDef[] = [
     xp: 10,
     coins: 8,
     drops: [{ item: 'jelly', chance: 0.3 }],
-    dex: '프로그램 속에 숨어 순서를 뒤섞는 벌레예요.\n싸움이 시작되면 로비의 카드를 망가뜨려요.',
-    purified: '꼬물꼬물… 이제 순서를 지킬게요!',
+    dex: '카드 순서를 헷갈리는 친구예요.\n번개 다음 칸은 막기로 고쳐 봐요.',
+    purified: '꼬물! 이제 차례를 알겠어요.\n함께 천천히 해 봐요!',
     recommendedLevel: 2,
   },
   {
@@ -74,8 +74,8 @@ const list: MobDef[] = [
     heal: 6,
     xp: 0,
     coins: 0,
-    dex: '순서의 숲을 지키는 이끼 거인이에요.\n고장 나서 숲의 길을 뒤죽박죽으로 만들었어요.',
-    purified: '머릿속이 맑아졌어요. 고마워요, 탐험가.',
+    dex: '고장 나서 길을 막는 숲지기예요.\n번개 뒤는 막고, 방패 땐 쉬어요.',
+    purified: '머릿속 순서가 다시 이어졌어요.\n고마워요! 함께 숲을 돌봐요.',
     recommendedLevel: 4,
   },
 ];
