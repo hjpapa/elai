@@ -84,6 +84,8 @@ export const BASE_LEGEND = {
   B: 'bridge',
   c: 'cave',
   R: 'rockwall',
+  K: 'castle',
+  k: 'castlewall',
   O: 'observatory',
   o: 'observatorywall',
   L: 'lab',

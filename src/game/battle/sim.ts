@@ -47,6 +47,8 @@ function seededHash(seed: number, index: number): number {
 }
 
 export interface TickEvent {
+  /** 자료를 바로잡기 전 보호막이 정화를 막아요. */
+  balanceLocked?: boolean;
   /** 이 틱이 시작되기 전 기록으로 계산한 값. 연출 중 미래 기록을 읽지 않아요. */
   forecast?: Forecast;
   /** 이 차례에 실제로 수집한 기록 */
@@ -84,6 +86,7 @@ export interface RoundResult {
 }
 
 export interface BattleSetup {
+  balanceReady?: boolean;
   forecast?: boolean;
   observations?: Observation[];
   classificationModel?: ClassificationModel;
@@ -103,6 +106,7 @@ export class Battle {
   readonly observations: Observation[];
   readonly classificationModel: ClassificationModel;
   readonly forecastEnabled: boolean;
+  readonly balanceReady: boolean;
   readonly actionHistory: MobAction[] = [];
   playerHp: number;
   mobHp: number;
@@ -112,19 +116,21 @@ export class Battle {
   private energyBonus = 0;
 
   constructor(setup: BattleSetup) {
-    this.mob = setup.mob;
+    this.balanceReady = setup.balanceReady ?? false;
+    const rule = setup.mob.balanceRule;
+    this.mob = { ...setup.mob, ...(rule && this.balanceReady ? { hp: rule.hp, atk: rule.atk, def: rule.def } : {}) };
     this.forecastEnabled = setup.forecast ?? false;
     this.classificationModel = { k: setup.classificationModel?.k ?? 3, samples: (setup.classificationModel?.samples ?? []).map(sample => ({ features: [...sample.features], label: sample.label })) };
     this.observations = (setup.observations ?? []).map(row => ({ ...row }));
     this.stats = setup.stats;
     this.slots = setup.slots;
     this.playerHp = Math.min(setup.hp, setup.stats.maxHp);
-    this.mobHp = setup.mob.hp;
+    this.mobHp = this.mob.hp;
   }
 
   /** 미리 보기는 실제 전투 상태를 바꾸지 않아요. */
   clone(): Battle {
-    const copy = new Battle({ stats: { ...this.stats }, hp: this.playerHp, slots: this.slots, mob: this.mob, observations: this.observations, classificationModel: this.classificationModel, forecast: this.forecastEnabled });
+    const copy = new Battle({ stats: { ...this.stats }, hp: this.playerHp, slots: this.slots, mob: this.mob, observations: this.observations, classificationModel: this.classificationModel, forecast: this.forecastEnabled, balanceReady: this.balanceReady });
     copy.actionHistory.push(...this.actionHistory);
     copy.mobHp = this.mobHp;
     copy.round = this.round;
@@ -235,7 +241,10 @@ export class Battle {
     return this.playerHp - before;
   }
 
+  get balanceLocked(): boolean { return !!this.mob.balanceRule && !this.balanceReady; }
+
   playerAttackDamage(): number {
+    if (this.balanceLocked) return 0;
     return Math.max(1, Math.round(this.stats.atk - this.mob.def * 0.5));
   }
 
@@ -273,6 +282,7 @@ export class Battle {
       const sample = this.sampleAt(this.patternIndex);
       if (card === 'scan') scanning = true;
       const ev: TickEvent = {
+        balanceLocked: this.balanceLocked || undefined,
         forecast: this.mob.forecastPattern ? this.forecast() : undefined,
         classification: sample ? { features: [...sample.features], prediction: this.predictions(1)[0], actual: sample.label } : undefined,
         tick: ticks.length,
@@ -292,7 +302,7 @@ export class Battle {
       };
       // 1) 플레이어 행동
       if (card === 'attack') {
-        if (mobAction === 'guard' || sample?.label === 'friend') ev.blocked = true;
+        if (this.balanceLocked || mobAction === 'guard' || sample?.label === 'friend') ev.blocked = true;
         else {
           ev.dealt = Math.min(this.mobHp, this.playerAttackDamage());
           this.mobHp -= ev.dealt;

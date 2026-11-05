@@ -234,3 +234,33 @@ describe('7장 공방 길과 성장',()=>{
   expect(xp).toBeGreaterThanOrEqual(xpForLevel(MOBS.babbleKing.recommendedLevel));expect(xp).toBe(1692);
  });
 });
+
+describe('8장 성의 길과 성장', () => {
+  it('거울 자료 확인 문을 열고 모든 NPC와 상자에 갈 수 있어요', () => {
+    const q = world(['ch8-clear','golem-fixed'],['ch8-p3-m1']);
+    for (const def of [MAPS.castle,MAPS.mirrormaze]) for (const o of def.objects.filter(o => ['npc','chest','portal'].includes(o.type) && q.check(o.when))) expect(canReach(def,q,def.spawn,o),def.id+'/'+o.id).toBe(true);
+    const gate = MAPS.castle.objects.find(o => o.id === 'to-mirrormaze')!;
+    expect(gate.type === 'portal' && gate.open?.mission).toBe('ch8-p3-m1');
+    const town = MAPS.village.objects.find(o => o.id === 'to-ch8')!;
+    expect(town.type === 'portal' && town.open?.flag).toBe('ch7-clear');
+    const chief = MAPS.mirrormaze.objects.find(o => o.id === 'chief')!;
+    expect(chief.type === 'npc' && chief.npc).toBe('biasGolem');
+  });
+  it('자료를 고치기 전에 그림자를 피해 성지기에게 갈 수 있어요', () => {
+    const def = MAPS.castle, pass = makePassable(def,buildCells(def),world());
+    const safe = (x:number,y:number) => pass(x,y) && def.objects.filter(o => o.type === 'mob').every(o => Math.max(Math.abs(o.at.x-x),Math.abs(o.at.y-y))>2);
+    const npc = def.objects.find(o => o.id === 'keeper')!;
+    expect(findPath(safe,def.spawn,(x,y) => Math.abs(x-npc.at.x)<=1 && Math.abs(y-npc.at.y)<=1,npc.at)).not.toBeNull();
+  });
+  it('8장 보스 전 자연 성장은 권장 레벨14를 넘어서 레벨18에 닿아요', () => {
+    let xp = allMissions().filter(e => !e.mission.id.startsWith('ch8-boss')).reduce((n,e) => n+(e.mission.reward?.xp??0),0);
+    for (const def of Object.values(MAPS)) for (const o of def.objects) {
+      if (o.type === 'mob') xp += MOBS[o.mob].xp;
+      if (o.type === 'chest') xp += o.reward.xp??0;
+    }
+    expect(xp).toBe(1937);
+    expect(xp).toBeGreaterThanOrEqual(xpForLevel(MOBS.biasGolem.recommendedLevel));
+    expect(xp).toBeGreaterThanOrEqual(xpForLevel(18));
+    expect(xp).toBeLessThan(xpForLevel(19));
+  });
+});

@@ -50,6 +50,17 @@ const mob = (size: 16 | 24 | 48) => spec('mob', size, size, 4);
 const fx = (w: number, h: number, frames: number) => spec('fx', w, h, frames);
 
 export const ASSETS: AssetSpec[] = [
+  // C10: 윤리의 성
+  tile('tile-castle', '따뜻한 빛의 성 돌바닥', 0xc7d6dc),
+  block('block-castle', '성의 보랏빛 돌벽', 0x8c9bab),
+  prop(32, 48, 2)('prop-mirror', '기록을 비추는 거울(흐림, 맑음)', 0x82cce0),
+  prop(24, 32)('prop-banner', '책과 마음이 그려진 성 깃발', 0xb5a0dc),
+  char('char-keeper', '성 지킴이(마음 배지와 기록장)', 0x7962ab),
+  mob(24)('mob-fake-shadow', '모양을 흉내 내는 장난꾸러기 그림자', 0x7962ab),
+  mob(48)('boss-bias-golem', '자료 균형을 지키는 돌 골렘', 0x8c9bab),
+  overlay('robi-part-ethics', '로비의 마음 배지 윤리 코어', 0xa4e3c2),
+  icon('icon-part-ethics', '윤리 코어', 0xa4e3c2),
+
   // C9: 프롬프트 공방. 기존 나무 바닥·벽·젠을 함께 써요.
   prop(24, 32)('prop-easel', '그림을 고쳐 그리는 이젤', 0xd39a62),
   prop(32, 40)('prop-bookshelf', '근거 자료를 모은 책장', 0xa76c46),

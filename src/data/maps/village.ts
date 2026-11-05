@@ -69,6 +69,8 @@ export const village: MapDef = {
     { id: 'restore-star', type: 'prop', at: { x: 10, y: 9 }, sprite: 'prop-starlamp', frame: 1, when: { flag: 'village-restore-6' } },
     { id: 'to-ch7', type: 'portal', at: { x: 11, y: 19 }, to: { map: 'workshop', at: { x: 2, y: 13 } }, label: '프롬프트 공방', open: { flag: 'ch6-clear' }, lockedText: '6장을 마치면\n공방 전체를 탐험할 수 있어요.', sprite: 'prop-gate' },
     { id: 'restore-easel', type: 'prop', at: { x: 14, y: 11 }, sprite: 'prop-easel', when: { flag: 'village-restore-7' } },
+    { id: 'to-ch8', type: 'portal', at: { x: 9, y: 20 }, to: { map: 'castle', at: { x: 2, y: 13 } }, label: '윤리의 성', open: { flag: 'ch7-clear' }, lockedText: '7장을 마치면\n윤리의 성으로 갈 수 있어요.', sprite: 'prop-gate' },
+    { id: 'restore-banner', type: 'prop', at: { x: 10, y: 10 }, sprite: 'prop-banner', when: { flag: 'village-restore-8' } },
     ...house('house-a', 8, 6),
     ...house('house-b', 16, 7),
     ...house('house-c', 8, 13),

@@ -36,6 +36,42 @@
   ],
   "assets": [
     {
+      "key": "tile-castle",
+      "file": "tile/tile-castle.png"
+    },
+    {
+      "key": "block-castle",
+      "file": "block/block-castle.png"
+    },
+    {
+      "key": "prop-mirror",
+      "file": "prop/prop-mirror.png"
+    },
+    {
+      "key": "prop-banner",
+      "file": "prop/prop-banner.png"
+    },
+    {
+      "key": "char-keeper",
+      "file": "char/char-keeper.png"
+    },
+    {
+      "key": "mob-fake-shadow",
+      "file": "mob/mob-fake-shadow.png"
+    },
+    {
+      "key": "boss-bias-golem",
+      "file": "mob/boss-bias-golem.png"
+    },
+    {
+      "key": "robi-part-ethics",
+      "file": "overlay/robi-part-ethics.png"
+    },
+    {
+      "key": "icon-part-ethics",
+      "file": "icon/icon-part-ethics.png"
+    },
+    {
       "key": "prop-easel",
       "file": "prop/prop-easel.png"
     },

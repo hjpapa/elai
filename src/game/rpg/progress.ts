@@ -1,3 +1,4 @@
+import { hasEndingRequirements } from './ending';
 import { CHAPTERS, getMission } from '../../data/chapters';
 import { MAPS } from '../../data/maps';
 import { npcName } from '../../data/npcs';
@@ -24,6 +25,7 @@ export function canStart(state: GameState, missionId: string): boolean {
 
 /** 지금 무엇을 하면 되는지 한 줄 안내 */
 export function objective(state: GameState): string {
+  if (hasEndingRequirements(state.data) && !state.hasFlag('ending-seen')) return '마을로 돌아가 로비를 깨워요.';
   for (const chapter of CHAPTERS) {
     if (chapter.status !== 'playable') continue;
     for (const part of chapter.parts) {

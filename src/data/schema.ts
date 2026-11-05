@@ -172,7 +172,8 @@ export interface PlannedData {
 }
 
 export interface ClassifyData {
-  mode: 'tree' | 'sort' | 'cluster' | 'table' | 'binary' | 'pixels' | 'search';
+  initialCounts?: Record<string, number>;
+  mode: 'tree' | 'sort' | 'cluster' | 'table' | 'binary' | 'pixels' | 'search' | 'balance';
   intro: string;
   cards: { id: string; label: string; group: string; features: string[] }[];
   groups: { id: string; label: string }[];
@@ -302,6 +303,8 @@ export type TileKind =
   | 'hedge'
   | 'wall'
   | 'cave'
+  | 'castle'
+  | 'castlewall'
   | 'observatory'
   | 'observatorywall'
   | 'lab'
@@ -359,7 +362,7 @@ export type MapObject =
 export interface MapDef {
   id: string;
   name: string;
-  theme: 'village' | 'forest' | 'dungeon' | 'workshop' | 'cave' | 'desert' | 'harbor' | 'lab' | 'observatory';
+  theme: 'village' | 'forest' | 'dungeon' | 'workshop' | 'cave' | 'desert' | 'harbor' | 'lab' | 'observatory' | 'castle';
   chapter?: string;
   /** 타일 글자 지도(모든 줄의 길이가 같아야 해요) */
   rows: string[];
@@ -428,6 +431,7 @@ export interface MobDef {
   pattern: MobAction[];
   /** 씨앗과 차례로 정해지는 가려진 행동 */
   hiddenPattern?: { choices: MobAction[]; seed: number };
+  balanceRule?: { flag: string; hp: number; atk: number; def: number };
   forecastPattern?: { seed: number };
   classifyPattern?: { samples: TrainingSample[]; seed: number };
   dataPattern?: { values: number[]; actions: MobAction[] };

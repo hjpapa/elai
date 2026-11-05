@@ -19,6 +19,8 @@ export const NPCS: Record<string, NpcDef> = {
   astronomer: { id: 'astronomer', name: '별지기 온유', sprite: 'char-astronomer', role: '천문대 기록 연구원' },
   starFox: { id: 'starFox', name: '별자리 여우 대장', sprite: 'boss-star-fox', role: '별자리 미궁 지킴이' },
   babbleKing: { id: 'babbleKing', name: '헛소리 앵무새 대장', sprite: 'boss-babble-king', role: '공방 자료실 지킴이' },
+  keeper: { id: 'keeper', name: '성지기 이음', sprite: 'char-keeper', role: '윤리의 성 지킴이' },
+  biasGolem: { id: 'biasGolem', name: '편향 골렘', sprite: 'boss-bias-golem', role: '거울 미로 지킴이' },
   sign: { id: 'sign', name: '표지판', sprite: 'prop-sign', role: '안내' },
 };
 

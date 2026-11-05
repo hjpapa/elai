@@ -193,3 +193,18 @@ describe('5장 분류 모델 저장',()=>{
     s.setClassificationModel({samples:[],k:100});expect(s.data.classificationModel?.k).toBe(3);
   });
 });
+
+
+it('8장 자료 수정 성공 보상만 보호막을 약하게 만들고 저장 뒤에도 남아요', () => {
+  const state = new GameState(freshSave('별빛'));
+  expect(state.hasFlag('ch8-balanced')).toBe(false);
+  state.completeMission('ch8-p1-m1', { success: false, stars: 0, attempts: 1, hints: 0 });
+  expect(state.hasFlag('ch8-balanced')).toBe(false);
+  state.completeMission('ch8-p1-m1', { success: true, stars: 3, attempts: 1, hints: 0 });
+  expect(state.hasFlag('ch8-balanced')).toBe(true);
+  const loaded = new GameState(JSON.parse(JSON.stringify(state.data)));
+  expect(loaded.hasFlag('ch8-balanced')).toBe(true);
+  const xp = loaded.data.xp;
+  loaded.completeMission('ch8-p1-m1', { success: true, stars: 3, attempts: 1, hints: 0 });
+  expect(loaded.data.xp).toBe(xp);
+});

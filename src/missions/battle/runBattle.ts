@@ -38,6 +38,7 @@ const TICK_MS = 260;
 
 function feedbackFor(ticks: TickEvent[]): { index: number; text: string } | null {
   for (const t of ticks) {
+    if (t.balanceLocked && t.card === 'attack') return { index: t.tick, text: '자료의 치우침을 먼저 고쳐요.\n골렘의 보호막이 약해져요.' };
     if (t.classification?.actual === 'friend' && t.card === 'attack') return { index: t.tick, text: '친구를 잘못 골랐어요.\n학습 예시와 이름표를 살펴봐요.' };
     if (t.taken > 0 && t.mobAction === 'smash') return { index: t.tick, text: '강타를 막지 못했어요!\n강타 예고 칸에는 막기를 놓아요.' };
     if (t.taken > 0) return { index: t.tick, text: '공격 예고 칸에 막기를 놓으면\n다치지 않아요.' };
@@ -49,11 +50,12 @@ function feedbackFor(ticks: TickEvent[]): { index: number; text: string } | null
 
 /** 전투 한 판: Battle 장면(연출) + DOM 전투 화면(카드 놓기). 끝나면 결과를 돌려줘요. */
 export async function runBattle(mobId: string, opts: BattleOptions = {}): Promise<BattleReport> {
-  const mob = MOBS[mobId];
+  const originalMob = MOBS[mobId];
   const s = app.state;
   const stats = s.stats;
   const forecastUnlocked = s.data.robiParts.some(id => ROBI_PARTS[id]?.unlocks.forecast);
-  const battle = new Battle({ stats, hp: s.data.hp, slots: s.slots, mob, observations: s.data.observations?.[mobId], classificationModel: s.data.classificationModel, forecast: forecastUnlocked });
+  const battle = new Battle({ stats, hp: s.data.hp, slots: s.slots, mob: originalMob, balanceReady: !!originalMob.balanceRule && s.hasFlag(originalMob.balanceRule.flag), observations: s.data.observations?.[mobId], classificationModel: s.data.classificationModel, forecast: forecastUnlocked });
+  const mob = battle.mob;
   const battleCards: BattleCmd[] = s.data.robiParts.some(id => ROBI_PARTS[id]?.unlocks.cards?.includes('scan')) ? [...CARDS, 'scan'] : CARDS;
   const repeatUnlocked = s.data.robiParts.some(id => ROBI_PARTS[id]?.unlocks.repeat);
   const conditions = [...new Set(s.data.robiParts.flatMap(id => ROBI_PARTS[id]?.unlocks.conds ?? []))];
@@ -69,7 +71,7 @@ export async function runBattle(mobId: string, opts: BattleOptions = {}): Promis
 
   const scene = sm.getScene('Battle') as BattleScene;
   const ready = new Promise<void>((r) => scene.events.once(Phaser.Scenes.Events.CREATE, () => r()));
-  sm.run('Battle', { mob, save: s.data, floor: opts.floor ?? (MAPS[s.data.location.map]?.theme === 'workshop' ? 'tile-wood' : MAPS[s.data.location.map]?.theme === 'cave' ? 'tile-cave' : MAPS[s.data.location.map]?.theme === 'desert' ? 'tile-sand' : MAPS[s.data.location.map]?.theme === 'harbor' ? 'tile-dock' : MAPS[s.data.location.map]?.theme === 'lab' ? 'tile-lab' : MAPS[s.data.location.map]?.theme === 'observatory' ? 'tile-observatory' : 'tile-grass') } satisfies BattleSceneData);
+  sm.run('Battle', { mob, save: s.data, floor: opts.floor ?? (MAPS[s.data.location.map]?.theme === 'workshop' ? 'tile-wood' : MAPS[s.data.location.map]?.theme === 'cave' ? 'tile-cave' : MAPS[s.data.location.map]?.theme === 'desert' ? 'tile-sand' : MAPS[s.data.location.map]?.theme === 'harbor' ? 'tile-dock' : MAPS[s.data.location.map]?.theme === 'lab' ? 'tile-lab' : MAPS[s.data.location.map]?.theme === 'observatory' ? 'tile-observatory' : MAPS[s.data.location.map]?.theme === 'castle' ? 'tile-castle' : 'tile-grass') } satisfies BattleSceneData);
   await ready;
 
   // ── DOM ──
@@ -325,7 +327,7 @@ export async function runBattle(mobId: string, opts: BattleOptions = {}): Promis
 
   renderPalette();
   newRound();
-  talk(opts.intro ?? `${mob.name}의 예고를 보고 카드를 놓아요.\n준비되면 ▶ 실행!`);
+  talk(mob.balanceRule ? battle.balanceLocked ? '자료가 치우쳐 보호막이 단단해요.\n먼저 자료 고치기 미션을 해요.' : `자료를 고쳐 보호막이 약해졌어요.\n체력 ${mob.hp} · 공격 ${mob.atk} · 방어 ${mob.def}` : opts.intro ?? `${mob.name}의 예고를 보고 카드를 놓아요.\n준비되면 ▶ 실행!`);
 
   const outcome = await new Promise<BattleReport['outcome']>((resolve) => {
     fleeBtn.addEventListener('click', () => !busy && resolve('flee'));

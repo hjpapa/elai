@@ -8,7 +8,7 @@ const list: RobiPartDef[] = [
   { id: 'learningChip', name: '학습 칩', chapter: 'ch5', ability: '내 모델로 슬라임을 구별해요.\n모델의 판단 조건을 쓸 수 있어요.', unlocks: { conds: ['modelPlayful'] }, overlay: 'robi-part-learnchip', icon: 'icon-part-learnchip', desc: '데이터로 배우는 장치예요.' },
   { id: 'predictModule', name: '예측 모듈', chapter: 'ch6', ability: '지난 기록으로 다음 행동을 예상해요.\n예측은 틀릴 수도 있어요.', unlocks: { forecast: true, conds: ['forecastRisk'] }, overlay: 'robi-part-predictor', icon: 'icon-part-predictor', desc: '기록으로 앞일을 예측해요.' },
   { id: 'talkModule', name: '대화 모듈', chapter: 'ch7', ability: '조건을 담아 부탁하고 고쳐 물어요.\nAI 답은 자료로 다시 확인해요.', unlocks: {}, overlay: 'robi-part-talk', icon: 'icon-part-talk', desc: '사람의 말을 알아듣고 대답해요.' },
-  { id: 'ethicsCore', name: '윤리 코어', chapter: 'ch8', ability: '로비가 스스로 옳고 그름을 묻는 "생각하는 AI"로 깨어나요.', unlocks: {}, overlay: 'robi-part-ethics', desc: '사람을 돕는 AI가 되도록 지켜 줘요.' },
+  { id: 'ethicsCore', name: '윤리 코어', chapter: 'ch8', ability: '사람의 성장을 돕는 약속을 기억해요.\n마지막 판단은 사람과 함께 확인해요.', unlocks: {}, overlay: 'robi-part-ethics', icon: 'icon-part-ethics', desc: '사람을 돕는 AI가 되도록 지켜 줘요.' },
 ];
 
 export const ROBI_PARTS: Record<string, RobiPartDef> = Object.fromEntries(list.map((p) => [p.id, p]));

@@ -321,3 +321,42 @@ describe('7장 생성과 사실 확인',()=>{
   expect(evaluateFactCheck(d,Object.fromEntries(d.claims.map(c=>[c.id,{choice:0,source:c.source}])),read)).toBe(false);expect(evaluateFactCheck(d,{},read)).toBe(false);
  });
 });
+
+describe('8장 책임 있는 AI 데이터', () => {
+  it('0~8장 전체가 플레이 가능하고 모든 미션에 실제 데이터가 있어요', () => {
+    expect(CHAPTERS.every(chapter => chapter.status === 'playable')).toBe(true);
+    for (const {mission} of allMissions()) expect(mission.data, mission.id).toBeDefined();
+  });
+  it('실제 로봇 구성을 기준으로 치우침을 고쳐야 균형 보상을 받아요', () => {
+    const m = allMissions().find(e => e.mission.id === 'ch8-p1-m1')!.mission;
+    if (m.kind !== 'classify') throw new Error('balance');
+    const d = m.data!;
+    expect(d.mode).toBe('balance');
+    expect(d.cards).toHaveLength(12);
+    expect(d.initialCounts).toEqual({wheel:8,leg:2,wing:0});
+    expect(evaluateTable(d,d.initialCounts!)).toBe(false);
+    expect(evaluateTable(d,{wheel:4,leg:4,wing:4})).toBe(true);
+    expect(evaluateTable(d,{wheel:4,leg:4})).toBe(false);
+    expect(evaluateTable(d,{wheel:4,leg:4,wing:5})).toBe(false);
+    expect(m.reward?.flags).toContain(MOBS.biasGolem.balanceRule!.flag);
+    expect(d.explain).toContain('늘 공정한 것은 아니에요');
+  });
+  it('개인정보와 가상 예시를 나누고 그림의 근거를 실제로 읽어요', () => {
+    const privacy = allMissions().find(e => e.mission.id === 'ch8-p2-m1')!.mission;
+    if (privacy.kind !== 'classify') throw new Error('privacy');
+    const d = privacy.data!;
+    const right = Object.fromEntries(d.cards.map(c => [c.id,c.group]));
+    expect(evaluateGroups(d,right)).toBe(true);
+    for (const id of ['name','address','phone','school','face','password']) expect(evaluateGroups(d,{...right,[id]:'share'}),id).toBe(false);
+    const fact = allMissions().find(e => e.mission.id === 'ch8-p3-m1')!.mission;
+    if (fact.kind !== 'factCheck') throw new Error('mirror');
+    const f = fact.data!, read = f.sources.map(s => s.id);
+    const answers = Object.fromEntries(f.claims.map(c => [c.id,{choice:c.answer,source:c.source}]));
+    expect(f.claims.filter(c => c.visual).map(c => c.visual!.frame)).toEqual([0,1]);
+    expect(evaluateFactCheck(f,answers,read)).toBe(true);
+    expect(evaluateFactCheck(f,answers,[])).toBe(false);
+    expect(evaluateFactCheck(f,{...answers,looks:{choice:0,source:'drawing'}},read)).toBe(false);
+    expect(evaluateFactCheck(f,{...answers,floating:{choice:1,source:'drawing'}},read)).toBe(false);
+    expect(fact.reward?.robiPart).toBe('ethicsCore');
+  });
+});

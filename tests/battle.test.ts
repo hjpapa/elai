@@ -400,3 +400,54 @@ describe('6장 실제 과거 기록으로 예측하기', () => {
     expect(prediction.smashRate).toBeLessThan(1);
   });
 });
+
+
+describe('8장 치우친 자료와 골렘의 보호막', () => {
+  const setup = (level: number, balanceReady: boolean, gear = ['cap', 'brush', 'vest', 'boots']) => {
+    const save = player(level, gear);save.robiParts = ['wheel', 'memoryChip', 'sensor'];
+    const stats = derivedStats(save);
+    return new Battle({ stats, hp: stats.maxHp, slots: programSlots(save), mob: MOBS.biasGolem, balanceReady });
+  };
+  const finish = (b: Battle, program: Block[]) => { while (b.outcome === 'continue') b.runRound(program); return b; };
+
+  it('자료를 고치기 전에는 Lv30과 좋은 장비로도 정화할 수 없어요', () => {
+    for (const level of [14, 18, 30]) for (const program of [conditional, repeat(12, cards('attack'))]) {
+      const b = setup(level, false, ['starCap', 'scribeBrush', 'dataVest', 'researchBoots']);
+      expect(b.balanceLocked).toBe(true);expect(b.playerAttackDamage()).toBe(0);
+      const preview = b.preview(program);
+      expect(preview.filter(t => t?.card === 'attack').every(t => t?.dealt === 0 && t.balanceLocked && t.blocked)).toBe(true);
+      finish(b, program);
+      expect(b.outcome, `자료 미수정 Lv${level}`).not.toBe('win');
+      expect(b.mobHp).toBe(MOBS.biasGolem.hp);
+    }
+  });
+
+  it('수정 후 Lv14~18 기본·상위 장비에서 조건은 무피해 승리, 공격만 하면 패배해요', () => {
+    for (const level of [14, 15, 16, 17, 18]) for (const gear of [
+      ['cap', 'brush', 'vest', 'boots'], ['starCap', 'scribeBrush', 'dataVest', 'researchBoots'],
+    ]) {
+      const good = finish(setup(level, true, gear), conditional);
+      expect(good.outcome, `수정 후 Lv${level} ${gear.join(',')}`).toBe('win');
+      expect(good.playerHp).toBe(good.stats.maxHp);
+      expect(finish(setup(level, true, gear), repeat(12, cards('attack'))).outcome, `공격만 Lv${level}`).toBe('lose');
+    }
+  });
+
+  it('약해진 최대 체력·공격·방어를 쓰고 원본이나 다른 전투에는 적용하지 않아요', () => {
+    const original = structuredClone(MOBS.biasGolem);
+    const good = setup(14, true);
+    const rule = original.balanceRule!;
+    expect(good.mob).not.toBe(MOBS.biasGolem);
+    expect(good.mob).toMatchObject({ hp: rule.hp, atk: rule.atk, def: rule.def });
+    expect(good.mobHp).toBe(rule.hp);expect(good.balanceLocked).toBe(false);
+    expect(setup(14, false).mob).toMatchObject({ hp: original.hp, atk: original.atk, def: original.def });
+    const copy = good.clone();expect(copy.balanceReady).toBe(true);
+    expect(copy.mob.hp).toBe(rule.hp);
+    expect(copy.runRound(conditional)).toEqual(good.runRound(conditional));
+    expect(MOBS.biasGolem).toEqual(original);
+    const lockedCopy = setup(14, false).clone();
+    expect(lockedCopy.balanceReady).toBe(false);expect(lockedCopy.balanceLocked).toBe(true);
+    const normal = new Battle({ stats: good.stats, hp: good.stats.maxHp, slots: 8, mob: MOBS.dummy, balanceReady: true });
+    expect(normal.mob).toEqual(MOBS.dummy);expect(normal.balanceLocked).toBe(false);
+  });
+});

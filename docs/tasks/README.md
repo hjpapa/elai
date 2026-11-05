@@ -35,7 +35,7 @@ Claude가 지시서를 쓰고, 사용자가 Codex 앱에서 실행해요.
 | C7 | [codex-07-ch5.md](codex-07-ch5.md) — 5장 인식의 연구소 | 완료(검토 대기) |
 | C8 | [codex-08-ch6.md](codex-08-ch6.md) — 6장 길잡이 천문대 | 완료(검토 대기) |
 | C9 | [codex-09-ch7.md](codex-09-ch7.md) — 7장 프롬프트 공방 | 완료(검토 대기) |
-| C10 | [codex-roadmap.md](codex-roadmap.md) — 3~8장과 엔딩(단계마다 Codex가 자세한 지시서를 먼저 써요) | 대기 |
+| C10 | [codex-10-ch8.md](codex-10-ch8.md) — 8장 윤리의 성과 엔딩 | 완료(검토 대기) |
 | 연속 실행 | [codex-run-all.md](codex-run-all.md) — C4~C10을 한 번에, 단계마다 커밋, 기록은 `codex-progress.md` | 준비됨 |
 
 고치는 파일이 겹치지 않는 작업은 동시에 돌려도 돼요. 이때는 꼭 **각자의 작업 폴더**를 열어 주세요.

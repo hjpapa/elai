@@ -465,6 +465,59 @@ const list: MobDef[] = [
   "dex": "그럴듯하지만 틀린 말을 섞어요.\n자료로 확인해야 고칠 수 있어요.",
   "purified": "근거를 확인하니 생각이 맑아졌어요.\n이제 함께 꼼꼼히 살펴봐요!"
 },
+{
+  "id": "fakeShadow",
+  "name": "장난 그림자",
+  "sprite": "mob-fake-shadow",
+  "size": 24,
+  "chapter": "ch8",
+  "hp": 160,
+  "atk": 12,
+  "def": 4,
+  "pattern": [
+    "charge",
+    "smash",
+    "idle",
+    "guard"
+  ],
+  "roundTicks": 12,
+  "smashRatio": 0.4,
+  "xp": 25,
+  "coins": 25,
+  "recommendedLevel": 14,
+  "dex": "흉내 내기를 좋아하는 그림자예요.\n힘을 모은 다음에는 막아 줘요.",
+  "purified": "흉내만 내지 않고 함께 살펴볼게요.\n우리의 모습은 저마다 달라도 좋아요!"
+},
+{
+  "id": "biasGolem",
+  "name": "편향 골렘",
+  "sprite": "boss-bias-golem",
+  "size": 48,
+  "boss": true,
+  "chapter": "ch8",
+  "hp": 1800,
+  "atk": 24,
+  "def": 20,
+  "pattern": [
+    "guard",
+    "charge",
+    "smash",
+    "idle"
+  ],
+  "roundTicks": 12,
+  "smashRatio": 0.7,
+  "balanceRule": {
+    "flag": "ch8-balanced",
+    "hp": 420,
+    "atk": 18,
+    "def": 5
+  },
+  "xp": 0,
+  "coins": 0,
+  "recommendedLevel": 14,
+  "dex": "한쪽 자료만 보고 문을 잠갔어요.\n실제 구성에 맞추면 보호막이 약해져요.",
+  "purified": "빠진 친구도 함께 살펴볼게요.\n사람의 판단을 돕는 지킴이가 될게요!"
+},
 ];
 
 export const MOBS: Record<string, MobDef> = Object.fromEntries(list.map((m) => [m.id, m]));
