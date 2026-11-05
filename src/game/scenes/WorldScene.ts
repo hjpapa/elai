@@ -42,15 +42,17 @@ interface View {
 
 const WALK_TYPES = new Set(['portal', 'pickup', 'sign']);
 /**
- * 방향키 → 칸 방향. 미로의 길은 칸 방향으로 나 있어서 키도 칸 방향에 맞춰요.
- * ↑ = ↖, → = ↗, ↓ = ↘, ← = ↙ (키가 가리키는 쪽에서 반시계로 45도). 두 키를 함께 누르면 화면 똑바로 움직여요.
+ * 방향키 → 칸 방향. 키가 가리키는 화면 방향 그대로 움직여요(아이소라서 화면 위쪽 = 칸의 (-1, -1)).
+ * 두 키를 함께 누르면 대각선(↗↘↙↖)으로 가요. 좁은 길에서 막히면 keyStep이 길을 따라 옆으로 미끄러져요.
  */
 const KEY_DIRS: { keys: string[]; d: [number, number] }[] = [
-  { keys: ['ArrowUp', 'Up', 'KeyW', 'w'], d: [-1, 0] },
-  { keys: ['ArrowRight', 'Right', 'KeyD', 'd'], d: [0, -1] },
-  { keys: ['ArrowDown', 'Down', 'KeyS', 's'], d: [1, 0] },
-  { keys: ['ArrowLeft', 'Left', 'KeyA', 'a'], d: [0, 1] },
+  { keys: ['ArrowUp', 'Up', 'KeyW', 'w'], d: [-1, -1] },
+  { keys: ['ArrowRight', 'Right', 'KeyD', 'd'], d: [1, -1] },
+  { keys: ['ArrowDown', 'Down', 'KeyS', 's'], d: [1, 1] },
+  { keys: ['ArrowLeft', 'Left', 'KeyA', 'a'], d: [-1, 1] },
 ];
+/** 두 키를 "함께" 누를 때 손가락이 조금 어긋나도 한 번에 대각선으로 가도록 첫 걸음을 이만큼 기다려요(ms). */
+const CHORD_MS = 60;
 const ACTION_KEYS = new Set(['Space', ' ', 'Enter', 'KeyE', 'e']);
 
 /** 아이소 월드: 맵 그리기, 걷기·길찾기, 오브젝트와 상호작용, 안개, 몹 돌아다니기 */
@@ -72,6 +74,11 @@ export class WorldScene extends Phaser.Scene {
   private offState: (() => void) | null = null;
   /** 눌려 있는 키(event.code와 event.key를 함께 기록) */
   private pressed = new Set<string>();
+  /** 첫 걸음을 기다리는 동안 눌린 키(그사이 손을 떼도 한 칸은 가요) */
+  private tapKeys = new Set<string>();
+  private tapPending = false;
+  /** 앞서 미끄러져 간 쪽(같은 길을 계속 따라가게) */
+  private lastSlide: [number, number] | null = null;
 
   constructor() {
     super('World');
@@ -111,6 +118,9 @@ export class WorldScene extends Phaser.Scene {
     this.scale.on(Phaser.Scale.Events.RESIZE, this.fitZoom, this);
 
     this.pressed.clear();
+    this.tapKeys.clear();
+    this.tapPending = false;
+    this.lastSlide = null;
     window.addEventListener('keydown', this.onKeyDown);
     window.addEventListener('keyup', this.onKeyUp);
     window.addEventListener('blur', this.onBlur);
@@ -356,9 +366,18 @@ export class WorldScene extends Phaser.Scene {
     this.pressed.add(e.key);
     if (isMove && !e.repeat && !busy) {
       // 짧게 한 번 눌러도 한 칸은 움직여요(계속 누르고 있으면 update가 이어서 걸어요).
-      const [dx, dy] = this.keyDir();
-      const t = this.player.tile;
-      if (dx || dy) void this.stepTo(t.x + dx, t.y + dy);
+      // 바로 걷지 않고 CHORD_MS만큼 기다려서, 거의 함께 누른 두 키를 합쳐 대각선으로 가요.
+      this.tapKeys.add(e.code);
+      this.tapKeys.add(e.key);
+      if (!this.tapPending) {
+        this.tapPending = true;
+        this.time.delayedCall(CHORD_MS, () => {
+          this.tapPending = false;
+          const [dx, dy] = this.keyDir(this.tapKeys);
+          this.tapKeys.clear();
+          if ((dx || dy) && !this.blocked()) void this.keyStep(dx, dy);
+        });
+      }
       return;
     }
     if (!e.repeat && !busy && (ACTION_KEYS.has(e.code) || ACTION_KEYS.has(e.key))) {
@@ -372,13 +391,17 @@ export class WorldScene extends Phaser.Scene {
     this.pressed.delete(e.key);
   };
 
-  private readonly onBlur = (): void => this.pressed.clear();
+  private readonly onBlur = (): void => {
+    this.pressed.clear();
+    this.tapKeys.clear();
+  };
 
-  private keyDir(): [number, number] {
+  /** 눌린 키(와 extra)를 합친 칸 방향. 위+오른쪽이면 (0, -1)처럼 대각선이 돼요. */
+  private keyDir(extra?: Set<string>): [number, number] {
     let dx = 0;
     let dy = 0;
     for (const k of KEY_DIRS) {
-      if (k.keys.some((name) => this.pressed.has(name))) {
+      if (k.keys.some((name) => this.pressed.has(name) || extra?.has(name))) {
         dx += k.d[0];
         dy += k.d[1];
       }
@@ -391,12 +414,43 @@ export class WorldScene extends Phaser.Scene {
     this.robi?.update(delta);
     for (const v of this.views) v.actor?.update(delta);
     if (this.dirty) this.refresh();
-    if (this.blocked()) return;
+    if (this.blocked() || this.tapPending) return;
     const [dx, dy] = this.keyDir();
-    if ((dx || dy) && this.time.now - this.lastStep > 60) {
-      const t = this.player.tile;
-      void this.stepTo(t.x + dx, t.y + dy);
+    if ((dx || dy) && this.time.now - this.lastStep > 60) void this.keyStep(dx, dy);
+  }
+
+  /**
+   * 방향키 한 걸음. 화면 위·아래·왼쪽·오른쪽은 칸으로는 대각선이라,
+   * 막히면 그 방향에 가까운 두 칸 방향 중 갈 수 있는 쪽으로 미끄러져 가요(벽을 따라 걷기).
+   */
+  private async keyStep(dx: number, dy: number): Promise<void> {
+    const t = this.player.tile;
+    const can = (ax: number, ay: number) =>
+      this.passable(t.x + ax, t.y + ay) && (ax === 0 || ay === 0 || (this.passable(t.x + ax, t.y) && this.passable(t.x, t.y + ay)));
+    if (can(dx, dy)) {
+      await this.stepTo(t.x + dx, t.y + dy);
+      return;
     }
+    // 바로 그 칸에 NPC·상자·문·몹이 있으면 그쪽과 상호작용해요.
+    const target = this.viewAt(t.x + dx, t.y + dy);
+    if (target && !WALK_TYPES.has(target.obj.type)) {
+      await this.stepTo(t.x + dx, t.y + dy);
+      return;
+    }
+    if (dx !== 0 && dy !== 0) {
+      const options: [number, number][] = [
+        [dx, 0],
+        [0, dy],
+      ];
+      if (this.lastSlide && this.lastSlide[0] === options[1][0] && this.lastSlide[1] === options[1][1]) options.reverse();
+      for (const [ax, ay] of options) {
+        if (!this.passable(t.x + ax, t.y + ay)) continue;
+        this.lastSlide = [ax, ay];
+        await this.stepTo(t.x + ax, t.y + ay);
+        return;
+      }
+    }
+    this.player.face(dx, dy);
   }
 
   private blocked(): boolean {
