@@ -21,6 +21,11 @@
   box-sizing: border-box;
 }
 
+/* .btn 같은 display 규칙이 hidden 속성을 덮어쓰지 않게 해요. */
+[hidden] {
+  display: none !important;
+}
+
 html,
 body {
   margin: 0;

@@ -46,6 +46,20 @@ describe.skipIf(!existsSync(MANIFEST))('매니페스트와 PNG', () => {
     }
   });
 
+  it.skipIf(!manifest?.atlas)('아틀라스(한 장 묶음)의 프레임이 키마다 가로 띠 크기와 같고 그림 안에 있어요', () => {
+    const atlas = manifest!.atlas!;
+    const png = PNG.sync.read(readFileSync(join(ASSET_DIR, atlas.image)));
+    const data = JSON.parse(readFileSync(join(ASSET_DIR, atlas.data), 'utf8')) as {
+      frames: Record<string, { frame: { x: number; y: number; w: number; h: number } }>;
+    };
+    for (const spec of ASSETS) {
+      const f = data.frames[spec.key]?.frame;
+      expect(f, `아틀라스에 없는 키: ${spec.key}`).toBeDefined();
+      expect([f.w, f.h], spec.key).toEqual([spec.w * spec.frames, spec.h]);
+      expect(f.x >= 0 && f.y >= 0 && f.x + f.w <= png.width && f.y + f.h <= png.height, spec.key).toBe(true);
+    }
+  });
+
   it('PNG 크기·팔레트·투명도가 규격에 맞아요', () => {
     const palette = new Set(manifest!.palette.map((c) => c.toLowerCase()));
     for (const e of manifest!.assets) {

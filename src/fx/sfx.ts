@@ -11,6 +11,18 @@ export function setSoundEnabled(on: boolean): void {
   enabled = on;
 }
 
+/** 배경 음악 분위기. 실제 음악은 Codex C2에서 만들어요(지금은 자리만 있어요). */
+export type MusicTheme = 'title' | 'village' | 'forest' | 'dungeon' | 'battle';
+let music: MusicTheme | null = null;
+
+export function playMusic(theme: MusicTheme | null): void {
+  music = theme;
+}
+
+export function currentMusic(): MusicTheme | null {
+  return music;
+}
+
 const TONES: Record<SfxName, { f: number; d: number; type: OscillatorType }> = {
   click: { f: 660, d: 0.05, type: 'square' },
   step: { f: 220, d: 0.03, type: 'triangle' },

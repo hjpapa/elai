@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import type { SaveData } from '../../data/schema';
-import { setSoundEnabled } from '../../fx/sfx';
+import { playMusic, setSoundEnabled } from '../../fx/sfx';
 import { checkLink, fetchRemoteSave, joinClass, loadLink, startRemoteSync, type ClassLink } from '../../services/remote';
 import { initAutosave, loadLocal, newer, setSaveProfile } from '../../services/save';
 import { friendlyError, supabaseConfigured } from '../../services/supabase';
@@ -24,6 +24,7 @@ export class TitleScene extends Phaser.Scene {
   }
 
   create(): void {
+    playMusic('title');
     this.drawIsland();
     this.box = h('div', { class: 'title-box' });
     this.dom = h(

@@ -5,7 +5,7 @@ import { ITEMS } from '../../data/rpg/items';
 import { MOBS } from '../../data/rpg/mobs';
 import { ROBI_PARTS } from '../../data/rpg/robiParts';
 import type { MapDef, MapObject, Point } from '../../data/schema';
-import { playSfx } from '../../fx/sfx';
+import { playMusic, playSfx } from '../../fx/sfx';
 import { runBattle } from '../../missions/battle/runBattle';
 import { flushSave, requestSave } from '../../services/save';
 import { icon } from '../../ui/icons';
@@ -129,6 +129,7 @@ export class WorldScene extends Phaser.Scene {
       window.removeEventListener('blur', this.onBlur);
     });
 
+    playMusic(this.def.theme === 'dungeon' ? 'dungeon' : this.def.theme === 'forest' ? 'forest' : 'village');
     this.faded = [];
     this.reveal(at.x, at.y);
     this.updateOcclusion();

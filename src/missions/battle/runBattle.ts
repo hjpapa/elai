@@ -5,7 +5,7 @@ import type { BattleCmd, Block, Mission, MobAction } from '../../data/schema';
 import { app } from '../../game/app';
 import { Battle, CARD_COST, type TickEvent } from '../../game/battle/sim';
 import type { BattleScene, BattleSceneData } from '../../game/scenes/BattleScene';
-import { playSfx } from '../../fx/sfx';
+import { currentMusic, playMusic, playSfx } from '../../fx/sfx';
 import { clear, h, lines, sleep } from '../../ui/dom';
 import { icon, pxImg } from '../../ui/icons';
 import { CMD_LABEL, INTENT_LABEL, cmdIcon, intentIcon } from '../../ui/labels';
@@ -54,6 +54,8 @@ export async function runBattle(mobId: string, opts: BattleOptions = {}): Promis
   const worldOn = sm.isActive('World');
   if (worldOn) sm.pause('World');
   app.ui.hud.hidden = true;
+  const prevMusic = currentMusic();
+  playMusic('battle');
 
   const scene = sm.getScene('Battle') as BattleScene;
   const ready = new Promise<void>((r) => scene.events.once(Phaser.Scenes.Events.CREATE, () => r()));
@@ -295,6 +297,7 @@ export async function runBattle(mobId: string, opts: BattleOptions = {}): Promis
   sm.stop('Battle');
   if (worldOn) sm.resume('World');
   app.ui.hud.hidden = false;
+  playMusic(prevMusic);
 
   if (outcome === 'win' || outcome === 'flee') s.setHp(battle.playerHp);
   else s.fullHeal();

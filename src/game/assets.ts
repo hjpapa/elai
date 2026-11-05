@@ -195,6 +195,12 @@ export interface Manifest {
   /** 공용 팔레트(#rrggbb) */
   palette: string[];
   assets: ManifestEntry[];
+  /**
+   * 모든 그림을 묶은 한 장(선택). 있으면 게임은 이 한 장만 읽어요(로딩이 빨라져요).
+   * data는 Phaser 아틀라스 JSON(frames 객체)이고, 프레임 이름 = 그림 키,
+   * 프레임 크기 = 그 키의 가로 띠 전체(프레임 너비 × 프레임 수, 높이)예요.
+   */
+  atlas?: { image: string; data: string };
 }
 
 /** 화면에 놓을 때의 기준점(0~1). 소품·캐릭터·몹은 아래 가운데에서 2px 위가 발이에요. */
