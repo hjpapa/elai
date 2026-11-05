@@ -18,6 +18,13 @@
 - 작업 지시서(`docs/tasks/codex-NN-*.md`)에 적힌 파일만 고쳐요.
 - 지시서에 없는 파일을 고쳐야 하면 고치지 말고, 최종 보고에 "필요한 변경"으로 적어 주세요.
 
+### 할당량 절약 기간(2026-11-05부터, 사용자가 끝났다고 알릴 때까지)
+Claude 할당량을 아끼는 동안 Codex가 2~8장을 만들어요(`docs/tasks/codex-roadmap.md`).
+- 지시서·로드맵이 허락하면 엔진 파일(`src/game/**`, `src/missions/**`, `src/ui/**`, `src/data/**`)도 고쳐요.
+- 계약 파일은 지시서·로드맵의 "미리 승인한 계약 변경"에 적힌 것만 바꿔요.
+- 이 기간에도 `supabase/**`, `src/services/**`, `src/teacher/**`, `package.json`·잠금 파일, `vercel.json`, `vite.config.ts`, `src/missions/core/types.ts`, `docs/asset-spec.md`는 고치지 않아요.
+- 커밋은 **사용자가 요청할 때만** 작업 브랜치(`codex/…`)에 단계마다 하나씩 해요. main 브랜치, push, 머지, 브랜치 바꾸기는 하지 않아요.
+
 ## 계약 파일 (Claude 승인 없이 바꾸지 않아요)
 - `src/data/schema.ts` — 게임 데이터 타입
 - `src/game/assets.ts` — 그림 키·크기·프레임 목록
@@ -29,7 +36,7 @@
 - 화면에 보이는 글은 한국어. 식별자는 영어.
 - 새 라이브러리를 추가하지 않아요(필요하면 보고).
 - 끝내기 전에 `npm test`와 `npm run build`가 통과해야 해요.
-- 커밋·push·브랜치 변경은 하지 않아요. Claude가 검토한 뒤 커밋해요.
+- 커밋·push·브랜치 변경은 하지 않아요. Claude가 검토한 뒤 커밋해요(할당량 절약 기간의 예외는 위 "담당"을 보세요).
 
 ## 콘텐츠 톤 (학생에게 보이는 모든 글)
 - 해요체. 말풍선 한 번에 2줄 이내(한 줄 약 20자).
