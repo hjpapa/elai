@@ -29,7 +29,7 @@ Claude가 지시서를 쓰고, 사용자가 Codex 앱에서 실행해요.
 | C1 | [codex-01-assets.md](codex-01-assets.md) — 픽셀아트 그림 전체 | 완료(114개, 검토 통과) |
 | C2 | [codex-02-polish.md](codex-02-polish.md) — 아틀라스(로딩), 효과음·배경 음악, 전투 연출, 로비 안테나, 휴대폰 화면 | 완료(검토 통과, main 병합) |
 | C3 | [codex-03-ch1-text.md](codex-03-ch1-text.md) — 0·1장 아이템·도감·NPC 대사·미션 안내 글 | 완료(검토 통과, main 병합) |
-| C4 | [codex-04-ch2.md](codex-04-ch2.md) — 2장 반복의 동굴 전체(엔진·데이터·그림·테스트) | 준비됨 |
+| C4 | [codex-04-ch2.md](codex-04-ch2.md) — 2장 반복의 동굴 전체(엔진·데이터·그림·테스트) | 완료(검토 대기) |
 | C5~C10 | [codex-roadmap.md](codex-roadmap.md) — 3~8장과 엔딩(단계마다 Codex가 자세한 지시서를 먼저 써요) | 대기 |
 | 연속 실행 | [codex-run-all.md](codex-run-all.md) — C4~C10을 한 번에, 단계마다 커밋, 기록은 `codex-progress.md` | 준비됨 |
 

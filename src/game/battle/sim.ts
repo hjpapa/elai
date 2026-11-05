@@ -76,6 +76,17 @@ export class Battle {
     this.mobHp = setup.mob.hp;
   }
 
+  /** 미리 보기는 실제 전투 상태를 바꾸지 않아요. */
+  clone(): Battle {
+    const copy = new Battle({ stats: { ...this.stats }, hp: this.playerHp, slots: this.slots, mob: this.mob });
+    copy.mobHp = this.mobHp;
+    copy.round = this.round;
+    copy.outcome = this.outcome;
+    copy.patternIndex = this.patternIndex;
+    copy.energyBonus = this.energyBonus;
+    return copy;
+  }
+
   get ticksPerRound(): number {
     return this.mob.roundTicks ?? this.slots;
   }
@@ -123,13 +134,18 @@ export class Battle {
     if (this.outcome !== 'continue') return { ticks: [], outcome: this.outcome };
     const ticks: TickEvent[] = [];
     const total = this.ticksPerRound;
+    const paid = new Set<string>();
     let energy = this.energy;
     this.energyBonus = 0;
 
     const doTick = (wanted: BattleCmd, path: string | null): void => {
       let card = wanted;
-      if (CARD_COST[card] > energy) card = 'wait';
-      energy -= CARD_COST[card];
+      const cost = path !== null && paid.has(path) ? 0 : CARD_COST[card];
+      if (cost > energy) card = 'wait';
+      else {
+        energy -= cost;
+        if (path !== null) paid.add(path);
+      }
       const mobAction = this.intents(1)[0];
       const ev: TickEvent = {
         tick: ticks.length,
@@ -211,12 +227,13 @@ export class Battle {
   }
 }
 
-/** 프로그램을 실행할 때 드는 에너지(반복·만약 없이 펼친 카드 기준, 미리 보기용) */
-export function flatCost(program: Block[]): number {
+/** 프로그램의 각 카드 위치에 드는 에너지. 반복 몸체는 한 번만 세요. */
+export function programCost(program: Block[]): number {
   let cost = 0;
   for (const b of program) {
     if (b.t === 'cmd' && BATTLE_CMDS.has(b.cmd)) cost += CARD_COST[b.cmd as BattleCmd];
-    else if (b.t === 'repeat') cost += flatCost(b.body) * b.times;
+    else if (b.t === 'repeat') cost += programCost(b.body);
+    else if (b.t === 'if') cost += programCost(b.yes) + programCost(b.no);
   }
   return cost;
 }

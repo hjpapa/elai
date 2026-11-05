@@ -68,6 +68,8 @@ export interface BlockCodeData {
   intro: string;
   /** '.' 길, '#' 막힘, '~' 물, 'S' 시작, 'G' 목표, '*' 보석 */
   grid: string[];
+  /** 칠할 목표 칸(x). 칠한 칸 전체가 정확히 같아야 성공해요. */
+  paint?: string[];
   startDir?: Dir;
   /** 쓸 수 있는 명령 블록 */
   palette: Cmd[];
@@ -247,6 +249,8 @@ export type TileKind =
   | 'bridge'
   | 'hedge'
   | 'wall'
+  | 'cave'
+  | 'rockwall'
   | 'void';
 
 /** 오브젝트가 보일 조건. 모두 만족해야 보여요. */
@@ -296,7 +300,7 @@ export type MapObject =
 export interface MapDef {
   id: string;
   name: string;
-  theme: 'village' | 'forest' | 'dungeon' | 'workshop';
+  theme: 'village' | 'forest' | 'dungeon' | 'workshop' | 'cave';
   chapter?: string;
   /** 타일 글자 지도(모든 줄의 길이가 같아야 해요) */
   rows: string[];
@@ -387,7 +391,8 @@ export interface RobiPartDef {
   name: string;
   chapter: string;
   ability: string;
-  unlocks: { cards?: Cmd[]; conds?: Cond[] };
+  unlocks: { cards?: Cmd[]; conds?: Cond[]; repeat?: boolean };
+  icon?: string;
   /** 전투 프로그램 칸 추가 */
   slotBonus?: number;
   overlay: string;

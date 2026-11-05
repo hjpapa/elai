@@ -10,6 +10,7 @@ const ROTATE: Record<Dir, number> = { up: 0, right: 90, down: 180, left: 270 };
 const STEP_MS = 300;
 
 const FAIL_TEXT: Record<Exclude<GridOutcome, 'success'>, string> = {
+  wrongPaint: '그림과 조금 달라요.\n칠한 칸을 비교해 봐요.',
   bump: '쿵! 로비가 막힌 곳에 부딪혔어요.\n어느 블록에서 틀렸을까요?',
   notReached: '로비가 아직 깃발에 도착하지 못했어요.\n블록이 모자란가 봐요.',
   missingGems: '보석을 모두 줍지 못했어요.',
@@ -103,11 +104,13 @@ export class BlockCodeMission implements MissionEngine {
   private buildBoard(): HTMLElement {
     const d = this.data;
     const env = new GridEnv(d);
-    const board = h('div', { class: 'board', style: `grid-template-columns: repeat(${env.width}, 1fr)` });
+    const board = h('div', { class: `board ${d.paint ? 'paint-board' : ''}`, style: `grid-template-columns: repeat(${env.width}, 1fr)` });
     this.cells = [];
     d.grid.forEach((row, y) =>
       [...row].forEach((c, x) => {
         const cell = h('div', { class: `cell ${(x + y) % 2 ? 'alt' : ''} ${c === '#' ? 'wall' : c === '~' ? 'water' : ''}` });
+        if (d.paint?.[y]?.[x] === 'x') { cell.style.outline = '2px dashed #f2c94c'; cell.style.outlineOffset = '-4px'; cell.setAttribute('aria-label', '칠할 칸'); }
+        if (d.paint && x === env.start.x && y === env.start.y) cell.classList.add('trail');
         const key = c === '#' ? 'icon-cell-tree' : c === '~' ? 'icon-cell-water' : c === 'G' ? 'icon-goal' : c === '*' ? 'icon-gem' : '';
         if (key) cell.append(pxImg(this.ctx.icon(key), 32));
         this.cells.push(cell);
@@ -134,6 +137,7 @@ export class BlockCodeMission implements MissionEngine {
     const env = new GridEnv(this.data);
     this.placeRobot(env.start.x, env.start.y, this.data.startDir ?? 'right');
     for (const c of this.cells) c.classList.remove('trail');
+    if (this.data.paint) this.cells[env.start.y * env.width + env.start.x]?.classList.add('trail');
     this.restoreGems();
     this.editor.highlight(null);
   }
@@ -212,7 +216,7 @@ export class BlockCodeMission implements MissionEngine {
       this.editor.highlight(null);
       this.ctx.sfx('success');
       const stars = starsFor(countBlocks(this.editor.value), this.data.optimal);
-      this.talk(stars === 3 ? '도착! 가장 짧은 프로그램이에요!' : '도착! 블록을 더 줄일 수 있을까요?', 'good');
+      this.talk(this.data.paint ? '무늬가 똑같아요! 잘 그렸어요.' : stars === 3 ? '도착! 가장 짧은 프로그램이에요!' : '도착! 블록을 더 줄일 수 있을까요?', 'good');
       this.setBusy(true);
       await sleep(900);
       if (this.alive) this.ctx.finish({ success: true, stars, attempts: this.attempts, hints: this.hints });
@@ -224,7 +228,7 @@ export class BlockCodeMission implements MissionEngine {
       const bump = frames.find((f) => f.event === 'bump');
       if (bump) this.editor.highlight(bump.path, 'err');
       else this.editor.pointAtEnd();
-      this.talk(`${FAIL_TEXT[outcome]}\n(디버그 안경: 빨간 곳을 살펴봐요)`, 'bad');
+      if (bump) this.talk('막힌 칸에 부딪혔어요.\n안경이 짚은 빨간 블록을 살펴봐요.', 'bad');
     }
     if (this.fails === 2) this.showHint();
   }

@@ -12,7 +12,7 @@ export interface GridFrame {
   collected: number;
 }
 
-export type GridOutcome = 'success' | 'bump' | 'notReached' | 'missingGems' | 'tooLong';
+export type GridOutcome = 'success' | 'bump' | 'notReached' | 'missingGems' | 'tooLong' | 'wrongPaint';
 
 const DIRS: Dir[] = ['up', 'right', 'down', 'left'];
 const DELTA: Record<Dir, [number, number]> = { up: [0, -1], right: [1, 0], down: [0, 1], left: [-1, 0] };
@@ -28,6 +28,8 @@ export class GridEnv implements Env {
   y: number;
   dir: Dir;
   readonly collected = new Set<string>();
+  readonly painted = new Set<string>();
+  readonly paintTarget = new Set<string>();
   readonly frames: GridFrame[] = [];
   bumped = false;
   arrived = false;
@@ -46,6 +48,8 @@ export class GridEnv implements Env {
         else if (c === '*') gems.add(`${x},${y}`);
       }),
     );
+    data.paint?.forEach((row, y) => [...row].forEach((c, x) => { if (c === 'x') this.paintTarget.add(`${x},${y}`); }));
+    if (data.paint) this.painted.add(`${start.x},${start.y}`);
     this.start = start;
     this.goal = goal;
     this.gems = gems;
@@ -80,8 +84,9 @@ export class GridEnv implements Env {
     this.x = nx;
     this.y = ny;
     const key = `${nx},${ny}`;
+    if (this.data.paint) this.painted.add(key);
     if (!this.explicitCollect && this.gems.has(key)) this.collected.add(key);
-    if (nx === this.goal.x && ny === this.goal.y && this.allGems()) {
+    if (!this.data.paint && nx === this.goal.x && ny === this.goal.y && this.allGems()) {
       this.arrived = true;
       this.push('goal', path);
       return;
@@ -156,6 +161,7 @@ export class GridEnv implements Env {
     if (this.arrived) return 'success';
     if (this.bumped) return 'bump';
     if (truncated) return 'tooLong';
+    if (this.data.paint) return this.painted.size === this.paintTarget.size && [...this.painted].every(key => this.paintTarget.has(key)) ? 'success' : 'wrongPaint';
     if (this.x === this.goal.x && this.y === this.goal.y) return 'missingGems';
     return 'notReached';
   }

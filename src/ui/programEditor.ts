@@ -6,6 +6,8 @@ import { CMD_LABEL, COND_LABEL, cmdIcon } from './labels';
 
 export interface EditorConfig {
   palette: Cmd[];
+  /** 전투 팔레트의 카드별 에너지 비용 */
+  costs?: Partial<Record<Cmd, number>>;
   allowRepeat?: boolean;
   allowIf?: Cond[];
   maxBlocks?: number;
@@ -39,6 +41,7 @@ export class ProgramEditor {
   private readonly paletteEl: HTMLElement;
   private readonly footEl: HTMLElement;
   private listeners: (() => void)[] = [];
+  private locked = false;
 
   constructor(private readonly cfg: EditorConfig, initial: Block[] = []) {
     this.program = cloneProgram(initial);
@@ -75,7 +78,11 @@ export class ProgramEditor {
   }
 
   setLocked(locked: boolean): void {
+    if (locked === this.locked) return;
+    this.locked = locked;
     this.el.classList.toggle('locked', locked);
+    for (const control of this.el.querySelectorAll<HTMLButtonElement | HTMLSelectElement>('button, select')) control.disabled = locked;
+    if (!locked) this.render();
   }
 
   /** 실행 중인 블록(run) 또는 틀린 블록(err) 표시. null이면 지워요. */
@@ -102,6 +109,7 @@ export class ProgramEditor {
           { class: `pblock ${cmdKind(c)}`, onclick: () => this.insert({ t: 'cmd', cmd: c }), title: CMD_LABEL[c] },
           pxImg(icon(cmdIcon(c)), 28),
           CMD_LABEL[c],
+          this.cfg.costs?.[c] !== undefined ? h('span', { class: 'cost' }, `에너지 ${this.cfg.costs[c]}`) : null,
         ),
       );
     }

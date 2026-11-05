@@ -36,6 +36,42 @@
   ],
   "assets": [
     {
+      "key": "tile-cave",
+      "file": "tile/tile-cave.png"
+    },
+    {
+      "key": "block-cave",
+      "file": "block/block-cave.png"
+    },
+    {
+      "key": "prop-crystal",
+      "file": "prop/prop-crystal.png"
+    },
+    {
+      "key": "prop-stalagmite",
+      "file": "prop/prop-stalagmite.png"
+    },
+    {
+      "key": "char-explorer",
+      "file": "char/char-explorer.png"
+    },
+    {
+      "key": "mob-echo-bat",
+      "file": "mob/mob-echo-bat.png"
+    },
+    {
+      "key": "boss-bat-king",
+      "file": "mob/boss-bat-king.png"
+    },
+    {
+      "key": "robi-part-memory",
+      "file": "overlay/robi-part-memory.png"
+    },
+    {
+      "key": "icon-part-memory",
+      "file": "icon/icon-part-memory.png"
+    },
+    {
       "key": "tile-grass",
       "file": "tile/tile-grass.png"
     },

@@ -52,7 +52,8 @@ describe.skipIf(!existsSync(MANIFEST))('매니페스트와 PNG', () => {
     const data = JSON.parse(readFileSync(join(ASSET_DIR, atlas.data), 'utf8')) as {
       frames: Record<string, { frame: { x: number; y: number; w: number; h: number } }>;
     };
-    for (const spec of ASSETS) {
+    for (const entry of manifest!.assets) {
+      const spec = ASSET_BY_KEY.get(entry.key)!;
       const f = data.frames[spec.key]?.frame;
       expect(f, `아틀라스에 없는 키: ${spec.key}`).toBeDefined();
       expect([f.w, f.h], spec.key).toEqual([spec.w * spec.frames, spec.h]);

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { getMission } from '../src/data/chapters';
+import { allMissions, getMission } from '../src/data/chapters';
 import { MAPS } from '../src/data/maps';
 import { NPCS } from '../src/data/npcs';
 import { xpForLevel } from '../src/data/rpg/levels';
@@ -106,5 +106,40 @@ describe('성장 곡선', () => {
       }
     }
     expect(xp).toBeGreaterThanOrEqual(xpForLevel(MOBS.forestGuardian.recommendedLevel));
+  });
+});
+
+
+describe('2장 동굴 길과 성장', () => {
+  it('동굴 입구의 NPC·상자·포털에 갈 수 있어요', () => {
+    const def = MAPS.cave;
+    for (const o of def.objects.filter(o => ['npc','chest','portal'].includes(o.type))) {
+      expect(canReach(def, world([], ['ch2-p3-m2']), def.spawn, o), o.id).toBe(true);
+    }
+    const gate = def.objects.find(o => o.id === 'to-cavedeep')!;
+    expect(gate.type === 'portal' && gate.open?.mission).toBe('ch2-p3-m2');
+  });
+  it('네 방을 지나 보스에 가고, 방을 막으면 우회할 수 없어요', () => {
+    const def = MAPS.cavedeep;
+    const q = world(['ch2-clear', 'batking-fixed']);
+    for (const o of def.objects.filter(o => ['npc','chest','portal'].includes(o.type) && q.check(o.when))) {
+      expect(canReach(def, q, def.spawn, o), o.id).toBe(true);
+    }
+    const boss = def.objects.find(o => o.id === 'batking-fixed')!;
+    for (const x of [8, 15, 22]) {
+      const cut: MapDef = { ...def, rows: def.rows.map(r => r.slice(0,x)+'R'+r.slice(x+1)) };
+      expect(canReach(cut,q,cut.spawn,boss), '방 경계 '+x).toBe(false);
+    }
+    expect(def.fog).toBe(true);
+  });
+  it('0~2장 본편을 한 번씩 하면 대장 권장 레벨에 닿아요', () => {
+    let xp = allMissions().filter(e => e.chapter.index <= 2 && !e.mission.id.startsWith('ch2-boss')).reduce((n,e) => n+(e.mission.reward?.xp ?? 0),0);
+    for (const def of Object.values(MAPS).filter(d => ['ch0','ch1','ch2'].includes(d.chapter ?? ''))) {
+      for (const o of def.objects) {
+        if(o.type === 'mob') xp += MOBS[o.mob].xp;
+        if(o.type === 'chest') xp += o.reward.xp ?? 0;
+      }
+    }
+    expect(xp).toBeGreaterThanOrEqual(xpForLevel(MOBS.batKing.recommendedLevel));
   });
 });

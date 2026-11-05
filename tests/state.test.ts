@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { getMission } from '../src/data/chapters';
+import { ROBI_PARTS } from '../src/data/rpg/robiParts';
 import { levelForXp, xpForLevel } from '../src/data/rpg/levels';
 import type { PromptData } from '../src/data/schema';
 import { GameState, freshSave } from '../src/game/rpg/state';
@@ -123,4 +124,15 @@ describe('프롬프트 평가(젠)', () => {
     expect(o.render).toBe('paragraph');
     expect(o.issues).toHaveLength(4);
   });
+});
+
+
+it('메모리 칩은 반복을 열고 슬롯을 늘리지 않아요', () => {
+  const state = new GameState(freshSave('별빛'));
+  state.addXp(500);
+  const slots = state.slots;
+  state.completeMission('ch2-p2-m3', { success: true, stars: 3, attempts: 1, hints: 0 });
+  expect(state.data.robiParts).toContain('memoryChip');
+  expect(state.data.robiParts.some(id => ROBI_PARTS[id].unlocks.repeat)).toBe(true);
+  expect(state.slots).toBe(slots);
 });

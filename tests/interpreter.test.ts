@@ -103,3 +103,27 @@ describe('1장 블록 퍼즐', () => {
     ).toBe('success');
   });
 });
+
+
+describe('무늬 그리기', () => {
+  const paint: BlockCodeData = { intro: '', grid: ['S..', '...'], paint: ['xxx', '...'], palette: ['right', 'down', 'left'], optimal: 2, hint: '' };
+  it('시작 칸을 칠하고 정확히 같은 칸을 칠했을 때만 성공해요', () => {
+    const result = play(paint, seq('right', 'right'));
+    expect(result.outcome).toBe('success');
+    expect([...result.env.painted]).toEqual(['0,0', '1,0', '2,0']);
+  });
+  it('덜 칠하거나 더 칠하면 실패해요', () => {
+    expect(play(paint, seq('right')).outcome).toBe('wrongPaint');
+    expect(play(paint, seq('right', 'right', 'down')).outcome).toBe('wrongPaint');
+  });
+  it('무늬를 완성해도 실행을 멈추지 않고 부딪힘을 확인해요', () => {
+    expect(play(paint, seq('right', 'right', 'right')).outcome).toBe('bump');
+    expect(play(paint, seq('right', 'right', 'left')).outcome).toBe('success');
+  });
+  it('같은 수의 다른 칸이나 제한 초과는 성공이 아니에요', () => {
+    expect(play(paint, seq('down', 'right')).outcome).toBe('wrongPaint');
+    const env = new GridEnv(paint);
+    const result = run([{ t: 'repeat', times: 10, body: seq('turnRight') }], env, 3);
+    expect(env.outcome(result.truncated)).toBe('tooLong');
+  });
+});

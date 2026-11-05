@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
+import { ITEMS } from '../src/data/rpg/items';
 import { MOBS } from '../src/data/rpg/mobs';
 import type { BattleCmd, Block, MobAction, SaveData } from '../src/data/schema';
-import { Battle, type BattleOutcome } from '../src/game/battle/sim';
+import { Battle, programCost, type BattleOutcome } from '../src/game/battle/sim';
 import { freshSave } from '../src/game/rpg/state';
 import { derivedStats, programSlots } from '../src/game/rpg/stats';
 import { xpForLevel } from '../src/data/rpg/levels';
@@ -12,8 +13,10 @@ function player(level: number, gear: string[] = ['cap', 'stick', 'vest', 'boots'
   s.level = level;
   s.xp = xpForLevel(level);
   for (const id of gear) s.inventory.push({ id, qty: 1 });
-  const slotOf: Record<string, keyof SaveData['equipment']> = { cap: 'hat', stick: 'tool', vest: 'outfit', boots: 'shoes' };
-  for (const id of gear) s.equipment[slotOf[id]] = id;
+  for (const id of gear) {
+    const slot = ITEMS[id].slot;
+    if (slot) s.equipment[slot] = id;
+  }
   return s;
 }
 
@@ -103,5 +106,65 @@ describe('학습 우회 방지: 행동 예고를 읽어야 이겨요', () => {
 
   it('막기만 반복하면 끝나지 않아서 결국 져요', () => {
     expect(fight(player(4), 'forestGuardian', (i) => cards(...i.map((): BattleCmd => 'guard'))).outcome).toBe('timeout');
+  });
+});
+
+const repeat = (times: number, body: Block[]): Block[] => [{ t: 'repeat', times, body }];
+
+describe('2장: 반복은 같은 카드 위치의 에너지를 한 번만 써요', () => {
+  it('반복 비용은 한 번, 서로 다른 위치의 카드는 각각 내요', () => {
+    expect(programCost(repeat(9, cards('attack', 'guard')))).toBe(2);
+    expect(programCost(cards('attack', 'attack', 'guard'))).toBe(3);
+    expect(programCost(repeat(3, repeat(3, cards('heal'))))).toBe(2);
+    const stats = { maxHp: 100, maxEn: 2, atk: 1, def: 1 };
+    const mob = { ...MOBS.dummy, hp: 999, pattern: ['idle'] as MobAction[], roundTicks: 6 };
+    const b = new Battle({ stats, hp: 100, slots: 3, mob });
+    const result = b.runRound(repeat(3, cards('attack', 'guard')));
+    expect(result.ticks.map(t => t.energy)).toEqual([1, 0, 0, 0, 0, 0]);
+    expect(result.ticks.every(t => !t.wanted)).toBe(true);
+    expect(b.runRound(repeat(3, cards('attack', 'guard'))).ticks[0].energy).toBe(1);
+  });
+
+  it('처음부터 비용이 모자란 반복 카드는 계속 쉬어요', () => {
+    const stats = { maxHp: 100, maxEn: 1, atk: 1, def: 1 };
+    const b = new Battle({ stats, hp: 20, slots: 3, mob: { ...MOBS.dummy, pattern: ['idle'], roundTicks: 3 } });
+    const r = b.runRound(repeat(3, cards('heal')));
+    expect(r.ticks.map(t => [t.card, t.wanted, t.energy])).toEqual(Array(3).fill(['wait', 'heal', 1]));
+  });
+
+  it('복제 미리 보기는 체력·차례·보너스를 보존하고 실제 실행과 같아요', () => {
+    const stats = derivedStats(player(6));
+    const battle = new Battle({ stats, hp: 20, slots: 6, mob: MOBS.batKing });
+    battle.runRound(repeat(3, cards('wait', 'attack', 'guard', 'attack')));
+    battle.addEnergy(2);
+    const before = { hp: battle.playerHp, mobHp: battle.mobHp, round: battle.round, energy: battle.energy, intents: battle.intents() };
+    const p = repeat(3, cards('wait', 'attack', 'guard', 'attack'));
+    const preview = battle.clone().runRound(p);
+    expect({ hp: battle.playerHp, mobHp: battle.mobHp, round: battle.round, energy: battle.energy, intents: battle.intents() }).toEqual(before);
+    expect(battle.runRound(p)).toEqual(preview);
+  });
+
+  it('박쥐 대장: Lv6~8에서 반복은 무피해 승리, 슬롯만큼 평평하게 놓으면 패배해요', () => {
+    for (const level of [6, 7, 8]) {
+      const save = player(level, ['leafhat', 'brush', 'cloak', 'boots']);
+      save.robiParts = ['wheel', 'memoryChip'];
+      const good = fight(save, 'batKing', () => repeat(3, cards('wait', 'attack', 'guard', 'attack')));
+      const bad = fight(save, 'batKing', intents => ideal(intents).slice(0, programSlots(save)));
+      const attackOnly = fight(save, 'batKing', () => repeat(9, cards('attack')));
+      expect(good.outcome, 'Lv' + level).toBe('win');
+      expect(good.lostRatio, 'Lv' + level).toBe(0);
+      expect(bad.outcome, 'Lv' + level).toBe('lose');
+      expect(attackOnly.outcome, 'Lv' + level).toBe('lose');
+    }
+  });
+
+  it('메아리 박쥐: 맞는 반복은 무피해, 공격 반복은 20% 넘게 잃어요', () => {
+    const save = player(5, ['cap', 'brush', 'cloak', 'boots']);
+    save.robiParts = ['wheel', 'memoryChip'];
+    const good = fight(save, 'echoBat', i => repeat(4, ideal(i.slice(0, 2))));
+    const bad = fight(save, 'echoBat', () => repeat(9, cards('attack')));
+    expect(good.outcome).toBe('win');
+    expect(good.lostRatio).toBe(0);
+    expect(bad.lostRatio).toBeGreaterThan(.2);
   });
 });

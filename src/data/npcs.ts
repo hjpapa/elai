@@ -8,6 +8,8 @@ export const NPCS: Record<string, NpcDef> = {
   zen: { id: 'zen', name: '젠', sprite: 'char-zen', role: '프롬프트 공방의 AI' },
   guardian: { id: 'guardian', name: '숲의 수호자', sprite: 'boss-forest-guardian', role: '순서의 숲 수호자' },
   dummy: { id: 'dummy', name: '허수아비 봇', sprite: 'mob-dummy', role: '마을 연습장' },
+  explorer: { id: 'explorer', name: '탐험가 하루', sprite: 'char-explorer', role: '동굴 탐험가' },
+  batKing: { id: 'batKing', name: '메아리 박쥐 대장', sprite: 'boss-bat-king', role: '동굴의 메아리 지킴이' },
   sign: { id: 'sign', name: '표지판', sprite: 'prop-sign', role: '안내' },
 };
 

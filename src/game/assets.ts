@@ -50,6 +50,17 @@ const mob = (size: 16 | 24 | 48) => spec('mob', size, size, 4);
 const fx = (w: number, h: number, frames: number) => spec('fx', w, h, frames);
 
 export const ASSETS: AssetSpec[] = [
+  // C4: 반복의 동굴
+  tile('tile-cave', '수정 조각이 박힌 동굴 바닥', 0x56657a),
+  block('block-cave', '동굴 바위벽', 0x344d78),
+  prop(16, 24, 2)('prop-crystal', '동굴 수정(보통, 반짝)', 0x82cce0),
+  prop(16, 24)('prop-stalagmite', '둥근 석순', 0x8c9bab),
+  char('char-explorer', '탐험가 하루(헬멧 램프)', 0x49b5b1),
+  mob(24)('mob-echo-bat', '장난꾸러기 메아리 박쥐', 0x7962ab),
+  mob(48)('boss-bat-king', '메아리 박쥐 대장', 0x7962ab),
+  overlay('robi-part-memory', '로비 등에 붙는 메모리 칩', 0x49b5b1),
+  icon('icon-part-memory', '메모리 칩', 0x49b5b1),
+
   // ── 타일(32×16 마름모 윗면) ──
   tile('tile-grass', '풀밭', 0x5fae4b),
   tile('tile-flower', '작은 꽃이 핀 풀밭', 0x7cc45a),

@@ -4,22 +4,27 @@ import { NPCS } from '../src/data/npcs';
 import { ITEMS } from '../src/data/rpg/items';
 import { MOBS } from '../src/data/rpg/mobs';
 import { ROBI_PARTS } from '../src/data/rpg/robiParts';
-import type { BlockCodeData, Reward } from '../src/data/schema';
+import { GridEnv } from '../src/missions/core/gridEnv';
+import { countBlocks, run } from '../src/missions/core/interpreter';
+import type { Block, BlockCodeData, Reward } from '../src/data/schema';
 
 /** 절대 방향 이동만 쓰는 퍼즐의 최단 블록 수(BFS) */
 function shortestMoves(d: BlockCodeData): number {
   const rows = d.grid;
-  let start = { x: -1, y: -1 };
+  let start = { x: -1, y: -1, mask: 0 };
+  const gems = new Map<string, number>();
+  if (d.mustCollect) rows.forEach((r,y) => [...r].forEach((c,x) => { if(c === '*') gems.set(`${x},${y}`, gems.size); }));
+  const full = (1 << gems.size) - 1;
   rows.forEach((r, y) => {
     const x = r.indexOf('S');
-    if (x >= 0) start = { x, y };
+    if (x >= 0) start = { x, y, mask: 0 };
   });
-  const seen = new Set([`${start.x},${start.y}`]);
+  const seen = new Set([`${start.x},${start.y},0`]);
   let frontier = [start];
   for (let steps = 0; frontier.length > 0; steps++) {
-    const next: { x: number; y: number }[] = [];
+    const next: { x: number; y: number; mask: number }[] = [];
     for (const p of frontier) {
-      if (rows[p.y][p.x] === 'G') return steps;
+      if (rows[p.y][p.x] === 'G' && p.mask === full) return steps;
       for (const [dx, dy] of [
         [1, 0],
         [-1, 0],
@@ -29,9 +34,11 @@ function shortestMoves(d: BlockCodeData): number {
         const x = p.x + dx;
         const y = p.y + dy;
         const c = rows[y]?.[x];
-        if (c === undefined || c === '#' || c === '~' || seen.has(`${x},${y}`)) continue;
-        seen.add(`${x},${y}`);
-        next.push({ x, y });
+        const gem = gems.get(`${x},${y}`);
+        const mask = p.mask | (gem === undefined ? 0 : 1 << gem);
+        if (c === undefined || c === '#' || c === '~' || seen.has(`${x},${y},${mask}`)) continue;
+        seen.add(`${x},${y},${mask}`);
+        next.push({ x, y, mask });
       }
     }
     frontier = next;
@@ -101,7 +108,11 @@ describe('플레이할 수 있는 미션의 데이터', () => {
       for (const r of d.grid) expect(r.length, `${m.id}: 줄 길이`).toBe(width);
       const all = d.grid.join('');
       expect(all.split('S').length - 1, m.id).toBe(1);
-      expect(all.split('G').length - 1, m.id).toBe(1);
+      expect(all.split('G').length - 1, m.id).toBe(d.paint ? 0 : 1);
+      if (d.paint) {
+        expect(d.paint.length, m.id).toBe(d.grid.length);
+        for (const row of d.paint) expect(row.length, m.id).toBe(width);
+      }
       const absoluteOnly = d.palette.every((c) => ['up', 'down', 'left', 'right'].includes(c));
       if (absoluteOnly && !d.allowRepeat && !d.allowIf) expect(shortestMoves(d), m.id).toBe(d.optimal);
     }
@@ -128,6 +139,31 @@ describe('플레이할 수 있는 미션의 데이터', () => {
         for (const o of d.slots[1].options.filter((o) => o.quality === 'good')) expect(o.hardBody?.length).toBeGreaterThan(0);
         for (const o of d.slots[3].options) expect(o.render, `${m.id}/format/${o.id}`).toBeTruthy();
       }
+    }
+  });
+});
+
+
+describe('2장 반복 학습', () => {
+  const cmd = (cmd: 'up' | 'down' | 'right'): Block => ({ t: 'cmd', cmd });
+  const solutions: Record<string, Block[]> = {
+    'ch2-p2-m1': [{ t: 'repeat', times: 8, body: [cmd('right')] }],
+    'ch2-p2-m2': [{ t: 'repeat', times: 4, body: [cmd('right'), cmd('down')] }],
+    'ch2-p2-m3': [{ t: 'repeat', times: 3, body: [cmd('right'), cmd('right'), cmd('down')] }],
+    'ch2-p3-m1': [{ t: 'repeat', times: 4, body: [cmd('right'), cmd('down')] }],
+    'ch2-p3-m2': [{ t: 'repeat', times: 3, body: [cmd('up'), cmd('right'), cmd('down'), cmd('right')] }],
+  };
+  it('반복 풀이가 실제로 성공하고, 평평한 풀이로는 블록 제한을 넘어요', () => {
+    for (const { mission: m } of allMissions().filter(e => e.chapter.id === 'ch2')) {
+      expect(m.data, m.id).toBeDefined();
+      if (m.kind !== 'blockCode' || !solutions[m.id]) continue;
+      const d = m.data!;
+      const program = solutions[m.id];
+      const env = new GridEnv(d);
+      const result = run(program, env);
+      expect(env.outcome(result.truncated), m.id).toBe('success');
+      expect(countBlocks(program), m.id).toBe(d.optimal);
+      if (m.id.startsWith('ch2-p2')) expect(shortestMoves(d), m.id).toBeGreaterThan(d.maxBlocks!);
     }
   });
 });

@@ -49,7 +49,7 @@ export function showResult(v: ResultView): Promise<void> {
       v.explain ? h('div', { class: 'explain' }, pxImg(icon('char-robi', 0), 32), ' ', ...lines(v.explain)) : null,
       pills.childElementCount ? pills : null,
       ups.length ? h('div', { class: 'levelup' }, levelText) : null,
-      part ? h('div', { class: 'special' }, pxImg(icon('icon-part-wheel'), 32), h('b', {}, ` 로비 부품: ${part.name}`), h('div', {}, part.ability)) : null,
+      part ? h('div', { class: 'special' }, pxImg(icon(part.icon ?? 'icon-part-wheel'), 32), h('b', {}, ` 로비 부품: ${part.name}`), h('div', {}, part.ability)) : null,
       r?.badge ? h('div', { class: 'special' }, pxImg(icon(`icon-badge-${r.badge.split('-')[1]}`), 32), h('b', {}, ' 열쇠 배지를 얻었어요!')) : null,
       r?.title ? h('div', { class: 'special' }, h('b', {}, `새 칭호: ${r.title}`)) : null,
       v.bonus ? h('div', { class: 'special' }, h('b', {}, v.bonus)) : null,

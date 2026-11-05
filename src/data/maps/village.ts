@@ -57,6 +57,8 @@ export const village: MapDef = {
   spawn: { x: 12, y: 16 },
   checkpoint: { map: 'village', at: { x: 12, y: 16 } },
   objects: [
+    { id: 'restore-crystal-a', type: 'prop', at: { x: 10, y: 8 }, sprite: 'prop-crystal', when: { flag: 'village-restore-2' } },
+    { id: 'restore-crystal-b', type: 'prop', at: { x: 14, y: 12 }, sprite: 'prop-crystal', frame: 1, when: { flag: 'village-restore-2' } },
     ...house('house-a', 8, 6),
     ...house('house-b', 16, 7),
     ...house('house-c', 8, 13),
@@ -96,7 +98,7 @@ export const village: MapDef = {
     { id: 'sign-street', type: 'sign', at: { x: 13, y: 17 }, text: '위쪽 길은 광장과 숲으로 이어져요.\n오른쪽 길에는 공방이 있어요.' },
     { id: 'sign-forest', type: 'sign', at: { x: 6, y: 2 }, text: '순서의 숲으로 가는 입구예요.\n연습 전투를 마치면 열려요.' },
     { id: 'sign-booth', type: 'sign', at: { x: 14, y: 5 }, text: 'AI에게 부탁하는 주문서 체험이에요.\n5~6학년에게 추천해요.' },
-    { id: 'sign-bridge', type: 'sign', at: { x: 21, y: 9 }, text: '반복의 동굴로 이어지는 다리예요.\n2장은 아직 준비 중이에요.' },
+    { id: 'sign-bridge', type: 'sign', at: { x: 21, y: 9 }, text: '반복의 동굴로 이어지는 다리예요.\n1장을 마치고 건너가 봐요.' },
 
     {
       id: 'to-forest',
@@ -112,10 +114,10 @@ export const village: MapDef = {
       id: 'to-ch2',
       type: 'portal',
       at: { x: 24, y: 10 },
-      to: { map: 'village', at: { x: 21, y: 10 } },
+      to: { map: 'cave', at: { x: 2, y: 13 } },
       label: '반복의 동굴',
-      open: { flag: 'ch2-open' },
-      lockedText: '2장 반복의 동굴은 준비 중이에요.\n조금만 기다려요!',
+      open: { flag: 'ch1-clear' },
+      lockedText: '1장을 끝내면\n다리를 건널 수 있어요.',
     },
   ],
 };

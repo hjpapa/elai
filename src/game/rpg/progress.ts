@@ -1,4 +1,5 @@
 import { CHAPTERS, getMission } from '../../data/chapters';
+import { MAPS } from '../../data/maps';
 import { npcName } from '../../data/npcs';
 import { josa } from '../../ui/dom';
 import type { GameState } from './state';
@@ -27,12 +28,17 @@ export function objective(state: GameState): string {
     for (const part of chapter.parts) {
       const m = part.missions.find((x) => !state.missionDone(x.id));
       if (!m) continue;
+      if (chapter.entryMap && MAPS[state.data.location.map]?.chapter !== chapter.id) {
+        if (chapter.id === 'ch2') return '마을 동쪽 다리를 건너 반복의 동굴로 가요.';
+        if (chapter.index > 0) return `${MAPS[chapter.entryMap]?.name ?? chapter.title} 입구로 가요.`;
+      }
+      if (chapter.id === 'ch2' && part.kind === 'boss') return '되풀이 동굴 끝 방의 박쥐 대장을 찾아가요.';
       if (m.id === 'ch1-boss-m1') return '숲 미로 깊은 곳의 수호자를 찾아가요. 열쇠는 미로 어딘가에!';
       const who = m.npc ? npcName(m.npc) : '';
       return who ? `${josa(who, '을', '를')} 찾아가요 · ${part.title}` : part.title;
     }
   }
   const preview = getMission('ch7-p2-m2');
-  if (preview && !state.missionDone('ch7-p2-m2')) return '1장 완료! 마을의 프롬프트 공방도 미리 해 봐요.';
-  return '1장을 모두 끝냈어요! 2장은 곧 열려요.';
+  if (preview && !state.missionDone('ch7-p2-m2')) return '마을의 프롬프트 공방도 미리 해 봐요.';
+  return '열린 장을 모두 끝냈어요! 마을을 둘러봐요.';
 }

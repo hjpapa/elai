@@ -101,7 +101,7 @@ export function openDex(): void {
           h(
             'div',
             { class: `dex-card ${owned ? '' : 'unknown'}` },
-            pxImg(icon(owned && p.id === 'wheel' ? 'icon-part-wheel' : 'icon-lock'), 40),
+            pxImg(icon(owned ? p.icon ?? 'icon-part-wheel' : 'icon-lock'), 40),
             h('h3', {}, owned ? p.name : '???'),
             h('p', { class: owned ? '' : 'muted' }, owned ? p.ability : `${ch?.index}장 ${ch?.title}에서 찾을 수 있어요.`),
           ),

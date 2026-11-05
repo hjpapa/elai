@@ -1,15 +1,17 @@
 import Phaser from 'phaser';
 import { ITEMS } from '../../data/rpg/items';
 import { MOBS } from '../../data/rpg/mobs';
+import { ROBI_PARTS } from '../../data/rpg/robiParts';
+import { MAPS } from '../../data/maps';
 import type { BattleCmd, Block, Mission, MobAction } from '../../data/schema';
 import { app } from '../../game/app';
-import { Battle, CARD_COST, type TickEvent } from '../../game/battle/sim';
+import { Battle, CARD_COST, programCost, type TickEvent } from '../../game/battle/sim';
 import type { BattleScene, BattleSceneData } from '../../game/scenes/BattleScene';
 import { currentMusic, playMusic, playSfx } from '../../fx/sfx';
 import { clear, h, lines, sleep } from '../../ui/dom';
 import { icon, pxImg } from '../../ui/icons';
 import { CMD_LABEL, INTENT_LABEL, cmdIcon, intentIcon } from '../../ui/labels';
-import { cmdKind } from '../../ui/programEditor';
+import { cmdKind, ProgramEditor } from '../../ui/programEditor';
 import { playerLook } from '../../ui/portraits';
 import type { MissionResult, Stars } from '../core/types';
 
@@ -50,6 +52,9 @@ export async function runBattle(mobId: string, opts: BattleOptions = {}): Promis
   const s = app.state;
   const stats = s.stats;
   const battle = new Battle({ stats, hp: s.data.hp, slots: s.slots, mob });
+  const programMode = s.data.robiParts.some(id => ROBI_PARTS[id]?.unlocks.repeat);
+  const editor = programMode ? new ProgramEditor({ palette: CARDS, allowRepeat: true, maxBlocks: s.slots, costs: CARD_COST }, opts.prefill) : null;
+  editor?.el.classList.add('inline');
   const sm = app.game.scene;
   const worldOn = sm.isActive('World');
   if (worldOn) sm.pause('World');
@@ -59,7 +64,7 @@ export async function runBattle(mobId: string, opts: BattleOptions = {}): Promis
 
   const scene = sm.getScene('Battle') as BattleScene;
   const ready = new Promise<void>((r) => scene.events.once(Phaser.Scenes.Events.CREATE, () => r()));
-  sm.run('Battle', { mob, save: s.data, floor: opts.floor ?? 'tile-grass' } satisfies BattleSceneData);
+  sm.run('Battle', { mob, save: s.data, floor: opts.floor ?? (MAPS[s.data.location.map]?.theme === 'cave' ? 'tile-cave' : 'tile-grass') } satisfies BattleSceneData);
   await ready;
 
   // ── DOM ──
@@ -81,11 +86,11 @@ export async function runBattle(mobId: string, opts: BattleOptions = {}): Promis
   const fleeBtn = h('button', { class: 'btn small ghost', hidden: !opts.canFlee }, '도망가기');
   const bottom = h(
     'div',
-    { class: 'battle-bottom' },
+    { class: 'battle-bottom' + (programMode ? ' program-mode' : '') },
     h('div', { class: 'fighters' }, pxImg(playerLook(s.data), 40), h('div', { class: 'grow' }, myHp, myEn)),
     grid,
     h('div', { style: 'height:8px' }),
-    palette,
+    editor?.el ?? palette,
     h('div', { style: 'height:8px' }),
     say,
     h('div', { class: 'row end', style: 'margin-top:8px' }, fleeBtn, appleBtn, jellyBtn, hintBtn, runBtn),
@@ -109,7 +114,8 @@ export async function runBattle(mobId: string, opts: BattleOptions = {}): Promis
   let busy = false;
   let firstRound = true;
 
-  const energyUse = () => slots.reduce((n, c) => n + (c ? CARD_COST[c] : 0), 0);
+  const program = (): Block[] => editor?.value ?? slots.map(c => ({ t: 'cmd', cmd: c ?? 'wait' }));
+  const energyUse = () => programCost(program());
   const refreshBars = () => {
     setBar(mobHp, battle.mobHp, mob.hp, `${battle.mobHp} / ${mob.hp}`);
     setBar(myHp, battle.playerHp, stats.maxHp, `체력 ${battle.playerHp} / ${stats.maxHp}`);
@@ -123,19 +129,34 @@ export async function runBattle(mobId: string, opts: BattleOptions = {}): Promis
     jellyBtn.prepend(pxImg(icon(ITEMS.jelly.icon), 20));
     jellyBtn.disabled = busy || s.itemQty('jelly') === 0;
     runBtn.disabled = busy;
+    editor?.setLocked(busy);
     hintBtn.disabled = busy;
   };
 
   /** 실행 중에는 이번 라운드에 몹이 실제로 한 행동을 보여 줘요(계산이 이미 다음 라운드로 넘어가 있어서). */
   let shownIntents: MobAction[] | null = null;
+  let shownTicks: TickEvent[] | null = null;
   const renderGrid = (marks: Map<number, 'run' | 'err'> = new Map()) => {
     const n = battle.ticksPerRound;
     const intents = shownIntents ?? battle.intents(n);
-    grid.style.gridTemplateColumns = `56px repeat(${n}, 1fr)`;
+    grid.style.gridTemplateColumns = `56px repeat(${n}, minmax(40px, 1fr))`;
     clear(grid);
     grid.append(h('div', { class: 'muted', style: 'align-self:center' }, mob.name.length > 4 ? '몹' : mob.name));
     intents.forEach((a) => grid.append(h('div', { class: `intent ${a}` }, pxImg(icon(intentIcon(a)), 32), INTENT_LABEL[a])));
-    grid.append(h('div', { class: 'muted', style: 'align-self:center' }, '나'));
+    grid.append(h('div', { class: 'muted', style: 'align-self:center' }, editor ? '미리 보기' : '나'));
+    if (editor) {
+      const preview = shownTicks ?? battle.clone().runRound(editor.value).ticks;
+      for (let i = 0; i < n; i++) {
+        const t = preview[i];
+        const card = t?.card ?? 'wait';
+        const cell = h('div', { class: ['bslot filled', cmdKind(card), t?.path == null ? 'empty' : '', t?.wanted ? 'err' : '', marks.get(i) ?? ''].join(' '),
+          'aria-label': (i + 1) + '번째 미리 보기: ' + CMD_LABEL[card], title: t?.wanted ? '에너지가 모자라 쉬어요' : CMD_LABEL[card] },
+          pxImg(icon(cmdIcon(card)), 30), CMD_LABEL[card]);
+        grid.append(h('div', { class: 'tick' }, cell));
+        if (marks.get(i) === 'run') cell.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      }
+      return;
+    }
     for (let i = 0; i < n; i++) {
       const c = slots[i];
       const mark = marks.get(i);
@@ -215,17 +236,21 @@ export async function runBattle(mobId: string, opts: BattleOptions = {}): Promis
     refreshBars();
   };
 
+  editor?.onChange(() => { renderGrid(); refreshBars(); });
+
   appleBtn.addEventListener('click', () => {
     if (busy || !s.removeItem('apple')) return;
     battle.healPlayer(ITEMS.apple.effect?.heal ?? 10);
     playSfx('heal');
+    renderGrid();
     refreshBars();
   });
   jellyBtn.addEventListener('click', () => {
     if (busy || !s.removeItem('jelly')) return;
     battle.addEnergy(ITEMS.jelly.effect?.energy ?? 2);
     playSfx('item');
-    talk('에너지가 늘었어요! 이번 차례에 카드를 더 쓸 수 있어요.', 'good');
+    talk('에너지가 늘었어요!\n이번 차례에 더 쓸 수 있어요.', 'good');
+    renderGrid();
     refreshBars();
   });
   hintBtn.addEventListener('click', () => {
@@ -244,13 +269,15 @@ export async function runBattle(mobId: string, opts: BattleOptions = {}): Promis
       busy = true;
       refreshBars();
       renderGrid();
-      const program: Block[] = slots.map((c) => ({ t: 'cmd', cmd: c ?? 'wait' }));
-      const result = battle.runRound(program);
-      shownIntents = result.ticks.map((t) => t.mobAction);
+      shownIntents = battle.intents();
+      const result = battle.runRound(program());
+      shownTicks = result.ticks;
+
       let shownMobHp = battle.mobHp + result.ticks.reduce((n, t) => n + t.dealt - t.mobHealed, 0);
       let shownHp = battle.playerHp + result.ticks.reduce((n, t) => n + t.taken - t.healed, 0);
       for (const t of result.ticks) {
         renderGrid(new Map([[t.tick, 'run']]));
+        editor?.highlight(t.path);
         await scene.playerAct(t.card, t.dealt, t.blocked, t.healed);
         playSfx(t.card === 'attack' ? (t.blocked ? 'guard' : 'hit') : t.card === 'heal' ? 'heal' : t.card === 'guard' ? 'guard' : 'click');
         shownMobHp -= t.dealt;
@@ -281,12 +308,15 @@ export async function runBattle(mobId: string, opts: BattleOptions = {}): Promis
       const fb = feedbackFor(result.ticks);
       if (fb) {
         const glasses = s.helpers.debugGlasses;
+        if (glasses && editor) editor.highlight(result.ticks[fb.index]?.path ?? null, 'err');
         renderGrid(glasses ? new Map([[fb.index, 'err']]) : new Map());
         talk(glasses ? `${fb.text}\n(디버그 안경: ${fb.index + 1}번째 칸을 살펴봐요)` : fb.text, 'bad');
         await sleep(1400);
       } else talk('잘했어요! 다음 예고를 보고 또 카드를 놓아요.', 'good');
       busy = false;
       shownIntents = null;
+      shownTicks = null;
+      editor?.highlight(null);
       newRound();
     });
   });

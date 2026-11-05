@@ -78,6 +78,56 @@ const list: MobDef[] = [
     purified: '머릿속 순서가 다시 이어졌어요.\n고마워요! 함께 숲을 돌봐요.',
     recommendedLevel: 4,
   },
+{
+  "id": "echoBat",
+  "name": "메아리 박쥐",
+  "sprite": "mob-echo-bat",
+  "size": 24,
+  "chapter": "ch2",
+  "hp": 40,
+  "atk": 6,
+  "def": 1,
+  "pattern": [
+    "charge",
+    "smash"
+  ],
+  "smashRatio": 0.3,
+  "xp": 12,
+  "coins": 8,
+  "drops": [
+    {
+      "item": "jelly",
+      "chance": 0.3
+    }
+  ],
+  "dex": "메아리로 장난치는 친구예요.\n번개 뒤에는 막기로 받아 줘요.",
+  "purified": "삐유! 메아리가 고르게 울려요.\n함께 노래해요!",
+  "recommendedLevel": 5
+},
+{
+  "id": "batKing",
+  "name": "메아리 박쥐 대장",
+  "sprite": "boss-bat-king",
+  "size": 48,
+  "boss": true,
+  "chapter": "ch2",
+  "hp": 120,
+  "atk": 7,
+  "def": 2,
+  "pattern": [
+    "guard",
+    "charge",
+    "smash",
+    "idle"
+  ],
+  "roundTicks": 12,
+  "smashRatio": 0.6,
+  "xp": 0,
+  "coins": 0,
+  "dex": "네 행동을 되풀이하는 대장이에요.\n반복으로 모든 강타를 막아요.",
+  "purified": "동굴 노래가 다시 들려요.\n함께 고쳐 줘서 고마워요!",
+  "recommendedLevel": 6
+},
 ];
 
 export const MOBS: Record<string, MobDef> = Object.fromEntries(list.map((m) => [m.id, m]));

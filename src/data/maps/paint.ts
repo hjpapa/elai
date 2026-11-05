@@ -82,6 +82,8 @@ export const BASE_LEGEND = {
   '=': 'path',
   '~': 'water',
   B: 'bridge',
+  c: 'cave',
+  R: 'rockwall',
   s: 'stone',
   w: 'wood',
   '#': 'hedge',

@@ -1448,3 +1448,25 @@ h3 {
   .battle-bottom .row.end { gap: 4px; }
   .battle-bottom .btn { font-size: 13px; min-height: 36px; padding: 4px 7px; }
 }
+
+/* 전투 프로그램: 반복 몸체와 실행 차례를 따로 살펴봐요. */
+.battle-bottom .ticks { overflow-x: auto; overscroll-behavior-x: contain; }
+.bslot.empty { opacity: .45; }
+.editor.inline .program { min-height: 80px; max-height: 180px; padding: 6px; }
+.editor.inline .blist { display: flex; align-items: center; gap: 2px; flex-wrap: wrap; }
+.editor.inline .gap { width: 16px; min-height: 34px; flex: 0 0 16px; }
+.editor.inline .block { font-size: 14px; padding: 4px; flex-shrink: 0; }
+.editor.inline .block img { width: 20px; height: 20px; }
+.editor.inline .container { min-width: 0; max-width: 100%; }
+.editor.inline .container .body { margin-left: 3px; }
+.editor.inline .head { flex-wrap: wrap; gap: 3px; }
+.editor.inline .palette { margin-bottom: 6px; }
+.editor.locked .head { pointer-events: none; }
+@media (max-width: 480px) {
+  .battle-bottom.program-mode .pblock { flex-basis: calc(33% - 4px); font-size: 12px; }
+  .battle-bottom.program-mode .editor-foot { font-size: 12px; }
+  .battle-bottom.program-mode .program { max-height: 160px; }
+}
+
+.paint-board .cell.trail { background: #296b68; box-shadow: inset 0 0 0 3px #78d9bd; }
+.paint-board .cell.trail::after { display: none; }
