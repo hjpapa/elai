@@ -152,7 +152,7 @@ export function buildMaze(seed = 20261104): MapDef {
         id: 'sign-start',
         type: 'sign',
         at: startSign,
-        text: '표지판 숲 미로: 화살표 순서대로 가면 열쇠가 있어요!\n방향키 ↑=↗ →=↘ ↓=↙ ←=↖ (화면을 눌러도 걸어가요)',
+        text: '표지판 숲 미로: 화살표 순서대로 가면 열쇠가 있어요!\n방향키 ↑=↖ →=↗ ↓=↘ ←=↙ (화면을 눌러도 걸어가요)',
       },
       ...signs,
       { id: 'chest-key', type: 'chest', at: key, reward: { xp: 5, items: [{ id: 'forestkey', qty: 1 }] } },

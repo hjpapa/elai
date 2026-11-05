@@ -43,13 +43,13 @@ interface View {
 const WALK_TYPES = new Set(['portal', 'pickup', 'sign']);
 /**
  * 방향키 → 칸 방향. 미로의 길은 칸 방향으로 나 있어서 키도 칸 방향에 맞춰요.
- * ↑ = ↗, → = ↘, ↓ = ↙, ← = ↖ (표지판 화살표와 같아요). 두 키를 함께 누르면 화면 똑바로 움직여요.
+ * ↑ = ↖, → = ↗, ↓ = ↘, ← = ↙ (키가 가리키는 쪽에서 반시계로 45도). 두 키를 함께 누르면 화면 똑바로 움직여요.
  */
 const KEY_DIRS: { keys: string[]; d: [number, number] }[] = [
-  { keys: ['ArrowUp', 'Up', 'KeyW', 'w'], d: [0, -1] },
-  { keys: ['ArrowRight', 'Right', 'KeyD', 'd'], d: [1, 0] },
-  { keys: ['ArrowDown', 'Down', 'KeyS', 's'], d: [0, 1] },
-  { keys: ['ArrowLeft', 'Left', 'KeyA', 'a'], d: [-1, 0] },
+  { keys: ['ArrowUp', 'Up', 'KeyW', 'w'], d: [-1, 0] },
+  { keys: ['ArrowRight', 'Right', 'KeyD', 'd'], d: [0, -1] },
+  { keys: ['ArrowDown', 'Down', 'KeyS', 's'], d: [1, 0] },
+  { keys: ['ArrowLeft', 'Left', 'KeyA', 'a'], d: [0, 1] },
 ];
 const ACTION_KEYS = new Set(['Space', ' ', 'Enter', 'KeyE', 'e']);
 
