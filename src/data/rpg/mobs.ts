@@ -74,7 +74,7 @@ const list: MobDef[] = [
     heal: 6,
     xp: 0,
     coins: 0,
-    dex: '고장 나서 길을 막는 숲지기예요.\n번개 뒤는 막고, 방패 땐 쉬어요.',
+    dex: '고장 나서 길을 막는 이끼 거인이에요.\n번개 뒤는 막고, 방패 땐 쉬어요.',
     purified: '머릿속 순서가 다시 이어졌어요.\n고마워요! 함께 숲을 돌봐요.',
     recommendedLevel: 4,
   },
