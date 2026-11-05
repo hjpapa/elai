@@ -302,7 +302,6 @@ const list: MobDef[] = [
     "seed": 17
   },
   "roundTicks": 12,
-  "smashRatio": 0.6,
   "xp": 26,
   "coins": 16,
   "recommendedLevel": 11,
@@ -370,7 +369,6 @@ const list: MobDef[] = [
     "seed": 37
   },
   "roundTicks": 12,
-  "smashRatio": 0.7,
   "xp": 0,
   "coins": 0,
   "recommendedLevel": 11,

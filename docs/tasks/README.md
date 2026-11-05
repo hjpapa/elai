@@ -29,13 +29,13 @@ Claude가 지시서를 쓰고, 사용자가 Codex 앱에서 실행해요.
 | C1 | [codex-01-assets.md](codex-01-assets.md) — 픽셀아트 그림 전체 | 완료(114개, 검토 통과) |
 | C2 | [codex-02-polish.md](codex-02-polish.md) — 아틀라스(로딩), 효과음·배경 음악, 전투 연출, 로비 안테나, 휴대폰 화면 | 완료(검토 통과, main 병합) |
 | C3 | [codex-03-ch1-text.md](codex-03-ch1-text.md) — 0·1장 아이템·도감·NPC 대사·미션 안내 글 | 완료(검토 통과, main 병합) |
-| C4 | [codex-04-ch2.md](codex-04-ch2.md) — 2장 반복의 동굴 전체(엔진·데이터·그림·테스트) | 완료(검토 대기) |
-| C5 | [codex-05-ch3.md](codex-05-ch3.md) — 3장 갈림길 사막 | 완료(검토 대기) |
-| C6 | [codex-06-ch4.md](codex-06-ch4.md) — 4장 데이터 항구 | 완료(검토 대기) |
-| C7 | [codex-07-ch5.md](codex-07-ch5.md) — 5장 인식의 연구소 | 완료(검토 대기) |
-| C8 | [codex-08-ch6.md](codex-08-ch6.md) — 6장 길잡이 천문대 | 완료(검토 대기) |
-| C9 | [codex-09-ch7.md](codex-09-ch7.md) — 7장 프롬프트 공방 | 완료(검토 대기) |
-| C10 | [codex-10-ch8.md](codex-10-ch8.md) — 8장 윤리의 성과 엔딩 | 완료(검토 대기) |
-| 연속 실행 | [codex-run-all.md](codex-run-all.md) — C4~C10을 한 번에, 단계마다 커밋, 기록은 `codex-progress.md` | 준비됨 |
+| C4 | [codex-04-ch2.md](codex-04-ch2.md) — 2장 반복의 동굴 전체(엔진·데이터·그림·테스트) | 완료(검토 통과, main 병합) |
+| C5 | [codex-05-ch3.md](codex-05-ch3.md) — 3장 갈림길 사막 | 완료(검토 통과, main 병합) |
+| C6 | [codex-06-ch4.md](codex-06-ch4.md) — 4장 데이터 항구 | 완료(검토 통과, main 병합) |
+| C7 | [codex-07-ch5.md](codex-07-ch5.md) — 5장 인식의 연구소 | 완료(검토 통과, main 병합 · 친구 차례 규칙은 Claude가 수정) |
+| C8 | [codex-08-ch6.md](codex-08-ch6.md) — 6장 길잡이 천문대 | 완료(검토 통과, main 병합) |
+| C9 | [codex-09-ch7.md](codex-09-ch7.md) — 7장 프롬프트 공방 | 완료(검토 통과, main 병합) |
+| C10 | [codex-10-ch8.md](codex-10-ch8.md) — 8장 윤리의 성과 엔딩 | 완료(검토 통과, main 병합) |
+| 연속 실행 | [codex-run-all.md](codex-run-all.md) — C4~C10을 한 번에, 단계마다 커밋, 기록은 `codex-progress.md` | 완료(C4~C10) |
 
 고치는 파일이 겹치지 않는 작업은 동시에 돌려도 돼요. 이때는 꼭 **각자의 작업 폴더**를 열어 주세요.

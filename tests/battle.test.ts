@@ -282,7 +282,8 @@ describe('5장 내 분류 모델 전투', () => {
     return new Battle({stats,hp:stats.maxHp,slots:programSlots(save),mob,classificationModel});
   };
   const finish=(b:Battle,p:Block[])=>{while(b.outcome==='continue')b.runRound(p);return b;};
-  it('Lv11~14·씨앗1~20에서 바른 모델은 무피해, 빈 모델·치우친 모델·이전 조건은 실패해요',()=>{
+  it('Lv11~14·씨앗1~20에서 바른 모델은 무피해 승리, 빈 모델·치우친 모델·이전 조건·고정 반복은 이기지 못해요',()=>{
+    const fixed=[repeat(12,cards('attack')),repeat(6,cards('attack','wait')),repeat(4,cards('attack','attack','guard')),repeat(3,cards('attack','wait','guard','attack'))];
     for(const level of [11,12,13,14])for(const id of ['shapeSlime','shiftKing'])for(let seed=1;seed<=20;seed++){
       const message=id+' Lv'+level+' seed'+seed;
       const good=finish(setup(id,level,seed,model),modelProgram);
@@ -290,11 +291,23 @@ describe('5장 내 분류 모델 전투', () => {
       expect(finish(setup(id,level,seed),modelProgram).outcome,'빈 모델 '+message).toBe('timeout');
       for(const label of ['friend','playful']){
         const biased={samples:model.samples.map(sample=>({...sample,label})),k:3};
-        expect(finish(setup(id,level,seed,biased),modelProgram).outcome,'치우침 '+label+message).not.toBe('win');
+        expect(finish(setup(id,level,seed,biased),modelProgram).outcome,'치우침 '+label+message).toBe('timeout');
       }
-      expect(finish(setup(id,level,seed,model),conditional).outcome,'이전 행동 조건 '+message).toBe('lose');
-      expect(finish(setup(id,level,seed,model),waveProgram).outcome,'이전 물결 조건 '+message).toBe('lose');
-      expect(finish(setup(id,level,seed,model),repeat(12,cards('attack'))).outcome,'공격반복 '+message).toBe('lose');
+      expect(finish(setup(id,level,seed,model),conditional).outcome,'이전 행동 조건 '+message).toBe('timeout');
+      expect(finish(setup(id,level,seed,model),waveProgram).outcome,'이전 물결 조건 '+message).toBe('timeout');
+      for(const program of fixed){
+        const b=finish(setup(id,level,seed,model),program);
+        expect(b.outcome,'고정 반복 '+JSON.stringify(program)+' '+message).toBe('timeout');
+        expect(b.playerHp,'슬라임은 로비를 다치게 하지 않아요 '+message).toBe(b.stats.maxHp);
+      }
+    }
+  });
+  it('게임에 쓰는 씨앗에서는 Lv18 좋은 장비로도 공격만 반복해서는 이기지 못해요',()=>{
+    for(const id of ['shapeSlime','shiftKing']){
+      const save=player(18,['starCap','scribeBrush','dataVest','researchBoots']);save.robiParts=['wheel','memoryChip','sensor','dataLens','learningChip'];
+      const stats=derivedStats(save);
+      const b=finish(new Battle({stats,hp:stats.maxHp,slots:programSlots(save),mob:MOBS[id],classificationModel:model}),repeat(12,cards('attack')));
+      expect(b.outcome,id).toBe('timeout');
     }
   });
   it('진짜 이름표는 미리 보기에 없고, 모델과 특징은 복제본에서 공유하지 않아요',()=>{
@@ -306,12 +319,29 @@ describe('5장 내 분류 모델 전투', () => {
     const visible=b.features();visible[0]![0]=99;expect(b.features()[0]![0]).not.toBe(99);
     expect(b.clone().runRound(modelProgram)).toEqual(b.runRound(modelProgram));
   });
-  it('친구를 공격해도 정화는 진행되지 않고 잘못 분류한 사실을 알려줘요',()=>{
+  it('친구를 공격하면 정화가 처음으로 돌아가고, 친구도 장난꾸러기도 로비를 다치게 하지 않아요',()=>{
     const b=setup('shiftKing',11,1,model);
+    expect(b.intents()).toEqual(Array(12).fill('idle'));
     const r=b.runRound(repeat(12,cards('attack')));
     const mistakes=r.ticks.filter(t=>t.classification?.actual==='friend');
     expect(mistakes.length).toBeGreaterThan(0);
-    expect(mistakes.every(t=>t.blocked&&t.dealt===0&&t.taken>0)).toBe(true);
+    expect(mistakes.every(t=>t.blocked&&t.dealt===0&&t.taken===0&&t.mobAction==='heal'&&t.mobHp===MOBS.shiftKing.hp)).toBe(true);
+    expect(r.ticks.some(t=>t.classification?.actual==='friend'&&t.mobHealed>0)).toBe(true);
+    expect(r.ticks.every(t=>t.taken===0&&t.mobAction!=='smash')).toBe(true);
+    // 바르게 분류하면 친구는 기다리고 장난꾸러기는 모두 정화해서 되돌아가는 일이 없어요.
+    const calm=setup('shiftKing',11,1,model).runRound(modelProgram);
+    expect(calm.ticks.every(t=>t.mobHealed===0&&t.taken===0)).toBe(true);
+  });
+  it('장난꾸러기 차례를 그냥 두면 공격 한 번만큼 장난기가 다시 자라요',()=>{
+    const b=setup('shiftKing',11,1,model);
+    b.runRound(modelProgram);
+    const hurt=b.mobHp;expect(hurt).toBeLessThan(MOBS.shiftKing.hp);
+    const r=b.runRound(repeat(12,cards('guard')));
+    const missed=r.ticks.filter(t=>t.classification?.actual==='playful');
+    expect(missed.length).toBeGreaterThan(0);
+    expect(missed[0].mobHealed).toBe(Math.min(b.playerAttackDamage(),MOBS.shiftKing.hp-hurt));
+    expect(missed.every(t=>t.taken===0&&(t.mobHealed===0||t.mobAction==='heal'))).toBe(true);
+    expect(r.ticks.filter(t=>t.classification?.actual==='friend').every(t=>t.mobHealed===0)).toBe(true);
   });
 });
 

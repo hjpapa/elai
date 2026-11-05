@@ -39,7 +39,8 @@ const TICK_MS = 260;
 function feedbackFor(ticks: TickEvent[]): { index: number; text: string } | null {
   for (const t of ticks) {
     if (t.balanceLocked && t.card === 'attack') return { index: t.tick, text: '자료의 치우침을 먼저 고쳐요.\n골렘의 보호막이 약해져요.' };
-    if (t.classification?.actual === 'friend' && t.card === 'attack') return { index: t.tick, text: '친구를 잘못 골랐어요.\n학습 예시와 이름표를 살펴봐요.' };
+    if (t.classification?.actual === 'friend' && t.card === 'attack') return { index: t.tick, text: '친구를 공격해서 정화가 되돌아갔어요.\n내 모델이 친구라면 기다려요.' };
+    if (t.classification?.actual === 'playful' && t.card !== 'attack') return { index: t.tick, text: '장난꾸러기를 두면 장난기가 자라요.\n내 모델이 장난꾸러기라면 공격해요.' };
     if (t.taken > 0 && t.mobAction === 'smash') return { index: t.tick, text: '강타를 막지 못했어요!\n강타 예고 칸에는 막기를 놓아요.' };
     if (t.taken > 0) return { index: t.tick, text: '공격 예고 칸에 막기를 놓으면\n다치지 않아요.' };
     if (t.blocked) return { index: t.tick, text: '몹이 막을 때는 공격이 통하지 않아요.\n그때는 쉬거나 회복해요.' };
@@ -194,14 +195,22 @@ export async function runBattle(mobId: string, opts: BattleOptions = {}): Promis
     const values = shownValues ?? battle.values(n);
     const features = shownFeatures ?? battle.features(n);
     const predictions = shownPredictions ?? battle.predictions(n);
+    const labelName = (id: string | null | undefined) => id === 'playful' ? '장난' : id === 'friend' ? '친구' : '미학습';
+    /** 분류 칸: 실행 전에는 특징과 내 모델의 판단만, 실행한 차례에만 실제 이름표를 보여 줘요. */
+    const sampleCell = (i: number) => {
+      const f = features[i] ?? [];
+      const actual = i < revealedTicks ? shownTicks?.[i]?.classification?.actual : undefined;
+      const mark = actual === undefined ? '' : actual === predictions[i] ? ' ✓' : ' ✗';
+      return h('div', { class: 'intent unknown', 'aria-label': `뛰는 높이 ${f[0]}, 점무늬 수 ${f[1]}` + (actual ? `, 실제 ${labelName(actual)}, 내 모델이 ${actual === predictions[i] ? '맞혔어요' : '틀렸어요'}` : `, 내 모델 ${labelName(predictions[i])}`) },
+        h('span', {}, '높이 ' + f[0]), h('span', {}, '점 ' + f[1]),
+        h('small', {}, actual ? '실제 ' + labelName(actual) + mark : '내 모델: ' + labelName(predictions[i])));
+    };
     intents.forEach((a, i) => grid.append(a === null
       ? mob.forecastPattern
         ? h('div', { class: 'intent unknown', 'aria-label': i === 0 && !shownIntents ? '이번 차례 예측' : '진행하며 예측' },
           i === 0 && !shownIntents && forecastUnlocked ? h('small', {}, battle.forecast().samples ? '강타 ' + Math.round(battle.forecast().smashRate * 100) + '%' : '자료 부족') : h('small', {}, '진행하며 예측'))
         : features[i]
-        ? h('div', { class: 'intent unknown', 'aria-label': '뛰는 높이 ' + features[i]?.[0] + ', 점무늬 수 ' + features[i]?.[1] },
-          h('span', {}, '높이 ' + features[i]?.[0]), h('span', {}, '점 ' + features[i]?.[1]),
-          h('small', {}, '내 모델: ' + (predictions[i] === 'playful' ? '장난' : predictions[i] === 'friend' ? '친구' : '미학습')))
+        ? sampleCell(i)
         : h('div', { class: 'intent unknown', 'aria-label': values[i] === null ? '실행할 때 알 수 있어요' : '물결 ' + values[i] }, values[i] === null ? '?' : '물결 ' + values[i])
       : h('div', { class: 'intent ' + a }, pxImg(icon(intentIcon(a)), 32), INTENT_LABEL[a])));
     grid.append(h('div', { class: 'muted', style: 'align-self:center' }, editor ? '미리 보기' : '나'));
@@ -327,7 +336,7 @@ export async function runBattle(mobId: string, opts: BattleOptions = {}): Promis
 
   renderPalette();
   newRound();
-  talk(mob.balanceRule ? battle.balanceLocked ? '자료가 치우쳐 보호막이 단단해요.\n먼저 자료 고치기 미션을 해요.' : `자료를 고쳐 보호막이 약해졌어요.\n체력 ${mob.hp} · 공격 ${mob.atk} · 방어 ${mob.def}` : opts.intro ?? `${mob.name}의 예고를 보고 카드를 놓아요.\n준비되면 ▶ 실행!`);
+  talk(mob.balanceRule ? battle.balanceLocked ? '자료가 치우쳐 보호막이 단단해요.\n먼저 자료 고치기 미션을 해요.' : `자료를 고쳐 보호막이 약해졌어요.\n체력 ${mob.hp} · 공격 ${mob.atk} · 방어 ${mob.def}` : opts.intro ?? (mob.classifyPattern ? '장난꾸러기만 정화해요.\n내 모델로 친구를 구별해요.' : `${mob.name}의 예고를 보고 카드를 놓아요.\n준비되면 ▶ 실행!`));
 
   const outcome = await new Promise<BattleReport['outcome']>((resolve) => {
     fleeBtn.addEventListener('click', () => !busy && resolve('flee'));
@@ -350,7 +359,8 @@ export async function runBattle(mobId: string, opts: BattleOptions = {}): Promis
       for (const t of result.ticks) {
         shownForecast = t.forecast ?? null;
         revealedTicks = t.tick + 1;
-        shownIntents[t.tick] = t.mobAction;
+        // 분류 몹은 행동 대신 실제 이름표를 그 차례에만 보여 줘요(sampleCell).
+        if (!mob.classifyPattern) shownIntents[t.tick] = t.mobAction;
         renderGrid(new Map([[t.tick, 'run']]));
         editor?.highlight(t.path);
         await scene.playerAct(t.card, t.dealt, t.blocked, t.healed);
@@ -383,6 +393,7 @@ export async function runBattle(mobId: string, opts: BattleOptions = {}): Promis
       }
       const fb = feedbackFor(result.ticks);
       if (fb && mob.forecastPattern) fb.text = '예측은 틀릴 수 있어요.\n기록의 강타 위험을 보고 막아요.';
+      if (fb && result.ticks[fb.index]?.classification && !conditions.includes('modelPlayful')) fb.text = '학습 칩이 있어야 친구를 구별해요.\n연구원의 학습 미션을 먼저 해요.';
       if (fb) {
         const glasses = s.helpers.debugGlasses;
         if (glasses && editor) editor.highlight(result.ticks[fb.index]?.path ?? null, 'err');

@@ -187,8 +187,8 @@ export class Battle {
   /** 씨앗과 절대 차례를 섞어요. 복제·재실행에서도 같은 행동이에요. */
   private actionAt(index: number): MobAction {
     if (this.mob.forecastPattern) return this.forecastActionAt(index);
-    const sample = this.sampleAt(index);
-    if (sample) return sample.label === 'playful' ? 'idle' : 'smash';
+    // 변신 슬라임은 친구 모습도 장난꾸러기 모습도 로비를 다치게 하지 않아요. 차이는 정화(공격)에 대한 반응이에요.
+    if (this.sampleAt(index)) return 'idle';
     const data = this.mob.dataPattern;
     if (data?.values.length) return data.actions[data.values[index % data.values.length] - 1] ?? 'idle';
     const hidden = this.mob.hiddenPattern;
@@ -312,7 +312,18 @@ export class Battle {
       }
       // 2) 몹 행동(몹이 정화되면 행동하지 않아요)
       if (this.mobHp > 0) {
-        if (mobAction === 'attack' || mobAction === 'smash') {
+        if (card === 'attack' && sample?.label === 'friend') {
+          // 친구 모습에 정화 빛을 쏘면 슬라임이 깜짝 놀라 장난기가 처음처럼 돌아와요.
+          ev.mobAction = 'heal';
+          ev.mobHealed = this.mob.hp - this.mobHp;
+          this.mobHp = this.mob.hp;
+        } else if (card !== 'attack' && sample?.label === 'playful') {
+          // 장난꾸러기를 정화하지 않고 두면 공격 한 번만큼 장난기가 다시 자라요.
+          const before = this.mobHp;
+          this.mobHp = Math.min(this.mob.hp, this.mobHp + this.playerAttackDamage());
+          ev.mobHealed = this.mobHp - before;
+          if (ev.mobHealed > 0) ev.mobAction = 'heal';
+        } else if (mobAction === 'attack' || mobAction === 'smash') {
           if (card === 'guard') ev.guarded = true;
           else {
             ev.taken = Math.min(this.playerHp, this.mobDamage(mobAction));
