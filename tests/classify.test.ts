@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { ClassifyData } from '../src/data/schema';
-import { evaluateBinary, evaluateGroups, evaluateTable, evaluateTree } from '../src/missions/classify/evaluate';
+import { evaluateBinary, evaluatePixels, evaluateGroups, evaluateTable, evaluateTree } from '../src/missions/classify/evaluate';
 const data: ClassifyData = { mode: 'tree', intro: '', hint: '', maxQuestions: 2,
   cards: [{id:'a',label:'새',group:'bird',features:['wing']},{id:'b',label:'나비',group:'insect',features:['wing','six']},{id:'c',label:'참새',group:'bird',features:['wing']}],
   groups: [{id:'bird',label:'새'},{id:'insect',label:'곤충'}], questions: [{id:'wing',label:'날개가 있나요?',feature:'wing'},{id:'six',label:'다리가 여섯 개인가요?',feature:'six'}] };
@@ -50,4 +50,10 @@ it('표의 미지 종류와 이진수의 모호한 입력은 성공하지 않아
   expect(evaluateBinary(zero,{a:''})).toBe(false);
   expect(evaluateBinary(zero,{a:' '})).toBe(false);
   expect(evaluateBinary({...zero,cards:[]},{})).toBe(false);
+});
+
+it('픽셀의 켜진 수가 같아도 위치가 다르면 다시 맞춰요',()=>{
+ const pixels:ClassifyData={...data,mode:'pixels',cards:[{id:'p',label:'화살표',group:'',features:['010','111']}]};
+ expect(evaluatePixels(pixels,{p:'010111'})).toBe(true);expect(evaluatePixels(pixels,{p:'111010'})).toBe(false);expect(evaluatePixels(pixels,{})).toBe(false);
+ expect(evaluatePixels({...pixels,cards:[{...pixels.cards[0],features:['02','11']}]},{p:'0211'})).toBe(false);
 });

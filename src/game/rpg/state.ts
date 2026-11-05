@@ -3,7 +3,7 @@ import { ITEMS } from '../../data/rpg/items';
 import { MOBS } from '../../data/rpg/mobs';
 import type { Observation } from '../battle/sim';
 import { levelForXp } from '../../data/rpg/levels';
-import type { Condition, EquipSlot, MissionRecord, Reward, SaveData, Stats } from '../../data/schema';
+import type { ClassificationModel, Condition, EquipSlot, MissionRecord, Reward, SaveData, Stats } from '../../data/schema';
 import type { MissionResult } from '../../missions/core/types';
 import { derivedStats, helpers, programSlots } from './stats';
 
@@ -41,6 +41,7 @@ export function freshSave(nickname: string): SaveData {
     flags: {},
     dex: { mobs: [], items: [] },
     observations: {},
+    classificationModel: { samples: [], k: 3 },
     badges: [],
     titles: [],
     location: { ...START_MAP },
@@ -55,12 +56,27 @@ export class GameState {
   private listeners = new Set<(e: StateEvent) => void>();
 
   constructor(public data: SaveData) {
+    data.classificationModel = this.cleanClassificationModel(data.classificationModel);
     const saved = data.observations ?? {};
     data.observations = {};
     for (const [id, rows] of Object.entries(saved)) {
       if (!MOBS[id]?.dataPattern || !Array.isArray(rows)) continue;
       data.observations[id] = this.cleanObservations(rows);
     }
+  }
+
+  private cleanClassificationModel(model: ClassificationModel | undefined): ClassificationModel {
+    const samples = (Array.isArray(model?.samples) ? model.samples : [])
+      .filter(sample => sample && ['friend', 'playful'].includes(sample.label) && Array.isArray(sample.features)
+        && sample.features.length === 2 && sample.features.every(value => Number.isFinite(value) && value >= 0 && value <= 10))
+      .slice(0, 20).map(sample => ({ features: [...sample.features], label: sample.label }));
+    const k = model && Number.isInteger(model.k) && model.k >= 1 && model.k <= 20 ? model.k : 3;
+    return { samples, k };
+  }
+
+  setClassificationModel(model: ClassificationModel): void {
+    this.data.classificationModel = this.cleanClassificationModel(model);
+    this.changed();
   }
 
   private cleanObservations(rows: Observation[]): Observation[] {

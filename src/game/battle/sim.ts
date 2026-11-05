@@ -1,5 +1,6 @@
-import type { BattleCmd, Block, Cmd, Cond, MobAction, MobDef, Stats } from '../../data/schema';
+import type { BattleCmd, Block, ClassificationModel, Cmd, Cond, MobAction, MobDef, Stats, TrainingSample } from '../../data/schema';
 import { run, type Env } from '../../missions/core/interpreter';
+import { predictLabel } from '../../missions/train/evaluate';
 
 /** 카드 에너지 비용 */
 export const CARD_COST: Record<BattleCmd, number> = { attack: 1, guard: 1, heal: 2, wait: 0, scan: 0 };
@@ -20,6 +21,7 @@ export interface Observation { value: number; action: MobAction }
 export interface TickEvent {
   /** 이 차례에 실제로 수집한 기록 */
   observation?: Observation;
+  classification?: { features: number[]; prediction: string | null; actual: string };
   /** 라운드 안의 차례(0부터) */
   tick: number;
   /** 실행한 카드의 위치. 카드가 모자라 쉰 차례는 null */
@@ -53,6 +55,7 @@ export interface RoundResult {
 
 export interface BattleSetup {
   observations?: Observation[];
+  classificationModel?: ClassificationModel;
   stats: Stats;
   hp: number;
   slots: number;
@@ -67,6 +70,7 @@ export class Battle {
   readonly stats: Stats;
   readonly slots: number;
   readonly observations: Observation[];
+  readonly classificationModel: ClassificationModel;
   playerHp: number;
   mobHp: number;
   round = 0;
@@ -76,6 +80,7 @@ export class Battle {
 
   constructor(setup: BattleSetup) {
     this.mob = setup.mob;
+    this.classificationModel = { k: setup.classificationModel?.k ?? 3, samples: (setup.classificationModel?.samples ?? []).map(sample => ({ features: [...sample.features], label: sample.label })) };
     this.observations = (setup.observations ?? []).map(row => ({ ...row }));
     this.stats = setup.stats;
     this.slots = setup.slots;
@@ -85,7 +90,7 @@ export class Battle {
 
   /** 미리 보기는 실제 전투 상태를 바꾸지 않아요. */
   clone(): Battle {
-    const copy = new Battle({ stats: { ...this.stats }, hp: this.playerHp, slots: this.slots, mob: this.mob, observations: this.observations });
+    const copy = new Battle({ stats: { ...this.stats }, hp: this.playerHp, slots: this.slots, mob: this.mob, observations: this.observations, classificationModel: this.classificationModel });
     copy.mobHp = this.mobHp;
     copy.round = this.round;
     copy.outcome = this.outcome;
@@ -98,8 +103,33 @@ export class Battle {
     return this.mob.roundTicks ?? this.slots;
   }
 
+  private sampleAt(index: number): TrainingSample | undefined {
+    const pattern = this.mob.classifyPattern;
+    if (!pattern?.samples.length) return undefined;
+    let hash = (pattern.seed ^ Math.imul(index + 1, 0x9e3779b9)) >>> 0;
+    hash = Math.imul(hash ^ (hash >>> 16), 0x85ebca6b);
+    hash = Math.imul(hash ^ (hash >>> 13), 0xc2b2ae35);
+    hash = (hash ^ (hash >>> 16)) >>> 0;
+    return pattern.samples[hash % pattern.samples.length];
+  }
+
+  /** 정답 이름표는 화면에 보내지 않고 숫자 특징만 알려줘요. */
+  features(n = this.ticksPerRound): (number[] | null)[] {
+    return Array.from({ length: n }, (_, i) => {
+      const sample = this.sampleAt(this.patternIndex + i);
+      return sample ? [...sample.features] : null;
+    });
+  }
+
+  /** 예측은 정답과 다를 수 있어요. 학생이 만든 모델만 사용해요. */
+  predictions(n = this.ticksPerRound): (string | null)[] {
+    return this.features(n).map(features => features ? predictLabel(this.classificationModel.samples, features, this.classificationModel.k) : null);
+  }
+
   /** 씨앗과 절대 차례를 섞어요. 복제·재실행에서도 같은 행동이에요. */
   private actionAt(index: number): MobAction {
+    const sample = this.sampleAt(index);
+    if (sample) return sample.label === 'playful' ? 'idle' : 'smash';
     const data = this.mob.dataPattern;
     if (data?.values.length) return data.actions[data.values[index % data.values.length] - 1] ?? 'idle';
     const hidden = this.mob.hiddenPattern;
@@ -126,13 +156,13 @@ export class Battle {
 
   /** 화면에는 가려진 차례를 null로 돌려줘요. */
   displayIntents(n = this.ticksPerRound): (MobAction | null)[] {
-    if (this.mob.dataPattern) return Array(n).fill(null);
+    if (this.mob.dataPattern || this.mob.classifyPattern) return Array(n).fill(null);
     return this.intents(n).map((action, i) => this.mob.hiddenPattern?.choices.length && (this.patternIndex + i) % 2 === 1 ? null : action);
   }
 
   /** 숨은 행동의 조건 결과·생존 여부도 미리 보기로 새지 않게 해요. */
   preview(program: Block[]): (TickEvent | null)[] {
-    if (this.mob.hiddenPattern?.choices.length || this.mob.dataPattern) return Array(this.ticksPerRound).fill(null);
+    if (this.mob.hiddenPattern?.choices.length || this.mob.dataPattern || this.mob.classifyPattern) return Array(this.ticksPerRound).fill(null);
     return this.clone().runRound(program).ticks;
   }
 
@@ -187,8 +217,10 @@ export class Battle {
         if (path !== null) paid.add(path);
       }
       const mobAction = this.intents(1)[0];
+      const sample = this.sampleAt(this.patternIndex);
       if (card === 'scan') scanning = true;
       const ev: TickEvent = {
+        classification: sample ? { features: [...sample.features], prediction: this.predictions(1)[0], actual: sample.label } : undefined,
         tick: ticks.length,
         path,
         card,
@@ -206,7 +238,7 @@ export class Battle {
       };
       // 1) 플레이어 행동
       if (card === 'attack') {
-        if (mobAction === 'guard') ev.blocked = true;
+        if (mobAction === 'guard' || sample?.label === 'friend') ev.blocked = true;
         else {
           ev.dealt = Math.min(this.mobHp, this.playerAttackDamage());
           this.mobHp -= ev.dealt;
@@ -259,7 +291,9 @@ export class Battle {
 
   test(cond: Cond): boolean {
     const now = this.intents(1)[0];
-    if (this.mob.dataPattern && cond.startsWith('enemy')) return false;
+    if ((this.mob.dataPattern || this.mob.classifyPattern) && cond.startsWith('enemy')) return false;
+    if (cond === 'modelPlayful') return !!this.mob.classifyPattern && this.predictions(1)[0] === 'playful';
+    if (this.mob.classifyPattern && (cond === 'waveHigh' || cond === 'waveMiddle')) return false;
     if (cond === 'waveHigh' || cond === 'waveMiddle') {
       const value = this.values(1)[0];
       return value !== null && this.observations.some(row => row.value === value) && value === (cond === 'waveHigh' ? 3 : 2);

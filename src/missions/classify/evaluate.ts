@@ -39,3 +39,10 @@ export function evaluateBinary(data: ClassifyData, values: Record<string, string
     return Number.isInteger(target) && target >= 0 && target <= 15 && Number.isInteger(actual) && actual >= 0 && actual <= 15 && target === actual;
   });
 }
+
+/** 켜진 칸의 수뿐 아니라 각 픽셀의 위치도 같아야 해요. */
+export function evaluatePixels(data: ClassifyData, pixels: Record<string, string>): boolean {
+  return data.cards.length > 0 && data.cards.every(card => card.features.length > 0 && card.features[0].length > 0
+    && card.features.every(row => /^[01]+$/.test(row) && row.length === card.features[0].length)
+    && (pixels[card.id] ?? '0'.repeat(card.features.join('').length)) === card.features.join(''));
+}

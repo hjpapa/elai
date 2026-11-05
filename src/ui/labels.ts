@@ -18,6 +18,7 @@ export const CMD_LABEL: Record<Cmd, string> = {
 
 export const COND_LABEL: Record<Cond, string> = {
   signalRed: '앞 신호가 빨강이면',
+  modelPlayful: '내 모델이 장난꾸러기라면',
   waveHigh: '관찰한 물결이 3이면',
   waveMiddle: '관찰한 물결이 2이면',
   wallAhead: '앞이 막혔다면',

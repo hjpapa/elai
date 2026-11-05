@@ -25,6 +25,7 @@ const list: ItemDef[] = [
   { id: 'forestkey', name: '숲 열쇠', icon: 'icon-item-forestkey', kind: 'quest', rarity: 'uncommon', desc: '미로의 덩굴 문에 쓰는 열쇠예요.\n문 가까이 가서 열어 봐요.' },
   { id: 'vine', name: '덩굴 조각', icon: 'icon-item-vine', kind: 'material', rarity: 'common', desc: '슬라임이 남긴 덩굴 재료예요.\n공방에서 쓰는 기능은 준비 중이에요.' },
   { id: 'dataVest', name: '기록가 조끼', icon: 'icon-item-vest', kind: 'equip', slot: 'outfit', rarity: 'rare', stats: { maxHp: 8, def: 2 }, desc: '항구의 기록가가 준 조끼예요.\n체력과 몸을 지키는 힘이 늘어요.' },
+  { id: 'researchBoots', name: '연구원 신발', icon: 'icon-item-windboots', kind: 'equip', slot: 'shoes', rarity: 'rare', stats: { maxHp: 5, maxEn: 1 }, desc: '표본을 살피며 걸을 때 편해요.\n최대 체력과 에너지가 늘어요.' },
 ];
 
 export const ITEMS: Record<string, ItemDef> = Object.fromEntries(list.map((i) => [i.id, i]));

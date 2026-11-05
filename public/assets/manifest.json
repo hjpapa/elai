@@ -36,6 +36,42 @@
   ],
   "assets": [
     {
+      "key": "tile-lab",
+      "file": "tile/tile-lab.png"
+    },
+    {
+      "key": "block-lab",
+      "file": "block/block-lab.png"
+    },
+    {
+      "key": "prop-microscope",
+      "file": "prop/prop-microscope.png"
+    },
+    {
+      "key": "prop-jar",
+      "file": "prop/prop-jar.png"
+    },
+    {
+      "key": "char-researcher",
+      "file": "char/char-researcher.png"
+    },
+    {
+      "key": "mob-shift-slime",
+      "file": "mob/mob-shift-slime.png"
+    },
+    {
+      "key": "boss-shift-king",
+      "file": "mob/boss-shift-king.png"
+    },
+    {
+      "key": "robi-part-learnchip",
+      "file": "overlay/robi-part-learnchip.png"
+    },
+    {
+      "key": "icon-part-learnchip",
+      "file": "icon/icon-part-learnchip.png"
+    },
+    {
       "key": "tile-dock",
       "file": "tile/tile-dock.png"
     },

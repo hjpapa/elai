@@ -102,6 +102,11 @@ export function openDex(): void {
       return;
     } else {
       body.append(h('div', { class: 'row', style: 'margin-bottom:10px' }, pxImg(robiLook(d), 72), h('p', {}, '부품을 되찾을 때마다 로비가 새 능력을 얻어요.')));
+      if (d.robiParts.includes('learningChip')) {
+        const model = d.classificationModel;
+        body.append(h('p', {}, '내 분류 AI: 예시 ' + (model?.samples.length ?? 0) + '개 · 가까운 ' + (model?.k ?? 3) + '개로 판단해요.'));
+        body.append(h('p', { class: 'muted' }, '이름표가 한쪽으로 몰리면 틀릴 수 있어요.'));
+      }
       for (const p of Object.values(ROBI_PARTS)) {
         const owned = d.robiParts.includes(p.id);
         const ch = CHAPTERS.find((c) => c.id === p.chapter);

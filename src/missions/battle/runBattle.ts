@@ -38,6 +38,7 @@ const TICK_MS = 260;
 
 function feedbackFor(ticks: TickEvent[]): { index: number; text: string } | null {
   for (const t of ticks) {
+    if (t.classification?.actual === 'friend' && t.card === 'attack') return { index: t.tick, text: '친구를 잘못 골랐어요.\n학습 예시와 이름표를 살펴봐요.' };
     if (t.taken > 0 && t.mobAction === 'smash') return { index: t.tick, text: '강타를 막지 못했어요!\n강타 예고 칸에는 막기를 놓아요.' };
     if (t.taken > 0) return { index: t.tick, text: '공격 예고 칸에 막기를 놓으면\n다치지 않아요.' };
     if (t.blocked) return { index: t.tick, text: '몹이 막을 때는 공격이 통하지 않아요.\n그때는 쉬거나 회복해요.' };
@@ -51,7 +52,7 @@ export async function runBattle(mobId: string, opts: BattleOptions = {}): Promis
   const mob = MOBS[mobId];
   const s = app.state;
   const stats = s.stats;
-  const battle = new Battle({ stats, hp: s.data.hp, slots: s.slots, mob, observations: s.data.observations?.[mobId] });
+  const battle = new Battle({ stats, hp: s.data.hp, slots: s.slots, mob, observations: s.data.observations?.[mobId], classificationModel: s.data.classificationModel });
   const battleCards: BattleCmd[] = s.data.robiParts.some(id => ROBI_PARTS[id]?.unlocks.cards?.includes('scan')) ? [...CARDS, 'scan'] : CARDS;
   const repeatUnlocked = s.data.robiParts.some(id => ROBI_PARTS[id]?.unlocks.repeat);
   const conditions = [...new Set(s.data.robiParts.flatMap(id => ROBI_PARTS[id]?.unlocks.conds ?? []))];
@@ -67,7 +68,7 @@ export async function runBattle(mobId: string, opts: BattleOptions = {}): Promis
 
   const scene = sm.getScene('Battle') as BattleScene;
   const ready = new Promise<void>((r) => scene.events.once(Phaser.Scenes.Events.CREATE, () => r()));
-  sm.run('Battle', { mob, save: s.data, floor: opts.floor ?? (MAPS[s.data.location.map]?.theme === 'cave' ? 'tile-cave' : MAPS[s.data.location.map]?.theme === 'desert' ? 'tile-sand' : MAPS[s.data.location.map]?.theme === 'harbor' ? 'tile-dock' : 'tile-grass') } satisfies BattleSceneData);
+  sm.run('Battle', { mob, save: s.data, floor: opts.floor ?? (MAPS[s.data.location.map]?.theme === 'cave' ? 'tile-cave' : MAPS[s.data.location.map]?.theme === 'desert' ? 'tile-sand' : MAPS[s.data.location.map]?.theme === 'harbor' ? 'tile-dock' : MAPS[s.data.location.map]?.theme === 'lab' ? 'tile-lab' : 'tile-grass') } satisfies BattleSceneData);
   await ready;
 
   // ── DOM ──
@@ -154,6 +155,8 @@ export async function runBattle(mobId: string, opts: BattleOptions = {}): Promis
   let shownIntents: (MobAction | null)[] | null = null;
   let revealedTicks = 0;
   let shownValues: (number | null)[] | null = null;
+  let shownFeatures: (number[] | null)[] | null = null;
+  let shownPredictions: (string | null)[] | null = null;
   let shownTicks: TickEvent[] | null = null;
   const renderGrid = (marks: Map<number, 'run' | 'err'> = new Map()) => {
     const n = battle.ticksPerRound;
@@ -162,17 +165,23 @@ export async function runBattle(mobId: string, opts: BattleOptions = {}): Promis
     clear(grid);
     grid.append(h('div', { class: 'muted', style: 'align-self:center' }, mob.name.length > 4 ? '몹' : mob.name));
     const values = shownValues ?? battle.values(n);
+    const features = shownFeatures ?? battle.features(n);
+    const predictions = shownPredictions ?? battle.predictions(n);
     intents.forEach((a, i) => grid.append(a === null
-      ? h('div', { class: 'intent unknown', 'aria-label': values[i] === null ? '실행할 때 알 수 있어요' : '물결 ' + values[i] }, values[i] === null ? '?' : '물결 ' + values[i])
+      ? features[i]
+        ? h('div', { class: 'intent unknown', 'aria-label': '뛰는 높이 ' + features[i]?.[0] + ', 점무늬 수 ' + features[i]?.[1] },
+          h('span', {}, '높이 ' + features[i]?.[0]), h('span', {}, '점 ' + features[i]?.[1]),
+          h('small', {}, '내 모델: ' + (predictions[i] === 'playful' ? '장난' : predictions[i] === 'friend' ? '친구' : '미학습')))
+        : h('div', { class: 'intent unknown', 'aria-label': values[i] === null ? '실행할 때 알 수 있어요' : '물결 ' + values[i] }, values[i] === null ? '?' : '물결 ' + values[i])
       : h('div', { class: 'intent ' + a }, pxImg(icon(intentIcon(a)), 32), INTENT_LABEL[a])));
     grid.append(h('div', { class: 'muted', style: 'align-self:center' }, editor ? '미리 보기' : '나'));
     if (editor) {
       const preview = shownTicks
-        ? Array.from({ length: n }, (_, i) => (mob.hiddenPattern || mob.dataPattern) && i >= revealedTicks ? null : shownTicks?.[i] ?? null)
+        ? Array.from({ length: n }, (_, i) => (mob.hiddenPattern || mob.dataPattern || mob.classifyPattern) && i >= revealedTicks ? null : shownTicks?.[i] ?? null)
         : battle.preview(editor.value);
       for (let i = 0; i < n; i++) {
         const t = preview[i];
-        if (!t && (mob.hiddenPattern || mob.dataPattern)) {
+        if (!t && (mob.hiddenPattern || mob.dataPattern || mob.classifyPattern)) {
           grid.append(h('div', { class: 'tick' }, h('div', { class: 'bslot unknown', 'aria-label': (i + 1) + '번째: 실행하며 결정' }, '?', h('small', {}, '실행하며 결정'))));
           continue;
         }
@@ -299,6 +308,8 @@ export async function runBattle(mobId: string, opts: BattleOptions = {}): Promis
       renderGrid();
       shownIntents = battle.displayIntents();
       shownValues = battle.values();
+      shownFeatures = battle.features();
+      shownPredictions = battle.predictions();
       revealedTicks = 0;
       const result = battle.runRound(program());
       shownTicks = result.ticks;
@@ -343,12 +354,14 @@ export async function runBattle(mobId: string, opts: BattleOptions = {}): Promis
         const glasses = s.helpers.debugGlasses;
         if (glasses && editor) editor.highlight(result.ticks[fb.index]?.path ?? null, 'err');
         renderGrid(glasses ? new Map([[fb.index, 'err']]) : new Map());
-        talk(glasses ? `${fb.text}\n(디버그 안경: ${fb.index + 1}번째 칸을 살펴봐요)` : fb.text, 'bad');
+        talk(fb.text, 'bad');
         await sleep(1400);
       } else talk('잘했어요! 다음 예고를 보고 또 카드를 놓아요.', 'good');
       busy = false;
       shownIntents = null;
       shownValues = null;
+      shownFeatures = null;
+      shownPredictions = null;
       shownTicks = null;
       revealedTicks = 0;
       editor?.highlight(null);

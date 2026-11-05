@@ -4,7 +4,8 @@ import { NPCS } from '../src/data/npcs';
 import { ITEMS } from '../src/data/rpg/items';
 import { MOBS } from '../src/data/rpg/mobs';
 import { ROBI_PARTS } from '../src/data/rpg/robiParts';
-import { evaluateBinary, evaluateGroups, evaluateTable } from '../src/missions/classify/evaluate';
+import { evaluateTraining, trainSelection } from '../src/missions/train/evaluate';
+import { evaluateBinary, evaluateGroups, evaluateTable, evaluatePixels } from '../src/missions/classify/evaluate';
 import { GridEnv } from '../src/missions/core/gridEnv';
 import { countBlocks, run } from '../src/missions/core/interpreter';
 import type { Block, BlockCodeData, Reward } from '../src/data/schema';
@@ -229,4 +230,30 @@ describe('4장 데이터 학습', () => {
     expect(evaluateBinary(m.data!,{gate3:'3',gate5:'5',gate10:'10'})).toBe(true);
     expect(evaluateBinary(m.data!,{gate3:'3',gate5:'5',gate10:'11'})).toBe(false);
   });
+});
+
+
+describe('5장 인식 학습 데이터',()=>{
+ it('픽셀은 숫자 격자와 같게 칠하고, 다른 그림은 거절해요',()=>{
+  const m=allMissions().find(e=>e.mission.id==='ch5-p1-m1')!.mission;if(m.kind!=='classify')throw new Error('pixels');
+  const d=m.data!;const expected=Object.fromEntries(d.cards.map(c=>[c.id,c.features.join('')]));
+  expect(evaluatePixels(d,expected)).toBe(true);expect(evaluatePixels(d,{robi:'0'.repeat(16)})).toBe(false);
+ });
+ it('표본 이름표와 이름 없는 군집은 다른 기준으로 평가해요',()=>{
+  for(const id of ['ch5-p2-m1','ch5-p2-m2']){
+   const m=allMissions().find(e=>e.mission.id===id)!.mission;if(m.kind!=='classify')throw new Error(id);
+   const d=m.data!;const right=Object.fromEntries(d.cards.map(c=>[c.id,c.group]));expect(evaluateGroups(d,right)).toBe(true);
+   const swap=Object.fromEntries(d.cards.map(c=>[c.id,d.groups.find(g=>g.id!==c.group)!.id]));
+   expect(evaluateGroups(d,swap)).toBe(d.mode==='cluster');
+  }
+ });
+ it('고르게 학습한 모델은 새로운 표본을 모두 맞히고 치우친 모델은 틀려요',()=>{
+  const m=allMissions().find(e=>e.mission.id==='ch5-p3-m1')!.mission;if(m.kind!=='train')throw new Error('train');
+  const d=m.data!;const choices=Object.fromEntries(d.examples.map(e=>[e.id,e.label]));const model=trainSelection(d,choices);
+  expect(evaluateTraining(d,model,choices)).toMatchObject({success:true,accuracy:1});
+  const seen=new Set(d.examples.map(e=>JSON.stringify(e.features)));expect(d.tests.every(t=>!seen.has(JSON.stringify(t.features)))).toBe(true);
+  const biased=Object.fromEntries(d.examples.filter(e=>e.label==='friend').map(e=>[e.id,e.label]));
+  expect(evaluateTraining(d,trainSelection(d,biased),biased)).toMatchObject({success:false,accuracy:.5});
+  const changed={...choices,[d.examples[0].id]:'playful'};expect(evaluateTraining(d,model,changed).success).toBe(false);
+ });
 });

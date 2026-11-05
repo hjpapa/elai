@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { ITEMS } from '../src/data/rpg/items';
+import { getMission } from '../src/data/chapters';
 import { MOBS } from '../src/data/rpg/mobs';
-import type { BattleCmd, Block, MobAction, SaveData } from '../src/data/schema';
+import type { BattleCmd, Block, ClassificationModel, MobAction, SaveData } from '../src/data/schema';
 import { Battle, programCost, type BattleOutcome } from '../src/game/battle/sim';
 import { freshSave } from '../src/game/rpg/state';
 import { derivedStats, programSlots } from '../src/game/rpg/stats';
@@ -265,5 +266,51 @@ describe('4장 데이터 관찰과 규칙', () => {
     expect(r.ticks[2].observation).toEqual({ value: 2, action: 'guard' });
     expect(b.observations).toHaveLength(3);
     b.runRound(observeProgram);expect(b.observations).toHaveLength(3);
+  });
+});
+
+const modelProgram: Block[] = [{ t: 'repeat', times: 12, body: [{ t:'if', cond:'modelPlayful', yes:cards('attack'), no:cards('guard') }] }];
+
+describe('5장 내 분류 모델 전투', () => {
+  const training = getMission('ch5-p3-m1')?.mission;
+  if (training?.kind !== 'train' || !training.data) throw new Error('5장 학습 미션이 없어요');
+  const model: ClassificationModel = { samples: training.data.examples.map(sample => ({ features: [...sample.features], label: sample.label })), k: training.data.k };
+  const setup = (id: string, level: number, seed: number, classificationModel?: ClassificationModel) => {
+    const save = player(level, ['rangerhat', 'brush', 'cloak', 'windboots']);save.robiParts=['wheel','memoryChip','sensor','dataLens','learningChip'];
+    const stats=derivedStats(save), original=MOBS[id];
+    const mob={...original,classifyPattern:{samples:original.classifyPattern!.samples,seed}};
+    return new Battle({stats,hp:stats.maxHp,slots:programSlots(save),mob,classificationModel});
+  };
+  const finish=(b:Battle,p:Block[])=>{while(b.outcome==='continue')b.runRound(p);return b;};
+  it('Lv11~14·씨앗1~20에서 바른 모델은 무피해, 빈 모델·치우친 모델·이전 조건은 실패해요',()=>{
+    for(const level of [11,12,13,14])for(const id of ['shapeSlime','shiftKing'])for(let seed=1;seed<=20;seed++){
+      const message=id+' Lv'+level+' seed'+seed;
+      const good=finish(setup(id,level,seed,model),modelProgram);
+      expect(good.outcome,message).toBe('win');expect(good.playerHp,message).toBe(good.stats.maxHp);
+      expect(finish(setup(id,level,seed),modelProgram).outcome,'빈 모델 '+message).toBe('timeout');
+      for(const label of ['friend','playful']){
+        const biased={samples:model.samples.map(sample=>({...sample,label})),k:3};
+        expect(finish(setup(id,level,seed,biased),modelProgram).outcome,'치우침 '+label+message).not.toBe('win');
+      }
+      expect(finish(setup(id,level,seed,model),conditional).outcome,'이전 행동 조건 '+message).toBe('lose');
+      expect(finish(setup(id,level,seed,model),waveProgram).outcome,'이전 물결 조건 '+message).toBe('lose');
+      expect(finish(setup(id,level,seed,model),repeat(12,cards('attack'))).outcome,'공격반복 '+message).toBe('lose');
+    }
+  });
+  it('진짜 이름표는 미리 보기에 없고, 모델과 특징은 복제본에서 공유하지 않아요',()=>{
+    const b=setup('shiftKing',11,1,model);
+    expect(b.displayIntents()).toEqual(Array(12).fill(null));expect(b.preview(modelProgram)).toEqual(Array(12).fill(null));
+    expect(b.features().every(f=>f?.length===2)).toBe(true);
+    const copy=b.clone();copy.classificationModel.samples[0].features[0]=99;
+    expect(b.classificationModel.samples[0].features[0]).toBe(1);expect(model.samples[0].features[0]).toBe(1);
+    const visible=b.features();visible[0]![0]=99;expect(b.features()[0]![0]).not.toBe(99);
+    expect(b.clone().runRound(modelProgram)).toEqual(b.runRound(modelProgram));
+  });
+  it('친구를 공격해도 정화는 진행되지 않고 잘못 분류한 사실을 알려줘요',()=>{
+    const b=setup('shiftKing',11,1,model);
+    const r=b.runRound(repeat(12,cards('attack')));
+    const mistakes=r.ticks.filter(t=>t.classification?.actual==='friend');
+    expect(mistakes.length).toBeGreaterThan(0);
+    expect(mistakes.every(t=>t.blocked&&t.dealt===0&&t.taken>0)).toBe(true);
   });
 });

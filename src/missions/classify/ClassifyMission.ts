@@ -1,7 +1,7 @@
 import type { ClassifyData } from '../../data/schema';
 import { clear, h, lines } from '../../ui/dom';
 import type { MissionContext, MissionEngine } from '../core/types';
-import { evaluateBinary, evaluateGroups, evaluateTable, evaluateTree } from './evaluate';
+import { evaluateBinary, evaluatePixels, evaluateGroups, evaluateTable, evaluateTree } from './evaluate';
 
 export class ClassifyMission implements MissionEngine {
   private ctx!: MissionContext;
@@ -21,7 +21,20 @@ export class ClassifyMission implements MissionEngine {
     const focusedLabel = document.activeElement?.getAttribute('aria-label');
     clear(root);
     root.append(h('div', { class: 'mission-intro' }, ...lines(d.intro)));
-    if (d.mode === 'table') {
+    if (d.mode === 'pixels') {
+      root.append(h('p', {}, '숫자 1은 켜고, 0은 꺼요.'));
+      for (const card of d.cards) {
+        const target = card.features.join(''), current = this.groups[card.id] ?? '0'.repeat(target.length);
+        root.append(h('h3', {}, card.label), h('pre', { style: 'font-size:18px;letter-spacing:8px' }, card.features.join('\n')));
+        const grid = h('div', { role: 'group', 'aria-label': card.label + ' 픽셀', style: 'display:grid;grid-template-columns:repeat(' + card.features[0].length + ',32px);gap:2px;max-width:100%' });
+        for (let i = 0; i < target.length; i++) grid.append(h('button', {
+          class: 'btn small', style: 'padding:0;width:32px;height:32px;background:' + (current[i] === '1' ? '#388e9e' : '#172131'),
+          'aria-label': card.label + ' ' + (Math.floor(i / card.features[0].length) + 1) + '행 ' + (i % card.features[0].length + 1) + '열', 'aria-pressed': current[i] === '1' ? 'true' : 'false',
+          onclick: () => { this.groups[card.id] = current.slice(0, i) + (current[i] === '1' ? '0' : '1') + current.slice(i + 1); this.render(); }
+        }, current[i]));
+        root.append(grid, h('p', {}, '켜진 칸: ' + [...current].filter(v => v === '1').length + '개'));
+      }
+    } else if (d.mode === 'table') {
       root.append(h('p', {}, '기록: ' + d.cards.map(c => c.label).join(' · ')));
       root.append(h('h3', {}, '종류별 개수와 막대그래프'));
       for (const group of d.groups) {
@@ -80,7 +93,7 @@ export class ClassifyMission implements MissionEngine {
   }
   private verify(): void {
     this.attempts++;
-    const success = this.data.mode === 'tree' ? evaluateTree(this.data, this.questions).success
+    const success = this.data.mode === 'pixels' ? evaluatePixels(this.data, this.groups) : this.data.mode === 'tree' ? evaluateTree(this.data, this.questions).success
       : this.data.mode === 'table' ? evaluateTable(this.data, this.counts)
       : this.data.mode === 'binary' ? evaluateBinary(this.data, this.groups) : evaluateGroups(this.data, this.groups);
     if (success) {
@@ -89,13 +102,13 @@ export class ClassifyMission implements MissionEngine {
       return;
     }
     this.ctx.sfx('fail');
-    this.message = this.data.mode === 'binary' ? '불빛의 값이 목표와 달라요.\n켜진 자리의 수를 더해 봐요.' : this.data.mode === 'table' ? '기록과 표의 수가 달라요.\n종류별로 하나씩 세어 봐요.' : '서로 다른 종류가 섞여 있어요.\n나누는 규칙을 다시 살펴봐요.';
+    this.message = this.data.mode === 'pixels' ? '숫자 1의 자리만 켜 봐요.\n줄과 칸의 위치도 살펴봐요.' : this.data.mode === 'binary' ? '불빛의 값이 목표와 달라요.\n켜진 자리의 수를 더해 봐요.' : this.data.mode === 'table' ? '기록과 표의 수가 달라요.\n종류별로 하나씩 세어 봐요.' : '서로 다른 종류가 섞여 있어요.\n나누는 규칙을 다시 살펴봐요.';
     if (this.attempts === 2) { this.hints++; this.message = this.data.hint; }
     if (this.attempts >= 3) {
       this.hints++;
       const q = this.data.questions?.[0];
       const firstGroup = this.data.groups[0], firstCard = this.data.cards[0];
-      this.message = this.data.mode === 'table' && firstGroup ? `${firstGroup.label}부터 세어 봐요.\n${this.data.cards.filter(card => card.group === firstGroup.id).length}개를 표에 놓으면 돼요.`
+      this.message = this.data.mode === 'pixels' && firstCard ? '첫째 줄부터 맞춰 봐요.\n' + firstCard.features[0].split('').join(' ') : this.data.mode === 'table' && firstGroup ? `${firstGroup.label}부터 세어 봐요.\n${this.data.cards.filter(card => card.group === firstGroup.id).length}개를 표에 놓으면 돼요.`
         : this.data.mode === 'binary' && firstCard ? '첫 등불부터 살펴봐요.\n' + (Number(firstCard.group) === 0 ? '목표 0은 불을 모두 꺼요.' : `${[8,4,2,1].find(bit => Number(firstCard.group) & bit)}의 자리를 먼저 켜 봐요.`)
         : this.data.mode === 'tree' && q ? '첫 질문부터 살펴봐요.\n' + q.label : '첫 카드의 특징부터 살펴봐요.\n' + this.data.hint.split('\n')[0];
     }

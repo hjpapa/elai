@@ -242,6 +242,141 @@ const list: MobDef[] = [
   "dex": "엉킨 장부 때문에 헷갈리는 대장이에요.\n물결 기록표로 규칙을 찾아봐요.",
   "purified": "장부가 다시 가지런해졌어요.\n함께 항구의 기록을 지켜요!"
 },
+{
+  "id": "shapeSlime",
+  "name": "변신 슬라임",
+  "sprite": "mob-shift-slime",
+  "size": 24,
+  "chapter": "ch5",
+  "hp": 220,
+  "atk": 12,
+  "def": 4,
+  "pattern": [
+    "idle"
+  ],
+  "classifyPattern": {
+    "samples": [
+      {
+        "features": [
+          2,
+          2
+        ],
+        "label": "friend"
+      },
+      {
+        "features": [
+          1,
+          2
+        ],
+        "label": "friend"
+      },
+      {
+        "features": [
+          3,
+          2
+        ],
+        "label": "friend"
+      },
+      {
+        "features": [
+          8,
+          8
+        ],
+        "label": "playful"
+      },
+      {
+        "features": [
+          7,
+          8
+        ],
+        "label": "playful"
+      },
+      {
+        "features": [
+          9,
+          8
+        ],
+        "label": "playful"
+      }
+    ],
+    "seed": 17
+  },
+  "roundTicks": 12,
+  "smashRatio": 0.6,
+  "xp": 26,
+  "coins": 16,
+  "recommendedLevel": 11,
+  "dex": "숫자 특징이 바뀌는 슬라임이에요.\n학습한 모델로 친구인지 살펴봐요.",
+  "purified": "서로 다른 모습을 알아봐 줬네요.\n이제 함께 연구해요!"
+},
+{
+  "id": "shiftKing",
+  "name": "변신 슬라임 대장",
+  "sprite": "boss-shift-king",
+  "size": 48,
+  "boss": true,
+  "chapter": "ch5",
+  "hp": 320,
+  "atk": 14,
+  "def": 5,
+  "pattern": [
+    "idle"
+  ],
+  "classifyPattern": {
+    "samples": [
+      {
+        "features": [
+          2,
+          2
+        ],
+        "label": "friend"
+      },
+      {
+        "features": [
+          1,
+          2
+        ],
+        "label": "friend"
+      },
+      {
+        "features": [
+          3,
+          2
+        ],
+        "label": "friend"
+      },
+      {
+        "features": [
+          8,
+          8
+        ],
+        "label": "playful"
+      },
+      {
+        "features": [
+          7,
+          8
+        ],
+        "label": "playful"
+      },
+      {
+        "features": [
+          9,
+          8
+        ],
+        "label": "playful"
+      }
+    ],
+    "seed": 37
+  },
+  "roundTicks": 12,
+  "smashRatio": 0.7,
+  "xp": 0,
+  "coins": 0,
+  "recommendedLevel": 11,
+  "dex": "친구와 장난꾸러기 모습이 섞여 있어요.\n모델의 판단으로 카드를 골라요.",
+  "purified": "고르게 배운 모델이 도움이 됐어요.\n함께 새로운 표본을 살펴봐요!"
+},
 ];
 
 export const MOBS: Record<string, MobDef> = Object.fromEntries(list.map((m) => [m.id, m]));

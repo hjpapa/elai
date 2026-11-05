@@ -2,6 +2,8 @@ import type { Condition, MapDef, MapObject, Point, TileKind } from '../../data/s
 
 export const WALKABLE: Record<TileKind, boolean> = {
   cave: true,
+  lab: true,
+  labwall: false,
   dock: true,
   crate: false,
   rockwall: false,
@@ -21,6 +23,8 @@ export const WALKABLE: Record<TileKind, boolean> = {
 
 export const TILE_TEXTURE: Record<TileKind, string | null> = {
   cave: 'tile-cave',
+  lab: 'tile-lab',
+  labwall: 'tile-lab',
   dock: 'tile-dock',
   crate: 'tile-dock',
   rockwall: 'tile-cave',
@@ -38,7 +42,7 @@ export const TILE_TEXTURE: Record<TileKind, string | null> = {
   void: null,
 };
 
-export const BLOCK_TEXTURE: Partial<Record<TileKind, string>> = { hedge: 'block-hedge', wall: 'block-wall', rockwall: 'block-cave', sandstone: 'block-sandstone', crate: 'block-crate' };
+export const BLOCK_TEXTURE: Partial<Record<TileKind, string>> = { hedge: 'block-hedge', wall: 'block-wall', rockwall: 'block-cave', sandstone: 'block-sandstone', crate: 'block-crate', labwall: 'block-lab' };
 
 export interface Cell {
   kind: TileKind;

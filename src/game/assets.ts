@@ -50,6 +50,17 @@ const mob = (size: 16 | 24 | 48) => spec('mob', size, size, 4);
 const fx = (w: number, h: number, frames: number) => spec('fx', w, h, frames);
 
 export const ASSETS: AssetSpec[] = [
+  // C7: 인식의 연구소
+  tile('tile-lab', '연구소의 숫자 격자 바닥', 0xc7d6dc),
+  block('block-lab', '연구소의 푸른 수납벽', 0x478bc7),
+  prop(24, 32)('prop-microscope', '특징을 살피는 현미경', 0x8c9bab),
+  prop(16, 24, 2)('prop-jar', '관찰용 병(움직이는 방울)', 0x82cce0),
+  char('char-researcher', '연구원(보안경과 기록판)', 0xc7d6dc),
+  mob(24)('mob-shift-slime', '모양을 바꾸는 장난꾸러기 슬라임', 0xb5a0dc),
+  mob(48)('boss-shift-king', '변신 슬라임 대장', 0x7962ab),
+  overlay('robi-part-learnchip', '로비 옆구리에 붙는 학습 칩', 0xb5a0dc),
+  icon('icon-part-learnchip', '학습 칩', 0xb5a0dc),
+
   // C6: 데이터 항구
   tile('tile-dock', '바닷물에 닳은 항구 나무 바닥', 0xa76c46),
   block('block-crate', '항구의 쌓은 나무 상자', 0xd39a62),

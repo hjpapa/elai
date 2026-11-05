@@ -173,3 +173,23 @@ describe('4장 관찰 기록 저장', () => {
     expect(ROBI_PARTS.dataLens.unlocks.conds).toEqual(['waveHigh','waveMiddle']);
   });
 });
+
+
+describe('5장 분류 모델 저장',()=>{
+  it('옛 저장에는 빈 모델을 채우고 입력 표본과 특징은 복사해요',()=>{
+    const old=freshSave('별빛');delete old.classificationModel;
+    const s=new GameState(old);expect(s.data.classificationModel).toEqual({samples:[],k:3});
+    const model={samples:[{features:[1,2],label:'friend'},{features:[8,9],label:'playful'}],k:3};
+    s.setClassificationModel(model);model.samples[0].features[0]=9;
+    expect(s.data.classificationModel?.samples[0].features[0]).toBe(1);
+    const loaded=new GameState(JSON.parse(JSON.stringify(s.data)));
+    expect(loaded.data.classificationModel).toEqual(s.data.classificationModel);
+  });
+  it('잘못된 차원·범위·이름표를 버리고 예시는 20개까지만 보관해요',()=>{
+    const s=new GameState(freshSave('별빛'));
+    s.setClassificationModel({k:0,samples:[{features:[1],label:'friend'},{features:[1,Infinity],label:'friend'},{features:[-1,2],label:'playful'},{features:[1,11],label:'friend'},{features:[1,2],label:'unknown'},...Array.from({length:30},()=>({features:[1,2],label:'friend'}))]});
+    expect(s.data.classificationModel?.samples).toHaveLength(20);expect(s.data.classificationModel?.k).toBe(3);
+    s.setClassificationModel({samples:[],k:2.5});expect(s.data.classificationModel?.k).toBe(3);
+    s.setClassificationModel({samples:[],k:100});expect(s.data.classificationModel?.k).toBe(3);
+  });
+});

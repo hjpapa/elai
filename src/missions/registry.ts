@@ -1,3 +1,4 @@
+import { TrainMission } from './train/TrainMission';
 import { ClassifyMission } from './classify/ClassifyMission';
 import type { Mission, MissionKind } from '../data/schema';
 import { app } from '../game/app';
@@ -12,6 +13,7 @@ import { SequenceMission } from './sequence/SequenceMission';
 
 /** 창 안에 그리는 미션 */
 export const ENGINES: MissionRegistry = {
+  train: () => new TrainMission(),
   classify: () => new ClassifyMission(),
   blockCode: () => new BlockCodeMission(),
   sequence: () => new SequenceMission(),

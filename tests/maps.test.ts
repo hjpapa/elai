@@ -185,3 +185,22 @@ describe('4장 항구 길과 성장', () => {
     expect(xp).toBe(905);
   });
 });
+
+
+describe('5장 연구소 길과 성장',()=>{
+ it('모델 완성 문을 열면 표본실 보스와 상자에 갈 수 있어요',()=>{
+  const q=world(['ch5-clear','shift-fixed'],['ch5-p3-m1']);
+  for(const def of [MAPS.lab,MAPS.labdeep])for(const o of def.objects.filter(o=>['npc','chest','portal'].includes(o.type)&&q.check(o.when)))expect(canReach(def,q,def.spawn,o),def.id+'/'+o.id).toBe(true);
+  const gate=MAPS.lab.objects.find(o=>o.id==='to-labdeep')!;expect(gate.type==='portal'&&gate.open?.mission).toBe('ch5-p3-m1');
+  const town=MAPS.village.objects.find(o=>o.id==='to-ch5')!;expect(town.type==='portal'&&town.open?.flag).toBe('ch4-clear');
+ });
+ it('학습 전 몹을 피해서 연구원에게 갈 수 있어요',()=>{
+  const def=MAPS.lab;const pass=makePassable(def,buildCells(def),world());const safe=(x:number,y:number)=>pass(x,y)&&def.objects.filter(o=>o.type==='mob').every(o=>Math.max(Math.abs(o.at.x-x),Math.abs(o.at.y-y))>2);
+  const npc=def.objects.find(o=>o.id==='researcher')!;expect(findPath(safe,def.spawn,(x,y)=>Math.abs(x-npc.at.x)<=1&&Math.abs(y-npc.at.y)<=1,npc.at)).not.toBeNull();
+ });
+ it('5장 보스 전 자연 성장으로 권장 레벨11 이상에 닿아요',()=>{
+  let xp=allMissions().filter(e=>e.chapter.index<=5&&!e.mission.id.startsWith('ch5-boss')).reduce((n,e)=>n+(e.mission.reward?.xp??0),0);
+  for(const def of Object.values(MAPS).filter(d=>['ch0','ch1','ch2','ch3','ch4','ch5'].includes(d.chapter??'')))for(const o of def.objects){if(o.type==='mob')xp+=MOBS[o.mob].xp;if(o.type==='chest')xp+=o.reward.xp??0;}
+  expect(xp).toBeGreaterThanOrEqual(xpForLevel(MOBS.shiftKing.recommendedLevel));expect(xp).toBe(1157);
+ });
+});
