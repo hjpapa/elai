@@ -36,6 +36,17 @@ describe('게임 상태', () => {
     expect(s.stats.atk).toBe(3);
   });
 
+  it('설정(소리 크기)을 바꾸면 저장 데이터에 남고 변경을 알려요', () => {
+    const s = new GameState(freshSave('별빛'));
+    let changes = 0;
+    s.on((e) => {
+      if (e.type === 'change') changes++;
+    });
+    s.updateSettings({ volume: 1 });
+    expect(s.data.settings).toEqual({ sound: true, volume: 1 });
+    expect(changes).toBe(1);
+  });
+
   it('디버그 안경은 장착해야, 순서도 지도는 가지고만 있어도 도와줘요', () => {
     const s = new GameState(freshSave('별빛'));
     s.addItem('glasses');

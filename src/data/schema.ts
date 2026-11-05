@@ -420,6 +420,7 @@ export interface SaveData {
   location: { map: string; x: number; y: number };
   /** 맵별로 가 본 칸('0'/'1' 문자열, 안개용) */
   visited: Record<string, string>;
-  settings: { sound: boolean };
+  /** volume: 소리 크기 0~1(없으면 기본값) */
+  settings: { sound: boolean; volume?: number };
   updatedAt: string;
 }

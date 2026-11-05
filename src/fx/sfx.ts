@@ -1,12 +1,17 @@
-/** 작은 음량의 절차적 효과음·칩튠. 소리 파일 없이 WebAudio만 사용해요. */
+/** 절차적 효과음·칩튠. 소리 파일 없이 WebAudio만 사용해요. */
 import type { SfxName } from '../missions/core/types';
 
 export type MusicTheme = 'title' | 'village' | 'forest' | 'dungeon' | 'battle';
 type Voice = { oscillator: OscillatorNode; gain: GainNode };
 type Track = { bus: GainNode; voices: Set<Voice>; timer: number; next: number; step: number; theme: MusicTheme };
+/** 메뉴의 소리 크기(작게·보통·크게) 기본값 */
+export const DEFAULT_VOLUME = 0.75;
+/** 배경 음악은 효과음보다 작게 깔려요. */
+const MUSIC_LEVEL = 0.6;
 let ctx: AudioContext | null = null;
 let master: GainNode | null = null;
 let enabled = true;
+let volume = DEFAULT_VOLUME;
 let unlocked = false;
 let music: MusicTheme | null = null;
 let track: Track | null = null;
@@ -72,7 +77,7 @@ function syncMusic(): void {
   const bus = ctx.createGain();
   bus.connect(master);
   bus.gain.setValueAtTime(0, ctx.currentTime);
-  bus.gain.linearRampToValueAtTime(0.32, ctx.currentTime + 0.2);
+  bus.gain.linearRampToValueAtTime(MUSIC_LEVEL, ctx.currentTime + 0.2);
   const t: Track = { bus, voices: new Set(), timer: 0, next: ctx.currentTime + 0.025, step: 0, theme: music };
   const schedule = () => {
     if (!ctx || ctx.state !== 'running' || document.hidden) return;
@@ -81,8 +86,8 @@ function syncMusic(): void {
     if (t.next < ctx.currentTime - 0.1) t.next = ctx.currentTime + 0.025;
     while (t.next < ctx.currentTime + 0.12) {
       const n = song.notes[t.step % song.notes.length]!;
-      if (n >= 0) note(bus, t.voices, midi(n), t.next, beat * 0.78, 0.045);
-      if (t.step % 4 === 0) note(bus, t.voices, midi(song.bass[Math.floor(t.step / 4) % 4]!), t.next, beat * 2.7, 0.035, 'sine');
+      if (n >= 0) note(bus, t.voices, midi(n), t.next, beat * 0.78, 0.1);
+      if (t.step % 4 === 0) note(bus, t.voices, midi(song.bass[Math.floor(t.step / 4) % 4]!), t.next, beat * 2.7, 0.08, 'sine');
       t.step++; t.next += beat;
     }
   };
@@ -94,7 +99,18 @@ async function unlock(event: Event): Promise<void> {
   if (!event.isTrusted) return;
   try {
     ctx ??= new AudioContext();
-    if (!master) { master = ctx.createGain(); master.gain.value = enabled ? 0.65 : 0; master.connect(ctx.destination); }
+    if (!master) {
+      master = ctx.createGain();
+      master.gain.value = enabled ? volume : 0;
+      // 여러 소리가 겹쳐도 찢어지지 않게 가볍게 눌러 줘요.
+      const limiter = ctx.createDynamicsCompressor();
+      limiter.threshold.value = -10;
+      limiter.knee.value = 6;
+      limiter.ratio.value = 6;
+      limiter.attack.value = 0.003;
+      limiter.release.value = 0.15;
+      master.connect(limiter).connect(ctx.destination);
+    }
     await ctx.resume();
     unlocked = ctx.state === 'running';
     syncMusic();
@@ -112,9 +128,21 @@ if (typeof window !== 'undefined') {
   });
 }
 
+function applyMasterGain(): void {
+  if (!master || !ctx) return;
+  master.gain.cancelScheduledValues(ctx.currentTime);
+  master.gain.setValueAtTime(enabled ? volume : 0, ctx.currentTime);
+}
+
+/** 소리 크기(0~1). 메뉴의 작게·보통·크게가 이 값을 바꿔요. */
+export function setVolume(v: number): void {
+  volume = Math.max(0, Math.min(1, v));
+  applyMasterGain();
+}
+
 export function setSoundEnabled(on: boolean): void {
   enabled = on;
-  if (master && ctx) { master.gain.cancelScheduledValues(ctx.currentTime); master.gain.setValueAtTime(on ? 0.65 : 0, ctx.currentTime); }
+  applyMasterGain();
   if (!on) {
     for (const t of [...tracks]) retire(t, true);
     track = null; stopVoices(effects);
@@ -137,6 +165,6 @@ export function playSfx(name: SfxName): void {
   CUES[name].forEach((n, i) => {
     const duration = short ? 0.045 : name === 'hit' ? 0.07 : 0.13;
     note(master!, effects, midi(n), ctx!.currentTime + i * 0.065, duration,
-      name === 'step' ? 0.022 : 0.055, 'triangle', name === 'hit' ? midi(n - 5) : midi(n));
+      name === 'step' ? 0.06 : 0.2, 'triangle', name === 'hit' ? midi(n - 5) : midi(n));
   });
 }

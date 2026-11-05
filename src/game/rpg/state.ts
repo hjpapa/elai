@@ -193,6 +193,11 @@ export class GameState {
     this.changed();
   }
 
+  updateSettings(patch: Partial<SaveData['settings']>): void {
+    this.data.settings = { ...this.data.settings, ...patch };
+    this.changed();
+  }
+
   addDexMob(id: string): void {
     if (!this.data.dex.mobs.includes(id)) {
       this.data.dex.mobs.push(id);

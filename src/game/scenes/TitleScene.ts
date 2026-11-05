@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import type { SaveData } from '../../data/schema';
-import { playMusic, setSoundEnabled } from '../../fx/sfx';
+import { DEFAULT_VOLUME, playMusic, setSoundEnabled, setVolume } from '../../fx/sfx';
 import { checkLink, fetchRemoteSave, joinClass, loadLink, startRemoteSync, type ClassLink } from '../../services/remote';
 import { initAutosave, loadLocal, newer, setSaveProfile } from '../../services/save';
 import { friendlyError, supabaseConfigured } from '../../services/supabase';
@@ -186,6 +186,7 @@ export class TitleScene extends Phaser.Scene {
     app.classLink = link;
     app.state = new GameState(save);
     setSoundEnabled(save.settings.sound);
+    setVolume(save.settings.volume ?? DEFAULT_VOLUME);
     initAutosave(app.state, link ? startRemoteSync(app.state, link) : undefined);
     app.hud = new Hud();
     const { map, x, y } = save.location;
