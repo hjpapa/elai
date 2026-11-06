@@ -333,39 +333,48 @@
     },
     {
       "key": "tile-cave",
-      "file": "tile/tile-cave.png"
+      "file": "tile/tile-cave.png",
+      "density": 2
     },
     {
       "key": "block-cave",
-      "file": "block/block-cave.png"
+      "file": "block/block-cave.png",
+      "density": 2
     },
     {
       "key": "prop-crystal",
-      "file": "prop/prop-crystal.png"
+      "file": "prop/prop-crystal.png",
+      "density": 2
     },
     {
       "key": "prop-stalagmite",
-      "file": "prop/prop-stalagmite.png"
+      "file": "prop/prop-stalagmite.png",
+      "density": 2
     },
     {
       "key": "char-explorer",
-      "file": "char/char-explorer.png"
+      "file": "char/char-explorer.png",
+      "density": 2
     },
     {
       "key": "mob-echo-bat",
-      "file": "mob/mob-echo-bat.png"
+      "file": "mob/mob-echo-bat.png",
+      "density": 2
     },
     {
       "key": "boss-bat-king",
-      "file": "mob/boss-bat-king.png"
+      "file": "mob/boss-bat-king.png",
+      "density": 2
     },
     {
       "key": "robi-part-memory",
-      "file": "overlay/robi-part-memory.png"
+      "file": "overlay/robi-part-memory.png",
+      "density": 2
     },
     {
       "key": "icon-part-memory",
-      "file": "icon/icon-part-memory.png"
+      "file": "icon/icon-part-memory.png",
+      "density": 2
     },
     {
       "key": "tile-grass",
