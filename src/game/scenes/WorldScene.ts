@@ -28,8 +28,10 @@ import {
   objectVisible,
   type Cell,
 } from '../iso/mapRuntime';
+import { GUIDE_EVENT, guideTarget, hasNewMission, type GuideTarget } from '../rpg/guide';
 import { canStart, entryChapter, portalGate } from '../rpg/progress';
 import { applySkipKit } from '../rpg/skip';
+import { h } from '../../ui/dom';
 
 export interface WorldData {
   map?: string;
@@ -84,6 +86,19 @@ export class WorldScene extends Phaser.Scene {
   /** 앞서 미끄러져 간 쪽(같은 길을 계속 따라가게) */
   private lastSlide: [number, number] | null = null;
 
+  // ── 길 안내 ──
+  /** NPC 머리 위 느낌표(지금 시작할 수 있는 미션이 있을 때) */
+  private questMarks = new Map<View, Phaser.GameObjects.Image>();
+  /** 목표 쪽으로 가는 문 위에 뜨는 화살표 */
+  private targetMark: Phaser.GameObjects.Image | null = null;
+  /** 다음 할 일을 하러 이 맵에서 가야 할 곳(미로처럼 안개가 있는 맵에서는 안내하지 않아요) */
+  private target: GuideTarget | null = null;
+  /** 길 안내를 누르면 바닥에 놓이는 발자국 */
+  private steps: Phaser.GameObjects.Image[] = [];
+  /** 목표가 화면 밖일 때 화면 가장자리에 뜨는 화살표 */
+  private edgeArrow: HTMLImageElement | null = null;
+  private calm = false;
+
   constructor() {
     super('World');
   }
@@ -98,6 +113,11 @@ export class WorldScene extends Phaser.Scene {
     this.water = [];
     this.robi = null;
     this.walking = false;
+    this.questMarks = new Map();
+    this.targetMark = null;
+    this.target = null;
+    this.steps = [];
+    this.calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const w = this.def.rows[0].length;
     const hgt = this.def.rows.length;
@@ -128,7 +148,18 @@ export class WorldScene extends Phaser.Scene {
     window.addEventListener('keydown', this.onKeyDown);
     window.addEventListener('keyup', this.onKeyUp);
     window.addEventListener('blur', this.onBlur);
+    window.addEventListener(GUIDE_EVENT, this.onGuide);
     this.input.on(Phaser.Input.Events.POINTER_DOWN, (p: Phaser.Input.Pointer) => void this.onPointer(p));
+    this.edgeArrow = h('img', {
+      class: 'guide-edge px',
+      src: icon('icon-guide-arrow'),
+      alt: '목표 쪽 화살표',
+      title: '목표가 이쪽에 있어요. 누르면 길을 보여 줘요.',
+      hidden: true,
+      draggable: 'false',
+      onclick: () => this.showPath(),
+    }) as HTMLImageElement;
+    app.ui.hud.append(this.edgeArrow);
 
     this.time.addEvent({ delay: 700, loop: true, callback: () => this.animateTiles() });
     this.time.addEvent({ delay: 1300, loop: true, callback: () => this.wanderMobs() });
@@ -141,6 +172,9 @@ export class WorldScene extends Phaser.Scene {
       window.removeEventListener('keydown', this.onKeyDown);
       window.removeEventListener('keyup', this.onKeyUp);
       window.removeEventListener('blur', this.onBlur);
+      window.removeEventListener(GUIDE_EVENT, this.onGuide);
+      this.edgeArrow?.remove();
+      this.edgeArrow = null;
     });
 
     playMusic(this.def.theme === 'castle' ? 'village' : this.def.theme === 'observatory' ? 'village' : this.def.theme === 'lab' ? 'village' : this.def.theme === 'harbor' ? 'village' : this.def.theme === 'desert' ? 'forest' : this.def.theme === 'cave' ? 'dungeon' : this.def.theme === 'dungeon' ? 'dungeon' : this.def.theme === 'forest' ? 'forest' : 'village');
@@ -292,7 +326,115 @@ export class WorldScene extends Phaser.Scene {
     this.robi?.setOverlays(this.robiOverlays());
     const map = this.def.fog && s.helpers.flowMap ? this.def : null;
     app.hud.drawMinimap(map, Array.from(this.visited).join(''), this.player.tile);
+    this.refreshGuide();
     this.dirty = false;
+  }
+
+  // ── 길 안내 ──
+  /** 다음 할 일 위치, NPC 느낌표, 문 위 화살표를 맞춰요(상태가 바뀔 때마다). */
+  private refreshGuide(): void {
+    const s = app.state;
+    this.target = this.def.fog ? null : guideTarget(s, classUnlock(), this.def.id);
+    for (const v of this.views) {
+      if (v.obj.type !== 'npc' || !v.actor) continue;
+      const need = v.actor.sprite.visible && hasNewMission(s, v.obj);
+      let mark = this.questMarks.get(v);
+      if (need && !mark && this.textures.exists('icon-quest-new')) {
+        mark = fitArt(this.add.image(0, 0, 'icon-quest-new')).setOrigin(0.5, 1).setDepth(900000);
+        this.questMarks.set(v, mark);
+      }
+      mark?.setVisible(need);
+    }
+    if (this.target?.kind === 'portal') {
+      this.targetMark ??= fitArt(this.add.image(0, 0, 'icon-guide-arrow')).setAngle(90).setDepth(900000);
+      this.targetMark.setVisible(true);
+    } else {
+      this.targetMark?.setVisible(false);
+    }
+  }
+
+  /** 느낌표·화살표가 살짝 오르내리며 따라가고, 목표가 화면 밖이면 가장자리 화살표를 띄워요. */
+  private updateGuide(): void {
+    const bob = this.calm ? 0 : Math.sin(this.time.now / 260) * 1.5;
+    for (const [v, mark] of this.questMarks) {
+      if (!mark.visible || !v.actor) continue;
+      const sp = v.actor.sprite;
+      mark.setPosition(sp.x, sp.y - sp.displayHeight * sp.originY - 1 + bob);
+    }
+    const target = this.target;
+    if (target && this.targetMark?.visible) {
+      const p = isoToScreen(target.at.x, target.at.y);
+      this.targetMark.setPosition(p.x, p.y - 38 + bob);
+    }
+    this.placeEdgeArrow();
+  }
+
+  private placeEdgeArrow(): void {
+    const el = this.edgeArrow;
+    if (!el) return;
+    const target = this.target;
+    if (!target || app.ui.isBusy() || app.missions.busy || !this.scene.isActive()) {
+      el.hidden = true;
+      return;
+    }
+    const cam = this.cameras.main;
+    const rect = this.game.canvas.getBoundingClientRect();
+    const p = isoToScreen(target.at.x, target.at.y);
+    const sx = (p.x - cam.worldView.x) * cam.zoom;
+    const sy = (p.y - 10 - cam.worldView.y) * cam.zoom;
+    // 위 상태 카드와 아래 목표 안내를 피해서 띄워요.
+    const m = { l: 30, r: 30, t: 100, b: 100 };
+    const W = rect.width;
+    const H = rect.height;
+    if (sx >= m.l && sx <= W - m.r && sy >= m.t && sy <= H - m.b) {
+      el.hidden = true;
+      return;
+    }
+    const cx = W / 2;
+    const cy = H / 2;
+    const dx = sx - cx;
+    const dy = sy - cy;
+    const kx = dx > 0 ? (W - m.r - cx) / dx : dx < 0 ? (m.l - cx) / dx : Infinity;
+    const ky = dy > 0 ? (H - m.b - cy) / dy : dy < 0 ? (m.t - cy) / dy : Infinity;
+    const k = Math.min(kx, ky);
+    el.hidden = false;
+    el.style.left = `${rect.left + cx + dx * k}px`;
+    el.style.top = `${rect.top + cy + dy * k}px`;
+    el.style.transform = `translate(-50%, -50%) rotate(${Math.atan2(dy, dx)}rad)`;
+  }
+
+  private readonly onGuide = (): void => this.showPath();
+
+  /** 길 안내: 목표까지 바닥에 발자국을 놓아요(6초 뒤 사라져요). */
+  private showPath(): void {
+    if (this.blocked()) return;
+    for (const step of this.steps) step.destroy();
+    this.steps = [];
+    const target = this.target;
+    if (!target) {
+      app.ui.toast(this.def.fog ? '미로에서는 길을 직접 찾아봐요.' : '지금은 안내할 곳이 없어요.', icon('icon-guide-arrow'), 2200);
+      return;
+    }
+    const goal = target.at;
+    const onGoal = (x: number, y: number) => x === goal.x && y === goal.y;
+    const near = (x: number, y: number) => Math.max(Math.abs(x - goal.x), Math.abs(y - goal.y)) <= 1 && !onGoal(x, y);
+    const walkOn = target.kind === 'portal';
+    const path = findPath((x, y) => this.passable(x, y) || (walkOn && onGoal(x, y)), this.player.tile, walkOn ? onGoal : near, goal);
+    if (!path) {
+      app.ui.toast('길을 찾지 못했어요.\n다른 길로 돌아가 봐요.', icon('icon-guide-arrow'), 2200);
+      return;
+    }
+    const shown = path.slice(1).map((pt, i) => {
+      const p = isoToScreen(pt.x, pt.y);
+      const img = fitArt(this.add.image(p.x, p.y, 'icon-path-step')).setDepth(-50000 + p.y).setAlpha(this.calm ? 0.95 : 0);
+      if (!this.calm) this.tweens.add({ targets: img, alpha: 0.95, delay: i * 35, duration: 160 });
+      return img;
+    });
+    this.steps = shown;
+    this.time.delayedCall(6000, () => {
+      this.tweens.add({ targets: shown, alpha: 0, duration: 400, onComplete: () => shown.forEach((img) => img.destroy()) });
+      if (this.steps === shown) this.steps = [];
+    });
   }
 
   private animateTiles(): void {
@@ -399,6 +541,11 @@ export class WorldScene extends Phaser.Scene {
     if (!e.repeat && !busy && (ACTION_KEYS.has(e.code) || ACTION_KEYS.has(e.key))) {
       e.preventDefault();
       void this.interactNearby();
+      return;
+    }
+    if (!e.repeat && !busy && (e.code === 'KeyG' || e.key === 'g')) {
+      e.preventDefault();
+      this.showPath();
     }
   };
 
@@ -430,6 +577,7 @@ export class WorldScene extends Phaser.Scene {
     this.robi?.update(delta);
     for (const v of this.views) v.actor?.update(delta);
     if (this.dirty) this.refresh();
+    this.updateGuide();
     if (this.blocked() || this.tapPending) return;
     const [dx, dy] = this.keyDir();
     if ((dx || dy) && this.time.now - this.lastStep > 60) void this.keyStep(dx, dy);

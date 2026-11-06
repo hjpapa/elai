@@ -420,6 +420,27 @@ h3 {
   color: var(--accent);
   margin-right: 6px;
 }
+/* ── 길 안내 ── */
+.hud-objective .guide-btn {
+  margin-left: 8px;
+  vertical-align: middle;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.guide-edge {
+  position: fixed;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.55));
+  animation: guide-pulse 0.8s ease-in-out infinite alternate;
+}
+@keyframes guide-pulse {
+  to {
+    opacity: 0.6;
+  }
+}
 .minimap {
   position: absolute;
   right: 10px;

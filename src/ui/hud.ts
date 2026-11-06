@@ -1,6 +1,8 @@
+import { MAPS } from '../data/maps';
 import { xpForLevel } from '../data/rpg/levels';
 import type { MapDef } from '../data/schema';
 import { app, classUnlock } from '../game/app';
+import { GUIDE_EVENT, guideTarget } from '../game/rpg/guide';
 import { objective } from '../game/rpg/progress';
 import { clear, h } from './dom';
 import { openDex } from './dex';
@@ -68,6 +70,18 @@ export class Hud {
     this.coins.textContent = String(d.coins);
     clear(this.goal);
     this.goal.append(h('b', {}, '목표'), objective(s, classUnlock()));
+    // 갈 곳을 알 때만 "길 안내"를 보여 줘요(미로처럼 안개가 있는 맵에서는 직접 찾아요).
+    const mapId = d.location.map;
+    if (!MAPS[mapId]?.fog && guideTarget(s, classUnlock(), mapId)) {
+      this.goal.append(
+        h(
+          'button',
+          { class: 'btn small guide-btn', title: '목표까지 발자국으로 길을 보여 줘요(G 키)', onclick: () => window.dispatchEvent(new Event(GUIDE_EVENT)) },
+          pxImg(icon('icon-path-step'), 18),
+          '길 안내',
+        ),
+      );
+    }
   }
 
   /** 던전 작은 지도: 가 본 칸만 그려요. */
