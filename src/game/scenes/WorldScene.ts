@@ -16,6 +16,8 @@ import { app, classUnlock } from '../app';
 import { ASSET_BY_KEY, originOf } from '../assets';
 import { fitArt } from '../density';
 import { Actor } from '../iso/actor';
+import { drawEdges } from '../iso/edgeArt';
+import { edgeFaces } from '../iso/edges';
 import { isoToScreen, screenToIso } from '../iso/iso';
 import {
   BLOCK_TEXTURE,
@@ -31,6 +33,9 @@ import {
 import { GUIDE_EVENT, guideTarget, hasNewMission, type GuideTarget } from '../rpg/guide';
 import { canStart, entryChapter, portalGate } from '../rpg/progress';
 import { applySkipKit } from '../rpg/skip';
+import { addLight } from '../light';
+import { WORLD_ZOOM, canvasRatio, crispZoom } from '../screen';
+import { addShadow } from '../shadow';
 import { clear, h } from '../../ui/dom';
 import { isTouchFirst, touchControls, type TouchControls } from '../../ui/touchControls';
 
@@ -82,6 +87,8 @@ export class WorldScene extends Phaser.Scene {
   /** 칸마다 그 칸에 그려진 바닥·블록·소품 그림(안개용) */
   private artAt = new Map<string, Phaser.GameObjects.Image[]>();
   private water: Phaser.GameObjects.Image[] = [];
+  /** 소품에 딸린 그림자·불빛(소품이 숨으면 같이 숨어요) */
+  private grounded: { owner: Phaser.GameObjects.Image; deco: Phaser.GameObjects.Image }[] = [];
   private visited!: Uint8Array;
   private walking = false;
   private interrupted = false;
@@ -135,6 +142,7 @@ export class WorldScene extends Phaser.Scene {
     this.views = [];
     this.artAt = new Map();
     this.water = [];
+    this.grounded = [];
     this.robi = null;
     this.walking = false;
     this.questMarks = new Map();
@@ -154,6 +162,8 @@ export class WorldScene extends Phaser.Scene {
     if (saved) for (let i = 0; i < saved.length && i < this.visited.length; i++) this.visited[i] = saved[i] === '1' ? 1 : 0;
 
     this.drawTiles();
+    // 미로(안개)는 가 본 곳만 보여서 섬 가장자리 두께를 그리지 않아요.
+    if (!this.def.fog) drawEdges(this, edgeFaces(this.cells));
     for (const obj of this.def.objects) this.views.push(this.makeView(obj));
 
     let at = data.at ?? (s.data.location.map === mapId ? { x: s.data.location.x, y: s.data.location.y } : this.def.spawn);
@@ -245,8 +255,7 @@ export class WorldScene extends Phaser.Scene {
 
   // ── 그리기 ──
   private fitZoom(): void {
-    const zoom = Phaser.Math.Clamp(Math.floor(Math.min(this.scale.width / 400, this.scale.height / 240)), 2, 6);
-    this.cameras.main.setZoom(zoom);
+    this.cameras.main.setZoom(crispZoom(this.scale.width, this.scale.height, canvasRatio(), WORLD_ZOOM));
   }
 
   private originFor(key: string): { x: number; y: number } {
@@ -272,11 +281,21 @@ export class WorldScene extends Phaser.Scene {
         }
         if (cell.glyph) {
           const o = this.originFor(cell.glyph.sprite);
-          art.push(fitArt(this.add.image(p.x, p.y, cell.glyph.sprite, 0)).setOrigin(o.x, o.y).setDepth((x + y) * 10 + 5));
+          const depth = (x + y) * 10 + 5;
+          const img = fitArt(this.add.image(p.x, p.y, cell.glyph.sprite, 0)).setOrigin(o.x, o.y).setDepth(depth);
+          art.push(img, ...this.decorate(cell.glyph.sprite, p.x, p.y, img, depth));
         }
         this.artAt.set(`${x},${y}`, art);
       }),
     );
+  }
+
+  /** 2배 그림 소품의 발밑 그림자와 등불 빛을 더해요. owner가 숨으면 같이 숨어요(update). */
+  private decorate(key: string, x: number, y: number, owner: Phaser.GameObjects.Image, depth: number): Phaser.GameObjects.Image[] {
+    const shadow = addShadow(this, key, x, y);
+    const extra = [...(shadow ? [shadow] : []), ...addLight(this, key, x, y, depth)];
+    for (const deco of extra) this.grounded.push({ owner, deco });
+    return extra;
   }
 
   private makeView(obj: MapObject): View {
@@ -284,7 +303,10 @@ export class WorldScene extends Phaser.Scene {
     const p = isoToScreen(obj.at.x, obj.at.y);
     const image = (key: string, frame = 0) => {
       const o = this.originFor(key);
-      return fitArt(this.add.image(p.x, p.y, key, frame)).setOrigin(o.x, o.y).setDepth((obj.at.x + obj.at.y) * 10 + 5);
+      const depth = (obj.at.x + obj.at.y) * 10 + 5;
+      const img = fitArt(this.add.image(p.x, p.y, key, frame)).setOrigin(o.x, o.y).setDepth(depth);
+      this.decorate(key, p.x, p.y, img, depth);
+      return img;
     };
     switch (obj.type) {
       case 'npc': {
@@ -425,9 +447,11 @@ export class WorldScene extends Phaser.Scene {
     }
     const cam = this.cameras.main;
     const rect = this.game.canvas.getBoundingClientRect();
+    // 캔버스는 기기 픽셀이라 CSS 픽셀로 바꿔요.
+    const toCss = rect.width / this.scale.width;
     const p = isoToScreen(target.at.x, target.at.y);
-    const sx = (p.x - cam.worldView.x) * cam.zoom;
-    const sy = (p.y - 10 - cam.worldView.y) * cam.zoom;
+    const sx = (p.x - cam.worldView.x) * cam.zoom * toCss;
+    const sy = (p.y - 10 - cam.worldView.y) * cam.zoom * toCss;
     // 위 상태 카드와 아래 목표 안내를 피해서 띄워요.
     const m = { l: 30, r: 30, t: 100, b: 100 };
     const W = rect.width;
@@ -622,6 +646,7 @@ export class WorldScene extends Phaser.Scene {
     this.player.update(delta);
     this.robi?.update(delta);
     for (const v of this.views) v.actor?.update(delta);
+    for (const g of this.grounded) if (g.deco.visible !== g.owner.visible) g.deco.setVisible(g.owner.visible);
     if (this.dirty) this.refresh();
     this.updatePrompt();
     this.updateGuide();

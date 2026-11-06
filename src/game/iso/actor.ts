@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { ASSET_BY_KEY, CHAR_FRAMES, MOB_FRAMES, originOf } from '../assets';
 import { fitArt } from '../density';
+import { SHADOW_ALPHA, SHADOW_DEPTH, addShadow } from '../shadow';
 import { facingOf, isoToScreen } from './iso';
 
 export type ActorKind = 'char' | 'mob' | 'static';
@@ -14,6 +15,8 @@ export class Actor {
   gy: number;
   facing = { back: false, flip: false };
   private layers: Phaser.GameObjects.Image[] = [];
+  /** 2배 그림의 발밑 그림자(옛 그림은 그림 안에 그림자가 있어요) */
+  private shadow: Phaser.GameObjects.Image | null = null;
   private walkTimer = 0;
   private walkStep = 0;
   private walking = false;
@@ -35,6 +38,8 @@ export class Actor {
 
   private build(): void {
     for (const l of this.layers) l.destroy();
+    this.shadow?.destroy();
+    this.shadow = this.scene.textures.exists(this.baseKey) ? addShadow(this.scene, this.baseKey, 0, 0) : null;
     this.layers = [this.baseKey, ...this.overlays]
       .filter((k) => this.scene.textures.exists(k))
       .map((key) => {
@@ -57,10 +62,12 @@ export class Actor {
 
   setVisible(on: boolean): void {
     for (const l of this.layers) l.setVisible(on);
+    this.shadow?.setVisible(on);
   }
 
   setAlpha(a: number): void {
     for (const l of this.layers) l.setAlpha(a);
+    this.shadow?.setAlpha(SHADOW_ALPHA * a);
   }
 
   placeAt(x: number, y: number): void {
@@ -134,6 +141,7 @@ export class Actor {
     const p = isoToScreen(this.gx, this.gy);
     const f = this.frame();
     const depth = (this.gx + this.gy) * 10 + 5;
+    this.shadow?.setPosition(p.x, p.y).setDepth(SHADOW_DEPTH + p.y);
     this.layers.forEach((l, i) => {
       l.setPosition(p.x, p.y);
       l.setFlipX(this.kind === 'char' && this.facing.flip);
@@ -146,5 +154,7 @@ export class Actor {
   destroy(): void {
     for (const l of this.layers) l.destroy();
     this.layers = [];
+    this.shadow?.destroy();
+    this.shadow = null;
   }
 }

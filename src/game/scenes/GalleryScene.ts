@@ -2,6 +2,8 @@ import Phaser from 'phaser';
 import { ASSETS, originOf, type AssetKind } from '../assets';
 import { fitArt } from '../density';
 import { isoToScreen } from '../iso/iso';
+import { canvasRatio, crispZoom } from '../screen';
+import { addShadow } from '../shadow';
 
 /**
  * 그림 검토용 화면(?gallery). 위쪽은 아이소 타일 위에 소품·캐릭터를 기준점대로 세워서
@@ -13,7 +15,8 @@ export class GalleryScene extends Phaser.Scene {
   }
 
   create(): void {
-    const zoom = 3;
+    // 검토용이라 크게(CSS 기준 약 3배) 보되, 2배 그림이 또렷하게 짝수 배율을 써요.
+    const zoom = crispZoom(this.scale.width, this.scale.height, canvasRatio(), { viewW: 1, viewH: 1, minCss: 3, maxCss: 3, slack: 1 });
     const cam = this.cameras.main;
     cam.setZoom(zoom).setBackgroundColor('#2a2f3d').setOrigin(0, 0).setScroll(0, 0);
 
@@ -31,6 +34,7 @@ export class GalleryScene extends Phaser.Scene {
       const spec = ASSETS.find((a) => a.key === key)!;
       const o = originOf(spec);
       const p = isoToScreen(tx, ty);
+      addShadow(this, key, baseX + p.x, baseY + p.y);
       fitArt(this.add.image(baseX + p.x, baseY + p.y, key, frame))
         .setOrigin(o.x, o.y)
         .setFlipX(flip)

@@ -9,8 +9,13 @@ import { Hud } from '../../ui/hud';
 import { app } from '../app';
 import { ASSET_BY_KEY, originOf } from '../assets';
 import { fitArt } from '../density';
+import { drawEdges } from '../iso/edgeArt';
+import { edgeFaces } from '../iso/edges';
 import { isoToScreen } from '../iso/iso';
+import type { Cell } from '../iso/mapRuntime';
 import { GameState, freshSave } from '../rpg/state';
+import { TITLE_ZOOM, canvasRatio, crispZoom } from '../screen';
+import { addShadow } from '../shadow';
 
 type Mode = 'class' | 'local';
 
@@ -43,21 +48,30 @@ export class TitleScene extends Phaser.Scene {
   private drawIsland(): void {
     const cam = this.cameras.main;
     cam.setBackgroundColor('#1b1f2a');
-    cam.setZoom(Math.max(2, Math.min(6, Math.floor(Math.min(this.scale.width / 260, this.scale.height / 200)))));
+    cam.setZoom(crispZoom(this.scale.width, this.scale.height, canvasRatio(), TITLE_ZOOM));
     cam.centerOn(0, 40);
     const R = 3;
+    const cells: Cell[][] = [];
     for (let y = -R; y <= R; y++) {
+      const row: Cell[] = [];
       for (let x = -R; x <= R; x++) {
-        if (Math.abs(x) + Math.abs(y) > R + 1) continue;
+        if (Math.abs(x) + Math.abs(y) > R + 1) {
+          row.push({ kind: 'void' });
+          continue;
+        }
         const p = isoToScreen(x + R, y + R);
-        const key = x === 0 ? 'tile-path' : (x * 7 + y * 3) % 5 === 0 ? 'tile-flower' : 'tile-grass';
-        fitArt(this.add.image(p.x, p.y, key, 0)).setDepth(-1000 + p.y);
+        const kind = x === 0 ? 'path' : (x * 7 + y * 3) % 5 === 0 ? 'flower' : 'grass';
+        row.push({ kind });
+        fitArt(this.add.image(p.x, p.y, `tile-${kind}`, 0)).setDepth(-1000 + p.y);
       }
+      cells.push(row);
     }
+    drawEdges(this, edgeFaces(cells), { x: 0, y: 0 }, -1001);
     const stand = (key: string, tx: number, ty: number, frame = 0) => {
       const spec = ASSET_BY_KEY.get(key);
       const o = spec ? originOf(spec) : { x: 0.5, y: 0.9 };
       const p = isoToScreen(tx + R, ty + R);
+      addShadow(this, key, p.x, p.y);
       return fitArt(this.add.image(p.x, p.y, key, frame)).setOrigin(o.x, o.y).setDepth((tx + ty) * 10 + 50);
     };
     stand('prop-tree', -2, -1);

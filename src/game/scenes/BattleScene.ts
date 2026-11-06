@@ -5,6 +5,8 @@ import { ROBI_PARTS } from '../../data/rpg/robiParts';
 import { ASSET_BY_KEY, MOB_FRAMES, originOf } from '../assets';
 import { fitArt } from '../density';
 import { isoToScreen } from '../iso/iso';
+import { BATTLE_ZOOM, canvasRatio, crispZoom } from '../screen';
+import { addShadow } from '../shadow';
 
 export interface BattleSceneData {
   mob: MobDef;
@@ -22,6 +24,8 @@ export class BattleScene extends Phaser.Scene {
   private mobDef!: MobDef;
   private heroPos = { x: 0, y: 0 };
   private mobPos = { x: 0, y: 0 };
+  /** 2배 그림의 발밑 그림자(달려들기·물러서기를 따라가요) */
+  private shadows: { img: Phaser.GameObjects.Image; owner: Phaser.GameObjects.Image | Phaser.GameObjects.Sprite }[] = [];
 
   constructor() {
     super('Battle');
@@ -29,14 +33,17 @@ export class BattleScene extends Phaser.Scene {
 
   create(data: BattleSceneData): void {
     this.mobDef = data.mob;
+    this.shadows = [];
     const cam = this.cameras.main;
     cam.setBackgroundColor('#1b1f2a');
     // 위 막대(약 70px)와 아래 카드 패널(약 340px) 사이의 빈 곳에 경기장을 놓아요.
+    // 막대·패널은 CSS 픽셀이고 캔버스는 기기 픽셀이라 화면 배율을 곱해요.
     const { width, height } = this.scale;
-    const avail = Math.max(120, height - 340);
-    const zoom = Phaser.Math.Clamp(Math.floor(Math.min(width / 230, avail / 110)), 2, 5);
+    const r = canvasRatio();
+    const avail = Math.max(120 * r, height - 340 * r);
+    const zoom = crispZoom(width, avail, r, BATTLE_ZOOM);
     cam.setZoom(zoom);
-    const targetY = 70 + avail / 2;
+    const targetY = 70 * r + avail / 2;
     cam.centerOn(0, 36 + (height / 2 - targetY) / zoom);
 
     for (let y = -1; y <= 5; y++) {
@@ -74,6 +81,18 @@ export class BattleScene extends Phaser.Scene {
       this.anims.create({ key: animKey, frames: MOB_FRAMES.idle.map((f) => ({ key: data.mob.sprite, frame: f })), frameRate: 2, repeat: -1 });
     }
     this.mob.play(animKey);
+    for (const [owner, key] of [
+      [this.hero[0], 'char-player'],
+      [this.robi[0], 'char-robi'],
+      [this.mob, data.mob.sprite],
+    ] as const) {
+      const img = addShadow(this, key, owner.x, owner.y);
+      if (img) this.shadows.push({ img, owner });
+    }
+  }
+
+  update(): void {
+    for (const s of this.shadows) s.img.setPosition(s.owner.x, s.owner.y).setVisible(s.owner.visible);
   }
 
   private get reducedMotion(): boolean {

@@ -1,7 +1,9 @@
 import Phaser from 'phaser';
 import { initIcons } from '../../ui/icons';
+import { applySkin } from '../../ui/skin';
 import { ASSETS, ASSET_BY_KEY, type Manifest } from '../assets';
 import { setDensity } from '../density';
+import { canvasRatio } from '../screen';
 import { makePlaceholders } from '../textures/placeholders';
 
 const ATLAS_KEY = 'elai-atlas';
@@ -14,7 +16,7 @@ export class BootScene extends Phaser.Scene {
 
   create(): void {
     const label = this.add
-      .text(this.scale.width / 2, this.scale.height / 2, '섬으로 가는 중… 0%', { fontFamily: 'Jua, sans-serif', fontSize: '22px', color: '#f6f2e7' })
+      .text(this.scale.width / 2, this.scale.height / 2, '섬으로 가는 중… 0%', { fontFamily: 'Jua, sans-serif', fontSize: `${Math.round(22 * canvasRatio())}px`, color: '#f6f2e7' })
       .setOrigin(0.5);
     this.load.on(Phaser.Loader.Events.PROGRESS, (p: number) => label.setText(`섬으로 가는 중… ${Math.round(p * 100)}%`));
 
@@ -69,6 +71,7 @@ export class BootScene extends Phaser.Scene {
   private finish(): void {
     makePlaceholders(this);
     initIcons(this.textures);
+    applySkin(this.textures);
     const next = new URLSearchParams(location.search).has('gallery') ? 'Gallery' : 'Title';
     this.scene.start(next);
   }
