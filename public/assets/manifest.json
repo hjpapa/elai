@@ -32,9 +32,101 @@
     "#7962ab",
     "#b5a0dc",
     "#e7b64f",
-    "#ffe59a"
+    "#ffe59a",
+    "#244c46",
+    "#397854",
+    "#70ac61",
+    "#b4d77c",
+    "#4e3e43",
+    "#815b45",
+    "#bd895b",
+    "#efd5a0",
+    "#445968",
+    "#718693",
+    "#a9bac0",
+    "#e1e5d8",
+    "#294a68",
+    "#367a96",
+    "#64b7c3",
+    "#b9e4df",
+    "#793e4d",
+    "#b95754",
+    "#e08b69",
+    "#f6bd88",
+    "#603f3d",
+    "#9c6450",
+    "#cf9470",
+    "#f1c59a",
+    "#f8e9bd",
+    "#dcc69a",
+    "#ad884b",
+    "#725c45",
+    "#406c8a",
+    "#6596ab",
+    "#b7d4cf",
+    "#faf5e8"
   ],
   "assets": [
+    {
+      "key": "icon-quest-new",
+      "file": "icon/icon-quest-new.png",
+      "density": 2
+    },
+    {
+      "key": "icon-quest-doing",
+      "file": "icon/icon-quest-doing.png",
+      "density": 2
+    },
+    {
+      "key": "icon-guide-arrow",
+      "file": "icon/icon-guide-arrow.png",
+      "density": 2
+    },
+    {
+      "key": "icon-path-step",
+      "file": "icon/icon-path-step.png",
+      "density": 2
+    },
+    {
+      "key": "icon-talk",
+      "file": "icon/icon-talk.png",
+      "density": 2
+    },
+    {
+      "key": "fx-target",
+      "file": "fx/fx-target.png",
+      "density": 2
+    },
+    {
+      "key": "ui-panel",
+      "file": "ui/ui-panel.png",
+      "density": 2
+    },
+    {
+      "key": "ui-button",
+      "file": "ui/ui-button.png",
+      "density": 2
+    },
+    {
+      "key": "ui-bubble",
+      "file": "ui/ui-bubble.png",
+      "density": 2
+    },
+    {
+      "key": "ui-slot",
+      "file": "ui/ui-slot.png",
+      "density": 2
+    },
+    {
+      "key": "ui-bar",
+      "file": "ui/ui-bar.png",
+      "density": 2
+    },
+    {
+      "key": "ui-stick",
+      "file": "ui/ui-stick.png",
+      "density": 2
+    },
     {
       "key": "tile-castle",
       "file": "tile/tile-castle.png"
@@ -277,23 +369,28 @@
     },
     {
       "key": "tile-grass",
-      "file": "tile/tile-grass.png"
+      "file": "tile/tile-grass.png",
+      "density": 2
     },
     {
       "key": "tile-flower",
-      "file": "tile/tile-flower.png"
+      "file": "tile/tile-flower.png",
+      "density": 2
     },
     {
       "key": "tile-path",
-      "file": "tile/tile-path.png"
+      "file": "tile/tile-path.png",
+      "density": 2
     },
     {
       "key": "tile-water",
-      "file": "tile/tile-water.png"
+      "file": "tile/tile-water.png",
+      "density": 2
     },
     {
       "key": "tile-stone",
-      "file": "tile/tile-stone.png"
+      "file": "tile/tile-stone.png",
+      "density": 2
     },
     {
       "key": "tile-wood",
@@ -301,7 +398,8 @@
     },
     {
       "key": "tile-bridge",
-      "file": "tile/tile-bridge.png"
+      "file": "tile/tile-bridge.png",
+      "density": 2
     },
     {
       "key": "tile-sand",
@@ -317,15 +415,18 @@
     },
     {
       "key": "prop-tree",
-      "file": "prop/prop-tree.png"
+      "file": "prop/prop-tree.png",
+      "density": 2
     },
     {
       "key": "prop-pine",
-      "file": "prop/prop-pine.png"
+      "file": "prop/prop-pine.png",
+      "density": 2
     },
     {
       "key": "prop-bush",
-      "file": "prop/prop-bush.png"
+      "file": "prop/prop-bush.png",
+      "density": 2
     },
     {
       "key": "prop-rock",
@@ -333,11 +434,13 @@
     },
     {
       "key": "prop-sign",
-      "file": "prop/prop-sign.png"
+      "file": "prop/prop-sign.png",
+      "density": 2
     },
     {
       "key": "prop-chest",
-      "file": "prop/prop-chest.png"
+      "file": "prop/prop-chest.png",
+      "density": 2
     },
     {
       "key": "prop-door",
@@ -353,27 +456,33 @@
     },
     {
       "key": "prop-house",
-      "file": "prop/prop-house.png"
+      "file": "prop/prop-house.png",
+      "density": 2
     },
     {
       "key": "prop-fountain",
-      "file": "prop/prop-fountain.png"
+      "file": "prop/prop-fountain.png",
+      "density": 2
     },
     {
       "key": "prop-bridge-broken",
-      "file": "prop/prop-bridge-broken.png"
+      "file": "prop/prop-bridge-broken.png",
+      "density": 2
     },
     {
       "key": "prop-booth",
-      "file": "prop/prop-booth.png"
+      "file": "prop/prop-booth.png",
+      "density": 2
     },
     {
       "key": "prop-lamp",
-      "file": "prop/prop-lamp.png"
+      "file": "prop/prop-lamp.png",
+      "density": 2
     },
     {
       "key": "prop-fence",
-      "file": "prop/prop-fence.png"
+      "file": "prop/prop-fence.png",
+      "density": 2
     },
     {
       "key": "prop-stump",
@@ -385,23 +494,28 @@
     },
     {
       "key": "prop-gate",
-      "file": "prop/prop-gate.png"
+      "file": "prop/prop-gate.png",
+      "density": 2
     },
     {
       "key": "char-player",
-      "file": "char/char-player.png"
+      "file": "char/char-player.png",
+      "density": 2
     },
     {
       "key": "char-robi",
-      "file": "char/char-robi.png"
+      "file": "char/char-robi.png",
+      "density": 2
     },
     {
       "key": "char-zen",
-      "file": "char/char-zen.png"
+      "file": "char/char-zen.png",
+      "density": 2
     },
     {
       "key": "char-elder",
-      "file": "char/char-elder.png"
+      "file": "char/char-elder.png",
+      "density": 2
     },
     {
       "key": "char-chef",
@@ -413,7 +527,8 @@
     },
     {
       "key": "equip-hat-cap",
-      "file": "overlay/equip-hat-cap.png"
+      "file": "overlay/equip-hat-cap.png",
+      "density": 2
     },
     {
       "key": "equip-hat-leaf",
@@ -425,7 +540,8 @@
     },
     {
       "key": "equip-tool-stick",
-      "file": "overlay/equip-tool-stick.png"
+      "file": "overlay/equip-tool-stick.png",
+      "density": 2
     },
     {
       "key": "equip-tool-hammer",
@@ -437,11 +553,13 @@
     },
     {
       "key": "robi-part-wheel",
-      "file": "overlay/robi-part-wheel.png"
+      "file": "overlay/robi-part-wheel.png",
+      "density": 2
     },
     {
       "key": "mob-dummy",
-      "file": "mob/mob-dummy.png"
+      "file": "mob/mob-dummy.png",
+      "density": 2
     },
     {
       "key": "mob-vine-slime",

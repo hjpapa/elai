@@ -1,0 +1,50 @@
+import assert from 'node:assert/strict';
+import { mkdtemp, mkdir, readFile, writeFile, unlink, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { resolve, join, sep, basename } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { PNG } from 'pngjs';
+import { BASE_PALETTE, parsePalette, parseFrames, loadAsset, packAtlas } from '../../scripts/build-assets.mjs';
+
+const root = fileURLToPath(new URL('../../', import.meta.url));
+const data = JSON.parse(await readFile(join(root, 'assets-src/palette.json'), 'utf8'));
+const palette = parsePalette(data);
+assert.deepEqual(palette.colors.slice(0, 32), BASE_PALETTE);
+assert.equal(palette.colors.length, 64);
+const changed = structuredClone(data); changed.colors.O = '#293045';
+assert.throws(() => parsePalette(changed), /처음 32색/);
+const tooMany = structuredClone(data); tooMany.colors['@'] = '#123456';
+assert.throws(() => parsePalette(tooMany), /32~64/);
+const duplicate = structuredClone(data); duplicate.colors.F = duplicate.colors.G;
+assert.throws(() => parsePalette(duplicate), /같은 색/);
+const spec = { key: 'fixture', kind: 'tile', w: 2, h: 2, frames: 1 };
+const oldText = 'GG\nGG\n', newText = 'LLLL\nLLLL\nLLLL\nLLLL\n';
+assert.equal(parseFrames(newText, spec, palette.symbols, 2)[0][0].length, 4);
+assert.throws(() => parseFrames(oldText, spec, palette.symbols, 2), /높이/);
+assert.throws(() => parseFrames(newText.replace('LLLL', 'LLL'), spec, palette.symbols, 2), /너비/);
+assert.throws(() => parseFrames(newText + '\n' + newText, spec, palette.symbols, 2), /프레임/);
+assert.throws(() => parseFrames(newText.replace('L', '@'), spec, palette.symbols, 2), /팔레트 밖/);
+assert.throws(() => parseFrames(newText, spec, palette.symbols, 3), /밀도/);
+assert.throws(() => parseFrames('....\n....\n....\n....\n', spec, palette.symbols, 2), /비어/);
+const fixture = await mkdtemp(join(tmpdir(), 'elai-c11-source-'));
+try {
+  await mkdir(join(fixture, 'tile')); await mkdir(join(fixture, 'hires/tile'), { recursive: true });
+  const oldPath = join(fixture, 'tile/fixture.txt'), newPath = join(fixture, 'hires/tile/fixture.txt');
+  await writeFile(oldPath, oldText); await writeFile(newPath, newText);
+  const selected = await loadAsset(spec, palette.symbols, fixture);
+  assert.equal(selected.density, 2); assert.equal(selected.png.width, 4); assert.equal(selected.legacy.width, 2);
+  assert.deepEqual([...selected.png.data.subarray(0, 3)], palette.symbols.get('L'));
+  assert.equal(await readFile(oldPath, 'utf8'), oldText);
+  const atlas = packAtlas([selected]); assert.equal(atlas.data.frames.fixture.frame.w, 4);
+  await writeFile(newPath, oldText);
+  await assert.rejects(() => loadAsset(spec, palette.symbols, fixture), /높이/);
+  await unlink(newPath); const fallback = await loadAsset(spec, palette.symbols, fixture);
+  assert.equal(fallback.density, 1); assert.equal(fallback.png.width, 2);
+  await unlink(oldPath); await assert.rejects(() => loadAsset(spec, palette.symbols, fixture), /모두 없어요/);
+  assert.throws(() => packAtlas([{ spec, png: new PNG({ width: 4097, height: 1 }) }]), /4096/);
+} finally {
+  const absolute = resolve(fixture), parent = resolve(tmpdir()) + sep;
+  if (!absolute.startsWith(parent) || !basename(absolute).startsWith('elai-c11-source-')) throw new Error('임시 검증 폴더 경로가 달라요.');
+  await rm(absolute, { recursive: true, force: true });
+}
+console.log('C11 생성기: 팔레트 보존·오류 거절·2배 우선·옛 원본 보존/복귀·아틀라스 규격 검증 통과');
