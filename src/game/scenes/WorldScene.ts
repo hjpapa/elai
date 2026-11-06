@@ -14,6 +14,7 @@ import { icon } from '../../ui/icons';
 import { showResult } from '../../ui/rewards';
 import { app, classUnlock } from '../app';
 import { ASSET_BY_KEY, originOf } from '../assets';
+import { fitArt } from '../density';
 import { Actor } from '../iso/actor';
 import { isoToScreen, screenToIso } from '../iso/iso';
 import {
@@ -181,18 +182,18 @@ export class WorldScene extends Phaser.Scene {
         const p = isoToScreen(x, y);
         const tex = TILE_TEXTURE[cell.kind];
         if (tex) {
-          const img = this.add.image(p.x, p.y, tex, 0).setDepth(-100000 + p.y);
+          const img = fitArt(this.add.image(p.x, p.y, tex, 0)).setDepth(-100000 + p.y);
           art.push(img);
           if (cell.kind === 'water') this.water.push(img);
         }
         const block = BLOCK_TEXTURE[cell.kind];
         if (block) {
           const o = this.originFor(block);
-          art.push(this.add.image(p.x, p.y, block, 0).setOrigin(o.x, o.y).setDepth((x + y) * 10 + 5));
+          art.push(fitArt(this.add.image(p.x, p.y, block, 0)).setOrigin(o.x, o.y).setDepth((x + y) * 10 + 5));
         }
         if (cell.glyph) {
           const o = this.originFor(cell.glyph.sprite);
-          art.push(this.add.image(p.x, p.y, cell.glyph.sprite, 0).setOrigin(o.x, o.y).setDepth((x + y) * 10 + 5));
+          art.push(fitArt(this.add.image(p.x, p.y, cell.glyph.sprite, 0)).setOrigin(o.x, o.y).setDepth((x + y) * 10 + 5));
         }
         this.artAt.set(`${x},${y}`, art);
       }),
@@ -204,7 +205,7 @@ export class WorldScene extends Phaser.Scene {
     const p = isoToScreen(obj.at.x, obj.at.y);
     const image = (key: string, frame = 0) => {
       const o = this.originFor(key);
-      return this.add.image(p.x, p.y, key, frame).setOrigin(o.x, o.y).setDepth((obj.at.x + obj.at.y) * 10 + 5);
+      return fitArt(this.add.image(p.x, p.y, key, frame)).setOrigin(o.x, o.y).setDepth((obj.at.x + obj.at.y) * 10 + 5);
     };
     switch (obj.type) {
       case 'npc': {

@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { ASSET_BY_KEY, CHAR_FRAMES, MOB_FRAMES, originOf } from '../assets';
+import { fitArt } from '../density';
 import { facingOf, isoToScreen } from './iso';
 
 export type ActorKind = 'char' | 'mob' | 'static';
@@ -39,7 +40,7 @@ export class Actor {
       .map((key) => {
         const spec = ASSET_BY_KEY.get(key);
         const o = spec ? originOf(spec) : { x: 0.5, y: 0.9 };
-        return this.scene.add.image(0, 0, key, 0).setOrigin(o.x, o.y);
+        return fitArt(this.scene.add.image(0, 0, key, 0).setOrigin(o.x, o.y));
       });
     this.sync();
   }

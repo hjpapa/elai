@@ -8,6 +8,7 @@ import { append, clear, h } from '../../ui/dom';
 import { Hud } from '../../ui/hud';
 import { app } from '../app';
 import { ASSET_BY_KEY, originOf } from '../assets';
+import { fitArt } from '../density';
 import { isoToScreen } from '../iso/iso';
 import { GameState, freshSave } from '../rpg/state';
 
@@ -50,14 +51,14 @@ export class TitleScene extends Phaser.Scene {
         if (Math.abs(x) + Math.abs(y) > R + 1) continue;
         const p = isoToScreen(x + R, y + R);
         const key = x === 0 ? 'tile-path' : (x * 7 + y * 3) % 5 === 0 ? 'tile-flower' : 'tile-grass';
-        this.add.image(p.x, p.y, key, 0).setDepth(-1000 + p.y);
+        fitArt(this.add.image(p.x, p.y, key, 0)).setDepth(-1000 + p.y);
       }
     }
     const stand = (key: string, tx: number, ty: number, frame = 0) => {
       const spec = ASSET_BY_KEY.get(key);
       const o = spec ? originOf(spec) : { x: 0.5, y: 0.9 };
       const p = isoToScreen(tx + R, ty + R);
-      return this.add.image(p.x, p.y, key, frame).setOrigin(o.x, o.y).setDepth((tx + ty) * 10 + 50);
+      return fitArt(this.add.image(p.x, p.y, key, frame)).setOrigin(o.x, o.y).setDepth((tx + ty) * 10 + 50);
     };
     stand('prop-tree', -2, -1);
     stand('prop-pine', 2, -2);

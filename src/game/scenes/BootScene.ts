@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { initIcons } from '../../ui/icons';
 import { ASSETS, ASSET_BY_KEY, type Manifest } from '../assets';
+import { setDensity } from '../density';
 import { makePlaceholders } from '../textures/placeholders';
 
 const ATLAS_KEY = 'elai-atlas';
@@ -18,6 +19,8 @@ export class BootScene extends Phaser.Scene {
     this.load.on(Phaser.Loader.Events.PROGRESS, (p: number) => label.setText(`섬으로 가는 중… ${Math.round(p * 100)}%`));
 
     void this.loadManifest().then((manifest) => {
+      // 고해상도 그림(density 2)은 프레임을 2배 크기로 잘라요. 그릴 때는 density.ts가 반으로 줄여요.
+      const density = new Map((manifest?.assets ?? []).map((e) => [e.key, e.density === 2 ? 2 : 1]));
       if (manifest?.atlas) {
         // 한 장으로 묶은 그림: 키마다 가로 띠를 잘라 스프라이트 시트로 만들어요.
         this.load.atlas(ATLAS_KEY, `assets/${manifest.atlas.image}`, `assets/${manifest.atlas.data}`);
@@ -25,7 +28,9 @@ export class BootScene extends Phaser.Scene {
           const atlas = this.textures.exists(ATLAS_KEY) ? this.textures.get(ATLAS_KEY) : null;
           for (const spec of ASSETS) {
             if (!atlas?.has(spec.key) || this.textures.exists(spec.key)) continue;
-            this.textures.addSpriteSheetFromAtlas(spec.key, { atlas: ATLAS_KEY, frame: spec.key, frameWidth: spec.w, frameHeight: spec.h });
+            const d = density.get(spec.key) ?? 1;
+            this.textures.addSpriteSheetFromAtlas(spec.key, { atlas: ATLAS_KEY, frame: spec.key, frameWidth: spec.w * d, frameHeight: spec.h * d });
+            setDensity(spec.key, d);
           }
           this.finish();
         });
@@ -39,8 +44,10 @@ export class BootScene extends Phaser.Scene {
       }
       for (const e of entries) {
         const spec = ASSET_BY_KEY.get(e.key)!;
+        const d = density.get(e.key) ?? 1;
         // 프레임이 하나여도 spritesheet로 읽어서 어디서나 프레임 0을 쓸 수 있게 해요.
-        this.load.spritesheet(e.key, `assets/${e.file}`, { frameWidth: spec.w, frameHeight: spec.h });
+        this.load.spritesheet(e.key, `assets/${e.file}`, { frameWidth: spec.w * d, frameHeight: spec.h * d });
+        setDensity(e.key, d);
       }
       this.load.once(Phaser.Loader.Events.COMPLETE, () => this.finish());
       this.load.start();

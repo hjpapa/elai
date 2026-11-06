@@ -25,22 +25,20 @@ export function composite(layers: { key: string; frame?: number }[]): string {
   const id = layers.map((l) => `${l.key}#${l.frame ?? 0}`).join('+');
   const hit = cache.get(id);
   if (hit || !textures) return hit ?? '';
-  let canvas: HTMLCanvasElement | null = null;
-  let ctx: CanvasRenderingContext2D | null = null;
-  for (const l of layers) {
-    if (!textures.exists(l.key)) continue;
-    const frame = textures.getFrame(l.key, l.frame ?? 0);
-    if (!frame) continue;
-    if (!canvas) {
-      canvas = document.createElement('canvas');
-      canvas.width = frame.cutWidth;
-      canvas.height = frame.cutHeight;
-      ctx = canvas.getContext('2d');
-    }
+  const manager = textures;
+  const frames = layers.filter((l) => manager.exists(l.key)).map((l) => manager.getFrame(l.key, l.frame ?? 0)).filter((f): f is Phaser.Textures.Frame => !!f);
+  if (!frames.length) return '';
+  // 레이어마다 밀도가 다를 수 있어요(고해상도 몸 + 옛 모자). 가장 큰 그림 크기에 맞춰 늘려 그려요.
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.max(...frames.map((f) => f.cutWidth));
+  canvas.height = Math.max(...frames.map((f) => f.cutHeight));
+  const ctx = canvas.getContext('2d');
+  if (ctx) ctx.imageSmoothingEnabled = false;
+  for (const frame of frames) {
     const src = frame.source.image as CanvasImageSource;
-    ctx?.drawImage(src, frame.cutX, frame.cutY, frame.cutWidth, frame.cutHeight, 0, 0, frame.cutWidth, frame.cutHeight);
+    ctx?.drawImage(src, frame.cutX, frame.cutY, frame.cutWidth, frame.cutHeight, 0, 0, canvas.width, canvas.height);
   }
-  const url = canvas?.toDataURL() ?? '';
+  const url = canvas.toDataURL();
   cache.set(id, url);
   return url;
 }

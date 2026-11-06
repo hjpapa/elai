@@ -18,12 +18,13 @@
 - 작업 지시서(`docs/tasks/codex-NN-*.md`)에 적힌 파일만 고쳐요.
 - 지시서에 없는 파일을 고쳐야 하면 고치지 말고, 최종 보고에 "필요한 변경"으로 적어 주세요.
 
-### 할당량 절약 기간(2026-11-05부터, 사용자가 끝났다고 알릴 때까지)
-Claude 할당량을 아끼는 동안 Codex가 2~8장을 만들어요(`docs/tasks/codex-roadmap.md`).
-- 지시서·로드맵이 허락하면 엔진 파일(`src/game/**`, `src/missions/**`, `src/ui/**`, `src/data/**`)도 고쳐요.
-- 계약 파일은 지시서·로드맵의 "미리 승인한 계약 변경"에 적힌 것만 바꿔요.
-- 이 기간에도 `supabase/**`, `src/services/**`, `src/teacher/**`, `package.json`·잠금 파일, `vercel.json`, `vite.config.ts`, `src/missions/core/types.ts`, `docs/asset-spec.md`는 고치지 않아요.
-- 커밋은 **사용자가 요청할 때만** 작업 브랜치(`codex/…`)에 단계마다 하나씩 해요. `docs/tasks/codex-run-all.md`대로 하라는 부탁도 그 요청이에요. main 브랜치, push, 머지, 브랜치 바꾸기는 하지 않아요.
+### 2.5D 개선 기간(2026-11-06부터)
+학생 테스트 뒤 조작·길 안내·2.5D 그림·건물 미니게임을 다듬어요. 단계와 담당은 `docs/tasks/README.md`에 있어요.
+- 엔진(`src/game/**`, `src/missions/**`, `src/ui/**`, `src/data/**`)은 Claude가 먼저 만들어요. Codex는 지시서가 허락한 엔진 파일만 고쳐요(Claude가 사용량 한도로 넘길 때).
+- Codex는 고해상도 그림(`docs/asset-spec.md`의 "고해상도 그림")과 지시서가 허락한 데이터·글을 맡아요.
+- 계약 파일은 지시서의 "미리 승인한 계약 변경"에 적힌 것만 바꿔요.
+- `supabase/**`, `src/services/**`, `src/teacher/**`, `package.json`·잠금 파일, `vercel.json`, `vite.config.ts`, `src/missions/core/types.ts`, `docs/asset-spec.md`는 Codex가 고치지 않아요.
+- 커밋은 **사용자가 요청할 때만** 작업 브랜치(`codex/…`)에 단계마다 하나씩 해요. main 브랜치, push, 머지, 브랜치 바꾸기는 하지 않아요.
 
 ## 계약 파일 (Claude 승인 없이 바꾸지 않아요)
 - `src/data/schema.ts` — 게임 데이터 타입
@@ -36,7 +37,7 @@ Claude 할당량을 아끼는 동안 Codex가 2~8장을 만들어요(`docs/tasks
 - 화면에 보이는 글은 한국어. 식별자는 영어.
 - 새 라이브러리를 추가하지 않아요(필요하면 보고).
 - 끝내기 전에 `npm test`와 `npm run build`가 통과해야 해요.
-- 커밋·push·브랜치 변경은 하지 않아요. Claude가 검토한 뒤 커밋해요(할당량 절약 기간의 예외는 위 "담당"을 보세요).
+- 커밋·push·브랜치 변경은 하지 않아요. Claude가 검토한 뒤 커밋해요(Codex가 작업 브랜치에 커밋하는 경우는 위 "담당"을 보세요).
 
 ## 콘텐츠 톤 (학생에게 보이는 모든 글)
 - 해요체. 말풍선 한 번에 2줄 이내(한 줄 약 20자).
@@ -47,6 +48,7 @@ Claude 할당량을 아끼는 동안 Codex가 2~8장을 만들어요(`docs/tasks
 - 학생의 이름·주소·전화번호·학교·얼굴 사진을 묻거나 넣게 하지 않아요.
 
 ## 그림 규칙 요약 (자세히는 `docs/asset-spec.md`)
-- 픽셀아트, 공용 팔레트(`assets-src/palette.json`, 32색 이내)만 써요.
+- 픽셀아트, 공용 팔레트(`assets-src/palette.json`, 64색 이내. 앞의 32색은 바꾸지 않아요)만 써요.
+- 고해상도 그림은 목록 크기의 2배 PNG로 그리고 매니페스트에 `density: 2`를 적어요(`docs/asset-spec.md`).
 - 원본은 `assets-src/`의 텍스트 격자. `npm run assets`가 `public/assets/`에 PNG와 `manifest.json`을 만들어요.
 - 키·크기·프레임 수는 `src/game/assets.ts` 목록을 그대로 따라요.

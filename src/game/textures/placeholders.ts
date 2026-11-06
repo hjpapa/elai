@@ -1,10 +1,13 @@
 import Phaser from 'phaser';
 import { ASSETS, type AssetSpec } from '../assets';
+import { setDensity } from '../density';
 
 /** 매니페스트에 없는 그림 키를 단색 도형으로 채워요(Codex 그림이 오기 전까지). */
 export function makePlaceholders(scene: Phaser.Scene): void {
   for (const spec of ASSETS) {
     if (scene.textures.exists(spec.key)) continue;
+    // 고해상도 PNG를 읽지 못했으면 임시 그림(목록 크기)이니 배율도 1로 돌려요.
+    setDensity(spec.key, 1);
     const tex = scene.textures.createCanvas(spec.key, spec.w * spec.frames, spec.h);
     if (!tex) continue;
     const ctx = tex.getContext();
@@ -102,6 +105,16 @@ function drawFrame(ctx: CanvasRenderingContext2D, spec: AssetSpec, f: number): v
       ctx.fill();
       ctx.fillStyle = outline;
       drawGlyph(ctx, spec.key, w, h);
+      return;
+    }
+    case 'ui': {
+      // 9칸 나눔 테두리: 짙은 테두리와 밝은 면(프레임마다 조금씩 어둡게)
+      ctx.fillStyle = outline;
+      roundRect(ctx, 0, 0, w, h, Math.min(4, h / 2));
+      ctx.fill();
+      ctx.fillStyle = shade(color, 1 - f * 0.15);
+      roundRect(ctx, 1, 1, w - 2, h - 2, Math.min(3, h / 2 - 1));
+      ctx.fill();
       return;
     }
     case 'fx': {

@@ -5,12 +5,15 @@
  * 규격 설명: docs/asset-spec.md
  */
 
-export type AssetKind = 'tile' | 'block' | 'prop' | 'char' | 'overlay' | 'mob' | 'icon' | 'fx';
+export type AssetKind = 'tile' | 'block' | 'prop' | 'char' | 'overlay' | 'mob' | 'icon' | 'fx' | 'ui';
 
 export interface AssetSpec {
   key: string;
   kind: AssetKind;
-  /** 프레임 하나의 너비·높이(px) */
+  /**
+   * 프레임 하나의 너비·높이(px). 게임 화면에서 차지하는 크기예요.
+   * 고해상도 그림(매니페스트 density: 2)은 PNG가 이 크기의 2배이고, 게임이 반으로 줄여 같은 크기로 그려요.
+   */
   w: number;
   h: number;
   /** 가로로 이어 붙인 프레임 수 */
@@ -48,8 +51,23 @@ const overlay = spec('overlay', 16, 24, 10);
 const icon = spec('icon', 16, 16, 1);
 const mob = (size: 16 | 24 | 48) => spec('mob', size, size, 4);
 const fx = (w: number, h: number, frames: number) => spec('fx', w, h, frames);
+const ui = (w: number, h: number, frames = 1) => spec('ui', w, h, frames);
 
 export const ASSETS: AssetSpec[] = [
+  // C11: 2.5D 개선 — 길 안내 표시와 화면 테두리. 그림이 오기 전에는 임시 그림·지금 화면 모양을 써요.
+  icon('icon-quest-new', '할 일이 있는 NPC 머리 위 느낌표 말풍선', 0xf2c94c),
+  icon('icon-quest-doing', '하고 있는 일 표시(말줄임 말풍선)', 0x7fc8f8),
+  icon('icon-guide-arrow', '목표 쪽을 가리키는 화살표(오른쪽을 가리켜요. 게임이 돌려요)', 0xf2c94c),
+  icon('icon-path-step', '길 안내 발자국(바닥에 납작하게 놓인 작은 점)', 0xfff1a8),
+  icon('icon-talk', '말하기 단추(말풍선과 점 세 개)', 0xfff4d2),
+  fx(32, 16, 4)('fx-target', '누른 곳 바닥 표시(마름모 고리가 4프레임 동안 작아져요)', 0xfff1a8),
+  ui(24, 24)('ui-panel', '창 테두리(9칸 나눔: 모서리 8px, 가운데는 늘어나는 면)', 0xfff4d2),
+  ui(24, 24, 3)('ui-button', '단추(보통, 누름, 꺼짐. 9칸 나눔: 모서리 8px)', 0xe7b64f),
+  ui(24, 24)('ui-bubble', '말풍선 몸통(9칸 나눔: 모서리 8px)', 0xffffff),
+  ui(24, 24, 2)('ui-slot', '가방·장비 칸(보통, 고름. 9칸 나눔: 모서리 8px)', 0xc7d6dc),
+  ui(24, 8)('ui-bar', '체력·경험치 막대 틀(양 끝 8px, 가운데는 늘어나요)', 0x56657a),
+  ui(32, 32, 2)('ui-stick', '터치 조이스틱(0 바닥 고리, 1 손잡이)', 0x8c9bab),
+
   // C10: 윤리의 성
   tile('tile-castle', '따뜻한 빛의 성 돌바닥', 0xc7d6dc),
   block('block-castle', '성의 보랏빛 돌벽', 0x8c9bab),
@@ -263,6 +281,8 @@ export interface ManifestEntry {
   key: string;
   /** public/assets/ 기준 경로 */
   file: string;
+  /** 픽셀 밀도: 2면 PNG(와 아틀라스 프레임)가 목록 크기의 가로·세로 2배인 고해상도 그림이에요. 없으면 1. */
+  density?: 1 | 2;
 }
 export interface Manifest {
   version: 1;

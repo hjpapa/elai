@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { ASSETS, originOf, type AssetKind } from '../assets';
+import { fitArt } from '../density';
 import { isoToScreen } from '../iso/iso';
 
 /**
@@ -23,15 +24,14 @@ export class GalleryScene extends Phaser.Scene {
       for (let tx = 0; tx < 6; tx++) {
         const p = isoToScreen(tx, ty);
         const key = tx === 2 ? 'tile-path' : ty === 5 ? 'tile-water' : tx === 4 ? 'tile-flower' : 'tile-grass';
-        this.add.image(baseX + p.x, baseY + p.y, key, 0).setDepth(-1000 + p.y);
+        fitArt(this.add.image(baseX + p.x, baseY + p.y, key, 0)).setDepth(-1000 + p.y);
       }
     }
     const stand = (key: string, tx: number, ty: number, frame = 0, flip = false) => {
       const spec = ASSETS.find((a) => a.key === key)!;
       const o = originOf(spec);
       const p = isoToScreen(tx, ty);
-      this.add
-        .image(baseX + p.x, baseY + p.y, key, frame)
+      fitArt(this.add.image(baseX + p.x, baseY + p.y, key, frame))
         .setOrigin(o.x, o.y)
         .setFlipX(flip)
         .setDepth((tx + ty) * 10 + (spec.kind === 'overlay' ? 6 : 5));
@@ -59,7 +59,7 @@ export class GalleryScene extends Phaser.Scene {
     stand('boss-forest-guardian', 1, 5);
 
     // ── 모든 그림 ──
-    const order: AssetKind[] = ['tile', 'block', 'prop', 'char', 'overlay', 'mob', 'icon', 'fx'];
+    const order: AssetKind[] = ['tile', 'block', 'prop', 'char', 'overlay', 'mob', 'icon', 'fx', 'ui'];
     let y = 150;
     const maxW = Math.floor(this.scale.width / zoom) - 8;
     for (const kind of order) {
@@ -74,7 +74,7 @@ export class GalleryScene extends Phaser.Scene {
           y += rowH + 4;
           rowH = 0;
         }
-        for (let f = 0; f < spec.frames; f++) this.add.image(x + f * spec.w, y, spec.key, f).setOrigin(0, 0);
+        for (let f = 0; f < spec.frames; f++) fitArt(this.add.image(x + f * spec.w, y, spec.key, f)).setOrigin(0, 0);
         x += total + 4;
         rowH = Math.max(rowH, spec.h);
       }
