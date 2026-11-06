@@ -100,6 +100,7 @@ function drawFrame(ctx: CanvasRenderingContext2D, spec: AssetSpec, f: number): v
       return;
     }
     case 'icon': {
+      if (drawGuideIcon(ctx, spec.key, w, h, color)) return;
       ctx.fillStyle = hex(color);
       roundRect(ctx, 1, 1, w - 2, h - 2, 3);
       ctx.fill();
@@ -118,6 +119,15 @@ function drawFrame(ctx: CanvasRenderingContext2D, spec: AssetSpec, f: number): v
       return;
     }
     case 'fx': {
+      if (spec.key === 'fx-target') {
+        // 누른 곳: 바닥에 놓인 마름모 고리가 작아져요.
+        const k = 1 - f * 0.2;
+        ctx.strokeStyle = hex(color);
+        ctx.lineWidth = 2;
+        diamond(ctx, w / 2, h / 2, (w - 4) * k, (h - 2) * k);
+        ctx.stroke();
+        return;
+      }
       const t = (f + 1) / spec.frames;
       ctx.globalAlpha = 1 - t * 0.7;
       ctx.strokeStyle = hex(color);
@@ -212,6 +222,74 @@ function drawCharLike(ctx: CanvasRenderingContext2D, spec: AssetSpec, f: number)
   if (key === 'char-robi') {
     ctx.fillStyle = '#f2c94c';
     ctx.fillRect(w / 2 - 1, 0 + bob, 2, 3);
+  }
+}
+
+/** 길 안내 표시 임시 그림: 상자 대신 알아볼 수 있는 모양(느낌표 말풍선, 화살표, 발자국, 말하기)으로 그려요. */
+function drawGuideIcon(ctx: CanvasRenderingContext2D, key: string, w: number, h: number, color: number): boolean {
+  const outline = '#1b1f2a';
+  const bubble = (fill: string) => {
+    ctx.fillStyle = outline;
+    roundRect(ctx, 1, 1, w - 2, h - 5, 4);
+    ctx.fill();
+    ctx.fillRect(w / 2 - 2, h - 5, 4, 3);
+    ctx.fillStyle = fill;
+    roundRect(ctx, 2, 2, w - 4, h - 7, 3);
+    ctx.fill();
+  };
+  const dots = () => {
+    ctx.fillStyle = outline;
+    for (const x of [w / 2 - 4, w / 2 - 1, w / 2 + 2]) ctx.fillRect(Math.round(x), Math.round(h / 2) - 2, 2, 2);
+  };
+  switch (key) {
+    case 'icon-quest-new':
+      bubble(hex(color));
+      ctx.fillStyle = outline;
+      ctx.fillRect(w / 2 - 1, 3, 2, 5);
+      ctx.fillRect(w / 2 - 1, 9, 2, 2);
+      return true;
+    case 'icon-quest-doing':
+      bubble(hex(color));
+      dots();
+      return true;
+    case 'icon-talk':
+      bubble('#fff4d2');
+      dots();
+      return true;
+    case 'icon-guide-arrow': {
+      // 오른쪽을 가리키는 굵은 화살표(게임이 돌려요)
+      const shape = (grow: number) => {
+        ctx.beginPath();
+        ctx.moveTo(2 - grow, h / 2 - 2 - grow);
+        ctx.lineTo(8, h / 2 - 2 - grow);
+        ctx.lineTo(8, 3 - grow);
+        ctx.lineTo(w - 1 + grow, h / 2);
+        ctx.lineTo(8, h - 3 + grow);
+        ctx.lineTo(8, h / 2 + 2 + grow);
+        ctx.lineTo(2 - grow, h / 2 + 2 + grow);
+        ctx.closePath();
+      };
+      ctx.fillStyle = outline;
+      shape(1);
+      ctx.fill();
+      ctx.fillStyle = hex(color);
+      shape(0);
+      ctx.fill();
+      return true;
+    }
+    case 'icon-path-step':
+      // 바닥에 납작하게 놓인 발자국 점
+      ctx.fillStyle = outline;
+      ctx.beginPath();
+      ctx.ellipse(w / 2, h / 2 + 2, 5, 3, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = hex(color);
+      ctx.beginPath();
+      ctx.ellipse(w / 2, h / 2 + 2, 4, 2, 0, 0, Math.PI * 2);
+      ctx.fill();
+      return true;
+    default:
+      return false;
   }
 }
 
