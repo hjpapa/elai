@@ -225,39 +225,48 @@
     },
     {
       "key": "tile-lab",
-      "file": "tile/tile-lab.png"
+      "file": "tile/tile-lab.png",
+      "density": 2
     },
     {
       "key": "block-lab",
-      "file": "block/block-lab.png"
+      "file": "block/block-lab.png",
+      "density": 2
     },
     {
       "key": "prop-microscope",
-      "file": "prop/prop-microscope.png"
+      "file": "prop/prop-microscope.png",
+      "density": 2
     },
     {
       "key": "prop-jar",
-      "file": "prop/prop-jar.png"
+      "file": "prop/prop-jar.png",
+      "density": 2
     },
     {
       "key": "char-researcher",
-      "file": "char/char-researcher.png"
+      "file": "char/char-researcher.png",
+      "density": 2
     },
     {
       "key": "mob-shift-slime",
-      "file": "mob/mob-shift-slime.png"
+      "file": "mob/mob-shift-slime.png",
+      "density": 2
     },
     {
       "key": "boss-shift-king",
-      "file": "mob/boss-shift-king.png"
+      "file": "mob/boss-shift-king.png",
+      "density": 2
     },
     {
       "key": "robi-part-learnchip",
-      "file": "overlay/robi-part-learnchip.png"
+      "file": "overlay/robi-part-learnchip.png",
+      "density": 2
     },
     {
       "key": "icon-part-learnchip",
-      "file": "icon/icon-part-learnchip.png"
+      "file": "icon/icon-part-learnchip.png",
+      "density": 2
     },
     {
       "key": "tile-dock",
