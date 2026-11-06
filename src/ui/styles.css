@@ -441,6 +441,64 @@ h3 {
     opacity: 0.6;
   }
 }
+/* 가까이 있는 것과 할 수 있는 일(키보드) */
+.key-hint {
+  position: fixed;
+  left: 50%;
+  bottom: 84px;
+  translate: -50% 0;
+  background: rgba(27, 31, 42, 0.88);
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 15px;
+  color: #f6f2e7;
+}
+.key-hint kbd {
+  font-family: inherit;
+  background: #f6f2e7;
+  color: #1b1f2a;
+  border-radius: 6px;
+  padding: 0 6px;
+  margin-right: 6px;
+}
+/* 휴대폰·태블릿 조작 */
+.stick {
+  position: fixed;
+  left: 18px;
+  bottom: calc(124px + env(safe-area-inset-bottom));
+  width: 124px;
+  height: 124px;
+  border-radius: 50%;
+  background: rgba(27, 31, 42, 0.45);
+  border: 3px solid rgba(246, 242, 231, 0.45);
+  touch-action: none;
+}
+.stick-knob {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 54px;
+  height: 54px;
+  margin: -27px 0 0 -27px;
+  border-radius: 50%;
+  background: rgba(246, 242, 231, 0.88);
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+}
+.touch-action {
+  position: fixed;
+  right: 18px;
+  bottom: calc(140px + env(safe-area-inset-bottom));
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  font-size: 17px;
+  touch-action: manipulation;
+}
+.touch-action:disabled {
+  opacity: 0.45;
+}
 .minimap {
   position: absolute;
   right: 10px;
