@@ -407,11 +407,13 @@
     },
     {
       "key": "block-hedge",
-      "file": "block/block-hedge.png"
+      "file": "block/block-hedge.png",
+      "density": 2
     },
     {
       "key": "block-wall",
-      "file": "block/block-wall.png"
+      "file": "block/block-wall.png",
+      "density": 2
     },
     {
       "key": "prop-tree",
@@ -430,7 +432,8 @@
     },
     {
       "key": "prop-rock",
-      "file": "prop/prop-rock.png"
+      "file": "prop/prop-rock.png",
+      "density": 2
     },
     {
       "key": "prop-sign",
@@ -444,15 +447,18 @@
     },
     {
       "key": "prop-door",
-      "file": "prop/prop-door.png"
+      "file": "prop/prop-door.png",
+      "density": 2
     },
     {
       "key": "prop-key",
-      "file": "prop/prop-key.png"
+      "file": "prop/prop-key.png",
+      "density": 2
     },
     {
       "key": "prop-portal",
-      "file": "prop/prop-portal.png"
+      "file": "prop/prop-portal.png",
+      "density": 2
     },
     {
       "key": "prop-house",
@@ -486,11 +492,13 @@
     },
     {
       "key": "prop-stump",
-      "file": "prop/prop-stump.png"
+      "file": "prop/prop-stump.png",
+      "density": 2
     },
     {
       "key": "prop-mushroom",
-      "file": "prop/prop-mushroom.png"
+      "file": "prop/prop-mushroom.png",
+      "density": 2
     },
     {
       "key": "prop-gate",
@@ -519,11 +527,13 @@
     },
     {
       "key": "char-chef",
-      "file": "char/char-chef.png"
+      "file": "char/char-chef.png",
+      "density": 2
     },
     {
       "key": "char-ranger",
-      "file": "char/char-ranger.png"
+      "file": "char/char-ranger.png",
+      "density": 2
     },
     {
       "key": "equip-hat-cap",
@@ -532,11 +542,13 @@
     },
     {
       "key": "equip-hat-leaf",
-      "file": "overlay/equip-hat-leaf.png"
+      "file": "overlay/equip-hat-leaf.png",
+      "density": 2
     },
     {
       "key": "equip-hat-ranger",
-      "file": "overlay/equip-hat-ranger.png"
+      "file": "overlay/equip-hat-ranger.png",
+      "density": 2
     },
     {
       "key": "equip-tool-stick",
@@ -545,11 +557,13 @@
     },
     {
       "key": "equip-tool-hammer",
-      "file": "overlay/equip-tool-hammer.png"
+      "file": "overlay/equip-tool-hammer.png",
+      "density": 2
     },
     {
       "key": "equip-tool-brush",
-      "file": "overlay/equip-tool-brush.png"
+      "file": "overlay/equip-tool-brush.png",
+      "density": 2
     },
     {
       "key": "robi-part-wheel",
@@ -563,15 +577,18 @@
     },
     {
       "key": "mob-vine-slime",
-      "file": "mob/mob-vine-slime.png"
+      "file": "mob/mob-vine-slime.png",
+      "density": 2
     },
     {
       "key": "mob-bug-worm",
-      "file": "mob/mob-bug-worm.png"
+      "file": "mob/mob-bug-worm.png",
+      "density": 2
     },
     {
       "key": "boss-forest-guardian",
-      "file": "mob/boss-forest-guardian.png"
+      "file": "mob/boss-forest-guardian.png",
+      "density": 2
     },
     {
       "key": "icon-item-cap",

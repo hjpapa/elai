@@ -77,12 +77,12 @@ export async function loadAsset(spec, symbols, sourceRoot = resolve(root, 'asset
   return { spec, density, png, legacy };
 }
 
-function canvas(width, height, color) {
+export function canvas(width, height, color) {
   const png = new PNG({ width, height });
   for (let i = 0; i < png.data.length; i += 4) png.data.set([...color, 255], i);
   return png;
 }
-function blitScaled(source, target, ox, oy, scale) {
+export function blitScaled(source, target, ox, oy, scale) {
   for (let y = 0; y < source.height; y++) for (let x = 0; x < source.width; x++) {
     const from = (y * source.width + x) * 4;
     if (source.data[from + 3] === 0) continue;
@@ -111,7 +111,7 @@ const FONT = {
  A:['01110','10001','10001','11111','10001','10001','10001'],B:['11110','10001','10001','11110','10001','10001','11110'],C:['01111','10000','10000','10000','10000','10000','01111'],D:['11110','10001','10001','10001','10001','10001','11110'],E:['11111','10000','10000','11110','10000','10000','11111'],F:['11111','10000','10000','11110','10000','10000','10000'],G:['01111','10000','10000','10111','10001','10001','01111'],H:['10001','10001','10001','11111','10001','10001','10001'],I:['11111','00100','00100','00100','00100','00100','11111'],J:['00111','00010','00010','00010','10010','10010','01100'],K:['10001','10010','10100','11000','10100','10010','10001'],L:['10000','10000','10000','10000','10000','10000','11111'],M:['10001','11011','10101','10101','10001','10001','10001'],N:['10001','11001','10101','10011','10001','10001','10001'],O:['01110','10001','10001','10001','10001','10001','01110'],P:['11110','10001','10001','11110','10000','10000','10000'],Q:['01110','10001','10001','10001','10101','10010','01101'],R:['11110','10001','10001','11110','10100','10010','10001'],S:['01111','10000','10000','01110','00001','00001','11110'],T:['11111','00100','00100','00100','00100','00100','00100'],U:['10001','10001','10001','10001','10001','10001','01110'],V:['10001','10001','10001','10001','10001','01010','00100'],W:['10001','10001','10001','10101','10101','10101','01010'],X:['10001','10001','01010','00100','01010','10001','10001'],Y:['10001','10001','01010','00100','00100','00100','00100'],Z:['11111','00001','00010','00100','01000','10000','11111'],
  '0':['01110','10001','10011','10101','11001','10001','01110'],'1':['00100','01100','00100','00100','00100','00100','01110'],'2':['01110','10001','00001','00010','00100','01000','11111'],'3':['11110','00001','00001','01110','00001','00001','11110'],'4':['00010','00110','01010','10010','11111','00010','00010'],'5':['11111','10000','10000','11110','00001','00001','11110'],'6':['01110','10000','10000','11110','10001','10001','01110'],'7':['11111','00001','00010','00100','01000','01000','01000'],'8':['01110','10001','10001','01110','10001','10001','01110'],'9':['01110','10001','10001','01111','00001','00001','01110'],'-':['00000','00000','00000','11111','00000','00000','00000'],'/':['00001','00001','00010','00100','01000','10000','10000'],
 };
-function label(png, text, x, y, color, scale = 2) {
+export function label(png, text, x, y, color, scale = 2) {
   for (const char of text.toUpperCase()) {
     const rows = FONT[char];
     if (rows) for (let j = 0; j < 7; j++) for (let i = 0; i < 5; i++) if (rows[j][i] === '1') {
@@ -120,8 +120,8 @@ function label(png, text, x, y, color, scale = 2) {
     x += 6 * scale;
   }
 }
-function pilotSheet(assets, palette) {
-  const pilots = PILOT_KEYS.map(key => assets.find(asset => asset.spec.key === key)).filter(Boolean);
+export function comparisonSheet(assets, palette, keys = PILOT_KEYS) {
+  const pilots = keys.map(key => assets.find(asset => asset.spec.key === key)).filter(Boolean);
   const maxStrip = Math.max(...pilots.map(asset => asset.spec.w * asset.spec.frames * 4));
   const padding = 24, gap = 32, width = maxStrip * 2 + padding * 2 + gap;
   const height = 56 + pilots.reduce((sum, asset) => sum + asset.spec.h * 4 + 40, 0);
@@ -132,7 +132,7 @@ function pilotSheet(assets, palette) {
   for (const asset of pilots) {
     label(sheet, asset.spec.key, padding, y, textColor); label(sheet, asset.spec.key, right, y, textColor);
     const artY = y + 22;
-    if (asset.legacy) blitScaled(asset.legacy, sheet, padding, artY, 4);
+    if (asset.legacy) blitScaled(asset.legacy, sheet, padding, artY, 4 / (asset.legacyDensity ?? 1));
     else label(sheet, 'NEW KEY - NO 1X SOURCE', padding, artY + 16, palette.symbols.get('A'));
     blitScaled(asset.png, sheet, right, artY, 4 / asset.density);
     y += asset.spec.h * 4 + 40;
@@ -173,7 +173,7 @@ async function main() {
   }
   const atlas = packAtlas(assets);
   const sheet = contactSheet(assets, palette.symbols.get('O'));
-  const pilot = pilotSheet(assets, palette);
+  const pilot = comparisonSheet(assets, palette);
   const entries = assets.map(({ spec, density }) => ({ key: spec.key, file: `${spec.kind}/${spec.key}.png`, ...(density === 2 ? { density: 2 } : {}) }));
   for (let i = 0; i < entries.length; i++) {
     const target = resolve(root, 'public/assets', entries[i].file); await mkdir(dirname(target), { recursive: true }); await writeFile(target, PNG.sync.write(assets[i].png));
