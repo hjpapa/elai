@@ -165,27 +165,33 @@
     },
     {
       "key": "prop-easel",
-      "file": "prop/prop-easel.png"
+      "file": "prop/prop-easel.png",
+      "density": 2
     },
     {
       "key": "prop-bookshelf",
-      "file": "prop/prop-bookshelf.png"
+      "file": "prop/prop-bookshelf.png",
+      "density": 2
     },
     {
       "key": "mob-babble-parrot",
-      "file": "mob/mob-babble-parrot.png"
+      "file": "mob/mob-babble-parrot.png",
+      "density": 2
     },
     {
       "key": "boss-babble-king",
-      "file": "mob/boss-babble-king.png"
+      "file": "mob/boss-babble-king.png",
+      "density": 2
     },
     {
       "key": "robi-part-talk",
-      "file": "overlay/robi-part-talk.png"
+      "file": "overlay/robi-part-talk.png",
+      "density": 2
     },
     {
       "key": "icon-part-talk",
-      "file": "icon/icon-part-talk.png"
+      "file": "icon/icon-part-talk.png",
+      "density": 2
     },
     {
       "key": "tile-observatory",
@@ -439,7 +445,8 @@
     },
     {
       "key": "tile-wood",
-      "file": "tile/tile-wood.png"
+      "file": "tile/tile-wood.png",
+      "density": 2
     },
     {
       "key": "tile-bridge",
