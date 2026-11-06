@@ -97,24 +97,75 @@ export async function fetchRemoteSave(studentId: string): Promise<SaveData | nul
   return save?.version === 1 ? save : null;
 }
 
-/** 진도 표(elai_progress) 한 줄 */
-function progressRow(studentId: string, missionId: string, rec: MissionRecord, now: string) {
+/** 서버 진도 표(elai_progress) 한 줄 */
+interface ProgressRow {
+  student_id: string;
+  mission_id: string;
+  stars: number;
+  attempts: number;
+  hints_used: number;
+  completed_at: string | null;
+  updated_at: string;
+}
+
+/** 0 이상의 정수로(저장 데이터가 이상해도 서버 제약을 넘지 않게) */
+const whole = (n: unknown, max = Number.MAX_SAFE_INTEGER): number => Math.max(0, Math.min(max, Math.round(Number(n)) || 0));
+
+function progressRow(studentId: string, missionId: string, rec: MissionRecord, now: string): ProgressRow {
   return {
     student_id: studentId,
     mission_id: missionId,
-    stars: rec.stars,
-    attempts: rec.attempts,
-    hints_used: rec.hints,
+    stars: whole(rec.stars, 3),
+    attempts: whole(rec.attempts),
+    hints_used: whole(rec.hints),
     completed_at: rec.done ? (rec.at ?? now) : null,
     updated_at: now,
   };
 }
-type ProgressRow = ReturnType<typeof progressRow>;
+
+/**
+ * 저장(missions)에는 있는데 서버 진도에 없거나 서버보다 앞선 기록을 한 번에 올려요.
+ * 예전에 보내지 못한 기록(진도 전송 버그, 끊긴 인터넷)을 채워서 선생님 진도표가 맞게 보여요.
+ * 서버 진도를 먼저 읽고, 서버 쪽이 앞선 값(별·시도·힌트·완료)은 낮추지 않아요
+ * (다른 기기의 더 오래된 저장으로 시작해도 진도표가 뒤로 가지 않게). 올린 줄 수를 돌려줘요.
+ * 지금 게임에 없는 미션 id가 섞이면 한꺼번에 실패하니 빼고 보내요.
+ */
+export async function backfillProgress(state: GameState, link: ClassLink): Promise<number> {
+  const sb = getSupabase('student');
+  if (!sb || !Object.keys(state.data.missions).some((id) => getMission(id))) return 0;
+  const { data, error } = await sb.from('elai_progress').select('mission_id,stars,attempts,hints_used,completed_at').eq('student_id', link.studentId);
+  if (error) return 0;
+  type ServerRow = Pick<ProgressRow, 'mission_id' | 'stars' | 'attempts' | 'hints_used' | 'completed_at'>;
+  const server = new Map(((data ?? []) as ServerRow[]).map((r) => [r.mission_id, r]));
+  const now = new Date().toISOString();
+  const rows: ProgressRow[] = [];
+  // 서버 진도를 받은 뒤의 상태로 만들어요(그사이 끝낸 미션도 들어가요).
+  for (const [id, rec] of Object.entries(state.data.missions)) {
+    if (!getMission(id)) continue;
+    const mine = progressRow(link.studentId, id, rec, now);
+    const s = server.get(id);
+    if (!s) {
+      rows.push(mine);
+      continue;
+    }
+    const merged: ProgressRow = {
+      ...mine,
+      stars: Math.max(mine.stars, s.stars),
+      attempts: Math.max(mine.attempts, s.attempts),
+      hints_used: Math.max(mine.hints_used, s.hints_used),
+      completed_at: s.completed_at ?? mine.completed_at,
+    };
+    const ahead = merged.stars !== s.stars || merged.attempts !== s.attempts || merged.hints_used !== s.hints_used || merged.completed_at !== s.completed_at;
+    if (ahead) rows.push(merged);
+  }
+  if (!rows.length) return 0;
+  const { error: e2 } = await sb.from('elai_progress').upsert(rows);
+  return e2 ? 0 : rows.length;
+}
 
 /**
  * 학급 서버와 맞추기: 저장은 최대 10초에 한 번, 미션 기록은 바로 올려요.
- * 시작할 때는 이 기기 저장의 미션 기록을 한 번 모두 올려요(같은 행은 덮어써요).
- * 진도 기록을 보내지 못하던 예전 버전의 기록과 연결이 끊겨 못 보낸 기록이 이렇게 채워져요.
+ * 시작할 때는 이 기기 저장의 미션 기록 중 서버에 없거나 서버보다 앞선 것을 채워요(backfillProgress).
  */
 export function startRemoteSync(state: GameState, link: ClassLink): (data: SaveData) => Promise<void> {
   const sb = getSupabase('student');
@@ -126,20 +177,15 @@ export function startRemoteSync(state: GameState, link: ClassLink): (data: SaveD
     await sb.from('elai_saves').upsert({ student_id: link.studentId, data, version: 1, updated_at: new Date().toISOString() });
   };
   // Supabase 질의는 await(then)할 때 보내져요. void만 붙이면 보내지지 않아요.
-  const sendProgress = async (rows: ProgressRow | ProgressRow[]) => {
+  const sendProgress = async (row: ProgressRow) => {
     if (!sb) return;
-    await sb.from('elai_progress').upsert(rows);
+    await sb.from('elai_progress').upsert(row);
   };
   state.on((e) => {
     if (e.type !== 'mission' || !sb) return;
     void sendProgress(progressRow(link.studentId, e.id, e.record, new Date().toISOString())).catch(() => undefined);
   });
-  // 지금 게임에 없는 미션 id가 섞이면 한꺼번에 실패하니 빼고 보내요.
-  const now = new Date().toISOString();
-  const saved = Object.entries(state.data.missions)
-    .filter(([id]) => getMission(id))
-    .map(([id, rec]) => progressRow(link.studentId, id, rec, now));
-  if (sb && saved.length) void sendProgress(saved).catch(() => undefined);
+  void backfillProgress(state, link).catch(() => 0);
   return (data) => {
     const wait = Math.max(0, 10_000 - (Date.now() - last));
     if (pending) clearTimeout(pending);
