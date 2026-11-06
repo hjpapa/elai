@@ -189,39 +189,48 @@
     },
     {
       "key": "tile-observatory",
-      "file": "tile/tile-observatory.png"
+      "file": "tile/tile-observatory.png",
+      "density": 2
     },
     {
       "key": "block-observatory",
-      "file": "block/block-observatory.png"
+      "file": "block/block-observatory.png",
+      "density": 2
     },
     {
       "key": "prop-telescope",
-      "file": "prop/prop-telescope.png"
+      "file": "prop/prop-telescope.png",
+      "density": 2
     },
     {
       "key": "prop-starlamp",
-      "file": "prop/prop-starlamp.png"
+      "file": "prop/prop-starlamp.png",
+      "density": 2
     },
     {
       "key": "char-astronomer",
-      "file": "char/char-astronomer.png"
+      "file": "char/char-astronomer.png",
+      "density": 2
     },
     {
       "key": "mob-meteor-fox",
-      "file": "mob/mob-meteor-fox.png"
+      "file": "mob/mob-meteor-fox.png",
+      "density": 2
     },
     {
       "key": "boss-star-fox",
-      "file": "mob/boss-star-fox.png"
+      "file": "mob/boss-star-fox.png",
+      "density": 2
     },
     {
       "key": "robi-part-predictor",
-      "file": "overlay/robi-part-predictor.png"
+      "file": "overlay/robi-part-predictor.png",
+      "density": 2
     },
     {
       "key": "icon-part-predictor",
-      "file": "icon/icon-part-predictor.png"
+      "file": "icon/icon-part-predictor.png",
+      "density": 2
     },
     {
       "key": "tile-lab",
