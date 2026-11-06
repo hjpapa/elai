@@ -129,39 +129,48 @@
     },
     {
       "key": "tile-castle",
-      "file": "tile/tile-castle.png"
+      "file": "tile/tile-castle.png",
+      "density": 2
     },
     {
       "key": "block-castle",
-      "file": "block/block-castle.png"
+      "file": "block/block-castle.png",
+      "density": 2
     },
     {
       "key": "prop-mirror",
-      "file": "prop/prop-mirror.png"
+      "file": "prop/prop-mirror.png",
+      "density": 2
     },
     {
       "key": "prop-banner",
-      "file": "prop/prop-banner.png"
+      "file": "prop/prop-banner.png",
+      "density": 2
     },
     {
       "key": "char-keeper",
-      "file": "char/char-keeper.png"
+      "file": "char/char-keeper.png",
+      "density": 2
     },
     {
       "key": "mob-fake-shadow",
-      "file": "mob/mob-fake-shadow.png"
+      "file": "mob/mob-fake-shadow.png",
+      "density": 2
     },
     {
       "key": "boss-bias-golem",
-      "file": "mob/boss-bias-golem.png"
+      "file": "mob/boss-bias-golem.png",
+      "density": 2
     },
     {
       "key": "robi-part-ethics",
-      "file": "overlay/robi-part-ethics.png"
+      "file": "overlay/robi-part-ethics.png",
+      "density": 2
     },
     {
       "key": "icon-part-ethics",
-      "file": "icon/icon-part-ethics.png"
+      "file": "icon/icon-part-ethics.png",
+      "density": 2
     },
     {
       "key": "prop-easel",
