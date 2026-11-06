@@ -1,3 +1,4 @@
+import { getMission } from '../data/chapters';
 import type { MissionRecord, SaveData } from '../data/schema';
 import type { GameState } from '../game/rpg/state';
 import { getSupabase } from './supabase';
@@ -96,7 +97,25 @@ export async function fetchRemoteSave(studentId: string): Promise<SaveData | nul
   return save?.version === 1 ? save : null;
 }
 
-/** 학급 서버와 맞추기: 저장은 최대 10초에 한 번, 미션 기록은 바로 올려요. */
+/** 진도 표(elai_progress) 한 줄 */
+function progressRow(studentId: string, missionId: string, rec: MissionRecord, now: string) {
+  return {
+    student_id: studentId,
+    mission_id: missionId,
+    stars: rec.stars,
+    attempts: rec.attempts,
+    hints_used: rec.hints,
+    completed_at: rec.done ? (rec.at ?? now) : null,
+    updated_at: now,
+  };
+}
+type ProgressRow = ReturnType<typeof progressRow>;
+
+/**
+ * 학급 서버와 맞추기: 저장은 최대 10초에 한 번, 미션 기록은 바로 올려요.
+ * 시작할 때는 이 기기 저장의 미션 기록을 한 번 모두 올려요(같은 행은 덮어써요).
+ * 진도 기록을 보내지 못하던 예전 버전의 기록과 연결이 끊겨 못 보낸 기록이 이렇게 채워져요.
+ */
 export function startRemoteSync(state: GameState, link: ClassLink): (data: SaveData) => Promise<void> {
   const sb = getSupabase('student');
   let last = 0;
@@ -106,23 +125,21 @@ export function startRemoteSync(state: GameState, link: ClassLink): (data: SaveD
     last = Date.now();
     await sb.from('elai_saves').upsert({ student_id: link.studentId, data, version: 1, updated_at: new Date().toISOString() });
   };
+  // Supabase 질의는 await(then)할 때 보내져요. void만 붙이면 보내지지 않아요.
+  const sendProgress = async (rows: ProgressRow | ProgressRow[]) => {
+    if (!sb) return;
+    await sb.from('elai_progress').upsert(rows);
+  };
   state.on((e) => {
     if (e.type !== 'mission' || !sb) return;
-    const rec: MissionRecord = e.record;
-    // Supabase 질의는 await(then)할 때 보내져요. void만 붙이면 보내지지 않아요.
-    const send = async () => {
-      await sb.from('elai_progress').upsert({
-        student_id: link.studentId,
-        mission_id: e.id,
-        stars: rec.stars,
-        attempts: rec.attempts,
-        hints_used: rec.hints,
-        completed_at: rec.done ? (rec.at ?? new Date().toISOString()) : null,
-        updated_at: new Date().toISOString(),
-      });
-    };
-    void send().catch(() => undefined);
+    void sendProgress(progressRow(link.studentId, e.id, e.record, new Date().toISOString())).catch(() => undefined);
   });
+  // 지금 게임에 없는 미션 id가 섞이면 한꺼번에 실패하니 빼고 보내요.
+  const now = new Date().toISOString();
+  const saved = Object.entries(state.data.missions)
+    .filter(([id]) => getMission(id))
+    .map(([id, rec]) => progressRow(link.studentId, id, rec, now));
+  if (sb && saved.length) void sendProgress(saved).catch(() => undefined);
   return (data) => {
     const wait = Math.max(0, 10_000 - (Date.now() - last));
     if (pending) clearTimeout(pending);
