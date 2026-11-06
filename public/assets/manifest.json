@@ -261,43 +261,53 @@
     },
     {
       "key": "tile-dock",
-      "file": "tile/tile-dock.png"
+      "file": "tile/tile-dock.png",
+      "density": 2
     },
     {
       "key": "block-crate",
-      "file": "block/block-crate.png"
+      "file": "block/block-crate.png",
+      "density": 2
     },
     {
       "key": "prop-lighthouse",
-      "file": "prop/prop-lighthouse.png"
+      "file": "prop/prop-lighthouse.png",
+      "density": 2
     },
     {
       "key": "prop-buoy",
-      "file": "prop/prop-buoy.png"
+      "file": "prop/prop-buoy.png",
+      "density": 2
     },
     {
       "key": "char-harbor",
-      "file": "char/char-harbor.png"
+      "file": "char/char-harbor.png",
+      "density": 2
     },
     {
       "key": "mob-fog-jelly",
-      "file": "mob/mob-fog-jelly.png"
+      "file": "mob/mob-fog-jelly.png",
+      "density": 2
     },
     {
       "key": "boss-ledger-octo",
-      "file": "mob/boss-ledger-octo.png"
+      "file": "mob/boss-ledger-octo.png",
+      "density": 2
     },
     {
       "key": "robi-part-lens",
-      "file": "overlay/robi-part-lens.png"
+      "file": "overlay/robi-part-lens.png",
+      "density": 2
     },
     {
       "key": "icon-part-lens",
-      "file": "icon/icon-part-lens.png"
+      "file": "icon/icon-part-lens.png",
+      "density": 2
     },
     {
       "key": "icon-card-scan",
-      "file": "icon/icon-card-scan.png"
+      "file": "icon/icon-card-scan.png",
+      "density": 2
     },
     {
       "key": "block-sandstone",
