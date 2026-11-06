@@ -181,7 +181,7 @@ export const ch2: Chapter = {
       kind: 'part',
       title: '반복으로 무늬 그리기',
       summary: '반복으로 동굴 벽에 무늬를 그려요.',
-      activity: '계단·톱니 무늬를 반복으로 그리며, 반복 횟수를 바꾸면 무늬가 어떻게 달라지는지 예측해요.',
+      activity: '계단·네모 무늬를 반복으로 그리며, 반복 횟수를 바꾸면 무늬가 어떻게 달라지는지 예측해요. 네모는 앞으로·돌기 블록을 쓰면 네 변이 똑같아져서 반복 하나로 그릴 수 있어요.',
       missions: [
   {
     "id": "ch2-p3-m1",
@@ -223,32 +223,34 @@ export const ch2: Chapter = {
   {
     "id": "ch2-p3-m2",
     "kind": "blockCode",
-    "title": "톱니 벽화",
+    "title": "네모 벽화",
     "npc": "explorer",
     "reward": {
       "xp": 15
     },
     "data": {
       "palette": [
-        "up",
-        "down",
-        "left",
-        "right"
+        "forward",
+        "turnLeft",
+        "turnRight"
       ],
+      "startDir": "right",
       "allowRepeat": true,
-      "intro": "톱니 무늬를 모두 칠해요.\n점선 밖은 칠하지 않아요.",
+      "intro": "이번엔 네모 무늬를 칠해요.\n돌기 블록과 반복을 함께 써요.",
       "grid": [
-        "......#",
-        "S......"
+        "S..",
+        ".~.",
+        "..."
       ],
       "paint": [
-        "xxxxxx.",
-        "xxxxxxx"
+        "xxx",
+        "x.x",
+        "xxx"
       ],
-      "optimal": 5,
-      "maxBlocks": 5,
-      "hint": "위·오른쪽·아래·오른쪽이에요.\n세 번 되풀이하면 맞아요.",
-      "explain": "무늬를 완성했어요!\n되풀이 동굴 안쪽이 열렸어요."
+      "optimal": 4,
+      "maxBlocks": 4,
+      "hint": "한 변은 앞으로 두 번이에요.\n변을 다 가면 오른쪽으로 돌아요.",
+      "explain": "네 변이 똑같아서 반복 하나로 그렸어요.\n되풀이 동굴 안쪽이 열렸어요."
     }
   }
 ],

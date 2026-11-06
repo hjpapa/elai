@@ -40,6 +40,8 @@ export class BlockCodeMission implements MissionEngine {
   private alive = true;
   /** 한 단계씩 실행할 때의 기록 */
   private trace: { frames: GridFrame[]; outcome: GridOutcome; at: number } | null = null;
+  /** 로비 그림의 회전 각도(누적). 돌기 블록이 언제나 가까운 쪽으로 돌아 보이게 해요. */
+  private angle = 0;
 
   mount(ctx: MissionContext): void {
     if (ctx.mission.kind !== 'blockCode' || !ctx.mission.data) return;
@@ -118,8 +120,10 @@ export class BlockCodeMission implements MissionEngine {
         board.append(cell);
       }),
     );
-    this.robot = h('div', { class: 'robot', style: `width:${100 / env.width}%;height:${100 / env.height}%` }, pxImg(this.ctx.icon('icon-robi'), 32));
+    // 로비가 보는 쪽에 작은 화살표가 붙어 있어요(돌기 블록을 쓸 때 어느 쪽을 보는지 알 수 있게).
+    this.robot = h('div', { class: 'robot', style: `width:${100 / env.width}%;height:${100 / env.height}%`, 'aria-label': '로비' }, pxImg(this.ctx.icon('icon-robi'), 32), h('i', { class: 'robot-face' }));
     board.append(this.robot);
+    this.angle = ROTATE[d.startDir ?? 'right'];
     this.placeRobot(env.start.x, env.start.y, d.startDir ?? 'right');
     return board;
   }
@@ -131,7 +135,11 @@ export class BlockCodeMission implements MissionEngine {
     this.robot.style.top = `calc(6px + (100% - 12px) * ${y / env.height})`;
     this.robot.style.width = `calc((100% - 12px) / ${env.width})`;
     this.robot.style.height = `calc((100% - 12px) / ${env.height})`;
-    this.robot.style.transform = `rotate(${ROTATE[dir]}deg)`;
+    // 왼쪽(270°)에서 오른쪽으로 돌아 위(0°)를 볼 때 거꾸로 270° 돌지 않게, 가까운 쪽으로 돌아요.
+    const delta = ((((ROTATE[dir] - this.angle) % 360) + 540) % 360) - 180;
+    this.angle += delta;
+    this.robot.style.transform = `rotate(${this.angle}deg)`;
+    this.robot.dataset.dir = dir;
   }
 
   private resetBoard(): void {

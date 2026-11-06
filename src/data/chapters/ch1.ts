@@ -1,6 +1,8 @@
 import type { Chapter } from '../schema';
 
 const MOVES = ['up', 'down', 'left', 'right'] as const;
+/** 로비가 보는 쪽을 기준으로 움직이는 블록(1장 파트 3부터) */
+const TURNS = ['forward', 'turnLeft', 'turnRight'] as const;
 
 export const ch1: Chapter = {
   id: 'ch1',
@@ -136,7 +138,7 @@ export const ch1: Chapter = {
       kind: 'part',
       title: '고장 난 다리',
       summary: '고장 난 프로그램을 실행해 보고, 틀린 곳(버그)을 찾아 고쳐요.',
-      activity: '한 단계씩 실행하며 순서가 바뀐 블록과 빠진 블록을 찾아 고치는 디버깅 활동.',
+      activity: '한 단계씩 실행하며 순서가 바뀐 블록과 빠진 블록을 찾아 고치는 디버깅 활동. 두 번째 퍼즐부터 로비가 보는 쪽을 기준으로 움직이는 앞으로·돌기 블록을 써요.',
       missions: [
         {
           id: 'ch1-p3-m1',
@@ -164,25 +166,28 @@ export const ch1: Chapter = {
         {
           id: 'ch1-p3-m2',
           kind: 'blockCode',
-          title: '빠진 블록',
+          title: '빠진 돌기 블록',
           npc: 'ranger',
           reward: { xp: 12, items: [{ id: 'glasses', qty: 1 }] },
           data: {
-            intro: '이번에는 블록 하나가 빠졌어요.\n로비의 길을 한 칸씩 살펴봐요.',
+            intro: '이제 로비는 보는 쪽으로 가요.\n돌기 블록 하나가 빠졌어요.',
             grid: ['S...#', '###.#', 'G...#'],
-            palette: [...MOVES],
-            optimal: 8,
+            startDir: 'right',
+            palette: [...TURNS],
+            optimal: 10,
             initialProgram: [
-              { t: 'cmd', cmd: 'right' },
-              { t: 'cmd', cmd: 'right' },
-              { t: 'cmd', cmd: 'right' },
-              { t: 'cmd', cmd: 'down' },
-              { t: 'cmd', cmd: 'left' },
-              { t: 'cmd', cmd: 'left' },
-              { t: 'cmd', cmd: 'left' },
+              { t: 'cmd', cmd: 'forward' },
+              { t: 'cmd', cmd: 'forward' },
+              { t: 'cmd', cmd: 'forward' },
+              { t: 'cmd', cmd: 'turnRight' },
+              { t: 'cmd', cmd: 'forward' },
+              { t: 'cmd', cmd: 'forward' },
+              { t: 'cmd', cmd: 'forward' },
+              { t: 'cmd', cmd: 'forward' },
+              { t: 'cmd', cmd: 'forward' },
             ],
-            hint: '오른쪽 길 끝에서 아래로 내려가요.\n아래 블록이 하나 더 필요해요.',
-            explain: '빠진 명령도 버그(틀린 곳)예요.\n한 칸씩 살펴보면 찾을 수 있어요.',
+            hint: '한 단계씩 실행해 봐요.\n아래로 간 뒤 깃발 쪽을 보게 돌려요.',
+            explain: '돌기는 로비가 보는 쪽만 바꿔요.\n앞으로 블록이 그쪽으로 가요.',
           },
         },
         {

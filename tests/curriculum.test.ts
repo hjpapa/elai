@@ -16,6 +16,35 @@ import { GridEnv } from '../src/missions/core/gridEnv';
 import { countBlocks, run } from '../src/missions/core/interpreter';
 import type { Block, BlockCodeData, Reward } from '../src/data/schema';
 
+/** 앞으로·돌기 블록만 쓰는 퍼즐의 최단 블록 수(칸과 보는 쪽을 함께 따지는 BFS) */
+function shortestTurns(d: BlockCodeData): number {
+  const DIRS = ['up', 'right', 'down', 'left'] as const;
+  const DELTA = { up: [0, -1], right: [1, 0], down: [0, 1], left: [-1, 0] } as const;
+  const rows = d.grid;
+  const sy = rows.findIndex((r) => r.includes('S'));
+  const start = { x: rows[sy].indexOf('S'), y: sy, dir: DIRS.indexOf(d.startDir ?? 'right') };
+  const seen = new Set([`${start.x},${start.y},${start.dir}`]);
+  let frontier = [start];
+  for (let steps = 0; frontier.length > 0; steps++) {
+    const next: typeof frontier = [];
+    for (const p of frontier) {
+      if (rows[p.y][p.x] === 'G') return steps;
+      const [dx, dy] = DELTA[DIRS[p.dir]];
+      const c = rows[p.y + dy]?.[p.x + dx];
+      const moves = [{ ...p, dir: (p.dir + 1) % 4 }, { ...p, dir: (p.dir + 3) % 4 }];
+      if (c !== undefined && c !== '#' && c !== '~') moves.push({ x: p.x + dx, y: p.y + dy, dir: p.dir });
+      for (const q of moves) {
+        const k = `${q.x},${q.y},${q.dir}`;
+        if (seen.has(k)) continue;
+        seen.add(k);
+        next.push(q);
+      }
+    }
+    frontier = next;
+  }
+  return Infinity;
+}
+
 /** 절대 방향 이동만 쓰는 퍼즐의 최단 블록 수(BFS) */
 function shortestMoves(d: BlockCodeData): number {
   const rows = d.grid;
@@ -123,6 +152,8 @@ describe('플레이할 수 있는 미션의 데이터', () => {
       }
       const absoluteOnly = d.palette.every((c) => ['up', 'down', 'left', 'right'].includes(c));
       if (absoluteOnly && !d.allowRepeat && !d.allowIf) expect(shortestMoves(d), m.id).toBe(d.optimal);
+      const turnsOnly = d.palette.every((c) => ['forward', 'turnLeft', 'turnRight'].includes(c));
+      if (turnsOnly && !d.allowRepeat && !d.allowIf && !d.paint) expect(shortestTurns(d), m.id).toBe(d.optimal);
     }
   });
 
@@ -173,14 +204,26 @@ describe('플레이할 수 있는 미션의 데이터', () => {
 
 
 describe('2장 반복 학습', () => {
-  const cmd = (cmd: 'up' | 'down' | 'right'): Block => ({ t: 'cmd', cmd });
+  const cmd = (cmd: 'up' | 'down' | 'right' | 'forward' | 'turnRight'): Block => ({ t: 'cmd', cmd });
   const solutions: Record<string, Block[]> = {
     'ch2-p2-m1': [{ t: 'repeat', times: 8, body: [cmd('right')] }],
     'ch2-p2-m2': [{ t: 'repeat', times: 4, body: [cmd('right'), cmd('down')] }],
     'ch2-p2-m3': [{ t: 'repeat', times: 3, body: [cmd('right'), cmd('right'), cmd('down')] }],
     'ch2-p3-m1': [{ t: 'repeat', times: 4, body: [cmd('right'), cmd('down')] }],
-    'ch2-p3-m2': [{ t: 'repeat', times: 3, body: [cmd('up'), cmd('right'), cmd('down'), cmd('right')] }],
+    // 네모 벽화: 돌기 블록을 쓰면 네 변이 똑같아져서 반복 하나로 그려요.
+    'ch2-p3-m2': [{ t: 'repeat', times: 4, body: [cmd('forward'), cmd('forward'), cmd('turnRight')] }],
   };
+
+  it('네모 벽화는 돌기 없이는 블록 제한 안에 그릴 수 없어요', () => {
+    const m = allMissions().find((e) => e.mission.id === 'ch2-p3-m2')!.mission;
+    if (m.kind !== 'blockCode') throw new Error('ch2-p3-m2');
+    const d = m.data!;
+    // 돌기 없이 네 변을 가려면 변마다 반복 하나와 방향 하나가 필요해요(8블록).
+    const flat: Block[] = (['right', 'down', 'left', 'up'] as const).map((dir) => ({ t: 'repeat', times: 2, body: [{ t: 'cmd', cmd: dir }] }));
+    const env = new GridEnv({ ...d, palette: ['up', 'down', 'left', 'right'] });
+    expect(env.outcome(run(flat, env).truncated)).toBe('success');
+    expect(countBlocks(flat)).toBeGreaterThan(d.maxBlocks!);
+  });
   it('반복 풀이가 실제로 성공하고, 평평한 풀이로는 블록 제한을 넘어요', () => {
     for (const { mission: m } of allMissions().filter(e => e.chapter.id === 'ch2')) {
       expect(m.data, m.id).toBeDefined();

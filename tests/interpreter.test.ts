@@ -96,11 +96,24 @@ describe('1장 블록 퍼즐', () => {
     expect(play(swap, swap.initialProgram!).outcome).toBe('bump');
     expect(play(swap, seq('right', 'down', 'down', 'right', 'right', 'right')).outcome).toBe('success');
 
+    // 빠진 돌기 블록: 아래로 간 뒤 오른쪽으로 돌아야(로비 기준) 깃발 쪽을 봐요.
     const missing = puzzle('ch1-p3-m2');
     expect(play(missing, missing.initialProgram!).outcome).toBe('bump');
-    expect(
-      play(missing, seq('right', 'right', 'right', 'down', 'down', 'left', 'left', 'left')).outcome,
-    ).toBe('success');
+    const fixed = seq('forward', 'forward', 'forward', 'turnRight', 'forward', 'forward', 'turnRight', 'forward', 'forward', 'forward');
+    expect(play(missing, fixed).outcome).toBe('success');
+    // 화면의 왼쪽으로 가야 해도, 아래를 보는 로비에게는 오른쪽 돌기예요.
+    const wrongTurn = seq('forward', 'forward', 'forward', 'turnRight', 'forward', 'forward', 'turnLeft', 'forward');
+    expect(play(missing, wrongTurn).outcome).toBe('bump');
+  });
+
+  it('돌기 블록은 제자리에서 보는 쪽만 바꾸고, 앞으로는 보는 쪽으로 가요', () => {
+    const data: BlockCodeData = { intro: '', grid: ['...', '.S.', '...'], startDir: 'up', palette: ['forward', 'turnLeft', 'turnRight'], optimal: 1, hint: '', paint: ['...', '.x.', '...'] };
+    const env = new GridEnv(data);
+    run(seq('turnRight', 'turnRight', 'turnLeft'), env);
+    expect([env.x, env.y, env.dir]).toEqual([1, 1, 'right']);
+    expect(env.frames.map((f) => f.event)).toEqual(['turn', 'turn', 'turn']);
+    run(seq('forward'), env);
+    expect([env.x, env.y]).toEqual([2, 1]);
   });
 });
 
