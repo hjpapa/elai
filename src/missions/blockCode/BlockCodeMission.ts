@@ -7,6 +7,7 @@ import { countBlocks, run } from '../core/interpreter';
 import type { MissionContext, MissionEngine, Stars } from '../core/types';
 
 const ROTATE: Record<Dir, number> = { up: 0, right: 90, down: 180, left: 270 };
+const DIR_NAME: Record<Dir, string> = { up: '위', right: '오른', down: '아래', left: '왼' };
 const STEP_MS = 300;
 
 const FAIL_TEXT: Record<Exclude<GridOutcome, 'success'>, string> = {
@@ -30,6 +31,10 @@ export class BlockCodeMission implements MissionEngine {
   private editor!: ProgramEditor;
   private board!: HTMLElement;
   private robot!: HTMLElement;
+  /** 로비 발밑의 고리 화살표(보는 쪽) */
+  private robotFloor!: HTMLElement;
+  /** 판 위에 서 있는 로비 그림 */
+  private robotBody!: HTMLImageElement;
   private say!: HTMLElement;
   private cells: HTMLElement[] = [];
   private buttons: HTMLButtonElement[] = [];
@@ -103,29 +108,36 @@ export class BlockCodeMission implements MissionEngine {
     this.say.append(pxImg(this.ctx.icon('char-robi', 0), 40), h('div', {}, ...lines(text)));
   }
 
+  /**
+   * 퍼즐 판: 비스듬히 기울인 2.5D 판이에요. 위쪽 = 판의 안쪽이라서 위·아래·왼쪽·오른쪽 블록의 뜻은 그대로예요.
+   * 나무·깃발·보석·로비는 판 위에 서 있고, 로비 발밑의 고리 화살표가 보는 쪽을 가리켜요.
+   */
   private buildBoard(): HTMLElement {
     const d = this.data;
     const env = new GridEnv(d);
-    const board = h('div', { class: `board ${d.paint ? 'paint-board' : ''}`, style: `grid-template-columns: repeat(${env.width}, 1fr)` });
+    const board = h('div', { class: `board tilt ${d.paint ? 'paint-board' : ''}`, style: `grid-template-columns: repeat(${env.width}, 1fr)` });
     this.cells = [];
     d.grid.forEach((row, y) =>
       [...row].forEach((c, x) => {
         const cell = h('div', { class: `cell ${(x + y) % 2 ? 'alt' : ''} ${c === '#' ? 'wall' : c === '~' ? 'water' : ''}` });
         if (d.paint?.[y]?.[x] === 'x') { cell.style.outline = '2px dashed #f2c94c'; cell.style.outlineOffset = '-4px'; cell.setAttribute('aria-label', '칠할 칸'); }
         if (d.paint && x === env.start.x && y === env.start.y) cell.classList.add('trail');
-        if (c === '!') cell.append(h('span', { 'data-signal': '', style: 'background:#b43242;color:white;border-radius:50%;font-size:10px;padding:3px' }, '빨강'));
-        const key = c === '#' ? 'icon-cell-tree' : c === '~' ? 'icon-cell-water' : c === 'G' ? 'icon-goal' : c === '*' ? 'icon-gem' : '';
-        if (key) cell.append(pxImg(this.ctx.icon(key), 32));
+        if (c === '!') cell.append(h('span', { 'data-signal': '', class: 'signal stand', style: 'background:#b43242;color:white;border-radius:50%;font-size:10px;padding:3px' }, '빨강'));
+        if (c === '~') cell.append(pxImg(this.ctx.icon('icon-cell-water'), 32, '물'));
+        // 막힌 칸은 키 작은 덤불이에요(뒤 칸의 로비를 가리지 않게).
+        const stand = c === '#' ? 'prop-bush' : c === 'G' ? 'icon-goal' : c === '*' ? 'icon-gem' : '';
+        if (stand) cell.append(pxImg(this.ctx.icon(stand), 32, c === '#' ? '덤불' : c === 'G' ? '깃발' : '보석', `stand ${c === '#' ? 'tree' : c === '*' ? 'gem' : 'goal'}`));
         this.cells.push(cell);
         board.append(cell);
       }),
     );
-    // 로비가 보는 쪽에 작은 화살표가 붙어 있어요(돌기 블록을 쓸 때 어느 쪽을 보는지 알 수 있게).
-    this.robot = h('div', { class: 'robot', style: `width:${100 / env.width}%;height:${100 / env.height}%`, 'aria-label': '로비' }, pxImg(this.ctx.icon('icon-robi'), 32), h('i', { class: 'robot-face' }));
+    this.robotFloor = h('i', { class: 'robot-floor' });
+    this.robotBody = pxImg(this.ctx.icon('char-robi', 0), 40, '로비', 'robot-body');
+    this.robot = h('div', { class: 'robot', style: `width:${100 / env.width}%;height:${100 / env.height}%` }, this.robotFloor, this.robotBody);
     board.append(this.robot);
     this.angle = ROTATE[d.startDir ?? 'right'];
     this.placeRobot(env.start.x, env.start.y, d.startDir ?? 'right');
-    return board;
+    return h('div', { class: 'board-stage' }, board);
   }
 
   private placeRobot(x: number, y: number, dir: Dir): void {
@@ -138,8 +150,15 @@ export class BlockCodeMission implements MissionEngine {
     // 왼쪽(270°)에서 오른쪽으로 돌아 위(0°)를 볼 때 거꾸로 270° 돌지 않게, 가까운 쪽으로 돌아요.
     const delta = ((((ROTATE[dir] - this.angle) % 360) + 540) % 360) - 180;
     this.angle += delta;
-    this.robot.style.transform = `rotate(${this.angle}deg)`;
+    this.robotFloor.style.transform = `rotate(${this.angle}deg)`;
+    // 서 있는 로비: 안쪽(위)을 보면 뒷모습, 왼쪽을 보면 좌우를 뒤집어요.
+    this.robotBody.src = this.ctx.icon('char-robi', dir === 'up' ? 5 : 0);
+    this.robotBody.classList.toggle('flip', dir === 'left');
+    // 로비 바로 앞(아래) 칸에 서 있는 것은 반투명하게 해서 로비가 가려지지 않게 해요.
+    for (const c of this.cells) c.classList.remove('see-through');
+    this.cells[(y + 1) * env.width + x]?.classList.add('see-through');
     this.robot.dataset.dir = dir;
+    this.robot.setAttribute('aria-label', `로비(${DIR_NAME[dir]}쪽을 봐요)`);
   }
 
   private resetBoard(): void {
@@ -157,7 +176,7 @@ export class BlockCodeMission implements MissionEngine {
       [...row].forEach((c, x) => {
         if (c !== '*') return;
         const cell = this.cells[y * row.length + x];
-        if (!cell.querySelector('img')) cell.append(pxImg(this.ctx.icon('icon-gem'), 32));
+        if (!cell.querySelector('img.gem')) cell.append(pxImg(this.ctx.icon('icon-gem'), 32, '보석', 'stand gem'));
       }),
     );
   }
@@ -182,7 +201,7 @@ export class BlockCodeMission implements MissionEngine {
     this.placeRobot(f.x, f.y, f.dir);
     this.cells[f.y * w + f.x]?.classList.add('trail');
     if (f.event === 'collect' || (f.event === 'move' && this.data.grid[f.y][f.x] === '*')) {
-      this.cells[f.y * w + f.x]?.querySelector('img')?.remove();
+      this.cells[f.y * w + f.x]?.querySelector('img.gem')?.remove();
     }
     if (f.event === 'bump') {
       this.robot.classList.remove('bump');
