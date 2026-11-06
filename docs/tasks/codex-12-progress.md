@@ -28,3 +28,14 @@
 | `prop-portal` | 없음 | 45%, 12, 0·1 |
 
 필요한 변경: Claude가 위 소품 그림자를 `src/game/shadow.ts`에 등록해 주세요. 포털 불빛을 넣으려면 `src/game/light.ts`의 금색 고정 광원을 청록/보라 선택 가능하게 확장하면 자연스러워요. 이번 범위 밖이므로 엔진은 고치지 않았어요.
+
+## 2단계 — 화면 아이콘·효과
+
+- 완료: `icon-item-*` 16개, `icon-part-wheel`, `icon-card-*` 14개(스캔 제외), `icon-intent-*` 6개, `icon-robi`, `icon-goal`, `icon-gem`, `icon-cell-tree/water/rock`, `icon-star`, `icon-star-empty`, `icon-coin`, `icon-heart`, `icon-energy`, `icon-xp`, `icon-bag`, `icon-book`, `icon-gear`, `icon-lock`, `icon-check`, `icon-hint`, `icon-badge-1`~`8`, `fx-hit/guard/heal/purify/levelup/sparkle`와 `icon-path-step` 재작화. **신규 69키 + 재작화 1키 = 70키·90프레임**. 못 한 키: 없음. 정확한 키 목록은 `assets-src/tools/c12-stages.mjs`의 2단계예요.
+- 아틀라스: **1024×1024**, 누적 2배 **124/186키**.
+- 검증: 생성 성공, **19개 파일·201개 테스트 통과**, 빌드 성공. 전체 아이콘을 어두운 창 `#262c3b`·크림 창 양쪽에서 직접 검토했어요(`icons-2.png`). 빈 별에 밝은 회청색 안쪽 윤곽을 보강하고 자물쇠·가방 손잡이 구멍을 수정했어요. 효과 26프레임은 반투명 없이 마지막 프레임의 불투명 픽셀 수가 줄어들어요. 갤러리 186키·515프레임·580이미지의 규격/기준점 오류 0, 콘솔 오류/경고 0. 팔레트와 기존 1배 원본 변경 0.
+- 발자국: C11 금색 원본은 `assets-src/reference/c11-icon-path-step.txt`에 보존했어요. `c12-2-path-contrast.png`에서 풀·흙길·돌·물 네 바닥 위의 이전/새 그림 및 원크기 대비를 확인했어요. 이 키만 1배 원본이 없으므로 `compare-2.png`의 왼쪽도 C11 2배 원본 ×2이고 해당 행에 표시했어요.
+- 그림자·불빛 표: 해당 소품 없음.
+- 더 있으면 좋을 색: 없음. 64색 그대로 사용했어요.
+- Claude 검토: 원래 게임 크기에서 방향 카드/앞으로 카드와 갈림길 카드 구별, 빈 별·회색 신발의 어두운 창 대비, 효과 후반이 사라지는 속도를 봐 주세요. 효과는 갤러리/프레임 비교로 확인했고 실제 전투의 반복 재생 감각은 엔진 통합 검토에서 확인해 주세요.
+- 필요한 변경: 없음.

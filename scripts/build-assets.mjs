@@ -130,7 +130,7 @@ export function comparisonSheet(assets, palette, keys = PILOT_KEYS) {
   label(sheet, '1X / 4X', padding, 16, textColor); label(sheet, '2X / 2X', right, 16, textColor);
   let y = 56;
   for (const asset of pilots) {
-    label(sheet, asset.spec.key, padding, y, textColor); label(sheet, asset.spec.key, right, y, textColor);
+    label(sheet, asset.spec.key + (asset.legacyDensity === 2 ? ' - C11 2X / 2X' : ''), padding, y, textColor); label(sheet, asset.spec.key, right, y, textColor);
     const artY = y + 22;
     if (asset.legacy) blitScaled(asset.legacy, sheet, padding, artY, 4 / (asset.legacyDensity ?? 1));
     else label(sheet, 'NEW KEY - NO 1X SOURCE', padding, artY + 16, palette.symbols.get('A'));

@@ -592,279 +592,348 @@
     },
     {
       "key": "icon-item-cap",
-      "file": "icon/icon-item-cap.png"
+      "file": "icon/icon-item-cap.png",
+      "density": 2
     },
     {
       "key": "icon-item-leafhat",
-      "file": "icon/icon-item-leafhat.png"
+      "file": "icon/icon-item-leafhat.png",
+      "density": 2
     },
     {
       "key": "icon-item-rangerhat",
-      "file": "icon/icon-item-rangerhat.png"
+      "file": "icon/icon-item-rangerhat.png",
+      "density": 2
     },
     {
       "key": "icon-item-stick",
-      "file": "icon/icon-item-stick.png"
+      "file": "icon/icon-item-stick.png",
+      "density": 2
     },
     {
       "key": "icon-item-hammer",
-      "file": "icon/icon-item-hammer.png"
+      "file": "icon/icon-item-hammer.png",
+      "density": 2
     },
     {
       "key": "icon-item-brush",
-      "file": "icon/icon-item-brush.png"
+      "file": "icon/icon-item-brush.png",
+      "density": 2
     },
     {
       "key": "icon-item-vest",
-      "file": "icon/icon-item-vest.png"
+      "file": "icon/icon-item-vest.png",
+      "density": 2
     },
     {
       "key": "icon-item-cloak",
-      "file": "icon/icon-item-cloak.png"
+      "file": "icon/icon-item-cloak.png",
+      "density": 2
     },
     {
       "key": "icon-item-boots",
-      "file": "icon/icon-item-boots.png"
+      "file": "icon/icon-item-boots.png",
+      "density": 2
     },
     {
       "key": "icon-item-windboots",
-      "file": "icon/icon-item-windboots.png"
+      "file": "icon/icon-item-windboots.png",
+      "density": 2
     },
     {
       "key": "icon-item-glasses",
-      "file": "icon/icon-item-glasses.png"
+      "file": "icon/icon-item-glasses.png",
+      "density": 2
     },
     {
       "key": "icon-item-flowmap",
-      "file": "icon/icon-item-flowmap.png"
+      "file": "icon/icon-item-flowmap.png",
+      "density": 2
     },
     {
       "key": "icon-item-apple",
-      "file": "icon/icon-item-apple.png"
+      "file": "icon/icon-item-apple.png",
+      "density": 2
     },
     {
       "key": "icon-item-jelly",
-      "file": "icon/icon-item-jelly.png"
+      "file": "icon/icon-item-jelly.png",
+      "density": 2
     },
     {
       "key": "icon-item-forestkey",
-      "file": "icon/icon-item-forestkey.png"
+      "file": "icon/icon-item-forestkey.png",
+      "density": 2
     },
     {
       "key": "icon-item-vine",
-      "file": "icon/icon-item-vine.png"
+      "file": "icon/icon-item-vine.png",
+      "density": 2
     },
     {
       "key": "icon-part-wheel",
-      "file": "icon/icon-part-wheel.png"
+      "file": "icon/icon-part-wheel.png",
+      "density": 2
     },
     {
       "key": "icon-card-up",
-      "file": "icon/icon-card-up.png"
+      "file": "icon/icon-card-up.png",
+      "density": 2
     },
     {
       "key": "icon-card-down",
-      "file": "icon/icon-card-down.png"
+      "file": "icon/icon-card-down.png",
+      "density": 2
     },
     {
       "key": "icon-card-left",
-      "file": "icon/icon-card-left.png"
+      "file": "icon/icon-card-left.png",
+      "density": 2
     },
     {
       "key": "icon-card-right",
-      "file": "icon/icon-card-right.png"
+      "file": "icon/icon-card-right.png",
+      "density": 2
     },
     {
       "key": "icon-card-forward",
-      "file": "icon/icon-card-forward.png"
+      "file": "icon/icon-card-forward.png",
+      "density": 2
     },
     {
       "key": "icon-card-turnLeft",
-      "file": "icon/icon-card-turnLeft.png"
+      "file": "icon/icon-card-turnLeft.png",
+      "density": 2
     },
     {
       "key": "icon-card-turnRight",
-      "file": "icon/icon-card-turnRight.png"
+      "file": "icon/icon-card-turnRight.png",
+      "density": 2
     },
     {
       "key": "icon-card-collect",
-      "file": "icon/icon-card-collect.png"
+      "file": "icon/icon-card-collect.png",
+      "density": 2
     },
     {
       "key": "icon-card-attack",
-      "file": "icon/icon-card-attack.png"
+      "file": "icon/icon-card-attack.png",
+      "density": 2
     },
     {
       "key": "icon-card-guard",
-      "file": "icon/icon-card-guard.png"
+      "file": "icon/icon-card-guard.png",
+      "density": 2
     },
     {
       "key": "icon-card-heal",
-      "file": "icon/icon-card-heal.png"
+      "file": "icon/icon-card-heal.png",
+      "density": 2
     },
     {
       "key": "icon-card-wait",
-      "file": "icon/icon-card-wait.png"
+      "file": "icon/icon-card-wait.png",
+      "density": 2
     },
     {
       "key": "icon-card-repeat",
-      "file": "icon/icon-card-repeat.png"
+      "file": "icon/icon-card-repeat.png",
+      "density": 2
     },
     {
       "key": "icon-card-if",
-      "file": "icon/icon-card-if.png"
+      "file": "icon/icon-card-if.png",
+      "density": 2
     },
     {
       "key": "icon-intent-attack",
-      "file": "icon/icon-intent-attack.png"
+      "file": "icon/icon-intent-attack.png",
+      "density": 2
     },
     {
       "key": "icon-intent-guard",
-      "file": "icon/icon-intent-guard.png"
+      "file": "icon/icon-intent-guard.png",
+      "density": 2
     },
     {
       "key": "icon-intent-charge",
-      "file": "icon/icon-intent-charge.png"
+      "file": "icon/icon-intent-charge.png",
+      "density": 2
     },
     {
       "key": "icon-intent-smash",
-      "file": "icon/icon-intent-smash.png"
+      "file": "icon/icon-intent-smash.png",
+      "density": 2
     },
     {
       "key": "icon-intent-heal",
-      "file": "icon/icon-intent-heal.png"
+      "file": "icon/icon-intent-heal.png",
+      "density": 2
     },
     {
       "key": "icon-intent-idle",
-      "file": "icon/icon-intent-idle.png"
+      "file": "icon/icon-intent-idle.png",
+      "density": 2
     },
     {
       "key": "icon-robi",
-      "file": "icon/icon-robi.png"
+      "file": "icon/icon-robi.png",
+      "density": 2
     },
     {
       "key": "icon-goal",
-      "file": "icon/icon-goal.png"
+      "file": "icon/icon-goal.png",
+      "density": 2
     },
     {
       "key": "icon-gem",
-      "file": "icon/icon-gem.png"
+      "file": "icon/icon-gem.png",
+      "density": 2
     },
     {
       "key": "icon-cell-tree",
-      "file": "icon/icon-cell-tree.png"
+      "file": "icon/icon-cell-tree.png",
+      "density": 2
     },
     {
       "key": "icon-cell-water",
-      "file": "icon/icon-cell-water.png"
+      "file": "icon/icon-cell-water.png",
+      "density": 2
     },
     {
       "key": "icon-cell-rock",
-      "file": "icon/icon-cell-rock.png"
+      "file": "icon/icon-cell-rock.png",
+      "density": 2
     },
     {
       "key": "icon-star",
-      "file": "icon/icon-star.png"
+      "file": "icon/icon-star.png",
+      "density": 2
     },
     {
       "key": "icon-star-empty",
-      "file": "icon/icon-star-empty.png"
+      "file": "icon/icon-star-empty.png",
+      "density": 2
     },
     {
       "key": "icon-coin",
-      "file": "icon/icon-coin.png"
+      "file": "icon/icon-coin.png",
+      "density": 2
     },
     {
       "key": "icon-heart",
-      "file": "icon/icon-heart.png"
+      "file": "icon/icon-heart.png",
+      "density": 2
     },
     {
       "key": "icon-energy",
-      "file": "icon/icon-energy.png"
+      "file": "icon/icon-energy.png",
+      "density": 2
     },
     {
       "key": "icon-xp",
-      "file": "icon/icon-xp.png"
+      "file": "icon/icon-xp.png",
+      "density": 2
     },
     {
       "key": "icon-bag",
-      "file": "icon/icon-bag.png"
+      "file": "icon/icon-bag.png",
+      "density": 2
     },
     {
       "key": "icon-book",
-      "file": "icon/icon-book.png"
+      "file": "icon/icon-book.png",
+      "density": 2
     },
     {
       "key": "icon-gear",
-      "file": "icon/icon-gear.png"
+      "file": "icon/icon-gear.png",
+      "density": 2
     },
     {
       "key": "icon-lock",
-      "file": "icon/icon-lock.png"
+      "file": "icon/icon-lock.png",
+      "density": 2
     },
     {
       "key": "icon-check",
-      "file": "icon/icon-check.png"
+      "file": "icon/icon-check.png",
+      "density": 2
     },
     {
       "key": "icon-hint",
-      "file": "icon/icon-hint.png"
+      "file": "icon/icon-hint.png",
+      "density": 2
     },
     {
       "key": "icon-badge-1",
-      "file": "icon/icon-badge-1.png"
+      "file": "icon/icon-badge-1.png",
+      "density": 2
     },
     {
       "key": "icon-badge-2",
-      "file": "icon/icon-badge-2.png"
+      "file": "icon/icon-badge-2.png",
+      "density": 2
     },
     {
       "key": "icon-badge-3",
-      "file": "icon/icon-badge-3.png"
+      "file": "icon/icon-badge-3.png",
+      "density": 2
     },
     {
       "key": "icon-badge-4",
-      "file": "icon/icon-badge-4.png"
+      "file": "icon/icon-badge-4.png",
+      "density": 2
     },
     {
       "key": "icon-badge-5",
-      "file": "icon/icon-badge-5.png"
+      "file": "icon/icon-badge-5.png",
+      "density": 2
     },
     {
       "key": "icon-badge-6",
-      "file": "icon/icon-badge-6.png"
+      "file": "icon/icon-badge-6.png",
+      "density": 2
     },
     {
       "key": "icon-badge-7",
-      "file": "icon/icon-badge-7.png"
+      "file": "icon/icon-badge-7.png",
+      "density": 2
     },
     {
       "key": "icon-badge-8",
-      "file": "icon/icon-badge-8.png"
+      "file": "icon/icon-badge-8.png",
+      "density": 2
     },
     {
       "key": "fx-hit",
-      "file": "fx/fx-hit.png"
+      "file": "fx/fx-hit.png",
+      "density": 2
     },
     {
       "key": "fx-guard",
-      "file": "fx/fx-guard.png"
+      "file": "fx/fx-guard.png",
+      "density": 2
     },
     {
       "key": "fx-heal",
-      "file": "fx/fx-heal.png"
+      "file": "fx/fx-heal.png",
+      "density": 2
     },
     {
       "key": "fx-purify",
-      "file": "fx/fx-purify.png"
+      "file": "fx/fx-purify.png",
+      "density": 2
     },
     {
       "key": "fx-levelup",
-      "file": "fx/fx-levelup.png"
+      "file": "fx/fx-levelup.png",
+      "density": 2
     },
     {
       "key": "fx-sparkle",
-      "file": "fx/fx-sparkle.png"
+      "file": "fx/fx-sparkle.png",
+      "density": 2
     }
   ],
   "atlas": {
