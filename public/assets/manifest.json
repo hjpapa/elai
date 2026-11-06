@@ -301,35 +301,43 @@
     },
     {
       "key": "block-sandstone",
-      "file": "block/block-sandstone.png"
+      "file": "block/block-sandstone.png",
+      "density": 2
     },
     {
       "key": "prop-cactus",
-      "file": "prop/prop-cactus.png"
+      "file": "prop/prop-cactus.png",
+      "density": 2
     },
     {
       "key": "prop-signal",
-      "file": "prop/prop-signal.png"
+      "file": "prop/prop-signal.png",
+      "density": 2
     },
     {
       "key": "char-guide",
-      "file": "char/char-guide.png"
+      "file": "char/char-guide.png",
+      "density": 2
     },
     {
       "key": "mob-mirage-lizard",
-      "file": "mob/mob-mirage-lizard.png"
+      "file": "mob/mob-mirage-lizard.png",
+      "density": 2
     },
     {
       "key": "boss-lizard-chief",
-      "file": "mob/boss-lizard-chief.png"
+      "file": "mob/boss-lizard-chief.png",
+      "density": 2
     },
     {
       "key": "robi-part-sensor",
-      "file": "overlay/robi-part-sensor.png"
+      "file": "overlay/robi-part-sensor.png",
+      "density": 2
     },
     {
       "key": "icon-part-sensor",
-      "file": "icon/icon-part-sensor.png"
+      "file": "icon/icon-part-sensor.png",
+      "density": 2
     },
     {
       "key": "tile-cave",
@@ -412,7 +420,8 @@
     },
     {
       "key": "tile-sand",
-      "file": "tile/tile-sand.png"
+      "file": "tile/tile-sand.png",
+      "density": 2
     },
     {
       "key": "block-hedge",
