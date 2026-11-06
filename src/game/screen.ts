@@ -63,8 +63,11 @@ export function crispZoom(width: number, height: number, ratioNow: number, rule:
   const lo = Math.max(2, 2 * Math.floor(raw / 2 + 1e-6));
   const hi = Math.max(lo, 2 * Math.ceil(raw / 2 - 1e-6));
   if (hi === lo) return lo;
+  const nearer = hi / raw < raw / lo ? hi : lo;
+  // 작은 짝수가 예전 최소 크기(CSS minCss배)보다 작아지면, 넓이와 상관없이 가까운 쪽을 골라요(좁은 창·150% 화면).
+  if (lo < rule.minCss * ratioNow - 1e-6) return nearer;
   const fits = width / hi >= rule.viewW * (1 - slack) && height / hi >= rule.viewH * (1 - slack);
-  return fits && hi / raw < raw / lo ? hi : lo;
+  return fits ? nearer : lo;
 }
 
 /** 마을·숲 같은 탐험 맵 */
