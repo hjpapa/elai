@@ -290,10 +290,10 @@ export class WorldScene extends Phaser.Scene {
     );
   }
 
-  /** 2배 그림 소품의 발밑 그림자와 등불 빛을 더해요. owner가 숨으면 같이 숨어요(update). */
-  private decorate(key: string, x: number, y: number, owner: Phaser.GameObjects.Image, depth: number): Phaser.GameObjects.Image[] {
+  /** 2배 그림 소품의 발밑 그림자와 불빛을 더해요. owner가 숨으면 같이 숨어요(update). */
+  private decorate(key: string, x: number, y: number, owner: Phaser.GameObjects.Image, depth: number, frame = 0): Phaser.GameObjects.Image[] {
     const shadow = addShadow(this, key, x, y);
-    const extra = [...(shadow ? [shadow] : []), ...addLight(this, key, x, y, depth)];
+    const extra = [...(shadow ? [shadow] : []), ...addLight(this, key, x, y, depth, frame)];
     for (const deco of extra) this.grounded.push({ owner, deco });
     return extra;
   }
@@ -305,7 +305,7 @@ export class WorldScene extends Phaser.Scene {
       const o = this.originFor(key);
       const depth = (obj.at.x + obj.at.y) * 10 + 5;
       const img = fitArt(this.add.image(p.x, p.y, key, frame)).setOrigin(o.x, o.y).setDepth(depth);
-      this.decorate(key, p.x, p.y, img, depth);
+      this.decorate(key, p.x, p.y, img, depth, frame);
       return img;
     };
     switch (obj.type) {
@@ -507,10 +507,12 @@ export class WorldScene extends Phaser.Scene {
     });
   }
 
+  /** 물결과 이동 문 반짝임. 스프라이트 시트 프레임 이름은 숫자(0, 1)라서 글자 '0'과 비교하면 늘 0에 머물러요. */
   private animateTiles(): void {
-    for (const img of this.water) img.setFrame(img.frame.name === '0' ? 1 : 0);
+    const next = (img: Phaser.GameObjects.Image) => img.setFrame(Number(img.frame.name) === 0 ? 1 : 0);
+    for (const img of this.water) next(img);
     for (const v of this.views) {
-      if (v.obj.type === 'portal' && !v.obj.sprite && v.image) v.image.setFrame(v.image.frame.name === '0' ? 1 : 0);
+      if (v.obj.type === 'portal' && !v.obj.sprite && v.image) next(v.image);
     }
   }
 

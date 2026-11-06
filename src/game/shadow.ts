@@ -11,8 +11,12 @@ export const SHADOW_ALPHA = 0.28;
 export const SHADOW_DEPTH = -60000;
 const SHADOW_COLOR = '#293044';
 
-/** 소품 그림자 너비(논리 픽셀). 집·문·울타리·분수처럼 바닥이 넓은 건물은 그림 바닥이 땅에 닿아서 두지 않아요. */
+/**
+ * 소품 그림자 너비(논리 픽셀). 집·문·울타리·분수·등대·책장·거울처럼 바닥이 넓은 건물·가구는
+ * 그림 바닥이 땅에 닿아서 두지 않아요. 1~8장 소품은 C12 진행 기록의 그림자 표를 따라요.
+ */
 const PROP_SHADOW: Record<string, number> = {
+  // 마을(C11)
   'prop-tree': 20,
   'prop-pine': 16,
   'prop-bush': 22,
@@ -20,6 +24,27 @@ const PROP_SHADOW: Record<string, number> = {
   'prop-sign': 8,
   'prop-chest': 16,
   'prop-booth': 26,
+  // 1장 숲
+  'prop-rock': 20,
+  'prop-stump': 12,
+  'prop-mushroom': 12,
+  // 2장 동굴
+  'prop-crystal': 12,
+  'prop-stalagmite': 10,
+  // 3장 사막
+  'prop-cactus': 10,
+  'prop-signal': 8,
+  // 4장 항구
+  'prop-buoy': 10,
+  // 5장 연구소
+  'prop-jar': 10,
+  // 6장 천문대
+  'prop-telescope': 18,
+  'prop-starlamp': 8,
+  // 7장 공방
+  'prop-easel': 18,
+  // 8장 성
+  'prop-banner': 8,
 };
 
 /** 그림자 크기(논리 픽셀). 그림자가 필요 없는 그림이면 null이에요. */

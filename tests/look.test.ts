@@ -10,7 +10,7 @@ const grid = (rows: string[]): Cell[][] =>
 
 describe('발밑 그림자', () => {
   afterEach(() => {
-    for (const k of ['char-player', 'prop-tree', 'prop-house', 'mob-dummy']) setDensity(k, 1);
+    for (const k of ['char-player', 'prop-tree', 'prop-house', 'mob-dummy', 'prop-rock', 'prop-lighthouse', 'prop-key']) setDensity(k, 1);
   });
 
   it('옛 1배 그림은 그림 안에 그림자가 있어서 더하지 않아요', () => {
@@ -27,16 +27,38 @@ describe('발밑 그림자', () => {
     expect(shadowSize('mob-dummy')?.w).toBe(11);
   });
 
-  it('바닥이 넓은 건물(집)은 그림자를 두지 않아요', () => {
-    setDensity('prop-house', 2);
-    expect(shadowSize('prop-house')).toBeNull();
+  it('바닥이 넓은 건물(집·등대)과 바닥에 놓인 열쇠는 그림자를 두지 않아요', () => {
+    for (const k of ['prop-house', 'prop-lighthouse', 'prop-key']) {
+      setDensity(k, 2);
+      expect(shadowSize(k), k).toBeNull();
+    }
+  });
+
+  it('장별 소품은 진행 기록의 그림자 너비를 따라요', () => {
+    setDensity('prop-rock', 2);
+    expect(shadowSize('prop-rock')).toEqual({ w: 20, h: 7 });
   });
 });
 
-describe('등불', () => {
-  it('가로등에만 빛이 있어요', () => {
-    expect(lightOf('prop-lamp')).not.toBeNull();
+describe('불빛', () => {
+  it('가로등·별 등불·부표는 늘 켜져 있고, 나무에는 빛이 없어요', () => {
+    for (const k of ['prop-lamp', 'prop-starlamp', 'prop-buoy']) {
+      expect(lightOf(k, 0), k).not.toBeNull();
+      expect(lightOf(k, 1), k).not.toBeNull();
+    }
     expect(lightOf('prop-tree')).toBeNull();
+  });
+
+  it('등대는 켜진 프레임(1)에서만, 수정은 반짝이는 프레임(1)에서만 빛나요', () => {
+    expect(lightOf('prop-lighthouse', 0)).toBeNull();
+    expect(lightOf('prop-lighthouse', 1)).not.toBeNull();
+    expect(lightOf('prop-crystal', 0)).toBeNull();
+    expect(lightOf('prop-crystal', 1)?.glow).toBe('cool');
+  });
+
+  it('이동 문은 두 반짝임 프레임 모두 청록 빛이에요', () => {
+    expect(lightOf('prop-portal', 0)?.glow).toBe('cool');
+    expect(lightOf('prop-portal', 1)?.glow).toBe('cool');
   });
 });
 
