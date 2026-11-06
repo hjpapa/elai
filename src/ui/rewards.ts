@@ -17,6 +17,8 @@ export interface ResultView {
   message?: string;
   /** 다시 해서 별을 올렸을 때 */
   improved?: boolean;
+  /** 한꺼번에 받은 로비 부품(앞 장 준비물) */
+  parts?: string[];
 }
 
 /** 미션·전투 결과 창: 별, 보상, 레벨업, 로비 부품, 배지 */
@@ -29,6 +31,10 @@ export function showResult(v: ResultView): Promise<void> {
     for (const it of r?.items ?? []) {
       const def = ITEMS[it.id];
       if (def) pills.append(h('span', { class: 'reward-pill' }, pxImg(icon(def.icon), 24), `${def.name}${it.qty > 1 ? ` ×${it.qty}` : ''}`));
+    }
+    for (const id of v.parts ?? []) {
+      const p = ROBI_PARTS[id];
+      if (p) pills.append(h('span', { class: 'reward-pill' }, pxImg(icon(p.icon ?? 'icon-part-wheel'), 24), `로비 부품: ${p.name}`));
     }
     const part = r?.robiPart ? ROBI_PARTS[r.robiPart] : undefined;
     const ups = r?.levelUps ?? [];

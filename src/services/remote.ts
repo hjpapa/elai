@@ -58,6 +58,25 @@ export async function joinClass(code: string, nickname: string, pin: string): Pr
   return link;
 }
 
+/**
+ * 선생님이 연 장을 서버에서 다시 받아 연결 정보에 넣어요(수업 중에 선생님이 장을 열 수 있어요).
+ * 받지 못하면 저장해 둔 값을 그대로 써요. 바뀌었으면 true.
+ */
+export async function refreshUnlocked(link: ClassLink): Promise<boolean> {
+  const sb = getSupabase('student');
+  if (!sb) return false;
+  const { data: me, error } = await sb.from('elai_students').select('class_id').eq('id', link.studentId).maybeSingle();
+  if (error || !me) return false;
+  const { data, error: e2 } = await sb.from('elai_classes').select('unlocked_chapters').eq('id', (me as { class_id: string }).class_id).maybeSingle();
+  if (e2 || !data) return false;
+  const next = [...((data as { unlocked_chapters: string[] | null }).unlocked_chapters ?? [])].sort();
+  const before = [...(link.unlocked ?? [])].sort();
+  if (next.join() === before.join()) return false;
+  link.unlocked = next;
+  saveLink(link);
+  return true;
+}
+
 /** 저장된 연결이 아직 이 기기 로그인과 맞는지 확인(다른 기기에서 같은 학생으로 들어가면 끊겨요) */
 export async function checkLink(link: ClassLink): Promise<boolean> {
   const sb = getSupabase('student');
@@ -90,15 +109,19 @@ export function startRemoteSync(state: GameState, link: ClassLink): (data: SaveD
   state.on((e) => {
     if (e.type !== 'mission' || !sb) return;
     const rec: MissionRecord = e.record;
-    void sb.from('elai_progress').upsert({
-      student_id: link.studentId,
-      mission_id: e.id,
-      stars: rec.stars,
-      attempts: rec.attempts,
-      hints_used: rec.hints,
-      completed_at: rec.done ? (rec.at ?? new Date().toISOString()) : null,
-      updated_at: new Date().toISOString(),
-    });
+    // Supabase 질의는 await(then)할 때 보내져요. void만 붙이면 보내지지 않아요.
+    const send = async () => {
+      await sb.from('elai_progress').upsert({
+        student_id: link.studentId,
+        mission_id: e.id,
+        stars: rec.stars,
+        attempts: rec.attempts,
+        hints_used: rec.hints,
+        completed_at: rec.done ? (rec.at ?? new Date().toISOString()) : null,
+        updated_at: new Date().toISOString(),
+      });
+    };
+    void send().catch(() => undefined);
   });
   return (data) => {
     const wait = Math.max(0, 10_000 - (Date.now() - last));

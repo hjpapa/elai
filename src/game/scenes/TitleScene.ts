@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import type { SaveData } from '../../data/schema';
 import { DEFAULT_VOLUME, playMusic, setSoundEnabled, setVolume } from '../../fx/sfx';
-import { checkLink, fetchRemoteSave, joinClass, loadLink, startRemoteSync, type ClassLink } from '../../services/remote';
+import { checkLink, fetchRemoteSave, joinClass, loadLink, refreshUnlocked, startRemoteSync, type ClassLink } from '../../services/remote';
 import { initAutosave, loadLocal, newer, setSaveProfile } from '../../services/save';
 import { friendlyError, supabaseConfigured } from '../../services/supabase';
 import { append, clear, h } from '../../ui/dom';
@@ -171,10 +171,10 @@ export class TitleScene extends Phaser.Scene {
     ]);
   }
 
-  /** 학급 학생: 이 기기 기록과 서버 기록 중 최근 것으로 시작해요. */
+  /** 학급 학생: 이 기기 기록과 서버 기록 중 최근 것으로 시작해요(선생님이 연 장도 다시 받아요). */
   private async startClass(link: ClassLink): Promise<void> {
     setSaveProfile(link.studentId);
-    const remote = await fetchRemoteSave(link.studentId).catch(() => null);
+    const [remote] = await Promise.all([fetchRemoteSave(link.studentId).catch(() => null), refreshUnlocked(link).catch(() => false)]);
     const save = newer(loadLocal(), remote) ?? freshSave(link.nickname);
     save.nickname = link.nickname;
     this.begin(save, link);

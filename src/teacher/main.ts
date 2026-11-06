@@ -2,6 +2,8 @@ import '../ui/styles.css';
 import './teacher.css';
 import { allMissions } from '../data/chapters';
 import { CHAPTERS } from '../data/chapters';
+import { MAPS } from '../data/maps';
+import { classPath, currentChapter, startsDirectly } from '../game/rpg/unlock';
 import { friendlyError, getSupabase } from '../services/supabase';
 import { append, clear, h } from '../ui/dom';
 
@@ -109,26 +111,54 @@ async function renderClass(c: ClassRow): Promise<void> {
   const [{ data: prog }, { data: saves }] = ids.length
     ? await Promise.all([
         sb!.from('elai_progress').select('student_id,mission_id,stars,attempts,hints_used,completed_at').in('student_id', ids),
-        sb!.from('elai_saves').select('student_id,updated_at,level:data->level').in('student_id', ids),
+        sb!.from('elai_saves').select('student_id,updated_at,level:data->level,location:data->location').in('student_id', ids),
       ])
     : [{ data: [] }, { data: [] }];
   const progress = new Map<string, { stars: number; attempts: number; hints_used: number; completed_at: string | null }>();
   for (const p of (prog ?? []) as { student_id: string; mission_id: string; stars: number; attempts: number; hints_used: number; completed_at: string | null }[]) {
     progress.set(`${p.student_id}/${p.mission_id}`, p);
   }
-  const saveOf = new Map(((saves ?? []) as { student_id: string; updated_at: string; level: number }[]).map((x) => [x.student_id, x]));
+  const saveOf = new Map(((saves ?? []) as { student_id: string; updated_at: string; level: number; location?: { map?: string } | null }[]).map((x) => [x.student_id, x]));
+  /** 학생이 저장한 위치의 장(게임 목표 안내와 같은 규칙으로 "지금" 장을 정해요) */
+  const hereOf = (sid: string) => MAPS[saveOf.get(sid)?.location?.map ?? '']?.chapter;
 
   // 학생 입장 안내 + 장 열기
   const unlocked = new Set(c.unlocked_chapters);
+  const sorted = () => CHAPTERS.filter((ch) => unlocked.has(ch.id)).map((ch) => ch.id);
+  const pathLine = h('p', { class: 'muted', style: 'margin:8px 0 0' });
+  const saveMsg = h('div', { class: 't-msg' });
+  const drawPath = () => {
+    clear(pathLine);
+    const list = sorted();
+    const path = classPath(list);
+    pathLine.append(h('b', {}, '학생이 가는 길: '), path.map((ch) => `${ch.index}장${startsDirectly(list, ch) ? '(바로 시작)' : ''}`).join(' → '));
+    if (path.some((ch) => startsDirectly(list, ch))) {
+      pathLine.append(h('br'), '바로 시작하는 장은 마을 연습(0장) 뒤 들어가고, 앞 장의 로비 부품·장비·레벨을 채워 줘요.');
+    }
+  };
   const chapterBoxes = CHAPTERS.filter((ch) => ch.index >= 2).map((ch) => {
     const box = h('input', { type: 'checkbox', checked: unlocked.has(ch.id) }) as HTMLInputElement;
     box.addEventListener('change', async () => {
       if (box.checked) unlocked.add(ch.id);
       else unlocked.delete(ch.id);
-      await sb!.from('elai_classes').update({ unlocked_chapters: [...unlocked] }).eq('id', c.id);
+      saveMsg.textContent = '';
+      drawPath();
+      const { error } = await sb!.from('elai_classes').update({ unlocked_chapters: sorted() }).eq('id', c.id);
+      if (error) {
+        // 저장하지 못했으면 체크를 되돌려요.
+        box.checked = !box.checked;
+        if (box.checked) unlocked.add(ch.id);
+        else unlocked.delete(ch.id);
+        drawPath();
+        saveMsg.textContent = friendlyError(error);
+        return;
+      }
+      c.unlocked_chapters = sorted();
+      drawTable();
     });
     return h('label', { class: 'chip' }, box, ` ${ch.index}장 ${ch.title}${ch.status === 'planned' ? '(준비 중)' : ''}`);
   });
+  drawPath();
   wrap.append(
     h(
       'div',
@@ -137,32 +167,18 @@ async function renderClass(c: ClassRow): Promise<void> {
       h('p', {}, '학생 입장 코드'),
       h('div', { class: 't-code' }, c.code),
       h('p', { class: 'muted' }, `학생은 ${location.origin} 에서 "학급으로 시작"을 누르고 코드·별명·비밀 숫자 4자리를 써요.`),
-      h('p', { style: 'margin-top:12px' }, '장 미리 열기(0·1장과 7장 체험은 늘 열려 있어요)'),
+      h('p', { style: 'margin-top:12px' }, '장 열기: 체크한 장까지만 들어갈 수 있어요(0·1장과 7장 체험은 늘 열려 있어요).'),
       h('div', { class: 'row' }, ...chapterBoxes),
+      pathLine,
+      saveMsg,
     ),
     h('div', { class: 't-print' }, h('h1', {}, `${c.name} · 엘라이 섬`), h('p', {}, location.origin), h('div', { class: 't-code' }, c.code), h('p', {}, '"학급으로 시작" → 코드, 별명, 비밀 숫자 4자리')),
   );
 
-  // 진도 표(과정 기록: 별, 시도, 힌트)
-  const thead = h('thead', {}, h('tr', {}, h('th', {}, '별명'), h('th', {}, 'Lv'), h('th', {}, '별'), ...MISSIONS.map((m) => h('th', { title: m.part.title }, m.mission.title)), h('th', {}, '')));
-  const tbody = h('tbody');
-  const csv: string[][] = [['별명', 'Lv', '별 합계', ...MISSIONS.map((m) => m.mission.id)]];
-  for (const st of students) {
-    let total = 0;
-    const cells = MISSIONS.map((m) => {
-      const p = progress.get(`${st.id}/${m.mission.id}`);
-      if (!p) return h('td', {}, '·');
-      total += p.stars;
-      const stars = '★'.repeat(p.stars) + '☆'.repeat(3 - p.stars);
-      return h(
-        'td',
-        { title: `시도 ${p.attempts}번 · 힌트 ${p.hints_used}번` },
-        p.completed_at ? h('span', { class: 'stars' }, stars) : h('span', { class: 'trying' }, '도전 중'),
-        h('small', {}, `시도 ${p.attempts}·힌트 ${p.hints_used}`),
-      );
-    });
-    const sv = saveOf.get(st.id);
-    const reset = h('button', {
+  // 진도 표(과정 기록: 별, 시도, 힌트): 한 번에 한 장만 보여 줘요. CSV는 모든 미션이에요.
+  const doneBy = (sid: string) => (mid: string) => !!progress.get(`${sid}/${mid}`)?.completed_at;
+  const resetButton = (st: { id: string; nickname: string }) =>
+    h('button', {
       class: 'btn small',
       onclick: async () => {
         const pin = prompt(`${st.nickname}의 새 비밀 숫자 4자리`);
@@ -171,9 +187,64 @@ async function renderClass(c: ClassRow): Promise<void> {
         alert(error ? friendlyError(error) : '비밀 숫자를 바꿨어요.');
       },
     }, '비밀 숫자');
-    tbody.append(h('tr', {}, h('td', {}, st.nickname), h('td', {}, String(sv?.level ?? 1)), h('td', {}, String(total)), ...cells, h('td', {}, reset)));
-    csv.push([st.nickname, String(sv?.level ?? 1), String(total), ...MISSIONS.map((m) => String(progress.get(`${st.id}/${m.mission.id}`)?.stars ?? ''))]);
+  const totalOf = (sid: string) => MISSIONS.reduce((n, m) => n + (progress.get(`${sid}/${m.mission.id}`)?.stars ?? 0), 0);
+  const tabs = h('div', { class: 'tabs', style: 'margin:10px 0 0' });
+  const tableWrap = h('div', { class: 't-table-wrap', style: 'margin-top:10px' });
+  let shown: string | null = null;
+  function drawTable(): void {
+    // 학생마다 지금 하고 있는 장(게임의 목표 안내와 같은 규칙)
+    const list = sorted();
+    const nowOf = new Map(students.map((st) => [st.id, currentChapter(list, doneBy(st.id), hereOf(st.id))]));
+    const count = new Map<string, number>();
+    for (const ch of nowOf.values()) count.set(ch.id, (count.get(ch.id) ?? 0) + 1);
+    // 처음에는 가장 많은 학생이 하고 있는 장(같으면 앞 장)
+    const busiest = CHAPTERS.reduce((best, ch) => ((count.get(ch.id) ?? 0) > (count.get(best.id) ?? 0) ? ch : best), CHAPTERS[0]);
+    const selected = CHAPTERS.find((ch) => ch.id === shown) ?? busiest;
+    clear(tabs);
+    for (const ch of CHAPTERS) {
+      const n = count.get(ch.id) ?? 0;
+      tabs.append(
+        h(
+          'button',
+          { class: `tab ${ch.id === selected.id ? 'on' : ''}`, title: ch.title, 'aria-label': `${ch.index}장 ${ch.title}${n ? `, ${n}명` : ''}`, 'aria-pressed': String(ch.id === selected.id), onclick: () => ((shown = ch.id), drawTable()) },
+          `${ch.index}장${n ? ` · ${n}명` : ''}`,
+        ),
+      );
+    }
+    const cols = MISSIONS.filter((m) => m.chapter.id === selected.id);
+    const thead = h(
+      'thead',
+      {},
+      h('tr', {}, h('th', {}, '별명'), h('th', {}, 'Lv'), h('th', { title: '지금 하고 있는 장' }, '지금'), h('th', { title: '모든 장의 별 합계' }, '별'), ...cols.map((m) => h('th', { title: m.part.title }, m.mission.title)), h('th', {}, '')),
+    );
+    const tbody = h('tbody');
+    for (const st of students) {
+      const cells = cols.map((m) => {
+        const p = progress.get(`${st.id}/${m.mission.id}`);
+        if (!p) return h('td', {}, '·');
+        const stars = '★'.repeat(p.stars) + '☆'.repeat(3 - p.stars);
+        return h(
+          'td',
+          { title: `시도 ${p.attempts}번 · 힌트 ${p.hints_used}번` },
+          p.completed_at ? h('span', { class: 'stars' }, stars) : h('span', { class: 'trying' }, '도전 중'),
+          h('small', {}, `시도 ${p.attempts}·힌트 ${p.hints_used}`),
+        );
+      });
+      const now = nowOf.get(st.id)!;
+      tbody.append(
+        h('tr', {}, h('td', {}, st.nickname), h('td', {}, String(saveOf.get(st.id)?.level ?? 1)), h('td', { title: now.title }, `${now.index}장`), h('td', {}, String(totalOf(st.id))), ...cells, h('td', {}, resetButton(st))),
+      );
+    }
+    clear(tableWrap);
+    tableWrap.append(h('table', { class: 't-table' }, thead, tbody));
   }
+
+  const csv: string[][] = [['별명', 'Lv', '별 합계', ...MISSIONS.map((m) => m.mission.id)]];
+  for (const st of students) {
+    const lv = String(saveOf.get(st.id)?.level ?? 1);
+    csv.push([st.nickname, lv, String(totalOf(st.id)), ...MISSIONS.map((m) => String(progress.get(`${st.id}/${m.mission.id}`)?.stars ?? ''))]);
+  }
+  if (students.length) drawTable();
   const download = h('button', {
     class: 'btn small',
     onclick: () => {
@@ -187,7 +258,9 @@ async function renderClass(c: ClassRow): Promise<void> {
       'div',
       { class: 't-card' },
       h('div', { class: 'row' }, h('h2', { style: 'margin:0;flex:1' }, `학생 ${students.length}명`), h('button', { class: 'btn small', onclick: () => void renderClass(c) }, '새로고침'), download),
-      students.length ? h('div', { class: 't-table-wrap', style: 'margin-top:10px' }, h('table', { class: 't-table' }, thead, tbody)) : h('p', { class: 'muted' }, '아직 들어온 학생이 없어요.'),
+      students.length ? tabs : null,
+      students.length ? tableWrap : h('p', { class: 'muted' }, '아직 들어온 학생이 없어요.'),
+      h('p', { class: 't-legend' }, '장 단추의 숫자는 그 장을 하고 있는 학생 수예요. 지금 = 학생이 하고 있는 장 · 별 = 모든 장의 별 합계.'),
       h('p', { class: 't-legend' }, '★ 별점(가장 좋은 기록) · 시도 = 실행·제출 횟수 · 힌트 = 힌트를 본 횟수. 결과보다 시도와 힌트의 변화를 보면 과정을 알 수 있어요.'),
     ),
   );

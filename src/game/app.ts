@@ -15,3 +15,8 @@ export const app = {} as {
   /** 학급으로 들어왔으면 학급 정보(체험 모드면 null) */
   classLink: ClassLink | null;
 };
+
+/** 선생님이 연 장(체험 모드면 null: 앞 장을 끝내면 차례로 열려요) */
+export function classUnlock(): readonly string[] | null {
+  return app.classLink ? (app.classLink.unlocked ?? []) : null;
+}
