@@ -253,6 +253,41 @@
       "density": 2
     },
     {
+      "key": "prop-sort-basket",
+      "file": "prop/prop-sort-basket.png",
+      "density": 2
+    },
+    {
+      "key": "icon-sort-heart",
+      "file": "icon/icon-sort-heart.png",
+      "density": 2
+    },
+    {
+      "key": "icon-sort-star",
+      "file": "icon/icon-sort-star.png",
+      "density": 2
+    },
+    {
+      "key": "icon-sort-ball",
+      "file": "icon/icon-sort-ball.png",
+      "density": 2
+    },
+    {
+      "key": "icon-card-sendLeft",
+      "file": "icon/icon-card-sendLeft.png",
+      "density": 2
+    },
+    {
+      "key": "icon-card-sendRight",
+      "file": "icon/icon-card-sendRight.png",
+      "density": 2
+    },
+    {
+      "key": "icon-stamp",
+      "file": "icon/icon-stamp.png",
+      "density": 2
+    },
+    {
       "key": "tile-castle",
       "file": "tile/tile-castle.png",
       "density": 2
