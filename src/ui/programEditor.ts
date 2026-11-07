@@ -29,6 +29,7 @@ export function cmdKind(c: Cmd): string {
   if (c === 'heal') return 'k-heal';
   if (c === 'wait') return 'k-wait';
   if (c === 'scan') return 'k-if';
+  if (c === 'grab') return 'k-grab';
   return 'k-move';
 }
 
@@ -94,7 +95,12 @@ export class ProgramEditor {
     if (path === null) return;
     const target = this.programEl.querySelector(`[data-path="${path}"]`);
     target?.classList.add(kind);
-    target?.scrollIntoView({ block: 'nearest' });
+    if (!target) return;
+    // 블록 목록 안에서만 스크롤해요. 창 전체가 움직이면 휴대폰에서 판(로비·집게)이 화면 밖으로 밀려나요.
+    const box = this.programEl.getBoundingClientRect();
+    const at = target.getBoundingClientRect();
+    if (at.top < box.top) this.programEl.scrollTop -= box.top - at.top + 4;
+    else if (at.bottom > box.bottom) this.programEl.scrollTop += at.bottom - box.bottom + 4;
   }
 
   /** 맨 끝에 빠진 블록이 있을 때 커서를 보여 줘요(디버그 안경). */

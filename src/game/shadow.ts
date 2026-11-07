@@ -45,6 +45,9 @@ const PROP_SHADOW: Record<string, number> = {
   'prop-easel': 18,
   // 8장 성
   'prop-banner': 8,
+  // 마을 공방(C13). 기계·작업대·상자·방석은 바닥이 넓어서, 인형은 방석에 앉아서 그림자를 두지 않아요.
+  'prop-plant': 10,
+  'prop-floorlamp': 8,
 };
 
 /** 그림자 크기(논리 픽셀). 그림자가 필요 없는 그림이면 null이에요. */

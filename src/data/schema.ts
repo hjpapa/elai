@@ -14,8 +14,8 @@ export type Dir = 'up' | 'right' | 'down' | 'left';
 // ── 프로그램(블록) ────────────────────────────────────────
 // 퍼즐(GridEnv)과 전투(BattleEnv)가 같은 인터프리터로 실행해요.
 
-/** 퍼즐 명령: 절대 방향 이동(1~2장) + 상대 방향 이동(3장~) + 줍기 */
-export type GridCmd = 'up' | 'down' | 'left' | 'right' | 'forward' | 'turnLeft' | 'turnRight' | 'collect';
+/** 퍼즐 명령: 절대 방향 이동(1~2장) + 상대 방향 이동(3장~) + 줍기 + 집기(공방 인형뽑기) */
+export type GridCmd = 'up' | 'down' | 'left' | 'right' | 'forward' | 'turnLeft' | 'turnRight' | 'collect' | 'grab';
 /** 전투 명령 */
 export type BattleCmd = 'scan' | 'attack' | 'guard' | 'heal' | 'wait';
 export type Cmd = GridCmd | BattleCmd;
@@ -313,6 +313,14 @@ export type TileKind =
   | 'crate'
   | 'sandstone'
   | 'rockwall'
+  /** 건물 안 나무 마루 */
+  | 'room'
+  /** 건물 안 깔개 */
+  | 'rug'
+  /** 건물 안 높은 벽(뒤쪽 두 변) */
+  | 'roomwall'
+  /** 창문이 난 높은 벽 */
+  | 'roomwindow'
   | 'void';
 
 /** 오브젝트가 보일 조건. 모두 만족해야 보여요. */
@@ -357,12 +365,15 @@ export type MapObject =
       /** 입구 그림(없으면 prop-portal). 2프레임 그림은 0 닫힘, 1 열림 */
       sprite?: string;
     })
-  | (ObjectBase & { type: 'prop'; sprite: string; solid?: boolean; frame?: number });
+  | (ObjectBase & { type: 'prop'; sprite: string; solid?: boolean; frame?: number })
+  /** 놀이 기계: 옆에서 말하기(Space)·누르기로 미니게임을 열어요. 늘 길을 막아요. */
+  | (ObjectBase & { type: 'game'; game: string; sprite: string; frame?: number });
 
 export interface MapDef {
   id: string;
   name: string;
-  theme: 'village' | 'forest' | 'dungeon' | 'workshop' | 'cave' | 'desert' | 'harbor' | 'lab' | 'observatory' | 'castle';
+  /** room: 건물 안(실내 맵) */
+  theme: 'village' | 'forest' | 'dungeon' | 'workshop' | 'cave' | 'desert' | 'harbor' | 'lab' | 'observatory' | 'castle' | 'room';
   chapter?: string;
   /** 타일 글자 지도(모든 줄의 길이가 같아야 해요) */
   rows: string[];
@@ -497,5 +508,46 @@ export interface SaveData {
   visited: Record<string, string>;
   /** volume: 소리 크기 0~1(없으면 기본값) */
   settings: { sound: boolean; volume?: number };
+  /** 미니게임 판별 가장 좋은 별(예: { claw: { r1: 3 } }). 뽑은 인형은 플래그 doll:<id>예요. */
+  minigames?: Record<string, Record<string, number>>;
   updatedAt: string;
+}
+
+// ── 미니게임(건물 안 놀이) ──────────────────────────────────
+/** 공방 인형(인형뽑기 보상). 뽑으면 플래그 doll:<id>가 켜지고 공방 방석에 앉아요. */
+export interface DollDef {
+  id: string;
+  name: string;
+  /** 그림 키(prop 16×16) */
+  sprite: string;
+  /** 인형 모음에 보이는 한 줄 소개 */
+  desc: string;
+}
+
+/**
+ * 코딩 인형뽑기 한 판. 결과는 학생 프로그램대로만 정해져요(운·코인 없음).
+ * 기계 바닥은 위에서 본 격자이고 위쪽이 기계 안쪽이에요(퍼즐 판과 같아요).
+ */
+export interface ClawRound {
+  id: string;
+  title: string;
+  /** '.' 빈 칸, '#' 큰 상자(집게가 부딪혀요), 'E' 출구(집게가 여기서 출발하고 인형을 떨어뜨려요), 소문자 = 인형 자리 */
+  grid: string[];
+  /** 격자의 소문자 → 인형 id */
+  dolls: Record<string, string>;
+  /** 주문 카드: 뽑아야 할 인형 id */
+  target: string;
+  /** 집게가 처음 보는 쪽(앞으로·돌기 판, 없으면 위 = 안쪽) */
+  startDir?: Dir;
+  palette: Cmd[];
+  allowRepeat?: boolean;
+  /** 가장 짧은 풀이의 블록 수(집기 포함, 별점 기준) */
+  optimal: number;
+  maxBlocks?: number;
+  /** 열리는 때: 이 미션을 끝냈거나, (앞 장을 건너뛴 학생은) 이 로비 부품이 있으면. 없으면 처음부터 열려요. */
+  unlock?: { mission: string; part?: string };
+  /** 닫혀 있을 때 안내 */
+  lockedText?: string;
+  intro: string;
+  hint: string;
 }

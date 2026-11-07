@@ -16,5 +16,6 @@ import { mirrormaze } from './mirrormaze';
 import { forest } from './forest';
 import { maze } from './maze';
 import { village } from './village';
+import { workroom } from './workroom';
 
-export const MAPS: Record<string, MapDef> = { village, forest, maze, cave, cavedeep, desert, desertmaze, harbor, lighthouse, lab, labdeep, observatory, starmaze, workshop, bookmaze, castle, mirrormaze };
+export const MAPS: Record<string, MapDef> = { village, workroom, forest, maze, cave, cavedeep, desert, desertmaze, harbor, lighthouse, lab, labdeep, observatory, starmaze, workshop, bookmaze, castle, mirrormaze };

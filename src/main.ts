@@ -7,6 +7,8 @@ import { GalleryScene } from './game/scenes/GalleryScene';
 import { canvasRatio, canvasSize, fitCanvas } from './game/screen';
 import { TitleScene } from './game/scenes/TitleScene';
 import { WorldScene } from './game/scenes/WorldScene';
+import { MinigameHost } from './minigames/host';
+import { MINIGAMES } from './minigames/registry';
 import { MissionHost } from './missions/core/MissionHost';
 import { CUSTOM, ENGINES } from './missions/registry';
 import { portraitFor } from './ui/portraits';
@@ -15,6 +17,7 @@ import { UI } from './ui/ui';
 app.ui = new UI(document.getElementById('ui')!);
 app.ui.portrait = (who) => (app.state ? portraitFor(app.state.data, who) : '');
 app.missions = new MissionHost(ENGINES, CUSTOM);
+app.minigames = new MinigameHost(MINIGAMES);
 
 // 개발 서버에서만: 브라우저 콘솔에서 게임 상태를 볼 수 있게 해요.
 if (import.meta.env.DEV) Object.assign(window, { __app: app });

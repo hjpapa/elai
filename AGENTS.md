@@ -11,7 +11,7 @@
 ## 담당 (같은 파일을 동시에 고치지 않아요)
 | 담당 | 경로 |
 |---|---|
-| Claude | `src/game/`(iso, scenes, rpg, battle), `src/missions/`, `src/services/`, `src/ui/`, `src/teacher/`, `src/data/schema.ts`, `supabase/`, 설정 파일 |
+| Claude | `src/game/`(iso, scenes, rpg, battle), `src/missions/`, `src/minigames/`, `src/services/`, `src/ui/`, `src/teacher/`, `src/data/schema.ts`, `supabase/`, 설정 파일 |
 | Codex | `assets-src/`, `scripts/build-assets.mjs`, `public/assets/`, `src/fx/`, 지시서가 허락한 데이터 파일 |
 
 - 사용자가 지시서 경로를 알려 주면 그 지시서대로 작업하고, 마지막 메시지에 지시서의 "최종 보고" 항목을 남겨요.
@@ -20,7 +20,7 @@
 
 ### 2.5D 개선 기간(2026-11-06부터)
 학생 테스트 뒤 조작·길 안내·2.5D 그림·건물 미니게임을 다듬어요. 단계와 담당은 `docs/tasks/README.md`에 있어요.
-- 엔진(`src/game/**`, `src/missions/**`, `src/ui/**`, `src/data/**`)은 Claude가 먼저 만들어요. Codex는 지시서가 허락한 엔진 파일만 고쳐요(Claude가 사용량 한도로 넘길 때).
+- 엔진(`src/game/**`, `src/missions/**`, `src/minigames/**`, `src/ui/**`, `src/data/**`)은 Claude가 먼저 만들어요. Codex는 지시서가 허락한 엔진 파일만 고쳐요(Claude가 사용량 한도로 넘길 때).
 - Codex는 고해상도 그림(`docs/asset-spec.md`의 "고해상도 그림")과 지시서가 허락한 데이터·글을 맡아요.
 - 계약 파일은 지시서의 "미리 승인한 계약 변경"에 적힌 것만 바꿔요.
 - `supabase/**`, `src/services/**`, `src/teacher/**`, `package.json`·잠금 파일, `vercel.json`, `vite.config.ts`, `src/missions/core/types.ts`, `docs/asset-spec.md`는 Codex가 고치지 않아요.

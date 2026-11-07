@@ -45,6 +45,8 @@ const spec = (kind: AssetKind, w: number, h: number, frames: number) =>
 const tile = spec('tile', 32, 16, 1);
 const tile2 = spec('tile', 32, 16, 2);
 const block = spec('block', 32, 24, 1);
+/** 건물 안 높은 벽: 윗면 16px + 옆면 40px(캐릭터보다 높게) */
+const wall = spec('block', 32, 56, 1);
 const prop = (w: number, h: number, frames = 1) => spec('prop', w, h, frames);
 const char = spec('char', 16, 24, 10);
 const overlay = spec('overlay', 16, 24, 10);
@@ -67,6 +69,29 @@ export const ASSETS: AssetSpec[] = [
   ui(24, 24, 2)('ui-slot', '가방·장비 칸(보통, 고름. 9칸 나눔: 모서리 8px)', 0xc7d6dc),
   ui(24, 8)('ui-bar', '체력·경험치 막대 틀(양 끝 8px, 가운데는 늘어나요)', 0x56657a),
   ui(32, 32, 2)('ui-stick', '터치 조이스틱(0 바닥 고리, 1 손잡이)', 0x8c9bab),
+
+  // C13: 2.5D 4단계 — 들어가는 건물(마을 공방)과 코딩 인형뽑기. 그림이 오기 전에는 임시 그림을 써요.
+  prop(32, 48, 2)('prop-workshop', '마을 공방 건물(0 문 닫힘, 1 문 열림·창에 불빛). 문 위에 작은 인형 간판', 0xd98a5c),
+  tile('tile-room', '공방 안 따뜻한 나무 마루', 0xc08552),
+  tile('tile-rug', '인형 모음 깔개(이웃 칸과 이어지는 둥근 무늬 천)', 0xcf719d),
+  tile2('tile-doormat', '나가는 문 매트(0 보통, 1 문틈 빛과 바깥쪽 화살표 무늬)', 0xa76c46),
+  wall('block-room-wall', '공방 안쪽 높은 벽(윗면 16px + 옆면 40px, 아래에 굽도리 띠)', 0xedc890),
+  wall('block-room-window', '창문이 난 높은 벽(두 옆면의 같은 높이에 창)', 0xedc890),
+  prop(32, 48, 2)('prop-claw-machine', '코딩 인형뽑기 기계(유리 안에 인형과 집게, 앞에 출구. 0·1 불빛이 번갈아 깜빡여요). 동전 넣는 곳은 없어요', 0xe46f9a),
+  prop(32, 32)('prop-workbench', '공구와 실타래가 놓인 작업대', 0xa76c46),
+  prop(32, 24)('prop-toybox', '뚜껑이 열린 장난감 상자', 0xe7b64f),
+  prop(16, 24)('prop-plant', '둥근 잎 화분', 0x8dc567),
+  prop(16, 32)('prop-floorlamp', '따뜻한 빛의 스탠드', 0xffe59a),
+  prop(16, 16)('prop-cushion', '인형을 앉히는 납작한 둥근 방석', 0xcf719d),
+  prop(16, 16, 2)('prop-claw', '인형뽑기 집게(0 벌림, 1 오므림). 위 가운데에 줄이 이어져요', 0xc7d6dc),
+  icon('icon-claw-exit', '인형이 나오는 출구 구멍(위에서 본 모습, 줄무늬 테두리)', 0x293044),
+  icon('icon-card-grab', '집기 카드(집게)', 0xe46f9a),
+  prop(16, 16)('prop-doll-dummy', '허수아비 봇 인형(둥근 천 인형, 단추 눈)', 0xc9a26b),
+  prop(16, 16)('prop-doll-slime', '덩굴 슬라임 인형', 0x5bbf5b),
+  prop(16, 16)('prop-doll-bug', '버그 벌레 인형(0과 1 무늬 천)', 0xd96bd1),
+  prop(16, 16)('prop-doll-bat', '메아리 박쥐 인형', 0x7962ab),
+  prop(16, 16)('prop-doll-guardian', '숲 수호자 인형(이끼 머리의 작은 나무 거인)', 0x4f7a3a),
+  prop(16, 16)('prop-doll-robi', '로비 인형(안테나 달린 둥근 로봇)', 0xc0c7d1),
 
   // C10: 윤리의 성
   tile('tile-castle', '따뜻한 빛의 성 돌바닥', 0xc7d6dc),
@@ -303,8 +328,8 @@ export function originOf(spec: AssetSpec): { x: number; y: number } {
     case 'tile':
       return { x: 0.5, y: 0.5 };
     case 'block':
-      // 바닥 마름모의 중심 = 위에서 16px
-      return { x: 0.5, y: 16 / spec.h };
+      // 바닥 마름모의 중심 = 아래에서 8px 위(32×24 블록은 위에서 16px, 높은 벽 32×56은 위에서 48px)
+      return { x: 0.5, y: (spec.h - 8) / spec.h };
     case 'prop':
     case 'char':
     case 'overlay':

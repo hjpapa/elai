@@ -9,6 +9,7 @@ export const CMD_LABEL: Record<Cmd, string> = {
   turnLeft: '왼쪽으로 돌기',
   turnRight: '오른쪽으로 돌기',
   collect: '줍기',
+  grab: '집기',
   attack: '공격',
   guard: '막기',
   heal: '회복',

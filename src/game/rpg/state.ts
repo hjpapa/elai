@@ -26,6 +26,21 @@ export interface RewardSummary {
 
 export const START_MAP = { map: 'village', x: 12, y: 16 };
 
+/** 저장된 미니게임 기록에서 1~3 정수 별만 남겨요(다른 기기·옛 저장을 읽을 때). */
+export function cleanMinigames(raw: unknown): Record<string, Record<string, number>> {
+  const out: Record<string, Record<string, number>> = {};
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return out;
+  for (const [game, rounds] of Object.entries(raw as Record<string, unknown>)) {
+    if (!rounds || typeof rounds !== 'object' || Array.isArray(rounds)) continue;
+    const rec: Record<string, number> = {};
+    for (const [round, stars] of Object.entries(rounds as Record<string, unknown>)) {
+      if (typeof stars === 'number' && Number.isInteger(stars) && stars >= 1 && stars <= 3) rec[round] = stars;
+    }
+    out[game] = rec;
+  }
+  return out;
+}
+
 export function freshSave(nickname: string): SaveData {
   return {
     version: 1,
@@ -57,6 +72,7 @@ export class GameState {
 
   constructor(public data: SaveData) {
     data.classificationModel = this.cleanClassificationModel(data.classificationModel);
+    data.minigames = cleanMinigames(data.minigames);
     const saved = data.observations ?? {};
     data.observations = {};
     for (const [id, rows] of Object.entries(saved)) {
@@ -300,6 +316,17 @@ export class GameState {
     sum.levelUps = this.addXp(r.xp ?? 0);
     this.changed();
     return sum;
+  }
+
+  /** 미니게임 판 기록: 가장 좋은 별(1~3)을 남겨요. first는 이 판을 처음 성공했을 때예요. */
+  recordMinigame(game: string, round: string, stars: number): { first: boolean; improved: boolean } {
+    const all = (this.data.minigames ??= {});
+    const rec = (all[game] ??= {});
+    const prev = rec[round] ?? 0;
+    const next = Math.max(1, Math.min(3, Math.round(stars)));
+    if (next > prev) rec[round] = next;
+    this.changed();
+    return { first: prev === 0, improved: prev > 0 && next > prev };
   }
 
   /** 미션을 처음 성공했을 때만 보상을 줘요. 다시 해서 별을 올리는 건 언제든 가능해요. */

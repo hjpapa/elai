@@ -11,7 +11,7 @@ import { addShadow } from '../shadow';
 export interface BattleSceneData {
   mob: MobDef;
   save: SaveData;
-  floor: 'tile-grass' | 'tile-stone' | 'tile-wood' | 'tile-cave' | 'tile-sand' | 'tile-dock' | 'tile-lab' | 'tile-observatory' | 'tile-castle';
+  floor: 'tile-grass' | 'tile-stone' | 'tile-wood' | 'tile-cave' | 'tile-sand' | 'tile-dock' | 'tile-lab' | 'tile-observatory' | 'tile-castle' | 'tile-room';
 }
 
 const wait = (scene: Phaser.Scene, ms: number) => new Promise<void>((r) => scene.time.delayedCall(ms, r));

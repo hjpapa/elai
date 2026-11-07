@@ -29,7 +29,8 @@ describe('그림 키 목록', () => {
       expect(a.h, a.key).toBeGreaterThan(0);
       expect(a.frames, a.key).toBeGreaterThanOrEqual(1);
       if (a.kind === 'tile') expect([a.w, a.h], a.key).toEqual([32, 16]);
-      if (a.kind === 'block') expect([a.w, a.h], a.key).toEqual([32, 24]);
+      // 블록은 32×24, 건물 안 높은 벽은 32×56이에요(옆면만 길어요).
+      if (a.kind === 'block') expect([[32, 24], [32, 56]], a.key).toContainEqual([a.w, a.h]);
       if (a.kind === 'char' || a.kind === 'overlay') expect([a.w, a.h, a.frames], a.key).toEqual([16, 24, 10]);
       if (a.kind === 'icon') expect([a.w, a.h], a.key).toEqual([16, 16]);
       if (a.kind === 'mob') expect(a.frames, a.key).toBe(4);

@@ -1,4 +1,5 @@
 import type Phaser from 'phaser';
+import type { MinigameHost } from '../minigames/host';
 import type { MissionHost } from '../missions/core/MissionHost';
 import type { ClassLink } from '../services/remote';
 import type { Hud } from '../ui/hud';
@@ -12,6 +13,8 @@ export const app = {} as {
   ui: UI;
   hud: Hud;
   missions: MissionHost;
+  /** 건물 안 놀이 기계(미니게임) */
+  minigames: MinigameHost;
   /** 학급으로 들어왔으면 학급 정보(체험 모드면 null) */
   classLink: ClassLink | null;
 };

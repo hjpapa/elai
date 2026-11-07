@@ -1014,6 +1014,9 @@ h3 {
 .k-if {
   background: #7d5fd6;
 }
+.k-grab {
+  background: #b5487f;
+}
 .pblock .cost {
   font-size: 12px;
   background: rgba(0, 0, 0, 0.35);
@@ -1710,4 +1713,256 @@ h3 {
   background: var(--skin-knob) center / 100% 100% no-repeat;
   box-shadow: none;
   image-rendering: pixelated;
+}
+
+/* ── 코딩 인형뽑기(마을 공방, 2.5D 4단계) ── */
+.claw-rounds {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+  margin: 12px 0 16px;
+}
+.claw-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border: 3px solid var(--line);
+  border-radius: 12px;
+  background: #fbf6e9;
+  color: #2a2520;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 3px 0 rgba(16, 19, 27, 0.35);
+}
+.claw-card:hover:not(:disabled) {
+  background: #fff9e6;
+}
+.claw-card.done {
+  background: #f6e7b8;
+}
+.claw-card.locked {
+  background: #c9c4b8;
+  color: #3b4560;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+.claw-card.locked img {
+  opacity: 0.6;
+}
+.claw-card-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.claw-card-text small {
+  color: #56657a;
+  line-height: 1.35;
+}
+.mini-stars {
+  display: flex;
+  gap: 2px;
+}
+.claw-shelf-title {
+  margin: 6px 0 8px;
+  font-size: 17px;
+}
+.doll-shelf {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.doll-shelf .doll {
+  margin: 0;
+  width: 86px;
+  padding: 6px 4px;
+  border: 3px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel2);
+  text-align: center;
+}
+.doll-shelf .doll img {
+  filter: brightness(0.25);
+  opacity: 0.45;
+}
+.doll-shelf .doll.got img {
+  filter: none;
+  opacity: 1;
+}
+.doll-shelf figcaption {
+  font-size: 12px;
+  line-height: 1.3;
+}
+.claw-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.claw-machine {
+  max-width: 470px;
+  margin: 0 auto;
+  padding: 8px 8px 10px;
+  border: 3px solid var(--line);
+  border-radius: 16px;
+  background: linear-gradient(#e46f9a, #b5487f);
+  box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.25);
+}
+.claw-sign {
+  margin-bottom: 6px;
+  color: #fff4d2;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-align: center;
+  text-shadow: 0 2px 0 #4c3848;
+}
+.claw-machine .board-stage {
+  padding-top: 18px;
+}
+.board.claw-board {
+  background: #4c3848;
+  box-shadow: 0 14px 0 #2b2433;
+}
+.claw-board .cell {
+  background: #b5a0dc;
+}
+.claw-board .cell.alt {
+  background: #a993d4;
+}
+/* 주문한 인형 칸: 바닥의 점선 고리 */
+.claw-board .cell.target::before {
+  content: '';
+  position: absolute;
+  inset: 8%;
+  border: 3px dashed #ffe59a;
+  border-radius: 50%;
+}
+.claw-board .cell img.claw-exit {
+  width: 88%;
+  height: 88%;
+}
+.board.tilt .stand.crate {
+  width: 92%;
+  bottom: 12%;
+}
+.board.tilt .stand.doll {
+  width: 62%;
+}
+/* 집게: 바닥 고리(어느 칸 위인지, 보는 쪽) + 줄에 매달린 집게. 위아래로 움직일 때는 세운 방향으로만 옮겨요. */
+.claw {
+  position: absolute;
+  z-index: 3;
+  transform-style: preserve-3d;
+  transition: left 0.22s, top 0.22s;
+  pointer-events: none;
+}
+.claw.carry {
+  transition: left 0.65s ease-in-out, top 0.65s ease-in-out;
+}
+.claw.bump {
+  animation: shake 0.3s;
+}
+.claw-floor {
+  inset: 20%;
+  border-style: dashed;
+}
+.claw-arm {
+  position: absolute;
+  left: 50%;
+  bottom: 40%;
+  width: 70%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform-origin: 50% 100%;
+  transform: translateX(-50%) rotateX(-30deg) translateY(-52px);
+  transition: transform 0.36s ease-in-out;
+}
+.claw-arm.down {
+  transform: translateX(-50%) rotateX(-30deg) translateY(0);
+}
+.claw-rope {
+  display: block;
+  width: 3px;
+  height: 46px;
+  margin-bottom: -2px;
+  background: #c7d6dc;
+  box-shadow: 0 0 0 1px #293044;
+}
+.claw-grip {
+  position: relative;
+  width: 100%;
+}
+.claw-grip img.claw-head {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.claw-grip img.claw-held {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 84%;
+  height: auto;
+  translate: -50% 0;
+}
+.claw-tray {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 52px;
+  margin-top: 10px;
+  padding: 4px 10px;
+  border-radius: 10px;
+  background: #293044;
+  color: #c7d6dc;
+  font-size: 13px;
+}
+.claw-prize {
+  animation: prize-pop 0.5s ease-out;
+}
+@keyframes prize-pop {
+  0% {
+    transform: translateY(-22px) scale(0.6);
+    opacity: 0;
+  }
+  60% {
+    transform: translateY(4px) scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: none;
+  }
+}
+.claw-order {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  padding: 8px 10px;
+  border: 3px dashed #e7b64f;
+  border-radius: 12px;
+  background: #fbf6e9;
+  color: #2a2520;
+}
+.claw-order small {
+  display: block;
+  color: #56657a;
+}
+.claw-result img.claw-prize.big {
+  width: 96px;
+  height: 96px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .claw,
+  .claw.carry,
+  .claw-arm {
+    transition-duration: 0.01s;
+  }
+  .claw-prize {
+    animation: none;
+  }
 }

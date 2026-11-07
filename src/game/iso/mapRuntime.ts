@@ -22,6 +22,10 @@ export const WALKABLE: Record<TileKind, boolean> = {
   water: false,
   hedge: false,
   wall: false,
+  room: true,
+  rug: true,
+  roomwall: false,
+  roomwindow: false,
   void: false,
 };
 
@@ -47,10 +51,25 @@ export const TILE_TEXTURE: Record<TileKind, string | null> = {
   water: 'tile-water',
   hedge: 'tile-grass',
   wall: 'tile-stone',
+  room: 'tile-room',
+  rug: 'tile-rug',
+  roomwall: 'tile-room',
+  roomwindow: 'tile-room',
   void: null,
 };
 
-export const BLOCK_TEXTURE: Partial<Record<TileKind, string>> = { hedge: 'block-hedge', wall: 'block-wall', rockwall: 'block-cave', sandstone: 'block-sandstone', crate: 'block-crate', labwall: 'block-lab', observatorywall: 'block-observatory', castlewall: 'block-castle' };
+export const BLOCK_TEXTURE: Partial<Record<TileKind, string>> = {
+  hedge: 'block-hedge',
+  wall: 'block-wall',
+  rockwall: 'block-cave',
+  sandstone: 'block-sandstone',
+  crate: 'block-crate',
+  labwall: 'block-lab',
+  observatorywall: 'block-observatory',
+  castlewall: 'block-castle',
+  roomwall: 'block-room-wall',
+  roomwindow: 'block-room-window',
+};
 
 export interface Cell {
   kind: TileKind;
@@ -97,6 +116,7 @@ export function objectSolid(map: string, o: MapObject, q: WorldQuery): boolean {
   switch (o.type) {
     case 'npc':
     case 'chest':
+    case 'game':
       return true;
     case 'door':
       return !q.hasFlag(objFlag.door(map, o.id));

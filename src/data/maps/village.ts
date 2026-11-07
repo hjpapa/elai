@@ -75,7 +75,8 @@ export const village: MapDef = {
     ...house('house-b', 16, 7),
     ...house('house-c', 8, 13),
     ...house('house-d', 16, 13),
-    { id: 'workshop', type: 'prop', at: { x: 19, y: 7 }, sprite: 'prop-house', frame: 1, solid: true },
+    // 마을 공방: 집 칸으로 걸어 들어가면 공방 안(실내 맵)으로 가요.
+    { id: 'to-workroom', type: 'portal', at: { x: 19, y: 7 }, to: { map: 'workroom', at: { x: 6, y: 6 } }, label: '마을 공방', sprite: 'prop-workshop' },
     { id: 'fountain-dry', type: 'prop', at: { x: 12, y: 10 }, sprite: 'prop-fountain', frame: 0, solid: true, when: broken },
     { id: 'fountain-on', type: 'prop', at: { x: 12, y: 10 }, sprite: 'prop-fountain', frame: 1, solid: true, when: restored },
     { id: 'lamp-1', type: 'prop', at: { x: 11, y: 7 }, sprite: 'prop-lamp', solid: true },

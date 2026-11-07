@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { ASSETS, type AssetSpec } from '../assets';
 import { setDensity } from '../density';
+import { drawRoomIcon, drawRoomProp, drawRoomTile, drawRoomWall } from './roomPlaceholders';
 
 /** 매니페스트에 없는 그림 키를 단색 도형으로 채워요(Codex 그림이 오기 전까지). */
 export function makePlaceholders(scene: Phaser.Scene): void {
@@ -46,6 +47,7 @@ function drawFrame(ctx: CanvasRenderingContext2D, spec: AssetSpec, f: number): v
   const outline = '#1b1f2a';
   switch (spec.kind) {
     case 'tile': {
+      if (drawRoomTile(ctx, spec, f)) return;
       diamond(ctx, w / 2, h / 2, w, h);
       ctx.fillStyle = f === 1 ? shade(color, 1.1) : hex(color);
       ctx.fill();
@@ -54,21 +56,22 @@ function drawFrame(ctx: CanvasRenderingContext2D, spec: AssetSpec, f: number): v
       return;
     }
     case 'block': {
-      // 옆면
+      if (drawRoomWall(ctx, spec)) return;
+      // 옆면(높은 벽도 같은 모양: 윗면 16px 아래로 옆면이 h까지 내려와요)
       ctx.fillStyle = shade(color, 0.8);
       ctx.beginPath();
       ctx.moveTo(0, 8);
       ctx.lineTo(w / 2, 16);
-      ctx.lineTo(w / 2, 24);
-      ctx.lineTo(0, 16);
+      ctx.lineTo(w / 2, h);
+      ctx.lineTo(0, h - 8);
       ctx.closePath();
       ctx.fill();
       ctx.fillStyle = shade(color, 0.6);
       ctx.beginPath();
       ctx.moveTo(w, 8);
       ctx.lineTo(w / 2, 16);
-      ctx.lineTo(w / 2, 24);
-      ctx.lineTo(w, 16);
+      ctx.lineTo(w / 2, h);
+      ctx.lineTo(w, h - 8);
       ctx.closePath();
       ctx.fill();
       diamond(ctx, w / 2, 8, w, 16);
@@ -101,6 +104,7 @@ function drawFrame(ctx: CanvasRenderingContext2D, spec: AssetSpec, f: number): v
     }
     case 'icon': {
       if (drawGuideIcon(ctx, spec.key, w, h, color)) return;
+      if (drawRoomIcon(ctx, spec)) return;
       ctx.fillStyle = hex(color);
       roundRect(ctx, 1, 1, w - 2, h - 2, 3);
       ctx.fill();
@@ -143,6 +147,7 @@ function drawFrame(ctx: CanvasRenderingContext2D, spec: AssetSpec, f: number): v
 
 function drawProp(ctx: CanvasRenderingContext2D, spec: AssetSpec, f: number): void {
   const { key, w, h, color } = spec;
+  if (drawRoomProp(ctx, spec, f)) return;
   if (key === 'prop-tree' || key === 'prop-pine') {
     ctx.fillStyle = '#7a4f2a';
     ctx.fillRect(w / 2 - 2, h - 14, 4, 12);

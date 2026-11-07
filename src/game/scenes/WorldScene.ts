@@ -6,7 +6,8 @@ import { ITEMS } from '../../data/rpg/items';
 import { MOBS } from '../../data/rpg/mobs';
 import { ROBI_PARTS } from '../../data/rpg/robiParts';
 import type { Chapter, MapDef, MapObject, Point } from '../../data/schema';
-import { playMusic, playSfx } from '../../fx/sfx';
+import { playMusic, playSfx, type MusicTheme } from '../../fx/sfx';
+import type { BattleSceneData } from './BattleScene';
 import { runBattle } from '../../missions/battle/runBattle';
 import { refreshUnlocked } from '../../services/remote';
 import { flushSave, requestSave } from '../../services/save';
@@ -75,6 +76,22 @@ const ACTION_LABEL: Partial<Record<MapObject['type'], string>> = {
   portal: '들어가기',
   pickup: '줍기',
   mob: '정화하기',
+  game: '놀이하기',
+};
+
+/** 맵 분위기별 배경색·배경 음악·전투 바닥 */
+const THEME: Record<MapDef['theme'], { bg: string; music: MusicTheme; floor: BattleSceneData['floor'] }> = {
+  village: { bg: '#1b1f2a', music: 'village', floor: 'tile-grass' },
+  forest: { bg: '#1b1f2a', music: 'forest', floor: 'tile-grass' },
+  dungeon: { bg: '#10161a', music: 'dungeon', floor: 'tile-stone' },
+  workshop: { bg: '#1b1f2a', music: 'village', floor: 'tile-wood' },
+  cave: { bg: '#0d101c', music: 'dungeon', floor: 'tile-cave' },
+  desert: { bg: '#684b3f', music: 'forest', floor: 'tile-sand' },
+  harbor: { bg: '#344d78', music: 'village', floor: 'tile-dock' },
+  lab: { bg: '#344d78', music: 'village', floor: 'tile-lab' },
+  observatory: { bg: '#293044', music: 'village', floor: 'tile-observatory' },
+  castle: { bg: '#4c3848', music: 'village', floor: 'tile-castle' },
+  room: { bg: '#2b2433', music: 'village', floor: 'tile-room' },
 };
 
 /** 아이소 월드: 맵 그리기, 걷기·길찾기, 오브젝트와 상호작용, 안개, 몹 돌아다니기 */
@@ -172,7 +189,7 @@ export class WorldScene extends Phaser.Scene {
     s.setLocation(mapId, at.x, at.y);
 
     const cam = this.cameras.main;
-    cam.setBackgroundColor(this.def.theme === 'castle' ? '#4c3848' : this.def.theme === 'observatory' ? '#293044' : this.def.theme === 'lab' ? '#344d78' : this.def.theme === 'harbor' ? '#344d78' : this.def.theme === 'desert' ? '#684b3f' : this.def.theme === 'cave' ? '#0d101c' : this.def.theme === 'dungeon' ? '#10161a' : '#1b1f2a');
+    cam.setBackgroundColor(THEME[this.def.theme].bg);
     cam.setRoundPixels(true);
     this.fitZoom();
     cam.startFollow(this.player.sprite, true, 0.2, 0.2);
@@ -232,7 +249,7 @@ export class WorldScene extends Phaser.Scene {
       this.stickDir = null;
     });
 
-    playMusic(this.def.theme === 'castle' ? 'village' : this.def.theme === 'observatory' ? 'village' : this.def.theme === 'lab' ? 'village' : this.def.theme === 'harbor' ? 'village' : this.def.theme === 'desert' ? 'forest' : this.def.theme === 'cave' ? 'dungeon' : this.def.theme === 'dungeon' ? 'dungeon' : this.def.theme === 'forest' ? 'forest' : 'village');
+    playMusic(THEME[this.def.theme].music);
     this.faded = [];
     this.reveal(at.x, at.y);
     this.updateOcclusion();
@@ -336,6 +353,9 @@ export class WorldScene extends Phaser.Scene {
       case 'prop':
         v.image = image(obj.sprite, obj.frame ?? 0);
         break;
+      case 'game':
+        v.image = image(obj.sprite, obj.frame ?? 0);
+        break;
     }
     return v;
   }
@@ -432,7 +452,10 @@ export class WorldScene extends Phaser.Scene {
     const target = this.target;
     if (target && this.targetMark?.visible) {
       const p = isoToScreen(target.at.x, target.at.y);
-      this.targetMark.setPosition(p.x, p.y - 38 + bob);
+      // 문 그림 머리 위에 띄워요(바닥에 납작한 문 매트는 낮게).
+      const img = this.viewAt(target.at.x, target.at.y)?.image;
+      const lift = img ? img.displayHeight * img.originY + 8 : 38;
+      this.targetMark.setPosition(p.x, p.y - lift + bob);
     }
     this.placeEdgeArrow();
   }
@@ -441,7 +464,7 @@ export class WorldScene extends Phaser.Scene {
     const el = this.edgeArrow;
     if (!el) return;
     const target = this.target;
-    if (!target || app.ui.isBusy() || app.missions.busy || !this.scene.isActive()) {
+    if (!target || app.ui.isBusy() || app.missions.busy || app.minigames.busy || !this.scene.isActive()) {
       el.hidden = true;
       return;
     }
@@ -489,7 +512,8 @@ export class WorldScene extends Phaser.Scene {
     const onGoal = (x: number, y: number) => x === goal.x && y === goal.y;
     const near = (x: number, y: number) => Math.max(Math.abs(x - goal.x), Math.abs(y - goal.y)) <= 1 && !onGoal(x, y);
     const walkOn = target.kind === 'portal';
-    const path = findPath((x, y) => this.passable(x, y) || (walkOn && onGoal(x, y)), this.player.tile, walkOn ? onGoal : near, goal);
+    const pass = (x: number, y: number) => (this.passable(x, y) && (onGoal(x, y) || !this.portalAt(x, y))) || (walkOn && onGoal(x, y));
+    const path = findPath(pass, this.player.tile, walkOn ? onGoal : near, goal);
     if (!path) {
       app.ui.toast('길을 찾지 못했어요.\n다른 길로 돌아가 봐요.', icon('icon-guide-arrow'), 2200);
       return;
@@ -513,6 +537,8 @@ export class WorldScene extends Phaser.Scene {
     for (const img of this.water) next(img);
     for (const v of this.views) {
       if (v.obj.type === 'portal' && !v.obj.sprite && v.image) next(v.image);
+      // 놀이 기계의 불빛(2프레임)도 번갈아 깜빡여요. frameTotal에는 __BASE 프레임이 함께 들어 있어요.
+      if (v.obj.type === 'game' && v.image && v.image.texture.frameTotal > 2) next(v.image);
     }
   }
 
@@ -574,6 +600,11 @@ export class WorldScene extends Phaser.Scene {
 
   private passable(x: number, y: number): boolean {
     return baseWalkable(this.cells, x, y) && !this.solidAt(x, y);
+  }
+
+  /** 그 칸에 보이는 문(포털)이 있는지. 길찾기는 목표가 아닌 문 칸을 피해요(지나가다 들어가지 않게). */
+  private portalAt(x: number, y: number): boolean {
+    return this.viewAt(x, y)?.obj.type === 'portal';
   }
 
   private viewAt(x: number, y: number): View | undefined {
@@ -662,7 +693,7 @@ export class WorldScene extends Phaser.Scene {
 
   /** 바로 옆에서 할 수 있는 일을 알려 줘요(말풍선 표시, 터치 행동 단추, 키 안내). */
   private updatePrompt(): void {
-    const busy = app.ui.isBusy() || app.missions.busy;
+    const busy = app.ui.isBusy() || app.missions.busy || app.minigames.busy;
     this.touch?.setHidden(busy);
     const t = this.player.tile;
     const key = busy || this.walking ? 'busy' : `${t.x},${t.y},${this.player.facing.back},${this.player.facing.flip}`;
@@ -673,7 +704,7 @@ export class WorldScene extends Phaser.Scene {
       const near = key === 'busy' ? undefined : this.nearbyView();
       if (near !== this.near) {
         this.near = near;
-        const label = near ? (ACTION_LABEL[near.obj.type] ?? null) : null;
+        const label = near ? this.actionLabel(near.obj) : null;
         this.touch?.setAction(label);
         if (this.keyHint) {
           this.keyHint.hidden = !label;
@@ -690,6 +721,12 @@ export class WorldScene extends Phaser.Scene {
     } else {
       this.talkMark?.setVisible(false);
     }
+  }
+
+  /** 행동 단추·키 안내의 말. 건물 안의 문은 '나가기'예요. */
+  private actionLabel(o: MapObject): string | null {
+    if (o.type === 'portal' && this.def.theme === 'room') return '나가기';
+    return ACTION_LABEL[o.type] ?? null;
   }
 
   /**
@@ -727,7 +764,7 @@ export class WorldScene extends Phaser.Scene {
   }
 
   private blocked(): boolean {
-    return this.walking || app.ui.isBusy() || app.missions.busy || !this.scene.isActive();
+    return this.walking || app.ui.isBusy() || app.missions.busy || app.minigames.busy || !this.scene.isActive();
   }
 
   private async onPointer(p: Phaser.Input.Pointer): Promise<void> {
@@ -758,9 +795,11 @@ export class WorldScene extends Phaser.Scene {
   private async walkToward(goal: Point, target?: View): Promise<void> {
     const from = this.player.tile;
     const walkOn = !target || WALK_TYPES.has(target.obj.type);
-    const near = (x: number, y: number) => Math.max(Math.abs(x - goal.x), Math.abs(y - goal.y)) <= 1 && !(x === goal.x && y === goal.y);
+    const isGoal = (x: number, y: number) => x === goal.x && y === goal.y;
+    const near = (x: number, y: number) => Math.max(Math.abs(x - goal.x), Math.abs(y - goal.y)) <= 1 && !isGoal(x, y);
     if (!walkOn && near(from.x, from.y)) return this.interact(target!);
-    const pass = (x: number, y: number) => this.passable(x, y) || (walkOn && x === goal.x && y === goal.y && baseWalkable(this.cells, x, y));
+    // 목표가 아닌 문 칸은 피해서 걸어요(마을 공방 같은 건물 칸을 지나가다 들어가지 않게).
+    const pass = (x: number, y: number) => (this.passable(x, y) && (isGoal(x, y) || !this.portalAt(x, y))) || (walkOn && isGoal(x, y) && baseWalkable(this.cells, x, y));
     const path = findPath(pass, from, walkOn ? (x, y) => x === goal.x && y === goal.y : near, goal);
     if (!path) {
       if (target) this.player.face(goal.x - from.x, goal.y - from.y);
@@ -890,9 +929,19 @@ export class WorldScene extends Phaser.Scene {
         return this.usePortal(v);
       case 'pickup':
         return this.pickUp(v);
+      case 'game':
+        return this.playGame(v);
       default:
         return;
     }
+  }
+
+  /** 놀이 기계: 미니게임 창을 열어요. 닫으면 뽑은 인형 같은 보상이 맵에 바로 보여요. */
+  private async playGame(v: View): Promise<void> {
+    if (v.obj.type !== 'game') return;
+    await app.minigames.open(v.obj.game);
+    this.dirty = true;
+    app.hud.refresh();
   }
 
   private async talk(v: View): Promise<void> {
@@ -1014,7 +1063,7 @@ export class WorldScene extends Phaser.Scene {
     }
     const report = await runBattle(v.obj.mob, {
       canFlee: true,
-      floor: this.def.theme === 'castle' ? 'tile-castle' : this.def.theme === 'workshop' ? 'tile-wood' : this.def.theme === 'observatory' ? 'tile-observatory' : this.def.theme === 'lab' ? 'tile-lab' : this.def.theme === 'harbor' ? 'tile-dock' : this.def.theme === 'desert' ? 'tile-sand' : this.def.theme === 'cave' ? 'tile-cave' : this.def.theme === 'dungeon' ? 'tile-stone' : 'tile-grass',
+      floor: THEME[this.def.theme].floor,
       prefill: mob.prefill,
       intro: mob.prefill ? `${mob.name}가 카드 순서를 뒤섞어 놓았어요!\n틀린 카드를 찾아 고쳐요.` : undefined,
     });

@@ -44,6 +44,10 @@ export function edgeMaterial(kind: TileKind): EdgeMaterial {
     case 'crate':
     case 'wood':
     case 'bridge':
+    case 'room':
+    case 'rug':
+    case 'roomwall':
+    case 'roomwindow':
       return 'wood';
     case 'grass':
     case 'flower':
