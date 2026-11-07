@@ -128,6 +128,61 @@
       "density": 2
     },
     {
+      "key": "prop-workshop",
+      "file": "prop/prop-workshop.png",
+      "density": 2
+    },
+    {
+      "key": "tile-room",
+      "file": "tile/tile-room.png",
+      "density": 2
+    },
+    {
+      "key": "tile-rug",
+      "file": "tile/tile-rug.png",
+      "density": 2
+    },
+    {
+      "key": "tile-doormat",
+      "file": "tile/tile-doormat.png",
+      "density": 2
+    },
+    {
+      "key": "block-room-wall",
+      "file": "block/block-room-wall.png",
+      "density": 2
+    },
+    {
+      "key": "block-room-window",
+      "file": "block/block-room-window.png",
+      "density": 2
+    },
+    {
+      "key": "prop-workbench",
+      "file": "prop/prop-workbench.png",
+      "density": 2
+    },
+    {
+      "key": "prop-toybox",
+      "file": "prop/prop-toybox.png",
+      "density": 2
+    },
+    {
+      "key": "prop-plant",
+      "file": "prop/prop-plant.png",
+      "density": 2
+    },
+    {
+      "key": "prop-floorlamp",
+      "file": "prop/prop-floorlamp.png",
+      "density": 2
+    },
+    {
+      "key": "prop-cushion",
+      "file": "prop/prop-cushion.png",
+      "density": 2
+    },
+    {
       "key": "tile-castle",
       "file": "tile/tile-castle.png",
       "density": 2

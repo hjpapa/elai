@@ -69,7 +69,7 @@ export async function loadAsset(spec, symbols, sourceRoot = resolve(root, 'asset
   const legacyPath = resolve(sourceRoot, spec.kind, `${spec.key}.txt`);
   const hiresPath = resolve(sourceRoot, 'hires', spec.kind, `${spec.key}.txt`);
   const [oldText, newText] = await Promise.all([optionalSource(legacyPath), optionalSource(hiresPath)]);
-  if (oldText === null && newText === null) throw new Error(`${spec.key}: 옛 원본과 2배 원본이 모두 없어요.`);
+  if (oldText === null && newText === null) return null;
   // 잘못된 2배 원본을 옛 원본으로 조용히 대체하지 않아요. 비교용 옛 원본도 함께 검사해요.
   const legacy = oldText === null ? null : renderFrames(spec, parseFrames(oldText, spec, symbols), symbols);
   const density = newText === null ? 1 : 2;
@@ -165,11 +165,14 @@ export function packAtlas(assets) {
 
 async function main() {
   const palette = parsePalette(JSON.parse(await readFile(resolve(root, 'assets-src/palette.json'), 'utf8')));
-  const seen = new Set(), assets = [];
+  const seen = new Set(), assets = [], missing = [];
   // 모든 원본과 비교판을 먼저 검사/생성해, 잘못된 원본은 기존 결과를 덮어쓰기 전에 거절해요.
   for (const spec of ASSETS) {
     if (seen.has(spec.key) || ![spec.w, spec.h, spec.frames].every(n => Number.isInteger(n) && n > 0)) throw new Error(`계약의 키 또는 크기가 잘못됐어요: ${spec.key}`);
-    seen.add(spec.key); assets.push(await loadAsset(spec, palette.symbols));
+    seen.add(spec.key);
+    const asset = await loadAsset(spec, palette.symbols);
+    if (asset) assets.push(asset);
+    else missing.push(spec.key);
   }
   const atlas = packAtlas(assets);
   const sheet = contactSheet(assets, palette.symbols.get('O'));
@@ -185,6 +188,7 @@ async function main() {
   await writeFile(resolve(root, 'public/assets/atlas.json'), JSON.stringify(atlas.data, null, 2) + '\n');
   const manifest = { version: 1, palette: palette.colors, assets: entries, atlas: { image: 'atlas.png', data: 'atlas.json' } };
   await writeFile(resolve(root, 'public/assets/manifest.json'), JSON.stringify(manifest, null, 2) + '\n');
+  console.log(`원본이 없는 키 ${missing.length}개: ${missing.join(', ') || '없음'}`);
   console.log(`아틀라스: ${atlas.image.width}×${atlas.image.height}`);
   console.log(`그림 ${entries.length}개 · 2배 ${assets.filter(asset => asset.density === 2).length}개 · 팔레트 ${palette.colors.length}색 생성 완료`);
   console.log(`검토판: contact-sheet.png ${sheet.width}×${sheet.height}, pilot-sheet.png ${pilot.width}×${pilot.height} (1배 원본×4 / 2배 원본×2)`);

@@ -40,11 +40,16 @@ try {
   await assert.rejects(() => loadAsset(spec, palette.symbols, fixture), /높이/);
   await unlink(newPath); const fallback = await loadAsset(spec, palette.symbols, fixture);
   assert.equal(fallback.density, 1); assert.equal(fallback.png.width, 2);
-  await unlink(oldPath); await assert.rejects(() => loadAsset(spec, palette.symbols, fixture), /모두 없어요/);
+  await unlink(oldPath); assert.equal(await loadAsset(spec, palette.symbols, fixture), null);
+  await writeFile(newPath, newText);
+  const newOnly = await loadAsset(spec, palette.symbols, fixture);
+  assert.equal(newOnly.density, 2); assert.equal(newOnly.legacy, null);
+  await writeFile(oldPath, 'GGG\nGG\n');
+  await assert.rejects(() => loadAsset(spec, palette.symbols, fixture), /너비/);
   assert.throws(() => packAtlas([{ spec, png: new PNG({ width: 4097, height: 1 }) }]), /4096/);
 } finally {
   const absolute = resolve(fixture), parent = resolve(tmpdir()) + sep;
   if (!absolute.startsWith(parent) || !basename(absolute).startsWith('elai-c11-source-')) throw new Error('임시 검증 폴더 경로가 달라요.');
   await rm(absolute, { recursive: true, force: true });
 }
-console.log('C11 생성기: 팔레트 보존·오류 거절·2배 우선·옛 원본 보존/복귀·아틀라스 규격 검증 통과');
+console.log('C11–C13 생성기: 팔레트 보존·오류 거절·2배 우선·옛 원본 보존/복귀·없는 키 생략·새 원본 단독·아틀라스 규격 검증 통과');
