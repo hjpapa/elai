@@ -44,3 +44,27 @@
 | `prop-claw` | 없음(UI 집게) | 없음 |
 
 재생성 도구: `draw-c13-2-machine.mjs`, `draw-c13-2-claw.mjs`, `draw-c13-2-icons.mjs`(모두 `assets-src/tools/`) → `npm run assets` → `node assets-src/tools/preview-c13.mjs 2`.
+
+## 3단계 — 섬 친구 인형
+
+- 완료 6키: `prop-doll-dummy`, `prop-doll-slime`, `prop-doll-bug`, `prop-doll-bat`, `prop-doll-guardian`, `prop-doll-robi`. 각각 32×32·1프레임·density 2. 미완료 키 없음.
+- C13 새 그림 **21키·25프레임 완료**, 생성기 출력은 **원본이 없는 키 0개**예요. 전체 **207키·540프레임**, 아틀라스 **2048×2048**를 유지해요.
+- 검증: `npm run assets`, `npm test` **21파일·229개**, `npm run build` 통과. 갤러리의 모든 키가 density 2, 크기/기준점 오류 0, pageerror 0.
+- 비교판: `assets-preview/compare-13-3.png`(임시/새 인형 6종 + 동일 발 기준의 방석 합성). 각 담당 검토판에는 정화 몹 원본·32/48px·밝은/어두운 배경도 있어요.
+- 실제 놀이 첫 판을 새 32×32 인형으로 재실행해 집기/운반/별 3개 성공 화면을 확인했어요. 집게 아래에서 얼굴이 보이고 보상 그림도 정상이에요.
+- 실내 6개 자리 확인: 시각 검토 동안만 인형 보유 플래그 6개를 켰다가 복원했어요. 모든 인형은 원본 32×32·논리 16×16·originY 0.875로 각각 방석과 같은 좌표에 앉아요. 진열장 6종도 원본 32×32 → 표시 48×48을 확인했어요. **6판 전체를 실제 완료했다는 뜻은 아니에요.**
+- 390×844 브라우저 창에서도 놀이판·출구·집게·주문 인형을 직접 확인했어요(실물 휴대폰 테스트는 아님). 집게 표시 너비 약41.6px, 출구 약52.9px, 주문 인형48px, 집기 카드28px예요.
+- 품질: 허수아비 모자, 슬라임 잎, 벌레 0·1, 박쥐 날개, 수호자 이끼/꽃/나무, 로비 화면/안테나를 유지해요. 정화 몹의 색을 이어 받아 임시 그림과 달리 박쥐는 민트색이에요. 둥근 단추와 실구멍, 짧은 봉제선으로 천 인형을 표현했어요.
+- Claude 확인: 여섯 인형의 실루엣과 단추 눈, 작은 크기에서 벌레 0·1 읽힘. 추가 색 필요 없음.
+- 필요한 변경: 그림 연결에는 없음. 진열장 설명의 `인형`이 `인 / 형`으로 갈리는 기존 줄바꿈을 관찰했어요. 다듬으려면 Claude가 `src/ui/styles.css`의 이름 줄바꿈/너비를 검토해 주세요(이번 범위 밖이라 수정하지 않음).
+
+| 키 | 발밑 그림자 너비(논리 px) | 불빛 |
+|---|---|---|
+| `prop-doll-dummy` | 없음 | 없음 |
+| `prop-doll-slime` | 없음 | 없음 |
+| `prop-doll-bug` | 없음 | 없음 |
+| `prop-doll-bat` | 없음 | 없음 |
+| `prop-doll-guardian` | 없음 | 없음 |
+| `prop-doll-robi` | 없음 | 없음 |
+
+재생성 도구: `draw-c13-3-dummy-robi.mjs`, `draw-c13-3-slime-guardian.mjs`, `draw-c13-3-bug-bat.mjs`(모두 `assets-src/tools/`) → `npm run assets` → `node assets-src/tools/preview-c13.mjs 3`.

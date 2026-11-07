@@ -203,6 +203,36 @@
       "density": 2
     },
     {
+      "key": "prop-doll-dummy",
+      "file": "prop/prop-doll-dummy.png",
+      "density": 2
+    },
+    {
+      "key": "prop-doll-slime",
+      "file": "prop/prop-doll-slime.png",
+      "density": 2
+    },
+    {
+      "key": "prop-doll-bug",
+      "file": "prop/prop-doll-bug.png",
+      "density": 2
+    },
+    {
+      "key": "prop-doll-bat",
+      "file": "prop/prop-doll-bat.png",
+      "density": 2
+    },
+    {
+      "key": "prop-doll-guardian",
+      "file": "prop/prop-doll-guardian.png",
+      "density": 2
+    },
+    {
+      "key": "prop-doll-robi",
+      "file": "prop/prop-doll-robi.png",
+      "density": 2
+    },
+    {
       "key": "tile-castle",
       "file": "tile/tile-castle.png",
       "density": 2
