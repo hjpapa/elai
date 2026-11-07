@@ -299,6 +299,7 @@ export class ClawGame implements MinigameEngine {
     this.clawArm.classList.add('down');
     this.ctx.sfx('click');
     await sleep(LIFT_MS);
+    if (!this.alive) return;
     this.clawHead.src = this.ctx.icon('prop-claw', 1);
     const dollImg = f.doll ? cell?.querySelector<HTMLImageElement>('img.doll') : null;
     if (dollImg) {
@@ -308,6 +309,7 @@ export class ClawGame implements MinigameEngine {
       dollImg.remove();
     }
     await sleep(180);
+    if (!this.alive) return;
     this.clawArm.classList.remove('down');
     await sleep(LIFT_MS);
     if (!this.alive) return;
@@ -322,8 +324,10 @@ export class ClawGame implements MinigameEngine {
       this.claw.classList.add('bump');
       this.ctx.sfx('fail');
       await sleep(320);
+      if (!this.alive) return;
       this.clawArm.classList.add('down');
       await sleep(LIFT_MS);
+      if (!this.alive) return;
       this.clawHeld.hidden = true;
       cell?.append(this.dollImg(f.doll));
       this.clawHead.src = open;
@@ -336,6 +340,7 @@ export class ClawGame implements MinigameEngine {
     this.claw.classList.add('carry');
     this.placeClaw(exit.x, exit.y, f.dir);
     await sleep(CARRY_MS);
+    if (!this.alive) return;
     this.claw.classList.remove('carry');
     this.clawHead.src = open;
     this.clawHeld.hidden = true;
@@ -393,17 +398,18 @@ export class ClawGame implements MinigameEngine {
   private async finishRun(outcome: ClawOutcome, frames: ClawFrame[]): Promise<void> {
     const r = this.round;
     const editor = this.editor;
-    if (!r || !editor) return;
+    if (!this.alive || !r || !editor) return;
     if (outcome === 'success') {
+      const stars = starsFor(countBlocks(editor.value), r.optimal);
+      // 성공은 바로 저장하고, 아래 기다림은 결과 화면을 보여 주는 연출에만 써요.
+      const allAfter = DOLLS.every((d) => d.id === r.target || this.ctx.hasFlag(dollFlag(d.id)));
+      const result = this.ctx.clear(r.id, stars, { flags: [dollFlag(r.target)], ...(allAfter ? { title: CLAW_TITLE } : {}) });
       editor.highlight(null);
       this.ctx.sfx('success');
-      const stars = starsFor(countBlocks(editor.value), r.optimal);
       this.talk(stars === 3 ? '주문한 인형이 나왔어요!\n가장 짧은 프로그램이에요!' : '주문한 인형이 나왔어요!\n블록을 더 줄일 수 있을까요?', 'good');
       this.setBusy(true);
       await sleep(900);
       if (!this.alive) return;
-      const allAfter = DOLLS.every((d) => d.id === r.target || this.ctx.hasFlag(dollFlag(d.id)));
-      const result = this.ctx.clear(r.id, stars, { flags: [dollFlag(r.target)], ...(allAfter ? { title: CLAW_TITLE } : {}) });
       this.showResult(r, stars, result);
       return;
     }

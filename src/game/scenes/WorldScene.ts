@@ -809,12 +809,19 @@ export class WorldScene extends Phaser.Scene {
       return;
     }
     this.interrupted = false;
-    for (const step of path.slice(1)) {
-      if (this.interrupted) break;
-      const ok = await this.stepTo(step.x, step.y, true);
-      if (!ok) return;
+    const walker = this.player;
+    try {
+      for (const step of path.slice(1)) {
+        if (this.interrupted) break;
+        const ok = await this.stepTo(step.x, step.y, true);
+        if (!ok) return;
+      }
+      if (target && !this.interrupted && !walkOn) await this.interact(target);
+    } finally {
+      // 클릭 길찾기는 도착·중단·막힘 뒤 멈춰요. 키 이동과 문 이동은 이어 가요.
+      // 기다리는 사이 씬이 다시 시작됐다면 새 플레이어를 멈추지 않아요.
+      if (this.player === walker && this.scene.isActive() && !this.walking && !this.anyMoveKey()) walker.stopWalking();
     }
-    if (target && !this.interrupted && !walkOn) await this.interact(target);
   }
 
   /** 한 칸 걷기. 걸은 뒤 밟은 것·옆의 몹을 처리해요. 계속 걸어도 되면 true */

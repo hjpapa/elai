@@ -25,10 +25,18 @@ export interface RunResult {
 export function run(program: Block[], env: Env, maxSteps = 300): RunResult {
   const steps: string[] = [];
   let truncated = false;
+  // 명령을 실행하지 않는 빈 반복·조건도 작업량을 써요. 명령 수·위치 기록은 그대로 둬요.
+  let workLeft = Math.max(10_000, maxSteps * 100);
+  const shouldStop = (): boolean => {
+    if (env.halted() || truncated) return true;
+    if (workLeft-- > 0) return false;
+    truncated = true;
+    return true;
+  };
 
   const walk = (blocks: Block[], prefix: string): void => {
     for (let i = 0; i < blocks.length; i++) {
-      if (env.halted() || truncated) return;
+      if (shouldStop()) return;
       const b = blocks[i];
       const path = prefix ? `${prefix}.${i}` : `${i}`;
       if (b.t === 'cmd') {
@@ -40,7 +48,7 @@ export function run(program: Block[], env: Env, maxSteps = 300): RunResult {
         env.exec(b.cmd, path);
       } else if (b.t === 'repeat') {
         for (let k = 0; k < b.times; k++) {
-          if (env.halted() || truncated) return;
+          if (shouldStop()) return;
           walk(b.body, path);
         }
       } else {

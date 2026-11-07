@@ -1805,6 +1805,20 @@ h3 {
   align-items: center;
   gap: 10px;
 }
+.game-top .mission-intro {
+  word-break: keep-all;
+}
+@media (max-width: 720px) {
+  /* 판 고르기 단추가 안내문의 폭을 줄이지 않도록 따로 놓아요. */
+  .game-top {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+  .game-top > .btn {
+    align-self: flex-start;
+  }
+}
 .claw-machine {
   max-width: 470px;
   margin: 0 auto;

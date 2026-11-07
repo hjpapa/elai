@@ -347,6 +347,7 @@ export class SortGame implements MinigameEngine {
         this.showBelt(s.belt);
         this.talk(`${s.belt + 1}번째 상자 줄이에요.\n같은 프로그램으로 나눠요.`);
         await sleep(350);
+        if (!this.alive) return;
       }
       await this.play(s.frame);
     }
@@ -403,17 +404,18 @@ export class SortGame implements MinigameEngine {
   private async finishRun(outcome: SortOutcome, failedBelt: number, steps: Step[]): Promise<void> {
     const r = this.round;
     const editor = this.editor;
-    if (!r || !editor) return;
+    if (!this.alive || !r || !editor) return;
     if (outcome === 'success') {
+      const stars = starsFor(countBlocks(editor.value), r.optimal);
+      // 성공은 바로 저장하고, 아래 기다림은 결과 화면을 보여 주는 연출에만 써요.
+      const allAfter = SORT_ROUNDS.every((x) => x.id === r.id || this.ctx.hasFlag(stampFlag(x.id)));
+      const result = this.ctx.clear(r.id, stars, { flags: [stampFlag(r.id)], ...(allAfter ? { title: SORT_TITLE } : {}) });
       editor.highlight(null);
       this.ctx.sfx('success');
-      const stars = starsFor(countBlocks(editor.value), r.optimal);
       this.talk(stars === 3 ? '모두 맞게 나눴어요!\n가장 짧은 프로그램이에요!' : '모두 맞게 나눴어요!\n블록을 더 줄일 수 있을까요?', 'good');
       this.setBusy(true);
       await sleep(900);
       if (!this.alive) return;
-      const allAfter = SORT_ROUNDS.every((x) => x.id === r.id || this.ctx.hasFlag(stampFlag(x.id)));
-      const result = this.ctx.clear(r.id, stars, { flags: [stampFlag(r.id)], ...(allAfter ? { title: SORT_TITLE } : {}) });
       this.showResult(r, stars, result);
       return;
     }

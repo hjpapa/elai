@@ -68,6 +68,45 @@ describe('인터프리터', () => {
     expect(steps).toHaveLength(8);
   });
 
+  it('명령이 없는 중첩 반복도 작업량이 너무 많으면 멈춰요', () => {
+    let program: Block[] = [];
+    for (let i = 0; i < 6; i++) program = [{ t: 'repeat', times: 9, body: program }];
+    const result = run(program, { exec: () => {}, test: () => false, halted: () => false });
+    expect(result).toEqual({ steps: [], truncated: true });
+  });
+
+  it('빈 조건 분기만 반복해도 작업량 상한을 지켜요', () => {
+    let program: Block[] = [{ t: 'if', cond: 'pathAhead', yes: [], no: [] }];
+    for (let i = 0; i < 6; i++) program = [{ t: 'repeat', times: 9, body: program }];
+    let checks = 0;
+    const result = run(program, { exec: () => {}, test: () => { checks++; return false; }, halted: () => false });
+    expect(result).toEqual({ steps: [], truncated: true });
+    expect(checks).toBeGreaterThan(0);
+    expect(checks).toBeLessThan(9 ** 6);
+  });
+
+  it('짧은 빈 반복·조건은 명령 수를 쓰지 않고 다음 명령을 실행해요', () => {
+    const program: Block[] = [
+      { t: 'repeat', times: 9, body: [] },
+      { t: 'repeat', times: 9, body: [{ t: 'if', cond: 'pathAhead', yes: [], no: [] }] },
+      cmd('right'),
+    ];
+    const commands: Cmd[] = [];
+    const result = run(program, { exec: c => { commands.push(c); }, test: () => false, halted: () => false }, 1);
+    expect(commands).toEqual(['right']);
+    expect(result).toEqual({ steps: ['2'], truncated: false });
+  });
+
+  it('반복·조건을 거친 정상 명령의 위치와 명령 상한은 그대로예요', () => {
+    const program: Block[] = [
+      { t: 'repeat', times: 3, body: [{ t: 'if', cond: 'pathAhead', yes: seq('right'), no: [] }] },
+      cmd('down'),
+    ];
+    const env = { exec: () => {}, test: () => true, halted: () => false };
+    expect(run(program, env, 4)).toEqual({ steps: ['0.0.y.0', '0.0.y.0', '0.0.y.0', '1'], truncated: false });
+    expect(run(program, env, 3)).toEqual({ steps: ['0.0.y.0', '0.0.y.0', '0.0.y.0'], truncated: true });
+  });
+
   it('무한 반복은 멈춰요', () => {
     const data: BlockCodeData = { intro: '', grid: ['S.G'], palette: ['turnLeft'], optimal: 1, hint: '' };
     const env = new GridEnv(data);
