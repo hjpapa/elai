@@ -97,7 +97,8 @@ export class ClawGame implements MinigameEngine {
         'figure',
         { class: `doll ${has ? 'got' : ''}`.trim(), title: has ? d.desc.replace('\n', ' ') : '아직 뽑지 않았어요' },
         pxImg(ctx.icon(d.sprite), 48, has ? d.name : '빈 자리'),
-        h('figcaption', {}, has ? d.name : '?'),
+        // 진열장은 '내 인형'이라서 이름 끝의 '인형'을 빼요(좁은 칸에서 두 줄로 갈라지지 않게).
+        h('figcaption', {}, has ? d.name.replace(/ 인형$/, '') : '?'),
       );
     });
     this.say = h('div', { class: 'robi-say' });

@@ -60,6 +60,15 @@ describe('불빛', () => {
     expect(lightOf('prop-portal', 0)?.glow).toBe('cool');
     expect(lightOf('prop-portal', 1)?.glow).toBe('cool');
   });
+
+  it('마을 공방: 열린 문(프레임 1)에서만 금빛이 새어 나오고, 인형뽑기 기계는 청록 빛이에요', () => {
+    expect(lightOf('prop-workshop', 0)).toBeNull();
+    expect(lightOf('prop-workshop', 1)).toMatchObject({ at: 0.28, r: 12 });
+    expect(lightOf('prop-workshop', 1)?.glow ?? 'warm').toBe('warm');
+    expect(lightOf('prop-claw-machine', 0)?.glow).toBe('cool');
+    expect(lightOf('prop-claw-machine', 1)?.glow).toBe('cool');
+    expect(lightOf('prop-floorlamp', 0)).not.toBeNull();
+  });
 });
 
 describe('섬 가장자리', () => {

@@ -347,9 +347,12 @@ export class WorldScene extends Phaser.Scene {
       case 'sign':
         v.image = image('prop-sign');
         break;
-      case 'portal':
-        v.image = image(obj.sprite ?? 'prop-portal');
+      case 'portal': {
+        // 2프레임 문 그림은 처음부터 열림(1)·닫힘(0) 프레임으로 그려요(공방 문 불빛이 열린 프레임을 따라요).
+        const frame = obj.sprite && portalGate(app.state, classUnlock(), this.def.id, obj).open ? 1 : 0;
+        v.image = image(obj.sprite ?? 'prop-portal', frame);
         break;
+      }
       case 'prop':
         v.image = image(obj.sprite, obj.frame ?? 0);
         break;

@@ -22,9 +22,10 @@ const LIGHTS: Record<string, Light> = {
   'prop-buoy': { at: 0.71, r: 4 },
   'prop-crystal': { at: 0.62, r: 8, frames: [1], glow: 'cool' },
   'prop-portal': { at: 0.39, r: 12, glow: 'cool' },
-  // C13 마을 공방: 스탠드 전등갓, 인형뽑기 기계 위 불빛
+  // C13 마을 공방: 스탠드 전등갓, 인형뽑기 기계 위 불빛, 열린 공방 문에서 새어 나오는 빛
   'prop-floorlamp': { at: 0.8, r: 10 },
   'prop-claw-machine': { at: 0.82, r: 12, glow: 'cool' },
+  'prop-workshop': { at: 0.28, r: 12, frames: [1] },
 };
 
 const GLOW: Record<Glow, readonly number[]> = {
