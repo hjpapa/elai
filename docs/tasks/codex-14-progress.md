@@ -51,3 +51,33 @@
 재생성: `draw-c14-2-items.mjs`, `draw-c14-2-cards.mjs`, `draw-c14-2-basket-stamp.mjs`(모두 `assets-src/tools/`) → `npm run assets` → `node assets-src/tools/preview-c14.mjs 2`.
 
 브라우저 증거: 위 `output/playwright/` 폴더의 `c14-stage2-empty-stamps.png`, `c14-stage2-r1-program.png`~`c14-stage2-r6-program.png`, `c14-stage2-r1-success.png`~`c14-stage2-r6-success.png`, `c14-stage2-basket-filled.png`, `c14-stage2-mobile-board.png`, `c14-stage2-all-stamps.png`, `c14-stage2-earned-stacks.png`. 실제 클릭 재현 스크립트 `c14-stage2-*.js`, 픽셀 검증 `c14-audit.mjs`도 같은 폴더에 있어요.
+
+## 3단계 — 동굴 벽 윗면 다듬기
+
+- 완료: `block-cave` 64×48·1프레임·density 2. 이번 단계/전체 미완료 키 없음.
+- C13 바닥과 같은 가는 돌 틈을 쓰되, 벽 윗면은 한 톤 낮춘 d 바탕 970px / S 가는 틈 94px / f 돌턱 18px / 흐린 광맥 6px로 정리했어요. 바닥과 벽이 같은 기본색이면 실제 되풀이 동굴에서 통로 구분이 약해져, 최종안은 벽의 기본색만 낮췄어요.
+- 밝은 광물 22px → 0, 밝은 판돌 f/i 175px → 짧은 돌턱 f 18px. 윗면 마름모 1,088px 중 891px 변경, 윗면 밖 1,984px(옆면·투명 영역) 차이 **0**, 투명 마스크 차이 **0**. 전체 불투명 2,112px, 알파 0/255예요.
+- 기준본 `assets-src/reference/c14-block-cave-before.txt`와 `.png`를 보관했어요. PNG의 Git blob은 시작점 `119cd22`와 동일해요. 기존 1배 벽·C13 바닥은 그대로예요.
+- `assets-preview/compare-14-3.png`: 옛/새 벽, C13 바닥과 연결한 4×4 및 기존 수정을 함께 보여 줘요. 별도 `c14-3-cave-wall-small.png`, `c14-3-cave-wall-wide.png`(12×12), `c14-3-cave-wall-tones.png`(첫 색안/최종 색안)도 직접 확인했어요. 모두 검토용이며 커밋하지 않아요.
+- 실제 `cave`의 바닥320개·벽98개, `cavedeep`의 바닥330개·벽283개를 전후 비교했어요. 최종안에서 밝은 통로와 어두운 벽 윗면이 구별되고 기존 남색 옆면으로 높이가 남아요. 벽 원본64×48·논리 표시32×24·origin(0.5, 2/3), 즉 논리 y16 기준을 확인했어요.
+- 동굴 검토는 맵을 재시작하고 안개를 공개한 시각 검토 상태이며 2장 전체 완료 검증은 아니에요. 검토 후 원래 택배소 체험 상태를 복구했고 새로 열어 실제 도장6개/상자6더미가 남은 것을 확인했어요.
+- `npm run assets`, `npm test` **22파일·247개**, `npm run build`, 기존 `check-hires-pipeline.mjs` 통과. 최종 픽셀 검사에서 C14 11키+벽 원본→PNG 43,008픽셀, 전체 PNG→아틀라스 1,258,752픽셀 불일치 0. 갤러리 **218키·555프레임·620이미지**, 모두 density 2, 크기/기준점 오류 0, pageerror 0, 콘솔 오류/경고 0.
+- 아틀라스 **2048×2048**, 원본 누락 **0**, 띠 면적 합계 기준 사용률 **30.01%**(패딩 제외).
+- 새 소품이 없는 단계이므로 추가 그림자·불빛 항목은 없어요. 기존 수정 그림/불빛은 바꾸지 않았어요. 추가 색 요청 없음.
+- Claude 확인/품질 판단: 되풀이 동굴에서 길과 벽의 밝기 차이, 작은 화면의 돌턱, 단일 타일이라 남는 가는 균열의 반복을 봐 주세요. 밝은 판돌·광물의 반복은 크게 줄였고 옆면은 픽셀 단위로 보존했어요.
+- 필요한 범위 밖 변경: 이번 동굴 그림에는 없음. 2단계에서 기록한 휴대폰 안내문 줄바꿈은 선택 후속이에요.
+
+재생성 순서: 예전 `draw-c12-3-world.mjs`를 실행했다면 **`node assets-src/tools/draw-c13-4-cave.mjs` → `node assets-src/tools/draw-c14-3-cave-wall.mjs` → `npm run assets` → `node assets-src/tools/preview-c14.mjs 3`** 순서로 돌려 주세요. C14 벽 도구는 보관 기준본에서 시작하므로 옆면을 누적해서 바꾸지 않아요. 전체 그림을 다시 만들 때 C13 바닥과 C14 벽 보정을 마지막에 실행해요.
+
+브라우저 증거: 위 `output/playwright/`의 `c14-stage3-before-cave.png`, `c14-stage3-before-cavedeep.png`, `c14-stage3-after-cave.png`, `c14-stage3-after-cavedeep.png`, `c14-final-parcel.png`; 재현 도구 `c14-caves-before.js`, `c14-caves-after.js`, `c14-final-parcel.js`.
+
+## 최종 전달
+
+- 1~3단계 완료: 새 그림11키·15프레임 + 기존 동굴 벽1키 재작화. 남은 키 없음.
+- 단계1 `42226ca` — `C14-1: 택배소 건물과 방 소품 2배 그림`.
+- 단계2 `b71877e` — `C14-2: 놀이 판 그림 2배 그림`.
+- 단계3 해시는 이 문서를 포함하는 `C14-3: 동굴 벽 윗면 다듬기` 커밋에서 확인해 주세요.
+- 허용된 `assets-src/**`, 생성된 `public/assets/**`, 이 진행 기록만 수정했어요. 엔진·계약·팔레트·기존 1배 원본·설정·테스트·공용 도구는 변경하지 않았어요. 별도 읽기 전용 검토에서도 신규11키 규격과 변경 범위를 확인했어요.
+- 그림자·불빛은 1단계/2단계 표의 기존 설정을 유지하면 돼요. 추가 팔레트 색은 요청하지 않아요.
+- Claude 검토 우선순위: 작은 하트/별/공 및 보내기 화살표 식별성 → 동굴의 통로 구분/균열 반복 → 휴대폰 안내문 줄바꿈. 기능상 필수 후속 변경은 없어요.
+- 작업은 `C:/code/elai-wt/codex-14`의 `codex/14-parcel`에서만 했어요. main 커밋·브랜치 전환·push·merge·배포는 하지 않았고, 포트5173도 사용하지 않았어요.
