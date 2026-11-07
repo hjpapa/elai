@@ -93,6 +93,19 @@ export const ASSETS: AssetSpec[] = [
   prop(16, 16)('prop-doll-guardian', '숲 수호자 인형(이끼 머리의 작은 나무 거인)', 0x4f7a3a),
   prop(16, 16)('prop-doll-robi', '로비 인형(안테나 달린 둥근 로봇)', 0xc0c7d1),
 
+  // C14: 2.5D 4단계 — 마을 택배소와 코딩 택배 분류. 벽·바닥은 공방 그림을 같이 써요. 그림이 오기 전에는 임시 그림을 써요.
+  prop(32, 48, 2)('prop-parcel-office', '마을 택배소 건물(0 낡고 닫힘, 1 고쳐지고 문 열림·창에 불빛). 문 위에 상자 간판', 0x478bc7),
+  prop(32, 48, 2)('prop-sorter', '택배 분류 기계(위에서 벨트가 내려와 왼쪽·오른쪽 바구니로 갈라져요. 0·1 벨트 무늬가 움직이고 불빛이 번갈아 켜져요)', 0x49b5b1),
+  prop(16, 24, 2)('prop-parcel-stack', '보낸 상자 더미(0 하트 상자 위주, 1 별 상자 위주). 바닥에 바로 놓여요', 0xd39a62),
+  prop(32, 32)('prop-parcel-pile', '입구 옆에 쌓인 택배 상자 더미(장식)', 0xa76c46),
+  prop(16, 16, 2)('prop-sort-basket', '분류 바구니(0 비어 있음, 1 물건이 담김)', 0xbd7959),
+  icon('icon-sort-heart', '하트 그림이 붙은 빨간 상자(놀이 판에 서 있어요)', 0xed7463),
+  icon('icon-sort-star', '별 그림이 붙은 파란 상자(놀이 판에 서 있어요)', 0x478bc7),
+  icon('icon-sort-ball', '노란 공(둥근 물건, 놀이 판에 서 있어요)', 0xe7b64f),
+  icon('icon-card-sendLeft', '왼쪽으로 보내기 카드(상자와 왼쪽 화살표)', 0x49b5b1),
+  icon('icon-card-sendRight', '오른쪽으로 보내기 카드(상자와 오른쪽 화살표)', 0x49b5b1),
+  icon('icon-stamp', '배달 도장(동그란 도장 자국, 상자 무늬)', 0xb94751),
+
   // C10: 윤리의 성
   tile('tile-castle', '따뜻한 빛의 성 돌바닥', 0xc7d6dc),
   block('block-castle', '성의 보랏빛 돌벽', 0x8c9bab),

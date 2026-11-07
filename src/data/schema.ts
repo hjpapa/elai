@@ -14,8 +14,8 @@ export type Dir = 'up' | 'right' | 'down' | 'left';
 // ── 프로그램(블록) ────────────────────────────────────────
 // 퍼즐(GridEnv)과 전투(BattleEnv)가 같은 인터프리터로 실행해요.
 
-/** 퍼즐 명령: 절대 방향 이동(1~2장) + 상대 방향 이동(3장~) + 줍기 + 집기(공방 인형뽑기) */
-export type GridCmd = 'up' | 'down' | 'left' | 'right' | 'forward' | 'turnLeft' | 'turnRight' | 'collect' | 'grab';
+/** 퍼즐 명령: 절대 방향 이동(1~2장) + 상대 방향 이동(3장~) + 줍기 + 집기(공방 인형뽑기) + 보내기(택배 분류) */
+export type GridCmd = 'up' | 'down' | 'left' | 'right' | 'forward' | 'turnLeft' | 'turnRight' | 'collect' | 'grab' | 'sendLeft' | 'sendRight';
 /** 전투 명령 */
 export type BattleCmd = 'scan' | 'attack' | 'guard' | 'heal' | 'wait';
 export type Cmd = GridCmd | BattleCmd;
@@ -32,6 +32,10 @@ export type Cond =
   | 'pathLeft'
   | 'pathRight'
   | 'onGem'
+  /** 택배 분류: 맨 앞 물건이 하트 상자·별 상자·둥근 물건(공)인지 */
+  | 'boxHeart'
+  | 'boxStar'
+  | 'itemRound'
   | 'enemyAttack'
   | 'enemyGuard'
   | 'enemyCharge'
@@ -544,9 +548,42 @@ export interface ClawRound {
   /** 가장 짧은 풀이의 블록 수(집기 포함, 별점 기준) */
   optimal: number;
   maxBlocks?: number;
-  /** 열리는 때: 이 미션을 끝냈거나, (앞 장을 건너뛴 학생은) 이 로비 부품이 있으면. 없으면 처음부터 열려요. */
-  unlock?: { mission: string; part?: string };
+  unlock?: MinigameUnlock;
   /** 닫혀 있을 때 안내 */
+  lockedText?: string;
+  intro: string;
+  hint: string;
+}
+
+/** 놀이 판이 열리는 때: 이 미션을 끝냈거나, (앞 장을 건너뛴 학생은) 이 로비 부품이 있으면. 없으면 처음부터 열려요. */
+export interface MinigameUnlock {
+  mission: string;
+  part?: string;
+}
+
+/** 택배 분류 물건: 하트 상자, 별 상자, 공(둥근 물건). 색과 그림 모두로 구별돼요. */
+export type SortItem = 'heart' | 'star' | 'ball';
+export type SortSide = 'left' | 'right';
+
+/**
+ * 코딩 택배 분류 한 판. 컨베이어로 오는 물건을 '왼쪽으로 보내기'·'오른쪽으로 보내기'로 바구니에 나눠요.
+ * 보내기 블록 하나가 맨 앞 물건 하나를 보내요. 결과는 학생 프로그램대로만 정해져요(운·코인 없음).
+ */
+export interface SortRound {
+  id: string;
+  title: string;
+  /** 물건 줄(맨 앞이 먼저 와요). 줄이 여럿이면 같은 프로그램으로 모든 줄을 맞게 나눠야 성공해요. */
+  belts: SortItem[][];
+  /** 주문 카드: 물건 → 보낼 바구니 */
+  rule: Partial<Record<SortItem, SortSide>>;
+  palette: Cmd[];
+  allowRepeat?: boolean;
+  /** 쓸 수 있는 조건(없으면 만약 블록 없음) */
+  allowIf?: Cond[];
+  /** 가장 짧은 풀이의 블록 수(별점 기준) */
+  optimal: number;
+  maxBlocks?: number;
+  unlock?: MinigameUnlock;
   lockedText?: string;
   intro: string;
   hint: string;

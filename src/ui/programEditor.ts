@@ -30,6 +30,7 @@ export function cmdKind(c: Cmd): string {
   if (c === 'wait') return 'k-wait';
   if (c === 'scan') return 'k-if';
   if (c === 'grab') return 'k-grab';
+  if (c === 'sendLeft' || c === 'sendRight') return 'k-send';
   return 'k-move';
 }
 

@@ -72,7 +72,17 @@ export const village: MapDef = {
     { id: 'to-ch8', type: 'portal', at: { x: 9, y: 20 }, to: { map: 'castle', at: { x: 2, y: 13 } }, label: '윤리의 성', open: { flag: 'ch7-clear' }, lockedText: '7장을 마치면\n윤리의 성으로 갈 수 있어요.', sprite: 'prop-gate' },
     { id: 'restore-banner', type: 'prop', at: { x: 10, y: 10 }, sprite: 'prop-banner', when: { flag: 'village-restore-8' } },
     ...house('house-a', 8, 6),
-    ...house('house-b', 16, 7),
+    // 마을 택배소: 1장을 끝내 마을이 고쳐지면(village-restore-1) 문이 열려요. 그 전에는 낡은 모습이에요.
+    {
+      id: 'to-parcel',
+      type: 'portal',
+      at: { x: 16, y: 7 },
+      to: { map: 'parcel', at: { x: 6, y: 6 } },
+      label: '마을 택배소',
+      open: { flag: 'village-restore-1' },
+      lockedText: '택배소는 아직 고치는 중이에요.\n1장을 끝내면 마을이 고쳐져요.',
+      sprite: 'prop-parcel-office',
+    },
     ...house('house-c', 8, 13),
     ...house('house-d', 16, 13),
     // 마을 공방: 집 칸으로 걸어 들어가면 공방 안(실내 맵)으로 가요.

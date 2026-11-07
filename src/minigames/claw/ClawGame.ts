@@ -76,7 +76,7 @@ export class ClawGame implements MinigameEngine {
       return h(
         'button',
         {
-          class: `claw-card ${open ? '' : 'locked'} ${stars ? 'done' : ''}`.trim(),
+          class: `game-card ${open ? '' : 'locked'} ${stars ? 'done' : ''}`.trim(),
           disabled: !open,
           onclick: () => this.openRound(r),
           'aria-label': open ? `${i + 1}판 ${r.title}, ${doll?.name ?? ''} 뽑기` : `${i + 1}판 ${r.title}, 닫혀 있어요`,
@@ -84,7 +84,7 @@ export class ClawGame implements MinigameEngine {
         pxImg(ctx.icon(open ? (doll?.sprite ?? 'icon-gem') : 'icon-lock'), 48, ''),
         h(
           'span',
-          { class: 'claw-card-text' },
+          { class: 'game-card-text' },
           h('b', {}, `${i + 1}판 · ${r.title}`),
           h('small', {}, ...lines(open ? clawTier(r) : (r.lockedText ?? '아직 닫혀 있어요.'))),
           open ? this.miniStars(stars) : null,
@@ -107,8 +107,8 @@ export class ClawGame implements MinigameEngine {
         'div',
         { class: 'claw-list' },
         this.say,
-        h('div', { class: 'claw-rounds' }, ...cards),
-        h('h3', { class: 'claw-shelf-title' }, `내 인형 ${got} / ${DOLLS.length}`),
+        h('div', { class: 'game-rounds' }, ...cards),
+        h('h3', { class: 'game-shelf-title' }, `내 인형 ${got} / ${DOLLS.length}`),
         h('div', { class: 'doll-shelf' }, ...shelf),
       ),
     );
@@ -153,7 +153,7 @@ export class ClawGame implements MinigameEngine {
     hint.prepend(pxImg(ctx.icon('icon-hint'), 22));
     const back = this.button('← 판 고르기', 'ghost', () => this.showList());
     ctx.root.append(
-      h('div', { class: 'mission-head claw-top' }, back, h('div', { class: 'mission-intro' }, ...lines(r.intro))),
+      h('div', { class: 'mission-head game-top' }, back, h('div', { class: 'mission-intro' }, ...lines(r.intro))),
       h(
         'div',
         { class: 'puzzle claw-play' },
@@ -163,7 +163,7 @@ export class ClawGame implements MinigameEngine {
           {},
           h(
             'div',
-            { class: 'claw-order' },
+            { class: 'game-order' },
             pxImg(ctx.icon(doll?.sprite ?? 'icon-gem'), 48, doll?.name ?? ''),
             h('div', {}, h('small', {}, '주문 카드'), h('b', {}, `${josa(doll?.name ?? '인형', '을', '를')} 뽑아 주세요`)),
           ),
@@ -435,7 +435,7 @@ export class ClawGame implements MinigameEngine {
     ctx.root.append(
       h(
         'div',
-        { class: 'reward claw-result' },
+        { class: 'reward game-result' },
         h('h2', {}, `${josa(doll?.name ?? '인형', '이', '가')} 나왔어요!`),
         pxImg(ctx.icon(doll?.sprite ?? 'icon-gem'), 96, doll?.name ?? '', 'claw-prize big'),
         h('div', { class: 'stars', 'aria-label': `별 ${stars}개` }, ...[0, 1, 2].map((i) => pxImg(ctx.icon(i < stars ? 'icon-star' : 'icon-star-empty'), 44))),

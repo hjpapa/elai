@@ -1017,6 +1017,9 @@ h3 {
 .k-grab {
   background: #b5487f;
 }
+.k-send {
+  background: #2f8a86;
+}
 .pblock .cost {
   font-size: 12px;
   background: rgba(0, 0, 0, 0.35);
@@ -1716,13 +1719,13 @@ h3 {
 }
 
 /* ── 코딩 인형뽑기(마을 공방, 2.5D 4단계) ── */
-.claw-rounds {
+.game-rounds {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 10px;
   margin: 12px 0 16px;
 }
-.claw-card {
+.game-card {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -1736,28 +1739,29 @@ h3 {
   cursor: pointer;
   box-shadow: 0 3px 0 rgba(16, 19, 27, 0.35);
 }
-.claw-card:hover:not(:disabled) {
+.game-card:hover:not(:disabled) {
   background: #fff9e6;
 }
-.claw-card.done {
+.game-card.done {
   background: #f6e7b8;
 }
-.claw-card.locked {
+.game-card.locked {
   background: #c9c4b8;
   color: #3b4560;
   cursor: not-allowed;
   box-shadow: none;
 }
-.claw-card.locked img {
+.game-card.locked img {
   opacity: 0.6;
 }
-.claw-card-text {
+.game-card-text {
   display: flex;
   flex-direction: column;
   gap: 2px;
   min-width: 0;
+  word-break: keep-all;
 }
-.claw-card-text small {
+.game-card-text small {
   color: #56657a;
   line-height: 1.35;
 }
@@ -1765,7 +1769,7 @@ h3 {
   display: flex;
   gap: 2px;
 }
-.claw-shelf-title {
+.game-shelf-title {
   margin: 6px 0 8px;
   font-size: 17px;
 }
@@ -1796,7 +1800,7 @@ h3 {
   line-height: 1.3;
   word-break: keep-all;
 }
-.claw-top {
+.game-top {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -1938,7 +1942,7 @@ h3 {
     transform: none;
   }
 }
-.claw-order {
+.game-order {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -1949,11 +1953,11 @@ h3 {
   background: #fbf6e9;
   color: #2a2520;
 }
-.claw-order small {
+.game-order small {
   display: block;
   color: #56657a;
 }
-.claw-result img.claw-prize.big {
+.game-result img.claw-prize.big {
   width: 96px;
   height: 96px;
 }
@@ -1965,5 +1969,160 @@ h3 {
   }
   .claw-prize {
     animation: none;
+  }
+}
+
+/* ── 코딩 택배 분류(마을 택배소, 2.5D 4단계) ── */
+.sort-machine {
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 8px 8px 10px;
+  border: 3px solid var(--line);
+  border-radius: 16px;
+  background: linear-gradient(#49b5b1, #2f8a86);
+  box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.25);
+}
+.sort-sign {
+  margin-bottom: 4px;
+  color: #fff4d2;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-align: center;
+  text-shadow: 0 2px 0 #285c4b;
+}
+.sort-belt-label {
+  margin-bottom: 4px;
+  color: #fff4d2;
+  font-size: 14px;
+  text-align: center;
+}
+.sort-machine .board-stage {
+  padding-top: 12px;
+}
+.board.sort-board {
+  background: #344d78;
+  box-shadow: 0 14px 0 #293044;
+}
+.sort-board .cell {
+  background: #c7d6dc;
+}
+.sort-board .cell.alt {
+  background: #bccdd4;
+}
+/* 벨트: 줄무늬 고무 띠, 문: 노란 칸, 미끄럼틀: 화살표 */
+.sort-board .cell.belt {
+  background: repeating-linear-gradient(180deg, #56657a 0 10px, #445968 10px 20px);
+}
+.sort-board .cell.gate {
+  background: #e7b64f;
+}
+.sort-board .cell.chute {
+  background: #8c9bab;
+  color: #fff4d2;
+  font-size: 20px;
+  font-weight: 800;
+}
+.sort-board .cell.chute.left::before {
+  content: '◀';
+}
+.sort-board .cell.chute.right::before {
+  content: '▶';
+}
+.sort-board .cell.bin {
+  background: #d39a62;
+}
+.sort-board .cell.wrong {
+  box-shadow: inset 0 0 0 4px #ed7463;
+}
+.sort-board .cell.bump {
+  animation: shake 0.3s;
+}
+.sort-bin-count {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  z-index: 2;
+  min-width: 20px;
+  padding: 0 5px;
+  border-radius: 8px;
+  background: #293044;
+  color: #fff4d2;
+  font-size: 12px;
+  text-align: center;
+}
+.board.tilt .stand.basket {
+  width: 80%;
+  bottom: 14%;
+}
+.sort-item {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-style: preserve-3d;
+  transition: left 0.26s, top 0.26s;
+  pointer-events: none;
+}
+.sort-item.sending {
+  transition: left 0.32s ease-in, top 0.32s ease-in;
+}
+.sort-item.bump {
+  animation: shake 0.3s;
+}
+.board.tilt .sort-item .stand {
+  width: 60%;
+}
+.sort-queue {
+  margin-top: 10px;
+  padding: 4px 10px;
+  border-radius: 10px;
+  background: #293044;
+  color: #c7d6dc;
+  font-size: 13px;
+  text-align: center;
+}
+.game-order.sort-order {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  word-break: keep-all;
+}
+.sort-order .sort-rule {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  font-weight: 700;
+}
+.stamp-card {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.stamp-card .stamp {
+  margin: 0;
+  width: 70px;
+  padding: 6px 4px;
+  border: 3px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel2);
+  text-align: center;
+}
+.stamp-card .stamp img {
+  filter: grayscale(1) brightness(0.5);
+  opacity: 0.45;
+}
+.stamp-card .stamp.got img {
+  filter: none;
+  opacity: 1;
+}
+.stamp-card figcaption {
+  font-size: 12px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sort-item,
+  .sort-item.sending {
+    transition-duration: 0.01s;
   }
 }
