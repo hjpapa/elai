@@ -58,7 +58,7 @@ if(stage===1){
 if(stage===3){label(sheet,'DOLLS ON CUSHIONS / SHARED FOOT ANCHOR',24,row,ink);for(let i=0;i<records.length;i++){const x=90+i*175;await place('prop-cushion',x,row+160);await place(records[i].spec.key,x,row+160);}}
 if(stage===4){
  label(sheet,'4 X 4 / OLD',24,row,ink);label(sheet,'4 X 4 / NEW',right,row,ink);
- for(let side=0;side<2;side++)for(let y=0;y<4;y++)for(let x=0;x<4;x++)blitScaled(side?records[0].png:records[0].legacy,sheet,(side?right:24)+196+(x-y)*32,row+55+(x+y)*16,1);
+ for(let side=0;side<2;side++)for(let y=0;y<4;y++)for(let x=0;x<4;x++)blitScaled(side?records[0].png:records[0].legacy,sheet,(side?right:24)+192+(x-y)*64,row+55+(x+y)*32,2);
 }
 await mkdir(resolve(root,'assets-preview'),{recursive:true});
 const target=resolve(root,`assets-preview/compare-13-${stage}.png`);await writeFile(target,PNG.sync.write(sheet));console.log(target,`${sheet.width}x${sheet.height}`);

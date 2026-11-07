@@ -122,7 +122,8 @@ export function label(png, text, x, y, color, scale = 2) {
 }
 export function comparisonSheet(assets, palette, keys = PILOT_KEYS) {
   const pilots = keys.map(key => assets.find(asset => asset.spec.key === key)).filter(Boolean);
-  const maxStrip = Math.max(...pilots.map(asset => asset.spec.w * asset.spec.frames * 4));
+  // 비교 대상도 모두 빠질 수 있으므로 빈 검토판의 폭을 유지해요.
+  const maxStrip = Math.max(256, ...pilots.map(asset => asset.spec.w * asset.spec.frames * 4));
   const padding = 24, gap = 32, width = maxStrip * 2 + padding * 2 + gap;
   const height = 56 + pilots.reduce((sum, asset) => sum + asset.spec.h * 4 + 40, 0);
   const sheet = canvas(width, height, palette.symbols.get('O'));

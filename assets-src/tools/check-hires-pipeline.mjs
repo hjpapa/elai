@@ -4,13 +4,17 @@ import { tmpdir } from 'node:os';
 import { resolve, join, sep, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { PNG } from 'pngjs';
-import { BASE_PALETTE, parsePalette, parseFrames, loadAsset, packAtlas } from '../../scripts/build-assets.mjs';
+import { BASE_PALETTE, parsePalette, parseFrames, loadAsset, packAtlas, comparisonSheet } from '../../scripts/build-assets.mjs';
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
 const data = JSON.parse(await readFile(join(root, 'assets-src/palette.json'), 'utf8'));
 const palette = parsePalette(data);
 assert.deepEqual(palette.colors.slice(0, 32), BASE_PALETTE);
 assert.equal(palette.colors.length, 64);
+const emptyPreview = comparisonSheet([], palette);
+assert.ok(Number.isFinite(emptyPreview.width) && emptyPreview.width > 0);
+assert.ok(Number.isFinite(emptyPreview.height) && emptyPreview.height > 0);
+assert.ok(PNG.sync.write(emptyPreview).length > 0);
 const changed = structuredClone(data); changed.colors.O = '#293045';
 assert.throws(() => parsePalette(changed), /처음 32색/);
 const tooMany = structuredClone(data); tooMany.colors['@'] = '#123456';
