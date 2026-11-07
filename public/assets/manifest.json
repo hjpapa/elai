@@ -233,6 +233,26 @@
       "density": 2
     },
     {
+      "key": "prop-parcel-office",
+      "file": "prop/prop-parcel-office.png",
+      "density": 2
+    },
+    {
+      "key": "prop-sorter",
+      "file": "prop/prop-sorter.png",
+      "density": 2
+    },
+    {
+      "key": "prop-parcel-stack",
+      "file": "prop/prop-parcel-stack.png",
+      "density": 2
+    },
+    {
+      "key": "prop-parcel-pile",
+      "file": "prop/prop-parcel-pile.png",
+      "density": 2
+    },
+    {
       "key": "tile-castle",
       "file": "tile/tile-castle.png",
       "density": 2

@@ -240,7 +240,7 @@
         "h": 96
       }
     },
-    "prop-mirror": {
+    "prop-parcel-office": {
       "frame": {
         "x": 1818,
         "y": 118,
@@ -260,7 +260,7 @@
         "h": 96
       }
     },
-    "prop-lighthouse": {
+    "prop-sorter": {
       "frame": {
         "x": 2,
         "y": 218,
@@ -280,7 +280,7 @@
         "h": 96
       }
     },
-    "prop-house": {
+    "prop-mirror": {
       "frame": {
         "x": 134,
         "y": 218,
@@ -300,9 +300,49 @@
         "h": 96
       }
     },
-    "prop-tree": {
+    "prop-lighthouse": {
       "frame": {
         "x": 266,
+        "y": 218,
+        "w": 128,
+        "h": 96
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 96
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 96
+      }
+    },
+    "prop-house": {
+      "frame": {
+        "x": 398,
+        "y": 218,
+        "w": 128,
+        "h": 96
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 96
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 96
+      }
+    },
+    "prop-tree": {
+      "frame": {
+        "x": 530,
         "y": 218,
         "w": 64,
         "h": 96
@@ -322,7 +362,7 @@
     },
     "prop-pine": {
       "frame": {
-        "x": 334,
+        "x": 598,
         "y": 218,
         "w": 64,
         "h": 96
@@ -342,7 +382,7 @@
     },
     "prop-bookshelf": {
       "frame": {
-        "x": 402,
+        "x": 666,
         "y": 218,
         "w": 64,
         "h": 80
@@ -362,7 +402,7 @@
     },
     "fx-purify": {
       "frame": {
-        "x": 470,
+        "x": 734,
         "y": 218,
         "w": 384,
         "h": 64
@@ -382,7 +422,7 @@
     },
     "fx-levelup": {
       "frame": {
-        "x": 858,
+        "x": 1122,
         "y": 218,
         "w": 384,
         "h": 64
@@ -402,7 +442,7 @@
     },
     "ui-stick": {
       "frame": {
-        "x": 1246,
+        "x": 1510,
         "y": 218,
         "w": 128,
         "h": 64
@@ -422,7 +462,7 @@
     },
     "prop-door": {
       "frame": {
-        "x": 1378,
+        "x": 1642,
         "y": 218,
         "w": 128,
         "h": 64
@@ -442,7 +482,7 @@
     },
     "prop-portal": {
       "frame": {
-        "x": 1510,
+        "x": 1774,
         "y": 218,
         "w": 128,
         "h": 64
@@ -462,7 +502,7 @@
     },
     "prop-fountain": {
       "frame": {
-        "x": 1642,
+        "x": 1906,
         "y": 218,
         "w": 128,
         "h": 64
@@ -482,8 +522,8 @@
     },
     "prop-gate": {
       "frame": {
-        "x": 1774,
-        "y": 218,
+        "x": 2,
+        "y": 318,
         "w": 128,
         "h": 64
       },
@@ -502,8 +542,28 @@
     },
     "prop-workbench": {
       "frame": {
-        "x": 1906,
-        "y": 218,
+        "x": 134,
+        "y": 318,
+        "w": 64,
+        "h": 64
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 64,
+        "h": 64
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 64
+      }
+    },
+    "prop-parcel-pile": {
+      "frame": {
+        "x": 202,
+        "y": 318,
         "w": 64,
         "h": 64
       },
@@ -522,8 +582,8 @@
     },
     "prop-telescope": {
       "frame": {
-        "x": 1974,
-        "y": 218,
+        "x": 270,
+        "y": 318,
         "w": 64,
         "h": 64
       },
@@ -542,7 +602,7 @@
     },
     "prop-starlamp": {
       "frame": {
-        "x": 2,
+        "x": 338,
         "y": 318,
         "w": 64,
         "h": 64
@@ -562,7 +622,7 @@
     },
     "prop-booth": {
       "frame": {
-        "x": 70,
+        "x": 406,
         "y": 318,
         "w": 64,
         "h": 64
@@ -582,7 +642,7 @@
     },
     "prop-banner": {
       "frame": {
-        "x": 138,
+        "x": 474,
         "y": 318,
         "w": 48,
         "h": 64
@@ -602,7 +662,7 @@
     },
     "prop-easel": {
       "frame": {
-        "x": 190,
+        "x": 526,
         "y": 318,
         "w": 48,
         "h": 64
@@ -622,7 +682,7 @@
     },
     "prop-microscope": {
       "frame": {
-        "x": 242,
+        "x": 578,
         "y": 318,
         "w": 48,
         "h": 64
@@ -642,7 +702,7 @@
     },
     "prop-floorlamp": {
       "frame": {
-        "x": 294,
+        "x": 630,
         "y": 318,
         "w": 32,
         "h": 64
@@ -662,7 +722,7 @@
     },
     "prop-lamp": {
       "frame": {
-        "x": 330,
+        "x": 666,
         "y": 318,
         "w": 32,
         "h": 64
@@ -682,7 +742,7 @@
     },
     "char-keeper": {
       "frame": {
-        "x": 366,
+        "x": 702,
         "y": 318,
         "w": 320,
         "h": 48
@@ -702,7 +762,7 @@
     },
     "robi-part-ethics": {
       "frame": {
-        "x": 690,
+        "x": 1026,
         "y": 318,
         "w": 320,
         "h": 48
@@ -722,7 +782,7 @@
     },
     "robi-part-talk": {
       "frame": {
-        "x": 1014,
+        "x": 1350,
         "y": 318,
         "w": 320,
         "h": 48
@@ -742,7 +802,7 @@
     },
     "char-astronomer": {
       "frame": {
-        "x": 1338,
+        "x": 1674,
         "y": 318,
         "w": 320,
         "h": 48
@@ -762,8 +822,8 @@
     },
     "robi-part-predictor": {
       "frame": {
-        "x": 1662,
-        "y": 318,
+        "x": 2,
+        "y": 386,
         "w": 320,
         "h": 48
       },
@@ -782,7 +842,7 @@
     },
     "char-researcher": {
       "frame": {
-        "x": 2,
+        "x": 326,
         "y": 386,
         "w": 320,
         "h": 48
@@ -802,7 +862,7 @@
     },
     "robi-part-learnchip": {
       "frame": {
-        "x": 326,
+        "x": 650,
         "y": 386,
         "w": 320,
         "h": 48
@@ -822,7 +882,7 @@
     },
     "char-harbor": {
       "frame": {
-        "x": 650,
+        "x": 974,
         "y": 386,
         "w": 320,
         "h": 48
@@ -842,7 +902,7 @@
     },
     "robi-part-lens": {
       "frame": {
-        "x": 974,
+        "x": 1298,
         "y": 386,
         "w": 320,
         "h": 48
@@ -862,7 +922,7 @@
     },
     "char-guide": {
       "frame": {
-        "x": 1298,
+        "x": 1622,
         "y": 386,
         "w": 320,
         "h": 48
@@ -882,8 +942,8 @@
     },
     "robi-part-sensor": {
       "frame": {
-        "x": 1622,
-        "y": 386,
+        "x": 2,
+        "y": 438,
         "w": 320,
         "h": 48
       },
@@ -902,7 +962,7 @@
     },
     "char-explorer": {
       "frame": {
-        "x": 2,
+        "x": 326,
         "y": 438,
         "w": 320,
         "h": 48
@@ -922,7 +982,7 @@
     },
     "robi-part-memory": {
       "frame": {
-        "x": 326,
+        "x": 650,
         "y": 438,
         "w": 320,
         "h": 48
@@ -942,7 +1002,7 @@
     },
     "char-player": {
       "frame": {
-        "x": 650,
+        "x": 974,
         "y": 438,
         "w": 320,
         "h": 48
@@ -962,7 +1022,7 @@
     },
     "char-robi": {
       "frame": {
-        "x": 974,
+        "x": 1298,
         "y": 438,
         "w": 320,
         "h": 48
@@ -982,7 +1042,7 @@
     },
     "char-zen": {
       "frame": {
-        "x": 1298,
+        "x": 1622,
         "y": 438,
         "w": 320,
         "h": 48
@@ -1002,8 +1062,8 @@
     },
     "char-elder": {
       "frame": {
-        "x": 1622,
-        "y": 438,
+        "x": 2,
+        "y": 490,
         "w": 320,
         "h": 48
       },
@@ -1022,7 +1082,7 @@
     },
     "char-chef": {
       "frame": {
-        "x": 2,
+        "x": 326,
         "y": 490,
         "w": 320,
         "h": 48
@@ -1042,7 +1102,7 @@
     },
     "char-ranger": {
       "frame": {
-        "x": 326,
+        "x": 650,
         "y": 490,
         "w": 320,
         "h": 48
@@ -1062,7 +1122,7 @@
     },
     "equip-hat-cap": {
       "frame": {
-        "x": 650,
+        "x": 974,
         "y": 490,
         "w": 320,
         "h": 48
@@ -1082,7 +1142,7 @@
     },
     "equip-hat-leaf": {
       "frame": {
-        "x": 974,
+        "x": 1298,
         "y": 490,
         "w": 320,
         "h": 48
@@ -1102,7 +1162,7 @@
     },
     "equip-hat-ranger": {
       "frame": {
-        "x": 1298,
+        "x": 1622,
         "y": 490,
         "w": 320,
         "h": 48
@@ -1122,8 +1182,8 @@
     },
     "equip-tool-stick": {
       "frame": {
-        "x": 1622,
-        "y": 490,
+        "x": 2,
+        "y": 542,
         "w": 320,
         "h": 48
       },
@@ -1142,7 +1202,7 @@
     },
     "equip-tool-hammer": {
       "frame": {
-        "x": 2,
+        "x": 326,
         "y": 542,
         "w": 320,
         "h": 48
@@ -1162,7 +1222,7 @@
     },
     "equip-tool-brush": {
       "frame": {
-        "x": 326,
+        "x": 650,
         "y": 542,
         "w": 320,
         "h": 48
@@ -1182,7 +1242,7 @@
     },
     "robi-part-wheel": {
       "frame": {
-        "x": 650,
+        "x": 974,
         "y": 542,
         "w": 320,
         "h": 48
@@ -1202,7 +1262,7 @@
     },
     "mob-fake-shadow": {
       "frame": {
-        "x": 974,
+        "x": 1298,
         "y": 542,
         "w": 192,
         "h": 48
@@ -1222,7 +1282,7 @@
     },
     "mob-babble-parrot": {
       "frame": {
-        "x": 1170,
+        "x": 1494,
         "y": 542,
         "w": 192,
         "h": 48
@@ -1242,7 +1302,7 @@
     },
     "mob-meteor-fox": {
       "frame": {
-        "x": 1366,
+        "x": 1690,
         "y": 542,
         "w": 192,
         "h": 48
@@ -1262,46 +1322,6 @@
     },
     "mob-shift-slime": {
       "frame": {
-        "x": 1562,
-        "y": 542,
-        "w": 192,
-        "h": 48
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 192,
-        "h": 48
-      },
-      "sourceSize": {
-        "w": 192,
-        "h": 48
-      }
-    },
-    "mob-fog-jelly": {
-      "frame": {
-        "x": 1758,
-        "y": 542,
-        "w": 192,
-        "h": 48
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 192,
-        "h": 48
-      },
-      "sourceSize": {
-        "w": 192,
-        "h": 48
-      }
-    },
-    "mob-mirage-lizard": {
-      "frame": {
         "x": 2,
         "y": 594,
         "w": 192,
@@ -1320,7 +1340,7 @@
         "h": 48
       }
     },
-    "mob-echo-bat": {
+    "mob-fog-jelly": {
       "frame": {
         "x": 198,
         "y": 594,
@@ -1340,7 +1360,7 @@
         "h": 48
       }
     },
-    "mob-vine-slime": {
+    "mob-mirage-lizard": {
       "frame": {
         "x": 394,
         "y": 594,
@@ -1360,9 +1380,49 @@
         "h": 48
       }
     },
-    "ui-button": {
+    "mob-echo-bat": {
       "frame": {
         "x": 590,
+        "y": 594,
+        "w": 192,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 48
+      }
+    },
+    "mob-vine-slime": {
+      "frame": {
+        "x": 786,
+        "y": 594,
+        "w": 192,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 192,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 192,
+        "h": 48
+      }
+    },
+    "ui-button": {
+      "frame": {
+        "x": 982,
         "y": 594,
         "w": 144,
         "h": 48
@@ -1382,7 +1442,7 @@
     },
     "fx-guard": {
       "frame": {
-        "x": 738,
+        "x": 1130,
         "y": 594,
         "w": 144,
         "h": 48
@@ -1402,7 +1462,7 @@
     },
     "ui-slot": {
       "frame": {
-        "x": 886,
+        "x": 1278,
         "y": 594,
         "w": 96,
         "h": 48
@@ -1422,7 +1482,27 @@
     },
     "prop-toybox": {
       "frame": {
-        "x": 986,
+        "x": 1378,
+        "y": 594,
+        "w": 64,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 64,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 48
+      }
+    },
+    "prop-parcel-stack": {
+      "frame": {
+        "x": 1446,
         "y": 594,
         "w": 64,
         "h": 48
@@ -1442,7 +1522,7 @@
     },
     "block-castle": {
       "frame": {
-        "x": 1054,
+        "x": 1514,
         "y": 594,
         "w": 64,
         "h": 48
@@ -1462,7 +1542,7 @@
     },
     "block-observatory": {
       "frame": {
-        "x": 1122,
+        "x": 1582,
         "y": 594,
         "w": 64,
         "h": 48
@@ -1482,7 +1562,7 @@
     },
     "block-lab": {
       "frame": {
-        "x": 1190,
+        "x": 1650,
         "y": 594,
         "w": 64,
         "h": 48
@@ -1502,7 +1582,7 @@
     },
     "prop-jar": {
       "frame": {
-        "x": 1258,
+        "x": 1718,
         "y": 594,
         "w": 64,
         "h": 48
@@ -1522,7 +1602,7 @@
     },
     "block-crate": {
       "frame": {
-        "x": 1326,
+        "x": 1786,
         "y": 594,
         "w": 64,
         "h": 48
@@ -1542,7 +1622,7 @@
     },
     "prop-buoy": {
       "frame": {
-        "x": 1394,
+        "x": 1854,
         "y": 594,
         "w": 64,
         "h": 48
@@ -1562,7 +1642,7 @@
     },
     "block-sandstone": {
       "frame": {
-        "x": 1462,
+        "x": 1922,
         "y": 594,
         "w": 64,
         "h": 48
@@ -1582,8 +1662,8 @@
     },
     "prop-signal": {
       "frame": {
-        "x": 1530,
-        "y": 594,
+        "x": 2,
+        "y": 646,
         "w": 64,
         "h": 48
       },
@@ -1602,8 +1682,8 @@
     },
     "block-cave": {
       "frame": {
-        "x": 1598,
-        "y": 594,
+        "x": 70,
+        "y": 646,
         "w": 64,
         "h": 48
       },
@@ -1622,8 +1702,8 @@
     },
     "prop-crystal": {
       "frame": {
-        "x": 1666,
-        "y": 594,
+        "x": 138,
+        "y": 646,
         "w": 64,
         "h": 48
       },
@@ -1642,8 +1722,8 @@
     },
     "block-hedge": {
       "frame": {
-        "x": 1734,
-        "y": 594,
+        "x": 206,
+        "y": 646,
         "w": 64,
         "h": 48
       },
@@ -1662,8 +1742,8 @@
     },
     "block-wall": {
       "frame": {
-        "x": 1802,
-        "y": 594,
+        "x": 274,
+        "y": 646,
         "w": 64,
         "h": 48
       },
@@ -1682,8 +1762,8 @@
     },
     "prop-bush": {
       "frame": {
-        "x": 1870,
-        "y": 594,
+        "x": 342,
+        "y": 646,
         "w": 64,
         "h": 48
       },
@@ -1702,8 +1782,8 @@
     },
     "prop-rock": {
       "frame": {
-        "x": 1938,
-        "y": 594,
+        "x": 410,
+        "y": 646,
         "w": 64,
         "h": 48
       },
@@ -1722,7 +1802,7 @@
     },
     "prop-bridge-broken": {
       "frame": {
-        "x": 2,
+        "x": 478,
         "y": 646,
         "w": 64,
         "h": 48
@@ -1742,7 +1822,7 @@
     },
     "prop-fence": {
       "frame": {
-        "x": 70,
+        "x": 546,
         "y": 646,
         "w": 64,
         "h": 48
@@ -1762,7 +1842,7 @@
     },
     "ui-panel": {
       "frame": {
-        "x": 138,
+        "x": 614,
         "y": 646,
         "w": 48,
         "h": 48
@@ -1782,7 +1862,7 @@
     },
     "ui-bubble": {
       "frame": {
-        "x": 190,
+        "x": 666,
         "y": 646,
         "w": 48,
         "h": 48
@@ -1802,7 +1882,7 @@
     },
     "prop-plant": {
       "frame": {
-        "x": 242,
+        "x": 718,
         "y": 646,
         "w": 32,
         "h": 48
@@ -1822,7 +1902,7 @@
     },
     "prop-cactus": {
       "frame": {
-        "x": 278,
+        "x": 754,
         "y": 646,
         "w": 32,
         "h": 48
@@ -1842,7 +1922,7 @@
     },
     "prop-stalagmite": {
       "frame": {
-        "x": 314,
+        "x": 790,
         "y": 646,
         "w": 32,
         "h": 48
@@ -1862,7 +1942,7 @@
     },
     "prop-sign": {
       "frame": {
-        "x": 350,
+        "x": 826,
         "y": 646,
         "w": 32,
         "h": 48
@@ -1882,7 +1962,7 @@
     },
     "fx-target": {
       "frame": {
-        "x": 386,
+        "x": 862,
         "y": 646,
         "w": 256,
         "h": 32
@@ -1902,7 +1982,7 @@
     },
     "tile-doormat": {
       "frame": {
-        "x": 646,
+        "x": 1122,
         "y": 646,
         "w": 128,
         "h": 32
@@ -1922,7 +2002,7 @@
     },
     "tile-water": {
       "frame": {
-        "x": 778,
+        "x": 1254,
         "y": 646,
         "w": 128,
         "h": 32
@@ -1942,7 +2022,7 @@
     },
     "mob-dummy": {
       "frame": {
-        "x": 910,
+        "x": 1386,
         "y": 646,
         "w": 128,
         "h": 32
@@ -1962,7 +2042,7 @@
     },
     "mob-bug-worm": {
       "frame": {
-        "x": 1042,
+        "x": 1518,
         "y": 646,
         "w": 128,
         "h": 32
@@ -1982,7 +2062,7 @@
     },
     "fx-heal": {
       "frame": {
-        "x": 1174,
+        "x": 1650,
         "y": 646,
         "w": 128,
         "h": 32
@@ -2002,7 +2082,7 @@
     },
     "fx-hit": {
       "frame": {
-        "x": 1306,
+        "x": 1782,
         "y": 646,
         "w": 96,
         "h": 32
@@ -2022,7 +2102,7 @@
     },
     "tile-room": {
       "frame": {
-        "x": 1406,
+        "x": 1882,
         "y": 646,
         "w": 64,
         "h": 32
@@ -2042,7 +2122,7 @@
     },
     "tile-rug": {
       "frame": {
-        "x": 1474,
+        "x": 1950,
         "y": 646,
         "w": 64,
         "h": 32
@@ -2062,146 +2142,6 @@
     },
     "prop-claw": {
       "frame": {
-        "x": 1542,
-        "y": 646,
-        "w": 64,
-        "h": 32
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 64,
-        "h": 32
-      },
-      "sourceSize": {
-        "w": 64,
-        "h": 32
-      }
-    },
-    "tile-castle": {
-      "frame": {
-        "x": 1610,
-        "y": 646,
-        "w": 64,
-        "h": 32
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 64,
-        "h": 32
-      },
-      "sourceSize": {
-        "w": 64,
-        "h": 32
-      }
-    },
-    "tile-observatory": {
-      "frame": {
-        "x": 1678,
-        "y": 646,
-        "w": 64,
-        "h": 32
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 64,
-        "h": 32
-      },
-      "sourceSize": {
-        "w": 64,
-        "h": 32
-      }
-    },
-    "tile-lab": {
-      "frame": {
-        "x": 1746,
-        "y": 646,
-        "w": 64,
-        "h": 32
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 64,
-        "h": 32
-      },
-      "sourceSize": {
-        "w": 64,
-        "h": 32
-      }
-    },
-    "tile-dock": {
-      "frame": {
-        "x": 1814,
-        "y": 646,
-        "w": 64,
-        "h": 32
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 64,
-        "h": 32
-      },
-      "sourceSize": {
-        "w": 64,
-        "h": 32
-      }
-    },
-    "tile-cave": {
-      "frame": {
-        "x": 1882,
-        "y": 646,
-        "w": 64,
-        "h": 32
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 64,
-        "h": 32
-      },
-      "sourceSize": {
-        "w": 64,
-        "h": 32
-      }
-    },
-    "tile-grass": {
-      "frame": {
-        "x": 1950,
-        "y": 646,
-        "w": 64,
-        "h": 32
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 64,
-        "h": 32
-      },
-      "sourceSize": {
-        "w": 64,
-        "h": 32
-      }
-    },
-    "tile-flower": {
-      "frame": {
         "x": 2,
         "y": 698,
         "w": 64,
@@ -2220,7 +2160,7 @@
         "h": 32
       }
     },
-    "tile-path": {
+    "tile-castle": {
       "frame": {
         "x": 70,
         "y": 698,
@@ -2240,7 +2180,7 @@
         "h": 32
       }
     },
-    "tile-stone": {
+    "tile-observatory": {
       "frame": {
         "x": 138,
         "y": 698,
@@ -2260,7 +2200,7 @@
         "h": 32
       }
     },
-    "tile-wood": {
+    "tile-lab": {
       "frame": {
         "x": 206,
         "y": 698,
@@ -2280,7 +2220,7 @@
         "h": 32
       }
     },
-    "tile-bridge": {
+    "tile-dock": {
       "frame": {
         "x": 274,
         "y": 698,
@@ -2300,7 +2240,7 @@
         "h": 32
       }
     },
-    "tile-sand": {
+    "tile-cave": {
       "frame": {
         "x": 342,
         "y": 698,
@@ -2320,7 +2260,7 @@
         "h": 32
       }
     },
-    "prop-chest": {
+    "tile-grass": {
       "frame": {
         "x": 410,
         "y": 698,
@@ -2340,9 +2280,149 @@
         "h": 32
       }
     },
-    "icon-quest-new": {
+    "tile-flower": {
       "frame": {
         "x": 478,
+        "y": 698,
+        "w": 64,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 64,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 32
+      }
+    },
+    "tile-path": {
+      "frame": {
+        "x": 546,
+        "y": 698,
+        "w": 64,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 64,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 32
+      }
+    },
+    "tile-stone": {
+      "frame": {
+        "x": 614,
+        "y": 698,
+        "w": 64,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 64,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 32
+      }
+    },
+    "tile-wood": {
+      "frame": {
+        "x": 682,
+        "y": 698,
+        "w": 64,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 64,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 32
+      }
+    },
+    "tile-bridge": {
+      "frame": {
+        "x": 750,
+        "y": 698,
+        "w": 64,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 64,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 32
+      }
+    },
+    "tile-sand": {
+      "frame": {
+        "x": 818,
+        "y": 698,
+        "w": 64,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 64,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 32
+      }
+    },
+    "prop-chest": {
+      "frame": {
+        "x": 886,
+        "y": 698,
+        "w": 64,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 64,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 32
+      }
+    },
+    "icon-quest-new": {
+      "frame": {
+        "x": 954,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2362,7 +2442,7 @@
     },
     "icon-quest-doing": {
       "frame": {
-        "x": 514,
+        "x": 990,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2382,7 +2462,7 @@
     },
     "icon-guide-arrow": {
       "frame": {
-        "x": 550,
+        "x": 1026,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2402,7 +2482,7 @@
     },
     "icon-path-step": {
       "frame": {
-        "x": 586,
+        "x": 1062,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2422,7 +2502,7 @@
     },
     "icon-talk": {
       "frame": {
-        "x": 622,
+        "x": 1098,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2442,7 +2522,7 @@
     },
     "prop-cushion": {
       "frame": {
-        "x": 658,
+        "x": 1134,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2462,7 +2542,7 @@
     },
     "icon-claw-exit": {
       "frame": {
-        "x": 694,
+        "x": 1170,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2482,7 +2562,7 @@
     },
     "icon-card-grab": {
       "frame": {
-        "x": 730,
+        "x": 1206,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2502,7 +2582,7 @@
     },
     "prop-doll-dummy": {
       "frame": {
-        "x": 766,
+        "x": 1242,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2522,7 +2602,7 @@
     },
     "prop-doll-slime": {
       "frame": {
-        "x": 802,
+        "x": 1278,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2542,7 +2622,7 @@
     },
     "prop-doll-bug": {
       "frame": {
-        "x": 838,
+        "x": 1314,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2562,7 +2642,7 @@
     },
     "prop-doll-bat": {
       "frame": {
-        "x": 874,
+        "x": 1350,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2582,7 +2662,7 @@
     },
     "prop-doll-guardian": {
       "frame": {
-        "x": 910,
+        "x": 1386,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2602,7 +2682,7 @@
     },
     "prop-doll-robi": {
       "frame": {
-        "x": 946,
+        "x": 1422,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2622,7 +2702,7 @@
     },
     "icon-part-ethics": {
       "frame": {
-        "x": 982,
+        "x": 1458,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2642,7 +2722,7 @@
     },
     "icon-part-talk": {
       "frame": {
-        "x": 1018,
+        "x": 1494,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2662,7 +2742,7 @@
     },
     "icon-part-predictor": {
       "frame": {
-        "x": 1054,
+        "x": 1530,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2682,7 +2762,7 @@
     },
     "icon-part-learnchip": {
       "frame": {
-        "x": 1090,
+        "x": 1566,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2702,7 +2782,7 @@
     },
     "icon-part-lens": {
       "frame": {
-        "x": 1126,
+        "x": 1602,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2722,7 +2802,7 @@
     },
     "icon-card-scan": {
       "frame": {
-        "x": 1162,
+        "x": 1638,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2742,7 +2822,7 @@
     },
     "icon-part-sensor": {
       "frame": {
-        "x": 1198,
+        "x": 1674,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2762,7 +2842,7 @@
     },
     "icon-part-memory": {
       "frame": {
-        "x": 1234,
+        "x": 1710,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2782,7 +2862,7 @@
     },
     "prop-key": {
       "frame": {
-        "x": 1270,
+        "x": 1746,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2802,7 +2882,7 @@
     },
     "prop-stump": {
       "frame": {
-        "x": 1306,
+        "x": 1782,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2822,7 +2902,7 @@
     },
     "prop-mushroom": {
       "frame": {
-        "x": 1342,
+        "x": 1818,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2842,7 +2922,7 @@
     },
     "icon-item-cap": {
       "frame": {
-        "x": 1378,
+        "x": 1854,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2862,7 +2942,7 @@
     },
     "icon-item-leafhat": {
       "frame": {
-        "x": 1414,
+        "x": 1890,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2882,7 +2962,7 @@
     },
     "icon-item-rangerhat": {
       "frame": {
-        "x": 1450,
+        "x": 1926,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2902,7 +2982,7 @@
     },
     "icon-item-stick": {
       "frame": {
-        "x": 1486,
+        "x": 1962,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2922,7 +3002,7 @@
     },
     "icon-item-hammer": {
       "frame": {
-        "x": 1522,
+        "x": 1998,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2942,266 +3022,6 @@
     },
     "icon-item-brush": {
       "frame": {
-        "x": 1558,
-        "y": 698,
-        "w": 32,
-        "h": 32
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 32,
-        "h": 32
-      },
-      "sourceSize": {
-        "w": 32,
-        "h": 32
-      }
-    },
-    "icon-item-vest": {
-      "frame": {
-        "x": 1594,
-        "y": 698,
-        "w": 32,
-        "h": 32
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 32,
-        "h": 32
-      },
-      "sourceSize": {
-        "w": 32,
-        "h": 32
-      }
-    },
-    "icon-item-cloak": {
-      "frame": {
-        "x": 1630,
-        "y": 698,
-        "w": 32,
-        "h": 32
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 32,
-        "h": 32
-      },
-      "sourceSize": {
-        "w": 32,
-        "h": 32
-      }
-    },
-    "icon-item-boots": {
-      "frame": {
-        "x": 1666,
-        "y": 698,
-        "w": 32,
-        "h": 32
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 32,
-        "h": 32
-      },
-      "sourceSize": {
-        "w": 32,
-        "h": 32
-      }
-    },
-    "icon-item-windboots": {
-      "frame": {
-        "x": 1702,
-        "y": 698,
-        "w": 32,
-        "h": 32
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 32,
-        "h": 32
-      },
-      "sourceSize": {
-        "w": 32,
-        "h": 32
-      }
-    },
-    "icon-item-glasses": {
-      "frame": {
-        "x": 1738,
-        "y": 698,
-        "w": 32,
-        "h": 32
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 32,
-        "h": 32
-      },
-      "sourceSize": {
-        "w": 32,
-        "h": 32
-      }
-    },
-    "icon-item-flowmap": {
-      "frame": {
-        "x": 1774,
-        "y": 698,
-        "w": 32,
-        "h": 32
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 32,
-        "h": 32
-      },
-      "sourceSize": {
-        "w": 32,
-        "h": 32
-      }
-    },
-    "icon-item-apple": {
-      "frame": {
-        "x": 1810,
-        "y": 698,
-        "w": 32,
-        "h": 32
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 32,
-        "h": 32
-      },
-      "sourceSize": {
-        "w": 32,
-        "h": 32
-      }
-    },
-    "icon-item-jelly": {
-      "frame": {
-        "x": 1846,
-        "y": 698,
-        "w": 32,
-        "h": 32
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 32,
-        "h": 32
-      },
-      "sourceSize": {
-        "w": 32,
-        "h": 32
-      }
-    },
-    "icon-item-forestkey": {
-      "frame": {
-        "x": 1882,
-        "y": 698,
-        "w": 32,
-        "h": 32
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 32,
-        "h": 32
-      },
-      "sourceSize": {
-        "w": 32,
-        "h": 32
-      }
-    },
-    "icon-item-vine": {
-      "frame": {
-        "x": 1918,
-        "y": 698,
-        "w": 32,
-        "h": 32
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 32,
-        "h": 32
-      },
-      "sourceSize": {
-        "w": 32,
-        "h": 32
-      }
-    },
-    "icon-part-wheel": {
-      "frame": {
-        "x": 1954,
-        "y": 698,
-        "w": 32,
-        "h": 32
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 32,
-        "h": 32
-      },
-      "sourceSize": {
-        "w": 32,
-        "h": 32
-      }
-    },
-    "icon-card-up": {
-      "frame": {
-        "x": 1990,
-        "y": 698,
-        "w": 32,
-        "h": 32
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 32,
-        "h": 32
-      },
-      "sourceSize": {
-        "w": 32,
-        "h": 32
-      }
-    },
-    "icon-card-down": {
-      "frame": {
         "x": 2,
         "y": 734,
         "w": 32,
@@ -3220,7 +3040,7 @@
         "h": 32
       }
     },
-    "icon-card-left": {
+    "icon-item-vest": {
       "frame": {
         "x": 38,
         "y": 734,
@@ -3240,7 +3060,7 @@
         "h": 32
       }
     },
-    "icon-card-right": {
+    "icon-item-cloak": {
       "frame": {
         "x": 74,
         "y": 734,
@@ -3260,7 +3080,7 @@
         "h": 32
       }
     },
-    "icon-card-forward": {
+    "icon-item-boots": {
       "frame": {
         "x": 110,
         "y": 734,
@@ -3280,7 +3100,7 @@
         "h": 32
       }
     },
-    "icon-card-turnLeft": {
+    "icon-item-windboots": {
       "frame": {
         "x": 146,
         "y": 734,
@@ -3300,7 +3120,7 @@
         "h": 32
       }
     },
-    "icon-card-turnRight": {
+    "icon-item-glasses": {
       "frame": {
         "x": 182,
         "y": 734,
@@ -3320,7 +3140,7 @@
         "h": 32
       }
     },
-    "icon-card-collect": {
+    "icon-item-flowmap": {
       "frame": {
         "x": 218,
         "y": 734,
@@ -3340,7 +3160,7 @@
         "h": 32
       }
     },
-    "icon-card-attack": {
+    "icon-item-apple": {
       "frame": {
         "x": 254,
         "y": 734,
@@ -3360,7 +3180,7 @@
         "h": 32
       }
     },
-    "icon-card-guard": {
+    "icon-item-jelly": {
       "frame": {
         "x": 290,
         "y": 734,
@@ -3380,7 +3200,7 @@
         "h": 32
       }
     },
-    "icon-card-heal": {
+    "icon-item-forestkey": {
       "frame": {
         "x": 326,
         "y": 734,
@@ -3400,7 +3220,7 @@
         "h": 32
       }
     },
-    "icon-card-wait": {
+    "icon-item-vine": {
       "frame": {
         "x": 362,
         "y": 734,
@@ -3420,7 +3240,7 @@
         "h": 32
       }
     },
-    "icon-card-repeat": {
+    "icon-part-wheel": {
       "frame": {
         "x": 398,
         "y": 734,
@@ -3440,7 +3260,7 @@
         "h": 32
       }
     },
-    "icon-card-if": {
+    "icon-card-up": {
       "frame": {
         "x": 434,
         "y": 734,
@@ -3460,7 +3280,7 @@
         "h": 32
       }
     },
-    "icon-intent-attack": {
+    "icon-card-down": {
       "frame": {
         "x": 470,
         "y": 734,
@@ -3480,7 +3300,7 @@
         "h": 32
       }
     },
-    "icon-intent-guard": {
+    "icon-card-left": {
       "frame": {
         "x": 506,
         "y": 734,
@@ -3500,7 +3320,7 @@
         "h": 32
       }
     },
-    "icon-intent-charge": {
+    "icon-card-right": {
       "frame": {
         "x": 542,
         "y": 734,
@@ -3520,7 +3340,7 @@
         "h": 32
       }
     },
-    "icon-intent-smash": {
+    "icon-card-forward": {
       "frame": {
         "x": 578,
         "y": 734,
@@ -3540,7 +3360,7 @@
         "h": 32
       }
     },
-    "icon-intent-heal": {
+    "icon-card-turnLeft": {
       "frame": {
         "x": 614,
         "y": 734,
@@ -3560,7 +3380,7 @@
         "h": 32
       }
     },
-    "icon-intent-idle": {
+    "icon-card-turnRight": {
       "frame": {
         "x": 650,
         "y": 734,
@@ -3580,7 +3400,7 @@
         "h": 32
       }
     },
-    "icon-robi": {
+    "icon-card-collect": {
       "frame": {
         "x": 686,
         "y": 734,
@@ -3600,7 +3420,7 @@
         "h": 32
       }
     },
-    "icon-goal": {
+    "icon-card-attack": {
       "frame": {
         "x": 722,
         "y": 734,
@@ -3620,7 +3440,7 @@
         "h": 32
       }
     },
-    "icon-gem": {
+    "icon-card-guard": {
       "frame": {
         "x": 758,
         "y": 734,
@@ -3640,7 +3460,7 @@
         "h": 32
       }
     },
-    "icon-cell-tree": {
+    "icon-card-heal": {
       "frame": {
         "x": 794,
         "y": 734,
@@ -3660,7 +3480,7 @@
         "h": 32
       }
     },
-    "icon-cell-water": {
+    "icon-card-wait": {
       "frame": {
         "x": 830,
         "y": 734,
@@ -3680,7 +3500,7 @@
         "h": 32
       }
     },
-    "icon-cell-rock": {
+    "icon-card-repeat": {
       "frame": {
         "x": 866,
         "y": 734,
@@ -3700,7 +3520,7 @@
         "h": 32
       }
     },
-    "icon-star": {
+    "icon-card-if": {
       "frame": {
         "x": 902,
         "y": 734,
@@ -3720,7 +3540,7 @@
         "h": 32
       }
     },
-    "icon-star-empty": {
+    "icon-intent-attack": {
       "frame": {
         "x": 938,
         "y": 734,
@@ -3740,7 +3560,7 @@
         "h": 32
       }
     },
-    "icon-coin": {
+    "icon-intent-guard": {
       "frame": {
         "x": 974,
         "y": 734,
@@ -3760,7 +3580,7 @@
         "h": 32
       }
     },
-    "icon-heart": {
+    "icon-intent-charge": {
       "frame": {
         "x": 1010,
         "y": 734,
@@ -3780,7 +3600,7 @@
         "h": 32
       }
     },
-    "icon-energy": {
+    "icon-intent-smash": {
       "frame": {
         "x": 1046,
         "y": 734,
@@ -3800,7 +3620,7 @@
         "h": 32
       }
     },
-    "icon-xp": {
+    "icon-intent-heal": {
       "frame": {
         "x": 1082,
         "y": 734,
@@ -3820,7 +3640,7 @@
         "h": 32
       }
     },
-    "icon-bag": {
+    "icon-intent-idle": {
       "frame": {
         "x": 1118,
         "y": 734,
@@ -3840,7 +3660,7 @@
         "h": 32
       }
     },
-    "icon-book": {
+    "icon-robi": {
       "frame": {
         "x": 1154,
         "y": 734,
@@ -3860,7 +3680,7 @@
         "h": 32
       }
     },
-    "icon-gear": {
+    "icon-goal": {
       "frame": {
         "x": 1190,
         "y": 734,
@@ -3880,7 +3700,7 @@
         "h": 32
       }
     },
-    "icon-lock": {
+    "icon-gem": {
       "frame": {
         "x": 1226,
         "y": 734,
@@ -3900,7 +3720,7 @@
         "h": 32
       }
     },
-    "icon-check": {
+    "icon-cell-tree": {
       "frame": {
         "x": 1262,
         "y": 734,
@@ -3920,7 +3740,7 @@
         "h": 32
       }
     },
-    "icon-hint": {
+    "icon-cell-water": {
       "frame": {
         "x": 1298,
         "y": 734,
@@ -3940,7 +3760,7 @@
         "h": 32
       }
     },
-    "icon-badge-1": {
+    "icon-cell-rock": {
       "frame": {
         "x": 1334,
         "y": 734,
@@ -3960,7 +3780,7 @@
         "h": 32
       }
     },
-    "icon-badge-2": {
+    "icon-star": {
       "frame": {
         "x": 1370,
         "y": 734,
@@ -3980,7 +3800,7 @@
         "h": 32
       }
     },
-    "icon-badge-3": {
+    "icon-star-empty": {
       "frame": {
         "x": 1406,
         "y": 734,
@@ -4000,7 +3820,7 @@
         "h": 32
       }
     },
-    "icon-badge-4": {
+    "icon-coin": {
       "frame": {
         "x": 1442,
         "y": 734,
@@ -4020,7 +3840,7 @@
         "h": 32
       }
     },
-    "icon-badge-5": {
+    "icon-heart": {
       "frame": {
         "x": 1478,
         "y": 734,
@@ -4040,7 +3860,7 @@
         "h": 32
       }
     },
-    "icon-badge-6": {
+    "icon-energy": {
       "frame": {
         "x": 1514,
         "y": 734,
@@ -4060,7 +3880,7 @@
         "h": 32
       }
     },
-    "icon-badge-7": {
+    "icon-xp": {
       "frame": {
         "x": 1550,
         "y": 734,
@@ -4080,7 +3900,7 @@
         "h": 32
       }
     },
-    "icon-badge-8": {
+    "icon-bag": {
       "frame": {
         "x": 1586,
         "y": 734,
@@ -4100,10 +3920,270 @@
         "h": 32
       }
     },
-    "fx-sparkle": {
+    "icon-book": {
       "frame": {
         "x": 1622,
         "y": 734,
+        "w": 32,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      }
+    },
+    "icon-gear": {
+      "frame": {
+        "x": 1658,
+        "y": 734,
+        "w": 32,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      }
+    },
+    "icon-lock": {
+      "frame": {
+        "x": 1694,
+        "y": 734,
+        "w": 32,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      }
+    },
+    "icon-check": {
+      "frame": {
+        "x": 1730,
+        "y": 734,
+        "w": 32,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      }
+    },
+    "icon-hint": {
+      "frame": {
+        "x": 1766,
+        "y": 734,
+        "w": 32,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      }
+    },
+    "icon-badge-1": {
+      "frame": {
+        "x": 1802,
+        "y": 734,
+        "w": 32,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      }
+    },
+    "icon-badge-2": {
+      "frame": {
+        "x": 1838,
+        "y": 734,
+        "w": 32,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      }
+    },
+    "icon-badge-3": {
+      "frame": {
+        "x": 1874,
+        "y": 734,
+        "w": 32,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      }
+    },
+    "icon-badge-4": {
+      "frame": {
+        "x": 1910,
+        "y": 734,
+        "w": 32,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      }
+    },
+    "icon-badge-5": {
+      "frame": {
+        "x": 1946,
+        "y": 734,
+        "w": 32,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      }
+    },
+    "icon-badge-6": {
+      "frame": {
+        "x": 1982,
+        "y": 734,
+        "w": 32,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      }
+    },
+    "icon-badge-7": {
+      "frame": {
+        "x": 2,
+        "y": 770,
+        "w": 32,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      }
+    },
+    "icon-badge-8": {
+      "frame": {
+        "x": 38,
+        "y": 770,
+        "w": 32,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      }
+    },
+    "fx-sparkle": {
+      "frame": {
+        "x": 74,
+        "y": 770,
         "w": 64,
         "h": 16
       },
@@ -4122,8 +4202,8 @@
     },
     "ui-bar": {
       "frame": {
-        "x": 1690,
-        "y": 734,
+        "x": 142,
+        "y": 770,
         "w": 48,
         "h": 16
       },
