@@ -220,7 +220,7 @@
         "h": 96
       }
     },
-    "prop-mirror": {
+    "prop-claw-machine": {
       "frame": {
         "x": 1686,
         "y": 118,
@@ -240,7 +240,7 @@
         "h": 96
       }
     },
-    "prop-lighthouse": {
+    "prop-mirror": {
       "frame": {
         "x": 1818,
         "y": 118,
@@ -260,9 +260,29 @@
         "h": 96
       }
     },
-    "prop-house": {
+    "prop-lighthouse": {
       "frame": {
         "x": 2,
+        "y": 218,
+        "w": 128,
+        "h": 96
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 96
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 96
+      }
+    },
+    "prop-house": {
+      "frame": {
+        "x": 134,
         "y": 218,
         "w": 128,
         "h": 96
@@ -282,7 +302,7 @@
     },
     "prop-tree": {
       "frame": {
-        "x": 134,
+        "x": 266,
         "y": 218,
         "w": 64,
         "h": 96
@@ -302,7 +322,7 @@
     },
     "prop-pine": {
       "frame": {
-        "x": 202,
+        "x": 334,
         "y": 218,
         "w": 64,
         "h": 96
@@ -322,7 +342,7 @@
     },
     "prop-bookshelf": {
       "frame": {
-        "x": 270,
+        "x": 402,
         "y": 218,
         "w": 64,
         "h": 80
@@ -342,7 +362,7 @@
     },
     "fx-purify": {
       "frame": {
-        "x": 338,
+        "x": 470,
         "y": 218,
         "w": 384,
         "h": 64
@@ -362,7 +382,7 @@
     },
     "fx-levelup": {
       "frame": {
-        "x": 726,
+        "x": 858,
         "y": 218,
         "w": 384,
         "h": 64
@@ -382,7 +402,7 @@
     },
     "ui-stick": {
       "frame": {
-        "x": 1114,
+        "x": 1246,
         "y": 218,
         "w": 128,
         "h": 64
@@ -402,7 +422,7 @@
     },
     "prop-door": {
       "frame": {
-        "x": 1246,
+        "x": 1378,
         "y": 218,
         "w": 128,
         "h": 64
@@ -422,7 +442,7 @@
     },
     "prop-portal": {
       "frame": {
-        "x": 1378,
+        "x": 1510,
         "y": 218,
         "w": 128,
         "h": 64
@@ -442,7 +462,7 @@
     },
     "prop-fountain": {
       "frame": {
-        "x": 1510,
+        "x": 1642,
         "y": 218,
         "w": 128,
         "h": 64
@@ -462,7 +482,7 @@
     },
     "prop-gate": {
       "frame": {
-        "x": 1642,
+        "x": 1774,
         "y": 218,
         "w": 128,
         "h": 64
@@ -482,7 +502,7 @@
     },
     "prop-workbench": {
       "frame": {
-        "x": 1774,
+        "x": 1906,
         "y": 218,
         "w": 64,
         "h": 64
@@ -502,7 +522,7 @@
     },
     "prop-telescope": {
       "frame": {
-        "x": 1842,
+        "x": 1974,
         "y": 218,
         "w": 64,
         "h": 64
@@ -522,8 +542,8 @@
     },
     "prop-starlamp": {
       "frame": {
-        "x": 1910,
-        "y": 218,
+        "x": 2,
+        "y": 318,
         "w": 64,
         "h": 64
       },
@@ -542,8 +562,8 @@
     },
     "prop-booth": {
       "frame": {
-        "x": 1978,
-        "y": 218,
+        "x": 70,
+        "y": 318,
         "w": 64,
         "h": 64
       },
@@ -562,7 +582,7 @@
     },
     "prop-banner": {
       "frame": {
-        "x": 2,
+        "x": 138,
         "y": 318,
         "w": 48,
         "h": 64
@@ -582,7 +602,7 @@
     },
     "prop-easel": {
       "frame": {
-        "x": 54,
+        "x": 190,
         "y": 318,
         "w": 48,
         "h": 64
@@ -602,7 +622,7 @@
     },
     "prop-microscope": {
       "frame": {
-        "x": 106,
+        "x": 242,
         "y": 318,
         "w": 48,
         "h": 64
@@ -622,7 +642,7 @@
     },
     "prop-floorlamp": {
       "frame": {
-        "x": 158,
+        "x": 294,
         "y": 318,
         "w": 32,
         "h": 64
@@ -642,7 +662,7 @@
     },
     "prop-lamp": {
       "frame": {
-        "x": 194,
+        "x": 330,
         "y": 318,
         "w": 32,
         "h": 64
@@ -662,7 +682,7 @@
     },
     "char-keeper": {
       "frame": {
-        "x": 230,
+        "x": 366,
         "y": 318,
         "w": 320,
         "h": 48
@@ -682,7 +702,7 @@
     },
     "robi-part-ethics": {
       "frame": {
-        "x": 554,
+        "x": 690,
         "y": 318,
         "w": 320,
         "h": 48
@@ -702,7 +722,7 @@
     },
     "robi-part-talk": {
       "frame": {
-        "x": 878,
+        "x": 1014,
         "y": 318,
         "w": 320,
         "h": 48
@@ -722,7 +742,7 @@
     },
     "char-astronomer": {
       "frame": {
-        "x": 1202,
+        "x": 1338,
         "y": 318,
         "w": 320,
         "h": 48
@@ -742,7 +762,7 @@
     },
     "robi-part-predictor": {
       "frame": {
-        "x": 1526,
+        "x": 1662,
         "y": 318,
         "w": 320,
         "h": 48
@@ -2040,7 +2060,7 @@
         "h": 32
       }
     },
-    "tile-castle": {
+    "prop-claw": {
       "frame": {
         "x": 1542,
         "y": 646,
@@ -2060,7 +2080,7 @@
         "h": 32
       }
     },
-    "tile-observatory": {
+    "tile-castle": {
       "frame": {
         "x": 1610,
         "y": 646,
@@ -2080,7 +2100,7 @@
         "h": 32
       }
     },
-    "tile-lab": {
+    "tile-observatory": {
       "frame": {
         "x": 1678,
         "y": 646,
@@ -2100,7 +2120,7 @@
         "h": 32
       }
     },
-    "tile-dock": {
+    "tile-lab": {
       "frame": {
         "x": 1746,
         "y": 646,
@@ -2120,7 +2140,7 @@
         "h": 32
       }
     },
-    "tile-cave": {
+    "tile-dock": {
       "frame": {
         "x": 1814,
         "y": 646,
@@ -2140,7 +2160,7 @@
         "h": 32
       }
     },
-    "tile-grass": {
+    "tile-cave": {
       "frame": {
         "x": 1882,
         "y": 646,
@@ -2160,7 +2180,7 @@
         "h": 32
       }
     },
-    "tile-flower": {
+    "tile-grass": {
       "frame": {
         "x": 1950,
         "y": 646,
@@ -2180,7 +2200,7 @@
         "h": 32
       }
     },
-    "tile-path": {
+    "tile-flower": {
       "frame": {
         "x": 2,
         "y": 698,
@@ -2200,7 +2220,7 @@
         "h": 32
       }
     },
-    "tile-stone": {
+    "tile-path": {
       "frame": {
         "x": 70,
         "y": 698,
@@ -2220,7 +2240,7 @@
         "h": 32
       }
     },
-    "tile-wood": {
+    "tile-stone": {
       "frame": {
         "x": 138,
         "y": 698,
@@ -2240,7 +2260,7 @@
         "h": 32
       }
     },
-    "tile-bridge": {
+    "tile-wood": {
       "frame": {
         "x": 206,
         "y": 698,
@@ -2260,7 +2280,7 @@
         "h": 32
       }
     },
-    "tile-sand": {
+    "tile-bridge": {
       "frame": {
         "x": 274,
         "y": 698,
@@ -2280,7 +2300,7 @@
         "h": 32
       }
     },
-    "prop-chest": {
+    "tile-sand": {
       "frame": {
         "x": 342,
         "y": 698,
@@ -2300,9 +2320,29 @@
         "h": 32
       }
     },
-    "icon-quest-new": {
+    "prop-chest": {
       "frame": {
         "x": 410,
+        "y": 698,
+        "w": 64,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 64,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 64,
+        "h": 32
+      }
+    },
+    "icon-quest-new": {
+      "frame": {
+        "x": 478,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2322,7 +2362,7 @@
     },
     "icon-quest-doing": {
       "frame": {
-        "x": 446,
+        "x": 514,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2342,7 +2382,7 @@
     },
     "icon-guide-arrow": {
       "frame": {
-        "x": 482,
+        "x": 550,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2362,7 +2402,7 @@
     },
     "icon-path-step": {
       "frame": {
-        "x": 518,
+        "x": 586,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2382,7 +2422,7 @@
     },
     "icon-talk": {
       "frame": {
-        "x": 554,
+        "x": 622,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2402,7 +2442,47 @@
     },
     "prop-cushion": {
       "frame": {
-        "x": 590,
+        "x": 658,
+        "y": 698,
+        "w": 32,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      }
+    },
+    "icon-claw-exit": {
+      "frame": {
+        "x": 694,
+        "y": 698,
+        "w": 32,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      }
+    },
+    "icon-card-grab": {
+      "frame": {
+        "x": 730,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2422,7 +2502,7 @@
     },
     "icon-part-ethics": {
       "frame": {
-        "x": 626,
+        "x": 766,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2442,7 +2522,7 @@
     },
     "icon-part-talk": {
       "frame": {
-        "x": 662,
+        "x": 802,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2462,7 +2542,7 @@
     },
     "icon-part-predictor": {
       "frame": {
-        "x": 698,
+        "x": 838,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2482,7 +2562,7 @@
     },
     "icon-part-learnchip": {
       "frame": {
-        "x": 734,
+        "x": 874,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2502,7 +2582,7 @@
     },
     "icon-part-lens": {
       "frame": {
-        "x": 770,
+        "x": 910,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2522,7 +2602,7 @@
     },
     "icon-card-scan": {
       "frame": {
-        "x": 806,
+        "x": 946,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2542,7 +2622,7 @@
     },
     "icon-part-sensor": {
       "frame": {
-        "x": 842,
+        "x": 982,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2562,7 +2642,7 @@
     },
     "icon-part-memory": {
       "frame": {
-        "x": 878,
+        "x": 1018,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2582,7 +2662,7 @@
     },
     "prop-key": {
       "frame": {
-        "x": 914,
+        "x": 1054,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2602,7 +2682,7 @@
     },
     "prop-stump": {
       "frame": {
-        "x": 950,
+        "x": 1090,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2622,7 +2702,7 @@
     },
     "prop-mushroom": {
       "frame": {
-        "x": 986,
+        "x": 1126,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2642,7 +2722,7 @@
     },
     "icon-item-cap": {
       "frame": {
-        "x": 1022,
+        "x": 1162,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2662,7 +2742,7 @@
     },
     "icon-item-leafhat": {
       "frame": {
-        "x": 1058,
+        "x": 1198,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2682,7 +2762,7 @@
     },
     "icon-item-rangerhat": {
       "frame": {
-        "x": 1094,
+        "x": 1234,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2702,7 +2782,7 @@
     },
     "icon-item-stick": {
       "frame": {
-        "x": 1130,
+        "x": 1270,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2722,7 +2802,7 @@
     },
     "icon-item-hammer": {
       "frame": {
-        "x": 1166,
+        "x": 1306,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2742,7 +2822,7 @@
     },
     "icon-item-brush": {
       "frame": {
-        "x": 1202,
+        "x": 1342,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2762,7 +2842,7 @@
     },
     "icon-item-vest": {
       "frame": {
-        "x": 1238,
+        "x": 1378,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2782,7 +2862,7 @@
     },
     "icon-item-cloak": {
       "frame": {
-        "x": 1274,
+        "x": 1414,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2802,7 +2882,7 @@
     },
     "icon-item-boots": {
       "frame": {
-        "x": 1310,
+        "x": 1450,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2822,7 +2902,7 @@
     },
     "icon-item-windboots": {
       "frame": {
-        "x": 1346,
+        "x": 1486,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2842,7 +2922,7 @@
     },
     "icon-item-glasses": {
       "frame": {
-        "x": 1382,
+        "x": 1522,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2862,7 +2942,7 @@
     },
     "icon-item-flowmap": {
       "frame": {
-        "x": 1418,
+        "x": 1558,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2882,7 +2962,7 @@
     },
     "icon-item-apple": {
       "frame": {
-        "x": 1454,
+        "x": 1594,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2902,7 +2982,7 @@
     },
     "icon-item-jelly": {
       "frame": {
-        "x": 1490,
+        "x": 1630,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2922,7 +3002,7 @@
     },
     "icon-item-forestkey": {
       "frame": {
-        "x": 1526,
+        "x": 1666,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2942,7 +3022,7 @@
     },
     "icon-item-vine": {
       "frame": {
-        "x": 1562,
+        "x": 1702,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2962,7 +3042,7 @@
     },
     "icon-part-wheel": {
       "frame": {
-        "x": 1598,
+        "x": 1738,
         "y": 698,
         "w": 32,
         "h": 32
@@ -2982,7 +3062,7 @@
     },
     "icon-card-up": {
       "frame": {
-        "x": 1634,
+        "x": 1774,
         "y": 698,
         "w": 32,
         "h": 32
@@ -3002,7 +3082,7 @@
     },
     "icon-card-down": {
       "frame": {
-        "x": 1670,
+        "x": 1810,
         "y": 698,
         "w": 32,
         "h": 32
@@ -3022,7 +3102,7 @@
     },
     "icon-card-left": {
       "frame": {
-        "x": 1706,
+        "x": 1846,
         "y": 698,
         "w": 32,
         "h": 32
@@ -3042,7 +3122,7 @@
     },
     "icon-card-right": {
       "frame": {
-        "x": 1742,
+        "x": 1882,
         "y": 698,
         "w": 32,
         "h": 32
@@ -3062,7 +3142,7 @@
     },
     "icon-card-forward": {
       "frame": {
-        "x": 1778,
+        "x": 1918,
         "y": 698,
         "w": 32,
         "h": 32
@@ -3082,7 +3162,7 @@
     },
     "icon-card-turnLeft": {
       "frame": {
-        "x": 1814,
+        "x": 1954,
         "y": 698,
         "w": 32,
         "h": 32
@@ -3102,7 +3182,7 @@
     },
     "icon-card-turnRight": {
       "frame": {
-        "x": 1850,
+        "x": 1990,
         "y": 698,
         "w": 32,
         "h": 32
@@ -3122,86 +3202,6 @@
     },
     "icon-card-collect": {
       "frame": {
-        "x": 1886,
-        "y": 698,
-        "w": 32,
-        "h": 32
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 32,
-        "h": 32
-      },
-      "sourceSize": {
-        "w": 32,
-        "h": 32
-      }
-    },
-    "icon-card-attack": {
-      "frame": {
-        "x": 1922,
-        "y": 698,
-        "w": 32,
-        "h": 32
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 32,
-        "h": 32
-      },
-      "sourceSize": {
-        "w": 32,
-        "h": 32
-      }
-    },
-    "icon-card-guard": {
-      "frame": {
-        "x": 1958,
-        "y": 698,
-        "w": 32,
-        "h": 32
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 32,
-        "h": 32
-      },
-      "sourceSize": {
-        "w": 32,
-        "h": 32
-      }
-    },
-    "icon-card-heal": {
-      "frame": {
-        "x": 1994,
-        "y": 698,
-        "w": 32,
-        "h": 32
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 32,
-        "h": 32
-      },
-      "sourceSize": {
-        "w": 32,
-        "h": 32
-      }
-    },
-    "icon-card-wait": {
-      "frame": {
         "x": 2,
         "y": 734,
         "w": 32,
@@ -3220,7 +3220,7 @@
         "h": 32
       }
     },
-    "icon-card-repeat": {
+    "icon-card-attack": {
       "frame": {
         "x": 38,
         "y": 734,
@@ -3240,7 +3240,7 @@
         "h": 32
       }
     },
-    "icon-card-if": {
+    "icon-card-guard": {
       "frame": {
         "x": 74,
         "y": 734,
@@ -3260,7 +3260,7 @@
         "h": 32
       }
     },
-    "icon-intent-attack": {
+    "icon-card-heal": {
       "frame": {
         "x": 110,
         "y": 734,
@@ -3280,7 +3280,7 @@
         "h": 32
       }
     },
-    "icon-intent-guard": {
+    "icon-card-wait": {
       "frame": {
         "x": 146,
         "y": 734,
@@ -3300,7 +3300,7 @@
         "h": 32
       }
     },
-    "icon-intent-charge": {
+    "icon-card-repeat": {
       "frame": {
         "x": 182,
         "y": 734,
@@ -3320,7 +3320,7 @@
         "h": 32
       }
     },
-    "icon-intent-smash": {
+    "icon-card-if": {
       "frame": {
         "x": 218,
         "y": 734,
@@ -3340,7 +3340,7 @@
         "h": 32
       }
     },
-    "icon-intent-heal": {
+    "icon-intent-attack": {
       "frame": {
         "x": 254,
         "y": 734,
@@ -3360,7 +3360,7 @@
         "h": 32
       }
     },
-    "icon-intent-idle": {
+    "icon-intent-guard": {
       "frame": {
         "x": 290,
         "y": 734,
@@ -3380,7 +3380,7 @@
         "h": 32
       }
     },
-    "icon-robi": {
+    "icon-intent-charge": {
       "frame": {
         "x": 326,
         "y": 734,
@@ -3400,7 +3400,7 @@
         "h": 32
       }
     },
-    "icon-goal": {
+    "icon-intent-smash": {
       "frame": {
         "x": 362,
         "y": 734,
@@ -3420,7 +3420,7 @@
         "h": 32
       }
     },
-    "icon-gem": {
+    "icon-intent-heal": {
       "frame": {
         "x": 398,
         "y": 734,
@@ -3440,7 +3440,7 @@
         "h": 32
       }
     },
-    "icon-cell-tree": {
+    "icon-intent-idle": {
       "frame": {
         "x": 434,
         "y": 734,
@@ -3460,7 +3460,7 @@
         "h": 32
       }
     },
-    "icon-cell-water": {
+    "icon-robi": {
       "frame": {
         "x": 470,
         "y": 734,
@@ -3480,7 +3480,7 @@
         "h": 32
       }
     },
-    "icon-cell-rock": {
+    "icon-goal": {
       "frame": {
         "x": 506,
         "y": 734,
@@ -3500,7 +3500,7 @@
         "h": 32
       }
     },
-    "icon-star": {
+    "icon-gem": {
       "frame": {
         "x": 542,
         "y": 734,
@@ -3520,7 +3520,7 @@
         "h": 32
       }
     },
-    "icon-star-empty": {
+    "icon-cell-tree": {
       "frame": {
         "x": 578,
         "y": 734,
@@ -3540,7 +3540,7 @@
         "h": 32
       }
     },
-    "icon-coin": {
+    "icon-cell-water": {
       "frame": {
         "x": 614,
         "y": 734,
@@ -3560,7 +3560,7 @@
         "h": 32
       }
     },
-    "icon-heart": {
+    "icon-cell-rock": {
       "frame": {
         "x": 650,
         "y": 734,
@@ -3580,7 +3580,7 @@
         "h": 32
       }
     },
-    "icon-energy": {
+    "icon-star": {
       "frame": {
         "x": 686,
         "y": 734,
@@ -3600,7 +3600,7 @@
         "h": 32
       }
     },
-    "icon-xp": {
+    "icon-star-empty": {
       "frame": {
         "x": 722,
         "y": 734,
@@ -3620,7 +3620,7 @@
         "h": 32
       }
     },
-    "icon-bag": {
+    "icon-coin": {
       "frame": {
         "x": 758,
         "y": 734,
@@ -3640,7 +3640,7 @@
         "h": 32
       }
     },
-    "icon-book": {
+    "icon-heart": {
       "frame": {
         "x": 794,
         "y": 734,
@@ -3660,7 +3660,7 @@
         "h": 32
       }
     },
-    "icon-gear": {
+    "icon-energy": {
       "frame": {
         "x": 830,
         "y": 734,
@@ -3680,7 +3680,7 @@
         "h": 32
       }
     },
-    "icon-lock": {
+    "icon-xp": {
       "frame": {
         "x": 866,
         "y": 734,
@@ -3700,7 +3700,7 @@
         "h": 32
       }
     },
-    "icon-check": {
+    "icon-bag": {
       "frame": {
         "x": 902,
         "y": 734,
@@ -3720,7 +3720,7 @@
         "h": 32
       }
     },
-    "icon-hint": {
+    "icon-book": {
       "frame": {
         "x": 938,
         "y": 734,
@@ -3740,7 +3740,7 @@
         "h": 32
       }
     },
-    "icon-badge-1": {
+    "icon-gear": {
       "frame": {
         "x": 974,
         "y": 734,
@@ -3760,7 +3760,7 @@
         "h": 32
       }
     },
-    "icon-badge-2": {
+    "icon-lock": {
       "frame": {
         "x": 1010,
         "y": 734,
@@ -3780,7 +3780,7 @@
         "h": 32
       }
     },
-    "icon-badge-3": {
+    "icon-check": {
       "frame": {
         "x": 1046,
         "y": 734,
@@ -3800,7 +3800,7 @@
         "h": 32
       }
     },
-    "icon-badge-4": {
+    "icon-hint": {
       "frame": {
         "x": 1082,
         "y": 734,
@@ -3820,7 +3820,7 @@
         "h": 32
       }
     },
-    "icon-badge-5": {
+    "icon-badge-1": {
       "frame": {
         "x": 1118,
         "y": 734,
@@ -3840,7 +3840,7 @@
         "h": 32
       }
     },
-    "icon-badge-6": {
+    "icon-badge-2": {
       "frame": {
         "x": 1154,
         "y": 734,
@@ -3860,7 +3860,7 @@
         "h": 32
       }
     },
-    "icon-badge-7": {
+    "icon-badge-3": {
       "frame": {
         "x": 1190,
         "y": 734,
@@ -3880,7 +3880,7 @@
         "h": 32
       }
     },
-    "icon-badge-8": {
+    "icon-badge-4": {
       "frame": {
         "x": 1226,
         "y": 734,
@@ -3900,9 +3900,89 @@
         "h": 32
       }
     },
-    "fx-sparkle": {
+    "icon-badge-5": {
       "frame": {
         "x": 1262,
+        "y": 734,
+        "w": 32,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      }
+    },
+    "icon-badge-6": {
+      "frame": {
+        "x": 1298,
+        "y": 734,
+        "w": 32,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      }
+    },
+    "icon-badge-7": {
+      "frame": {
+        "x": 1334,
+        "y": 734,
+        "w": 32,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      }
+    },
+    "icon-badge-8": {
+      "frame": {
+        "x": 1370,
+        "y": 734,
+        "w": 32,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      }
+    },
+    "fx-sparkle": {
+      "frame": {
+        "x": 1406,
         "y": 734,
         "w": 64,
         "h": 16
@@ -3922,7 +4002,7 @@
     },
     "ui-bar": {
       "frame": {
-        "x": 1330,
+        "x": 1474,
         "y": 734,
         "w": 48,
         "h": 16

@@ -27,3 +27,20 @@
 
 재생성: `node assets-src/tools/draw-c13-1-workshop.mjs`, `node assets-src/tools/draw-c13-1-furniture.mjs`, `node assets-src/tools/draw-c13-1-room.mjs` → `npm run assets` → `node assets-src/tools/preview-c13.mjs 1`.
 임시 그림 기준본 추출 도구 `assets-src/tools/capture-c13-placeholders.js`는 5176 갤러리에서 Playwright CLI `run-code --filename`으로 실행해요. 반환된 각 `png`는 base64 PNG예요.
+
+## 2단계 — 인형뽑기 기계와 놀이 그림
+
+- 완료 4키: `prop-claw-machine`, `prop-claw`, `icon-claw-exit`, `icon-card-grab`. 모두 density 2, 합계 6프레임. 이번 단계 미완료 없음; 남은 키는 3단계 인형 6키예요.
+- 아틀라스 **2048×2048**, 전체 201키가 density 2예요. 비교판 `assets-preview/compare-13-2.png`에 임시/새 그림의 모든 프레임을 모았어요.
+- 검증: `npm run assets`, `npm test` **21파일·229개**, `npm run build` 통과. 갤러리 전체 207키·540프레임의 크기/기준점 오류 0, pageerror 0. 이 단계 빌드에는 Vite 플러그인 소요시간 안내가 있었으나 성공했어요.
+- 실제 놀이: 기계 간판 프레임 0/1 교대를 관찰하고 Space로 열었어요. 첫 판에서 위·위·오른쪽·오른쪽·집기 5블록을 클릭/실행해 별 3개, `doll:dummy` 보상을 확인했어요. 집게 내려감→오므림→인형 들기→출구 전달 장면과 성공 화면을 캡처하고 직접 봤어요. 이 단계의 인형 자체는 아직 1배 임시 그림이에요.
+- 품질: 넓은 유리 2면에 집게와 섬 친구들이 보이고, 앞 출구/분홍 몸체/청록 간판이 구분돼요. 조작 패널로 오해할 수 있는 옆면 장식은 하트 천 모양으로 바꿨어요. 구조는 고정하고 간판 278px만 색이 바뀌어요.
+- 집게는 위 중앙 줄을 유지하고 닫힘 중앙 6px를 비워 인형 얼굴을 가리지 않아요. 출구는 연보라 판과 대비되는 줄무늬, 집기 카드는 기존 카드와 같은 2px 여백/테두리를 사용해요.
+- Claude 확인: 작은 기계 유리 속 인형과 출구 가독성, 청록 불빛 강도. 추가 색 필요 없음. 필요한 변경 없음.
+
+| 키 | 발밑 그림자 너비(논리 px) | 불빛(아래에서 높이 %, 반지름 논리 px, 프레임) |
+|---|---|---|
+| `prop-claw-machine` | 없음 | 82%, 12, 프레임 0·1, 청록(기존 유지, 물리 y13 간판 중심) |
+| `prop-claw` | 없음(UI 집게) | 없음 |
+
+재생성 도구: `draw-c13-2-machine.mjs`, `draw-c13-2-claw.mjs`, `draw-c13-2-icons.mjs`(모두 `assets-src/tools/`) → `npm run assets` → `node assets-src/tools/preview-c13.mjs 2`.

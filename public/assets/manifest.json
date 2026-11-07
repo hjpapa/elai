@@ -158,6 +158,11 @@
       "density": 2
     },
     {
+      "key": "prop-claw-machine",
+      "file": "prop/prop-claw-machine.png",
+      "density": 2
+    },
+    {
       "key": "prop-workbench",
       "file": "prop/prop-workbench.png",
       "density": 2
@@ -180,6 +185,21 @@
     {
       "key": "prop-cushion",
       "file": "prop/prop-cushion.png",
+      "density": 2
+    },
+    {
+      "key": "prop-claw",
+      "file": "prop/prop-claw.png",
+      "density": 2
+    },
+    {
+      "key": "icon-claw-exit",
+      "file": "icon/icon-claw-exit.png",
+      "density": 2
+    },
+    {
+      "key": "icon-card-grab",
+      "file": "icon/icon-card-grab.png",
       "density": 2
     },
     {
