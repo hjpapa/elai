@@ -2,6 +2,14 @@
 export const TILE_W = 32;
 export const TILE_H = 16;
 
+/** 땅 높이 반 단의 화면 높이(논리 픽셀). 한 단 = 블록 옆면 8px */
+export const HALF_LEVEL_PX = 4;
+
+/** 높이(반 단 단위) → 화면에서 올라가는 픽셀 */
+export function liftPx(h: number): number {
+  return h * HALF_LEVEL_PX;
+}
+
 /** 칸 좌표 → 화면 좌표(칸 마름모의 가운데) */
 export function isoToScreen(x: number, y: number): { x: number; y: number } {
   return { x: (x - y) * (TILE_W / 2), y: (x + y) * (TILE_H / 2) };

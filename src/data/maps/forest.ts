@@ -32,6 +32,15 @@ p.dots(
   ],
   'u',
 );
+p.set(19, 12, 'T'); // 숲 언덕 위 나무
+
+/**
+ * 숲 언덕(2.5D 높낮이): 절벽으로 둘러싸인 두 단 높이의 고원. 오솔길 끝(23,18)에서 계단 세 칸으로만 올라가요.
+ * 숫자 하나 = 반 단(4px). 계단은 반 단씩 올라가서 걸을 수 있고, 고원 둘레는 한 단보다 높아서 못 올라가요.
+ */
+const hp = new Painter(28, 24, '0');
+hp.rect(19, 12, 24, 14, '4'); // 고원
+hp.set(23, 15, '3').set(23, 16, '2').set(23, 17, '1'); // 계단
 
 export const forest: MapDef = {
   id: 'forest',
@@ -39,6 +48,7 @@ export const forest: MapDef = {
   theme: 'forest',
   chapter: 'ch1',
   rows: p.rows(),
+  heights: hp.rows(),
   legend: { ...BASE_LEGEND },
   glyphs: { ...BASE_GLYPHS },
   spawn: { x: 13, y: 21 },
@@ -68,6 +78,8 @@ export const forest: MapDef = {
     { id: 'slime-b', type: 'mob', at: { x: 20, y: 16 }, mob: 'vineSlime', wander: 2 },
     { id: 'bug-a', type: 'mob', at: { x: 17, y: 6 }, mob: 'bugWorm', wander: 1 },
     { id: 'chest-forest', type: 'chest', at: { x: 24, y: 18 }, reward: { xp: 5, coins: 10, items: [{ id: 'apple', qty: 1 }] } },
+    // 숲 언덕 고원 위 상자: 오솔길 끝의 계단으로만 올라가요. 성장 곡선이 바뀌지 않게 경험치는 없어요.
+    { id: 'chest-hill', type: 'chest', at: { x: 20, y: 13 }, reward: { coins: 8, items: [{ id: 'jelly', qty: 1 }] } },
     { id: 'sign-entry', type: 'sign', at: { x: 14, y: 21 }, text: '순서의 숲에 왔어요!\n숲지기 솔에게 길을 물어봐요.' },
     { id: 'sign-bridge', type: 'sign', at: { x: 14, y: 11 }, text: '고장 난 다리를 고치는 중이에요.\n솔과 함께 순서를 살펴봐요.' },
     { id: 'sign-maze', type: 'sign', at: { x: 14, y: 4 }, text: '안개 낀 숲 미로 입구예요.\n표지판의 화살표를 따라가요.' },

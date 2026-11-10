@@ -82,13 +82,13 @@ function shadowTexture(scene: Phaser.Scene, w: number, h: number): string {
   return key;
 }
 
-/** 발 기준점(x, y)에 그림자를 놓아요. 그림자가 필요 없는 그림이면 null이에요. */
-export function addShadow(scene: Phaser.Scene, key: string, x: number, y: number): Phaser.GameObjects.Image | null {
+/** 발 기준점(x, y)에 그림자를 놓아요(depth: 높은 칸 위면 그 칸 땅 바로 위 깊이). 그림자가 필요 없는 그림이면 null이에요. */
+export function addShadow(scene: Phaser.Scene, key: string, x: number, y: number, depth?: number): Phaser.GameObjects.Image | null {
   const size = shadowSize(key);
   if (!size) return null;
   return scene.add
     .image(x, y, shadowTexture(scene, size.w, size.h))
     .setScale(0.5)
     .setAlpha(SHADOW_ALPHA)
-    .setDepth(SHADOW_DEPTH + y);
+    .setDepth(depth ?? SHADOW_DEPTH + y);
 }

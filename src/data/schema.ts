@@ -384,6 +384,12 @@ export interface MapDef {
   legend: Record<string, TileKind>;
   /** 소품 글자: 이 글자 칸에는 바닥 타일과 소품을 함께 놓아요(예: 'T' → 풀 + 나무) */
   glyphs?: Record<string, { tile: TileKind; sprite: string; solid?: boolean }>;
+  /**
+   * 땅 높이(선택). rows와 같은 크기의 숫자 줄이고, 숫자 하나 = 반 단(4px, 블록 옆면의 절반)이에요.
+   * 이웃 칸과 반 단 차이까지는 걸어서 오르내려요(계단·언덕). 한 단(2) 이상 차이는 절벽이라 못 지나가요.
+   * 숫자는 0~4만 써요(두 단, 16px까지). 더 높으면 언덕 뒤에 선 캐릭터가 많이 가려져요.
+   */
+  heights?: string[];
   objects: MapObject[];
   spawn: Point;
   /** 안개: 가 본 곳만 보여요 */

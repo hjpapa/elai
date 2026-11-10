@@ -17,19 +17,22 @@ import { app, classUnlock } from '../app';
 import { ASSET_BY_KEY, originOf } from '../assets';
 import { fitArt } from '../density';
 import { Actor } from '../iso/actor';
-import { drawEdges } from '../iso/edgeArt';
-import { edgeFaces } from '../iso/edges';
-import { isoToScreen, screenToIso } from '../iso/iso';
+import { drawCliffs, drawEdges, drawRims } from '../iso/edgeArt';
+import { cliffFaces, edgeFaces, rimEdges } from '../iso/edges';
+import { isoToScreen, liftPx, screenToIso } from '../iso/iso';
 import {
   BLOCK_TEXTURE,
   TILE_TEXTURE,
   baseWalkable,
   buildCells,
   findPath,
+  heightAt,
+  makeStep,
   objFlag,
   objectSolid,
   objectVisible,
   type Cell,
+  type StepFn,
 } from '../iso/mapRuntime';
 import { GUIDE_EVENT, guideTarget, hasNewMission, type GuideTarget } from '../rpg/guide';
 import { canStart, entryChapter, portalGate } from '../rpg/progress';
@@ -45,6 +48,9 @@ export interface WorldData {
   map?: string;
   at?: Point;
 }
+
+/** 칸에 그려진 그림(바닥·블록·소품은 그림, 높은 칸의 옆면은 그래픽) */
+type Art = Phaser.GameObjects.Image | Phaser.GameObjects.Graphics;
 
 interface View {
   obj: MapObject;
@@ -103,7 +109,13 @@ export class WorldScene extends Phaser.Scene {
   private robi: Actor | null = null;
   private views: View[] = [];
   /** 칸마다 그 칸에 그려진 바닥·블록·소품 그림(안개용) */
-  private artAt = new Map<string, Phaser.GameObjects.Image[]>();
+  private artAt = new Map<string, Art[]>();
+  /** 높은 칸의 땅(타일·옆면). 플레이어보다 높을 때만 앞에서 반투명해져요. */
+  private raised = new Set<Art>();
+  /** 높이 규칙(반 단까지만 오르내려요) */
+  private step!: StepFn;
+  /** 맵에서 가장 높은 칸(누른 곳 찾기) */
+  private maxHeight = 0;
   private water: Phaser.GameObjects.Image[] = [];
   /** 소품에 딸린 그림자·불빛(소품이 숨으면 같이 숨어요. 불빛은 켜지는 프레임일 때만 보여요) */
   private grounded: { owner: Phaser.GameObjects.Image; deco: Phaser.GameObjects.Image; frames?: readonly number[] }[] = [];
@@ -162,6 +174,9 @@ export class WorldScene extends Phaser.Scene {
     const mapId = data.map && MAPS[data.map] ? data.map : MAPS[s.data.location.map] ? s.data.location.map : 'village';
     this.def = MAPS[mapId];
     this.cells = buildCells(this.def);
+    this.step = makeStep(this.cells);
+    this.maxHeight = Math.max(0, ...this.cells.flat().map((c) => c.h ?? 0));
+    this.raised = new Set();
     this.views = [];
     this.artAt = new Map();
     this.water = [];
@@ -203,7 +218,7 @@ export class WorldScene extends Phaser.Scene {
 
     let at = data.at ?? (s.data.location.map === mapId ? { x: s.data.location.x, y: s.data.location.y } : this.def.spawn);
     if (!this.passable(at.x, at.y)) at = this.def.spawn;
-    this.player = new Actor(this, 'char-player', at.x, at.y, this.playerOverlays());
+    this.player = new Actor(this, 'char-player', at.x, at.y, this.playerOverlays(), 'char', this.h(at.x, at.y));
     s.setLocation(mapId, at.x, at.y);
 
     const cam = this.cameras.main;
@@ -298,13 +313,59 @@ export class WorldScene extends Phaser.Scene {
     return spec ? originOf(spec) : { x: 0.5, y: 0.9 };
   }
 
+  /** 칸의 땅 높이(반 단) */
+  private h(x: number, y: number): number {
+    return heightAt(this.cells, x, y);
+  }
+
+  /** 칸 위에 서는 것(소품·캐릭터 발)의 화면 위치. 높은 칸은 그만큼 위로 올라가요. */
+  private spot(x: number, y: number): { x: number; y: number } {
+    const p = isoToScreen(x, y);
+    return { x: p.x, y: p.y - liftPx(this.h(x, y)) };
+  }
+
+  /** 칸 위에 깔리는 것(그림자·발자국·누른 곳 표시)의 깊이. 평지는 바닥층, 높은 칸은 그 칸 땅 바로 위예요. */
+  private groundDepth(x: number, y: number): number | undefined {
+    return this.h(x, y) > 0 ? (x + y) * 10 + 2 : undefined;
+  }
+
   private drawTiles(): void {
+    const byCell = <T extends { x: number; y: number }>(list: T[]): Map<string, T[]> => {
+      const m = new Map<string, T[]>();
+      for (const f of list) m.set(`${f.x},${f.y}`, [...(m.get(`${f.x},${f.y}`) ?? []), f]);
+      return m;
+    };
+    const cliffs = byCell(cliffFaces(this.cells));
+    const rims = byCell(rimEdges(this.cells));
     this.cells.forEach((row, y) =>
       row.forEach((cell, x) => {
-        const art: Phaser.GameObjects.Image[] = [];
-        const p = isoToScreen(x, y);
+        const art: Art[] = [];
+        const k = `${x},${y}`;
+        const p = this.spot(x, y);
+        const raised = (cell.h ?? 0) > 0;
         const tex = TILE_TEXTURE[cell.kind];
-        if (tex) {
+        if (raised) {
+          // 높은 칸: 옆면과 윗면을 그 칸의 깊이로 그려서 뒤의 캐릭터는 가리고 앞의 캐릭터는 위에 그려져요.
+          const faces = cliffs.get(k);
+          if (faces) {
+            const g = drawCliffs(this, faces, (x + y) * 10 + 1);
+            art.push(g);
+            this.raised.add(g);
+          }
+          if (tex) {
+            const img = fitArt(this.add.image(p.x, p.y, tex, 0)).setDepth((x + y) * 10 + 1.5);
+            art.push(img);
+            this.raised.add(img);
+            if (cell.kind === 'water') this.water.push(img);
+          }
+          // 뒤쪽 테두리: 뒤가 낮으면 윗면 가장자리에 줄을 그어 언덕 뒤에 선 캐릭터와 나눠요.
+          const rim = rims.get(k);
+          if (rim) {
+            const g = drawRims(this, rim, (x + y) * 10 + 1.6);
+            art.push(g);
+            this.raised.add(g);
+          }
+        } else if (tex) {
           const img = fitArt(this.add.image(p.x, p.y, tex, 0)).setDepth(-100000 + p.y);
           art.push(img);
           if (cell.kind === 'water') this.water.push(img);
@@ -318,17 +379,17 @@ export class WorldScene extends Phaser.Scene {
           const o = this.originFor(cell.glyph.sprite);
           const depth = (x + y) * 10 + 5;
           const img = fitArt(this.add.image(p.x, p.y, cell.glyph.sprite, 0)).setOrigin(o.x, o.y).setDepth(depth);
-          art.push(img, ...this.decorate(cell.glyph.sprite, p.x, p.y, img, depth));
+          art.push(img, ...this.decorate(cell.glyph.sprite, p.x, p.y, img, depth, this.groundDepth(x, y)));
         }
-        this.artAt.set(`${x},${y}`, art);
+        this.artAt.set(k, art);
       }),
     );
   }
 
   /** 2배 그림 소품의 발밑 그림자와 불빛을 더해요. owner가 숨으면 같이 숨고, 불빛은 켜지는 프레임에서만 보여요(update). */
-  private decorate(key: string, x: number, y: number, owner: Phaser.GameObjects.Image, depth: number): Phaser.GameObjects.Image[] {
-    const shadow = addShadow(this, key, x, y);
-    const light = addLight(this, key, x, y, depth);
+  private decorate(key: string, x: number, y: number, owner: Phaser.GameObjects.Image, depth: number, groundDepth?: number): Phaser.GameObjects.Image[] {
+    const shadow = addShadow(this, key, x, y, groundDepth);
+    const light = addLight(this, key, x, y, depth, groundDepth);
     const extra: Phaser.GameObjects.Image[] = [];
     if (shadow) {
       this.grounded.push({ owner, deco: shadow });
@@ -359,23 +420,24 @@ export class WorldScene extends Phaser.Scene {
 
   private makeView(obj: MapObject): View {
     const v: View = { obj, home: { ...obj.at }, talkIndex: 0 };
-    const p = isoToScreen(obj.at.x, obj.at.y);
+    const p = this.spot(obj.at.x, obj.at.y);
+    const z = this.h(obj.at.x, obj.at.y);
     const image = (key: string, frame = 0) => {
       const o = this.originFor(key);
       const depth = (obj.at.x + obj.at.y) * 10 + 5;
       const img = fitArt(this.add.image(p.x, p.y, key, frame)).setOrigin(o.x, o.y).setDepth(depth);
-      this.decorate(key, p.x, p.y, img, depth);
+      this.decorate(key, p.x, p.y, img, depth, this.groundDepth(obj.at.x, obj.at.y));
       return img;
     };
     switch (obj.type) {
       case 'npc': {
         const sprite = obj.sprite ?? NPCS[obj.npc]?.sprite ?? 'char-elder';
-        v.actor = new Actor(this, sprite, obj.at.x, obj.at.y, [], sprite.startsWith('char-') ? 'char' : 'mob');
+        v.actor = new Actor(this, sprite, obj.at.x, obj.at.y, [], sprite.startsWith('char-') ? 'char' : 'mob', z);
         if (obj.frame !== undefined) v.actor.frameOverride = obj.frame;
         break;
       }
       case 'mob':
-        v.actor = new Actor(this, MOBS[obj.mob].sprite, obj.at.x, obj.at.y, [], 'mob');
+        v.actor = new Actor(this, MOBS[obj.mob].sprite, obj.at.x, obj.at.y, [], 'mob', z);
         break;
       case 'chest':
         v.image = image('prop-chest');
@@ -452,8 +514,10 @@ export class WorldScene extends Phaser.Scene {
         [0, 1],
         [-1, 0],
         [0, -1],
-      ].find(([dx, dy]) => baseWalkable(this.cells, t.x + dx, t.y + dy)) ?? [0, 0];
-      this.robi = new Actor(this, 'char-robi', t.x + spot[0], t.y + spot[1], this.robiOverlays());
+      ].find(([dx, dy]) => baseWalkable(this.cells, t.x + dx, t.y + dy) && this.step(t.x, t.y, t.x + dx, t.y + dy)) ?? [0, 0];
+      const rx = t.x + spot[0];
+      const ry = t.y + spot[1];
+      this.robi = new Actor(this, 'char-robi', rx, ry, this.robiOverlays(), 'char', this.h(rx, ry));
     }
     this.robi?.setOverlays(this.robiOverlays());
     const map = this.def.fog && s.helpers.flowMap ? this.def : null;
@@ -496,11 +560,11 @@ export class WorldScene extends Phaser.Scene {
     }
     const target = this.target;
     if (target && this.targetMark?.visible) {
-      const p = isoToScreen(target.at.x, target.at.y);
+      const p = this.spot(target.at.x, target.at.y);
       // 문 그림 머리 위에 띄워요(바닥에 납작한 문 매트는 낮게).
       const img = this.viewAt(target.at.x, target.at.y)?.image;
       const lift = img ? img.displayHeight * img.originY + 8 : 38;
-      this.targetMark.setPosition(p.x, p.y - lift + bob);
+      this.targetMark.setPosition(p.x, (img ? img.y : p.y) - lift + bob);
     }
     this.placeEdgeArrow();
   }
@@ -517,7 +581,7 @@ export class WorldScene extends Phaser.Scene {
     const rect = this.game.canvas.getBoundingClientRect();
     // 캔버스는 기기 픽셀이라 CSS 픽셀로 바꿔요.
     const toCss = rect.width / this.scale.width;
-    const p = isoToScreen(target.at.x, target.at.y);
+    const p = this.spot(target.at.x, target.at.y);
     const sx = (p.x - cam.worldView.x) * cam.zoom * toCss;
     const sy = (p.y - 10 - cam.worldView.y) * cam.zoom * toCss;
     // 위 상태 카드와 아래 목표 안내를 피해서 띄워요.
@@ -558,14 +622,16 @@ export class WorldScene extends Phaser.Scene {
     const near = (x: number, y: number) => Math.max(Math.abs(x - goal.x), Math.abs(y - goal.y)) <= 1 && !onGoal(x, y);
     const walkOn = target.kind === 'portal';
     const pass = (x: number, y: number) => (this.passable(x, y) && (onGoal(x, y) || !this.portalAt(x, y))) || (walkOn && onGoal(x, y));
-    const path = findPath(pass, this.player.tile, walkOn ? onGoal : near, goal);
+    const path = findPath(pass, this.player.tile, walkOn ? onGoal : near, goal, 4000, this.step);
     if (!path) {
       app.ui.toast('길을 찾지 못했어요.\n다른 길로 돌아가 봐요.', icon('icon-guide-arrow'), 2200);
       return;
     }
     const shown = path.slice(1).map((pt, i) => {
-      const p = isoToScreen(pt.x, pt.y);
-      const img = fitArt(this.add.image(p.x, p.y, 'icon-path-step')).setDepth(-50000 + p.y).setAlpha(this.calm ? 0.95 : 0);
+      const p = this.spot(pt.x, pt.y);
+      const img = fitArt(this.add.image(p.x, p.y, 'icon-path-step'))
+        .setDepth(this.groundDepth(pt.x, pt.y) ?? -50000 + p.y)
+        .setAlpha(this.calm ? 0.95 : 0);
       if (!this.calm) this.tweens.add({ targets: img, alpha: 0.95, delay: i * 35, duration: 160 });
       return img;
     });
@@ -588,9 +654,13 @@ export class WorldScene extends Phaser.Scene {
   }
 
   // ── 가림 ──
-  private faded: Phaser.GameObjects.Image[] = [];
+  private faded: Art[] = [];
 
-  /** 플레이어 바로 앞(화면 아래쪽)의 키 큰 나무·벽은 반투명하게 해서 플레이어가 가려지지 않게 해요. */
+  /**
+   * 플레이어 바로 앞(화면 아래쪽)의 키 큰 나무·벽은 반투명하게 해서 플레이어가 가려지지 않게 해요.
+   * 높은 칸의 땅(언덕 윗면·옆면)은 그대로 둬요. 밑이 비어 있어서 반투명하면 구멍처럼 보이거든요.
+   * 언덕 뒤에 서면 발만 조금 가려져요(높이는 4까지라 몸은 거의 다 보여요).
+   */
   private updateOcclusion(): void {
     for (const img of this.faded) img.setAlpha(1);
     this.faded = [];
@@ -599,7 +669,7 @@ export class WorldScene extends Phaser.Scene {
       for (let tx = px - 1; tx <= px + 3; tx++) {
         if (tx + ty <= px + py) continue;
         for (const img of this.artAt.get(`${tx},${ty}`) ?? []) {
-          if (img.depth < 0) continue; // 바닥 타일은 그대로
+          if (img.depth < 0 || this.raised.has(img)) continue; // 바닥 타일·높은 칸의 땅은 그대로
           img.setAlpha(0.45);
           this.faded.push(img);
         }
@@ -785,7 +855,9 @@ export class WorldScene extends Phaser.Scene {
   private async keyStep(dx: number, dy: number): Promise<void> {
     const t = this.player.tile;
     const can = (ax: number, ay: number) =>
-      this.passable(t.x + ax, t.y + ay) && (ax === 0 || ay === 0 || (this.passable(t.x + ax, t.y) && this.passable(t.x, t.y + ay)));
+      this.passable(t.x + ax, t.y + ay) &&
+      this.step(t.x, t.y, t.x + ax, t.y + ay) &&
+      (ax === 0 || ay === 0 || (this.passable(t.x + ax, t.y) && this.passable(t.x, t.y + ay)));
     if (can(dx, dy)) {
       await this.stepTo(t.x + dx, t.y + dy);
       return;
@@ -803,7 +875,7 @@ export class WorldScene extends Phaser.Scene {
       ];
       if (this.lastSlide && this.lastSlide[0] === options[1][0] && this.lastSlide[1] === options[1][1]) options.reverse();
       for (const [ax, ay] of options) {
-        if (!this.passable(t.x + ax, t.y + ay)) continue;
+        if (!this.passable(t.x + ax, t.y + ay) || !this.step(t.x, t.y, t.x + ax, t.y + ay)) continue;
         this.lastSlide = [ax, ay];
         await this.stepTo(t.x + ax, t.y + ay);
         return;
@@ -835,10 +907,19 @@ export class WorldScene extends Phaser.Scene {
         bestDepth = img.depth;
       }
     }
-    const tile = screenToIso(wx, wy);
+    const tile = this.pickTile(wx, wy);
     target ??= this.viewAt(tile.x, tile.y);
     if (!target && baseWalkable(this.cells, tile.x, tile.y)) this.showTapMark(tile);
     await this.walkToward(target ? (target.actor ? target.actor.tile : target.obj.at) : tile, target);
+  }
+
+  /** 누른 곳의 칸: 높은 칸부터 살펴서, 들어 올린 마름모 안을 누른 칸을 골라요(평지 맵은 예전 그대로). */
+  private pickTile(wx: number, wy: number): Point {
+    for (let h = this.maxHeight; h > 0; h--) {
+      const t = screenToIso(wx, wy + liftPx(h));
+      if (this.h(t.x, t.y) === h) return t;
+    }
+    return screenToIso(wx, wy);
   }
 
   private async walkToward(goal: Point, target?: View): Promise<void> {
@@ -849,7 +930,7 @@ export class WorldScene extends Phaser.Scene {
     if (!walkOn && near(from.x, from.y)) return this.interact(target!);
     // 목표가 아닌 문 칸은 피해서 걸어요(마을 공방 같은 건물 칸을 지나가다 들어가지 않게).
     const pass = (x: number, y: number) => (this.passable(x, y) && (isGoal(x, y) || !this.portalAt(x, y))) || (walkOn && isGoal(x, y) && baseWalkable(this.cells, x, y));
-    const path = findPath(pass, from, walkOn ? (x, y) => x === goal.x && y === goal.y : near, goal);
+    const path = findPath(pass, from, walkOn ? (x, y) => x === goal.x && y === goal.y : near, goal, 4000, this.step);
     if (!path) {
       if (target) this.player.face(goal.x - from.x, goal.y - from.y);
       return;
@@ -875,8 +956,8 @@ export class WorldScene extends Phaser.Scene {
     const from = this.player.tile;
     const dx = x - from.x;
     const dy = y - from.y;
-    if (!this.passable(x, y)) {
-      // 막힌 칸: NPC·상자·문·몹이면 그쪽을 보고 상호작용해요.
+    if (!this.passable(x, y) || !this.step(from.x, from.y, x, y)) {
+      // 막힌 칸(또는 절벽): NPC·상자·문·몹이면 그쪽을 보고 상호작용해요.
       this.player.face(dx, dy);
       const v = this.viewAt(x, y);
       if (v && !fromPath) await this.interact(v);
@@ -886,8 +967,8 @@ export class WorldScene extends Phaser.Scene {
     this.walking = true;
     this.lastStep = this.time.now;
     const robiTarget = { ...from };
-    if (this.robi) void this.robi.moveTo(robiTarget.x, robiTarget.y, 170).then(() => this.robi?.stopWalking());
-    await this.player.moveTo(x, y, dx !== 0 && dy !== 0 ? 190 : 150);
+    if (this.robi) void this.robi.moveTo(robiTarget.x, robiTarget.y, 170, this.h(robiTarget.x, robiTarget.y)).then(() => this.robi?.stopWalking());
+    await this.player.moveTo(x, y, dx !== 0 && dy !== 0 ? 190 : 150, this.h(x, y));
     this.walking = false;
     const keepMoving = this.anyMoveKey() || fromPath;
     if (!keepMoving) this.player.stopWalking();
@@ -949,8 +1030,8 @@ export class WorldScene extends Phaser.Scene {
   /** 누른 곳 바닥에 작은 고리를 보여 줘요(어디로 가는지 알 수 있게). */
   private showTapMark(t: Point): void {
     if (!this.textures.exists('fx-target')) return;
-    const p = isoToScreen(t.x, t.y);
-    const img = fitArt(this.add.image(p.x, p.y, 'fx-target', 0)).setDepth(-50000 + p.y);
+    const p = this.spot(t.x, t.y);
+    const img = fitArt(this.add.image(p.x, p.y, 'fx-target', 0)).setDepth(this.groundDepth(t.x, t.y) ?? -50000 + p.y);
     let f = 0;
     this.time.addEvent({
       delay: 90,
@@ -1159,8 +1240,8 @@ export class WorldScene extends Phaser.Scene {
       const ny = t.y + dy;
       if (Math.abs(nx - v.home.x) > radius || Math.abs(ny - v.home.y) > radius) continue;
       if (Math.max(Math.abs(nx - p.x), Math.abs(ny - p.y)) <= 1) continue;
-      if (!this.passable(nx, ny) || this.viewAt(nx, ny)) continue;
-      void v.actor.moveTo(nx, ny, 320).then(() => {
+      if (!this.passable(nx, ny) || this.viewAt(nx, ny) || !this.step(t.x, t.y, nx, ny)) continue;
+      void v.actor.moveTo(nx, ny, 320, this.h(nx, ny)).then(() => {
         v.actor?.setVisible(this.revealed(nx, ny));
       });
     }

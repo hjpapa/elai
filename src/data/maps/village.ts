@@ -38,6 +38,15 @@ p.dots(
   'b',
 );
 
+/**
+ * 전망 언덕(2.5D 높낮이): 숲 입구 오른쪽의 낮은 언덕. 둘레에서 반 단씩 걸어 올라가요(숫자 하나 = 반 단, 4px).
+ * 앞쪽 가운데는 가팔라서 옆으로 돌아 올라가요. 꼭대기에 표지판이 있어요.
+ */
+const hp = new Painter(26, 22, '0');
+hp.rect(8, 1, 13, 3, '1');
+hp.rect(9, 1, 12, 2, '2').rect(10, 3, 11, 3, '2');
+hp.rect(10, 1, 11, 2, '3');
+
 const restored = { flag: 'village-restore-1' };
 const broken = { notFlag: 'village-restore-1' };
 const house = (id: string, x: number, y: number) =>
@@ -52,6 +61,7 @@ export const village: MapDef = {
   theme: 'village',
   chapter: 'ch0',
   rows: p.rows(),
+  heights: hp.rows(),
   legend: { ...BASE_LEGEND },
   glyphs: { ...BASE_GLYPHS },
   spawn: { x: 12, y: 16 },
@@ -122,6 +132,7 @@ export const village: MapDef = {
     { id: 'sign-forest', type: 'sign', at: { x: 6, y: 2 }, text: '순서의 숲으로 가는 입구예요.\n연습 전투를 마치면 열려요.' },
     { id: 'sign-booth', type: 'sign', at: { x: 14, y: 5 }, text: 'AI에게 부탁하는 주문서 체험이에요.\n5~6학년에게 추천해요.' },
     { id: 'sign-bridge', type: 'sign', at: { x: 21, y: 9 }, text: '반복의 동굴로 이어지는 다리예요.\n1장을 마치고 건너가 봐요.' },
+    { id: 'sign-hill', type: 'sign', at: { x: 10, y: 2 }, text: '언덕 꼭대기예요!\n마을이 한눈에 보여요.' },
 
     {
       id: 'to-forest',

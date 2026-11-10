@@ -74,16 +74,43 @@ export const BLOCK_TEXTURE: Partial<Record<TileKind, string>> = {
 export interface Cell {
   kind: TileKind;
   glyph?: { sprite: string; solid: boolean };
+  /** 땅 높이(반 단 단위, 없으면 0 = 평지). MapDef.heights */
+  h?: number;
 }
 
 export function buildCells(def: MapDef): Cell[][] {
-  return def.rows.map((row) =>
-    [...row].map((ch): Cell => {
+  return def.rows.map((row, y) =>
+    [...row].map((ch, x): Cell => {
+      const h = Number.parseInt(def.heights?.[y]?.[x] ?? '0', 10) || 0;
       const g = def.glyphs?.[ch];
-      if (g) return { kind: g.tile, glyph: { sprite: g.sprite, solid: g.solid ?? true } };
-      return { kind: def.legend[ch] ?? 'void' };
+      if (g) return { kind: g.tile, glyph: { sprite: g.sprite, solid: g.solid ?? true }, h };
+      return { kind: def.legend[ch] ?? 'void', h };
     }),
   );
+}
+
+/** 칸의 땅 높이(반 단 단위). 맵 밖은 0이에요. */
+export function heightAt(cells: Cell[][], x: number, y: number): number {
+  return cells[y]?.[x]?.h ?? 0;
+}
+
+/** 이웃 칸으로 한 걸음 옮길 수 있는지(높이만 봐요). 지나갈 수 있는 칸인지는 따로 봐요. */
+export type StepFn = (ax: number, ay: number, bx: number, by: number) => boolean;
+
+/**
+ * 높이 규칙: 반 단(디딤돌·계단 한 칸)까지만 오르내려요. 한 단 이상 차이는 절벽이에요.
+ * 대각선은 네 칸 높이가 모두 같을 때만 가요(모서리로 비탈을 가로지르지 않게).
+ */
+export function canStep(cells: Cell[][], ax: number, ay: number, bx: number, by: number): boolean {
+  const ha = heightAt(cells, ax, ay);
+  const hb = heightAt(cells, bx, by);
+  if (Math.abs(ha - hb) > 1) return false;
+  if (ax !== bx && ay !== by) return ha === hb && heightAt(cells, bx, ay) === ha && heightAt(cells, ax, by) === ha;
+  return true;
+}
+
+export function makeStep(cells: Cell[][]): StepFn {
+  return (ax, ay, bx, by) => canStep(cells, ax, ay, bx, by);
 }
 
 export function baseWalkable(cells: Cell[][], x: number, y: number): boolean {
@@ -143,6 +170,7 @@ export const DIRS8: [number, number][] = [
 /**
  * A* 길찾기(8방향, 모서리 가로지르기 금지).
  * goalOk가 있으면 그 칸에 닿으면 끝나요(예: NPC 옆 칸).
+ * step이 있으면 높이 규칙으로 막힌 걸음(절벽)을 건너뛰어요.
  */
 export function findPath(
   passable: (x: number, y: number) => boolean,
@@ -150,6 +178,7 @@ export function findPath(
   goalOk: (x: number, y: number) => boolean,
   heuristicTo: Point,
   maxNodes = 4000,
+  step?: StepFn,
 ): Point[] | null {
   const key = (x: number, y: number) => `${x},${y}`;
   const open = new Map<string, { x: number; y: number; g: number; f: number }>();
@@ -190,6 +219,7 @@ export function findPath(
       const k = key(x, y);
       if (closed.has(k) || !passable(x, y)) continue;
       if (dx !== 0 && dy !== 0 && !(passable(best.x + dx, best.y) && passable(best.x, best.y + dy))) continue;
+      if (step && !step(best.x, best.y, x, y)) continue;
       const g = best.g + (dx !== 0 && dy !== 0 ? 1.4 : 1);
       const prev = open.get(k);
       if (prev && prev.g <= g) continue;

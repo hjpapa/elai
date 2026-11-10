@@ -5,7 +5,7 @@ import { NPCS } from '../src/data/npcs';
 import { xpForLevel } from '../src/data/rpg/levels';
 import { MOBS } from '../src/data/rpg/mobs';
 import type { MapDef, MapObject, Point } from '../src/data/schema';
-import { baseWalkable, buildCells, findPath, makePassable, objFlag, type WorldQuery } from '../src/game/iso/mapRuntime';
+import { baseWalkable, buildCells, findPath, makePassable, makeStep, objFlag, type WorldQuery } from '../src/game/iso/mapRuntime';
 
 /** 플래그·미션 상태를 흉내 내는 간단한 질문기 */
 function world(flags: string[] = [], missions: string[] = []): WorldQuery {
@@ -31,7 +31,8 @@ function canReach(def: MapDef, q: WorldQuery, from: Point, o: MapObject): boolea
     ? (x: number, y: number) => Math.abs(x - o.at.x) <= 1 && Math.abs(y - o.at.y) <= 1 && !(x === o.at.x && y === o.at.y)
     : (x: number, y: number) => x === o.at.x && y === o.at.y;
   const passOrGoal = (x: number, y: number) => pass(x, y) || (!solidTarget && x === o.at.x && y === o.at.y);
-  return findPath(passOrGoal, from, goal, o.at, 20000) !== null;
+  // 높낮이가 있는 맵은 절벽을 건너뛰고 계단으로만 오르내려요.
+  return findPath(passOrGoal, from, goal, o.at, 20000, makeStep(cells)) !== null;
 }
 
 describe('맵 데이터', () => {

@@ -90,7 +90,7 @@ export interface PlacedLight {
  * 켜지는 프레임이 정해진 빛도 늘 만들어 두고, 보일지는 그림의 지금 프레임으로 정해요
  * (예: 마을이 고쳐져 택배소 문이 열리면 그 자리에서 문 불빛이 켜져요).
  */
-export function addLight(scene: Phaser.Scene, key: string, x: number, y: number, depth: number): PlacedLight | null {
+export function addLight(scene: Phaser.Scene, key: string, x: number, y: number, depth: number, groundDepth?: number): PlacedLight | null {
   const light = LIGHTS[key];
   const spec = ASSET_BY_KEY.get(key);
   if (!light || !spec) return null;
@@ -105,7 +105,7 @@ export function addLight(scene: Phaser.Scene, key: string, x: number, y: number,
     .setScale(0.5)
     .setAlpha(0.7)
     .setBlendMode('ADD')
-    .setDepth(SHADOW_DEPTH + y + 1);
+    .setDepth(groundDepth ?? SHADOW_DEPTH + y + 1);
   if (!calm()) {
     // 불꽃처럼 살짝 일렁여요. 등불마다 박자가 달라요.
     scene.tweens.add({ targets: head, alpha: 0.72, duration: 900 + Math.random() * 700, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });

@@ -2,17 +2,18 @@ import Phaser from 'phaser';
 import { ASSET_BY_KEY, CHAR_FRAMES, MOB_FRAMES, originOf } from '../assets';
 import { fitArt } from '../density';
 import { SHADOW_ALPHA, SHADOW_DEPTH, addShadow } from '../shadow';
-import { facingOf, isoToScreen } from './iso';
+import { facingOf, isoToScreen, liftPx } from './iso';
 
 export type ActorKind = 'char' | 'mob' | 'static';
 
 /**
  * 맵 위를 걷는 캐릭터(플레이어·로비·NPC·몹). 몸 그림 위에 모자·도구 같은 겹침 레이어를 같은 프레임으로 얹어요.
- * gx, gy는 칸 좌표(걷는 동안에는 소수).
+ * gx, gy는 칸 좌표(걷는 동안에는 소수), gz는 땅 높이(반 단 단위, 계단을 오르내리는 동안에는 소수).
  */
 export class Actor {
   gx: number;
   gy: number;
+  gz: number;
   facing = { back: false, flip: false };
   private layers: Phaser.GameObjects.Image[] = [];
   /** 2배 그림의 발밑 그림자(옛 그림은 그림 안에 그림자가 있어요) */
@@ -30,9 +31,11 @@ export class Actor {
     y: number,
     private overlays: string[] = [],
     readonly kind: ActorKind = 'char',
+    z = 0,
   ) {
     this.gx = x;
     this.gy = y;
+    this.gz = z;
     this.build();
   }
 
@@ -85,8 +88,8 @@ export class Actor {
     this.sync();
   }
 
-  /** 한 칸 걷기 */
-  moveTo(x: number, y: number, ms: number): Promise<void> {
+  /** 한 칸 걷기(z가 있으면 그 높이로 오르내려요) */
+  moveTo(x: number, y: number, ms: number, z = this.gz): Promise<void> {
     this.face(x - this.gx, y - this.gy);
     this.walking = true;
     return new Promise((resolve) => {
@@ -94,6 +97,7 @@ export class Actor {
         targets: this,
         gx: x,
         gy: y,
+        gz: z,
         duration: ms,
         onUpdate: () => this.sync(),
         onComplete: () => {
@@ -139,11 +143,13 @@ export class Actor {
 
   sync(): void {
     const p = isoToScreen(this.gx, this.gy);
+    const y = p.y - liftPx(this.gz);
     const f = this.frame();
     const depth = (this.gx + this.gy) * 10 + 5;
-    this.shadow?.setPosition(p.x, p.y).setDepth(SHADOW_DEPTH + p.y);
+    // 높은 칸 위에서는 그림자를 그 칸 땅(깊이 …+1.5) 바로 위에 그려요. 평지는 예전처럼 바닥층이에요.
+    this.shadow?.setPosition(p.x, y).setDepth(this.gz > 0.01 ? depth - 3 : SHADOW_DEPTH + p.y);
     this.layers.forEach((l, i) => {
-      l.setPosition(p.x, p.y);
+      l.setPosition(p.x, y);
       l.setFlipX(this.kind === 'char' && this.facing.flip);
       const total = l.texture.frameTotal - 1; // __BASE 제외
       l.setFrame(Math.min(f, Math.max(0, total - 1)));
