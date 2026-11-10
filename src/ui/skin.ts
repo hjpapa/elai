@@ -19,6 +19,13 @@ interface Paper {
 
 /** 바꿀 색. 키는 CSS 변수 이름이에요. */
 const DARK_PANEL: Paper = { fill: '#262c3b', light: '#333b50', shade: '#1e2330' };
+/** 가방·장비 칸(어두운 창 안의 칸 색) */
+const SLOT_PAPER: Paper = { fill: '#2a3142', light: '#353e54', shade: '#20263a' };
+/** 체력·경험치 막대 틀: 종이 자리를 막대 바탕색으로 바꿔요(틀만 보여요) */
+const BAR_PAPER: Paper = { fill: '#11141c', light: '#1d2230', shade: '#0b0d13' };
+/** 칸 그림의 안쪽 테두리 색. 귀한 정도(예전 테두리 색)로 바꿔 칠해요. */
+const INNER_LINE = '#ad884b';
+const RARITY_LINE: Record<string, string> = { uncommon: '#3f9a5a', rare: '#3f6fc2', legend: '#f2c94c' };
 const ME_DIALOG: Paper = { fill: '#e9f1ff', light: '#f7faff', shade: '#c9d6ee' };
 const BUTTONS: Record<string, Paper> = {
   '--skin-btn': { fill: '#3b4560', light: '#4c5774', shade: '#2f3750', lip: '#222837' },
@@ -31,8 +38,8 @@ type Rgb = [number, number, number];
 const rgb = (hex: string): Rgb => [1, 3, 5].map((i) => Number.parseInt(hex.slice(i, i + 2), 16)) as Rgb;
 const hexOf = (r: number, g: number, b: number) => '#' + [r, g, b].map((v) => v.toString(16).padStart(2, '0')).join('');
 
-/** 그림 한 프레임을 캔버스에 옮겨 그리고, 종이 색을 바꿔 data URL로 돌려줘요. */
-function framePng(textures: Phaser.Textures.TextureManager, key: string, frame: number, paper?: Paper): string | null {
+/** 그림 한 프레임을 캔버스에 옮겨 그리고, 종이 색(과 안쪽 테두리 색)을 바꿔 data URL로 돌려줘요. */
+function framePng(textures: Phaser.Textures.TextureManager, key: string, frame: number, paper?: Paper, inner?: string): string | null {
   if (!textures.exists(key)) return null;
   const f = textures.getFrame(key, frame);
   if (!f) return null;
@@ -48,6 +55,7 @@ function framePng(textures: Phaser.Textures.TextureManager, key: string, frame: 
       [PAPER.light, rgb(paper.light)],
       [PAPER.shade, rgb(paper.shade)],
       ...(paper.lip ? ([[PAPER.lip, rgb(paper.lip)]] as [string, Rgb][]) : []),
+      ...(inner ? ([[INNER_LINE, rgb(inner)]] as [string, Rgb][]) : []),
     ]);
     const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const d = img.data;
@@ -83,5 +91,21 @@ export function applySkin(textures: Phaser.Textures.TextureManager): boolean {
   updateSkinPx();
   window.addEventListener('resize', updateSkinPx);
   root.classList.add('skinned');
+  applySlotSkin(textures);
   return true;
+}
+
+/** 가방·장비 칸과 체력·경험치 막대 테두리(ui-slot·ui-bar). 2배 그림이 있을 때만 html에 .skinned-slots를 붙여요. */
+function applySlotSkin(textures: Phaser.Textures.TextureManager): void {
+  if (densityOf('ui-slot') < 2 || densityOf('ui-bar') < 2) return;
+  const vars: Record<string, string | null> = {
+    '--skin-slot': framePng(textures, 'ui-slot', 0, SLOT_PAPER),
+    '--skin-slot-on': framePng(textures, 'ui-slot', 1, SLOT_PAPER),
+    '--skin-bar': framePng(textures, 'ui-bar', 0, BAR_PAPER),
+  };
+  for (const [rarity, color] of Object.entries(RARITY_LINE)) vars[`--skin-slot-${rarity}`] = framePng(textures, 'ui-slot', 0, SLOT_PAPER, color);
+  if (Object.values(vars).some((v) => !v)) return;
+  const root = document.documentElement;
+  for (const [name, url] of Object.entries(vars)) root.style.setProperty(name, `url("${url}")`);
+  root.classList.add('skinned-slots');
 }

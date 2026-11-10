@@ -34,6 +34,7 @@ import {
 import { GUIDE_EVENT, guideTarget, hasNewMission, type GuideTarget } from '../rpg/guide';
 import { canStart, entryChapter, portalGate } from '../rpg/progress';
 import { applySkipKit } from '../rpg/skip';
+import { DAYLIGHT_DEPTH, NO_DAYLIGHT, daylightNow, hasDayCycle } from '../daylight';
 import { addLight } from '../light';
 import { WORLD_ZOOM, canvasRatio, crispZoom } from '../screen';
 import { addShadow } from '../shadow';
@@ -104,8 +105,13 @@ export class WorldScene extends Phaser.Scene {
   /** 칸마다 그 칸에 그려진 바닥·블록·소품 그림(안개용) */
   private artAt = new Map<string, Phaser.GameObjects.Image[]>();
   private water: Phaser.GameObjects.Image[] = [];
-  /** 소품에 딸린 그림자·불빛(소품이 숨으면 같이 숨어요) */
-  private grounded: { owner: Phaser.GameObjects.Image; deco: Phaser.GameObjects.Image }[] = [];
+  /** 소품에 딸린 그림자·불빛(소품이 숨으면 같이 숨어요. 불빛은 켜지는 프레임일 때만 보여요) */
+  private grounded: { owner: Phaser.GameObjects.Image; deco: Phaser.GameObjects.Image; frames?: readonly number[] }[] = [];
+  /** 밤 불빛(시간대 빛 판 위) */
+  private nightGlows: Phaser.GameObjects.Image[] = [];
+  /** 시간대 빛: 바깥 맵을 은은하게 물들이는 곱하기 색 판(시간이 흐르지 않는 맵은 null) */
+  private daylight: Phaser.GameObjects.Rectangle | null = null;
+  private lastNight = -1;
   private visited!: Uint8Array;
   private walking = false;
   private interrupted = false;
@@ -160,6 +166,8 @@ export class WorldScene extends Phaser.Scene {
     this.artAt = new Map();
     this.water = [];
     this.grounded = [];
+    this.nightGlows = [];
+    this.lastNight = -1;
     this.robi = null;
     this.walking = false;
     this.questMarks = new Map();
@@ -182,6 +190,16 @@ export class WorldScene extends Phaser.Scene {
     // 미로(안개)는 가 본 곳만 보여서 섬 가장자리 두께를 그리지 않아요.
     if (!this.def.fog) drawEdges(this, edgeFaces(this.cells));
     for (const obj of this.def.objects) this.views.push(this.makeView(obj));
+    // 시간대 빛: 화면에 붙은 큰 판(카메라 배율이 바뀌어도 화면을 덮어요). 바깥 맵에만 둬요.
+    this.daylight = hasDayCycle(this.def.theme)
+      ? this.add
+          .rectangle(-5000, -5000, 10000, 10000, 0xffffff, 0)
+          .setOrigin(0)
+          .setScrollFactor(0)
+          .setDepth(DAYLIGHT_DEPTH)
+          .setBlendMode(Phaser.BlendModes.MULTIPLY)
+          .setVisible(false)
+      : null;
 
     let at = data.at ?? (s.data.location.map === mapId ? { x: s.data.location.x, y: s.data.location.y } : this.def.spawn);
     if (!this.passable(at.x, at.y)) at = this.def.spawn;
@@ -307,12 +325,36 @@ export class WorldScene extends Phaser.Scene {
     );
   }
 
-  /** 2배 그림 소품의 발밑 그림자와 불빛을 더해요. owner가 숨으면 같이 숨어요(update). */
-  private decorate(key: string, x: number, y: number, owner: Phaser.GameObjects.Image, depth: number, frame = 0): Phaser.GameObjects.Image[] {
+  /** 2배 그림 소품의 발밑 그림자와 불빛을 더해요. owner가 숨으면 같이 숨고, 불빛은 켜지는 프레임에서만 보여요(update). */
+  private decorate(key: string, x: number, y: number, owner: Phaser.GameObjects.Image, depth: number): Phaser.GameObjects.Image[] {
     const shadow = addShadow(this, key, x, y);
-    const extra = [...(shadow ? [shadow] : []), ...addLight(this, key, x, y, depth, frame)];
-    for (const deco of extra) this.grounded.push({ owner, deco });
+    const light = addLight(this, key, x, y, depth);
+    const extra: Phaser.GameObjects.Image[] = [];
+    if (shadow) {
+      this.grounded.push({ owner, deco: shadow });
+      extra.push(shadow);
+    }
+    if (light) {
+      for (const deco of [...light.glow, light.night]) this.grounded.push({ owner, deco, frames: light.frames });
+      this.nightGlows.push(light.night);
+      extra.push(...light.glow, light.night);
+    }
     return extra;
+  }
+
+  /** 시간대 빛: 바깥 맵의 색 판과 밤 불빛 세기를 맞춰요(메뉴에서 끄면 낮 그대로). */
+  private applyDaylight(): void {
+    const d = this.daylight && app.state.data.settings.timeLight !== false ? daylightNow() : NO_DAYLIGHT;
+    if (this.daylight) {
+      const show = d.alpha > 0.002;
+      this.daylight.setVisible(show);
+      if (show) this.daylight.setFillStyle(d.tint, d.alpha);
+    }
+    const glow = Math.round(d.night * 0.85 * 100) / 100;
+    if (glow !== this.lastNight) {
+      this.lastNight = glow;
+      for (const img of this.nightGlows) img.setAlpha(glow);
+    }
   }
 
   private makeView(obj: MapObject): View {
@@ -322,7 +364,7 @@ export class WorldScene extends Phaser.Scene {
       const o = this.originFor(key);
       const depth = (obj.at.x + obj.at.y) * 10 + 5;
       const img = fitArt(this.add.image(p.x, p.y, key, frame)).setOrigin(o.x, o.y).setDepth(depth);
-      this.decorate(key, p.x, p.y, img, depth, frame);
+      this.decorate(key, p.x, p.y, img, depth);
       return img;
     };
     switch (obj.type) {
@@ -682,7 +724,11 @@ export class WorldScene extends Phaser.Scene {
     this.player.update(delta);
     this.robi?.update(delta);
     for (const v of this.views) v.actor?.update(delta);
-    for (const g of this.grounded) if (g.deco.visible !== g.owner.visible) g.deco.setVisible(g.owner.visible);
+    for (const g of this.grounded) {
+      const show = g.owner.visible && (!g.frames || g.frames.includes(Number(g.owner.frame.name)));
+      if (g.deco.visible !== show) g.deco.setVisible(show);
+    }
+    this.applyDaylight();
     if (this.dirty) this.refresh();
     this.updatePrompt();
     this.updateGuide();

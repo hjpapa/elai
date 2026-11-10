@@ -1,5 +1,6 @@
 import type Phaser from 'phaser';
 import { ASSET_BY_KEY } from './assets';
+import { DAYLIGHT_DEPTH } from './daylight';
 import { SHADOW_DEPTH } from './shadow';
 
 /** 빛 색: warm은 등불(금색), cool은 수정·이동 문(청록). 둘 다 팔레트 색이에요. */
@@ -75,11 +76,24 @@ function calm(): boolean {
   return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
-/** 발 기준점(x, y)에 서 있는 소품 key(frame 프레임)의 빛. 빛이 없으면 빈 배열이에요. */
-export function addLight(scene: Phaser.Scene, key: string, x: number, y: number, depth: number, frame = 0): Phaser.GameObjects.Image[] {
-  const light = lightOf(key, frame);
+export interface PlacedLight {
+  /** 늘 보이는 빛 무리(머리)와 바닥 빛 웅덩이 */
+  glow: Phaser.GameObjects.Image[];
+  /** 시간대 빛 판 위에 한 번 더 그리는 밤 불빛. 세기(alpha)는 WorldScene이 시간대에 맞춰요. */
+  night: Phaser.GameObjects.Image;
+  /** 빛이 켜지는 프레임(없으면 모든 프레임). 그림의 프레임이 바뀌면 빛도 따라 켜지고 꺼져요. */
+  frames?: readonly number[];
+}
+
+/**
+ * 발 기준점(x, y)에 서 있는 소품 key의 빛. 빛이 없는 그림이면 null이에요.
+ * 켜지는 프레임이 정해진 빛도 늘 만들어 두고, 보일지는 그림의 지금 프레임으로 정해요
+ * (예: 마을이 고쳐져 택배소 문이 열리면 그 자리에서 문 불빛이 켜져요).
+ */
+export function addLight(scene: Phaser.Scene, key: string, x: number, y: number, depth: number): PlacedLight | null {
+  const light = LIGHTS[key];
   const spec = ASSET_BY_KEY.get(key);
-  if (!light || !spec) return [];
+  if (!light || !spec) return null;
   const glow = light.glow ?? 'warm';
   const head = scene.add
     .image(x, y - spec.h * light.at, glowTexture(scene, light.r, light.r, 'head', glow))
@@ -96,5 +110,13 @@ export function addLight(scene: Phaser.Scene, key: string, x: number, y: number,
     // 불꽃처럼 살짝 일렁여요. 등불마다 박자가 달라요.
     scene.tweens.add({ targets: head, alpha: 0.72, duration: 900 + Math.random() * 700, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
   }
-  return [head, pool];
+  // 밤 불빛: 어둡게 덮는 판보다 위에 그려서, 밤이 되면 등불이 더 크고 환하게 보여요(처음엔 꺼져 있어요).
+  const nightR = Math.round(light.r * 1.6);
+  const night = scene.add
+    .image(x, y - spec.h * light.at, glowTexture(scene, nightR, nightR, 'head', glow))
+    .setScale(0.5)
+    .setBlendMode('ADD')
+    .setAlpha(0)
+    .setDepth(DAYLIGHT_DEPTH + 1);
+  return { glow: [head, pool], night, ...(light.frames ? { frames: light.frames } : {}) };
 }

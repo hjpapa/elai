@@ -510,8 +510,8 @@ export interface SaveData {
   location: { map: string; x: number; y: number };
   /** 맵별로 가 본 칸('0'/'1' 문자열, 안개용) */
   visited: Record<string, string>;
-  /** volume: 소리 크기 0~1(없으면 기본값) */
-  settings: { sound: boolean; volume?: number };
+  /** volume: 소리 크기 0~1(없으면 기본값) · timeLight: 시간대 빛(없으면 켜짐) */
+  settings: { sound: boolean; volume?: number; timeLight?: boolean };
   /** 미니게임 판별 가장 좋은 별(예: { claw: { r1: 3 } }). 뽑은 인형은 플래그 doll:<id>예요. */
   minigames?: Record<string, Record<string, number>>;
   updatedAt: string;

@@ -9,12 +9,13 @@ const VOLUMES = [
   { label: '크게', value: 1 },
 ];
 
-/** 메뉴: 소리 켜기·크기, 저장 정보, 처음 화면으로 */
+/** 메뉴: 소리 켜기·크기, 시간대 빛, 저장 정보, 처음 화면으로 */
 export function openMenu(): void {
   const handle = app.ui.panel(() => undefined, { title: '메뉴' });
   const render = () => {
     const d = app.state.data;
     const volume = d.settings.volume ?? DEFAULT_VOLUME;
+    const timeLight = d.settings.timeLight !== false;
     clear(handle.body);
     handle.body.append(
       h(
@@ -61,6 +62,24 @@ export function openMenu(): void {
           ),
         ),
       ),
+      h(
+        'div',
+        { class: 'row', style: 'justify-content:space-between;margin-bottom:4px' },
+        h('span', {}, '시간대 빛'),
+        h(
+          'button',
+          {
+            class: `btn small ${timeLight ? 'primary' : ''}`,
+            'aria-pressed': timeLight ? 'true' : 'false',
+            onclick: () => {
+              app.state.updateSettings({ timeLight: !timeLight });
+              render();
+            },
+          },
+          timeLight ? '켜짐' : '꺼짐',
+        ),
+      ),
+      h('p', { class: 'muted', style: 'margin:0 0 12px' }, ...lines('바깥 맵이 낮·노을·밤·새벽으로 천천히 바뀌어요.\n교실 화면이 어두우면 꺼 두세요.')),
       h(
         'p',
         { class: 'muted' },
