@@ -288,6 +288,26 @@
       "density": 2
     },
     {
+      "key": "prop-light-shop",
+      "file": "prop/prop-light-shop.png",
+      "density": 2
+    },
+    {
+      "key": "prop-lightboard",
+      "file": "prop/prop-lightboard.png",
+      "density": 2
+    },
+    {
+      "key": "prop-light-frame",
+      "file": "prop/prop-light-frame.png",
+      "density": 2
+    },
+    {
+      "key": "prop-lamp-shelf",
+      "file": "prop/prop-lamp-shelf.png",
+      "density": 2
+    },
+    {
       "key": "tile-castle",
       "file": "tile/tile-castle.png",
       "density": 2
