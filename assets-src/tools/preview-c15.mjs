@@ -19,7 +19,7 @@ for(const key of stages[stage-1]){
 }
 const width=Math.max(stage===1?1320:1120,...records.map(a=>a.spec.w*a.spec.frames*8+100));
 const rowsHeight=records.reduce((n,a)=>n+a.spec.h*4+48,0);
-const sheet=canvas(width,68+rowsHeight+(stage===1?1710:520),bg),right=Math.floor(width/2)+12;
+const sheet=canvas(width,68+rowsHeight+(stage===1?1710:600),bg),right=Math.floor(width/2)+12;
 label(sheet,'PLACEHOLDER / 4X',24,20,ink);label(sheet,'C15 ART / 2X',right,20,ink);
 let row=68;
 for(const a of records){

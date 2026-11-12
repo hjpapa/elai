@@ -308,6 +308,31 @@
       "density": 2
     },
     {
+      "key": "icon-bulb-off",
+      "file": "icon/icon-bulb-off.png",
+      "density": 2
+    },
+    {
+      "key": "icon-bulb-on",
+      "file": "icon/icon-bulb-on.png",
+      "density": 2
+    },
+    {
+      "key": "icon-light-brush",
+      "file": "icon/icon-light-brush.png",
+      "density": 2
+    },
+    {
+      "key": "icon-card-lightOn",
+      "file": "icon/icon-card-lightOn.png",
+      "density": 2
+    },
+    {
+      "key": "icon-card-nextRow",
+      "file": "icon/icon-card-nextRow.png",
+      "density": 2
+    },
+    {
       "key": "tile-castle",
       "file": "tile/tile-castle.png",
       "density": 2
