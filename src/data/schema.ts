@@ -14,8 +14,8 @@ export type Dir = 'up' | 'right' | 'down' | 'left';
 // ── 프로그램(블록) ────────────────────────────────────────
 // 퍼즐(GridEnv)과 전투(BattleEnv)가 같은 인터프리터로 실행해요.
 
-/** 퍼즐 명령: 절대 방향 이동(1~2장) + 상대 방향 이동(3장~) + 줍기 + 집기(공방 인형뽑기) + 보내기(택배 분류) */
-export type GridCmd = 'up' | 'down' | 'left' | 'right' | 'forward' | 'turnLeft' | 'turnRight' | 'collect' | 'grab' | 'sendLeft' | 'sendRight';
+/** 퍼즐 명령: 절대 방향 이동(1~2장) + 상대 방향 이동(3장~) + 줍기 + 집기(공방 인형뽑기) + 보내기(택배 분류) + 켜기·다음 줄(불빛 그림) */
+export type GridCmd = 'up' | 'down' | 'left' | 'right' | 'forward' | 'turnLeft' | 'turnRight' | 'collect' | 'grab' | 'sendLeft' | 'sendRight' | 'lightOn' | 'nextRow';
 /** 전투 명령 */
 export type BattleCmd = 'scan' | 'attack' | 'guard' | 'heal' | 'wait';
 export type Cmd = GridCmd | BattleCmd;
@@ -36,6 +36,8 @@ export type Cond =
   | 'boxHeart'
   | 'boxStar'
   | 'itemRound'
+  /** 불빛 그림: 불빛 붓 아래 전구의 숫자 판이 1인지 */
+  | 'codeOne'
   | 'enemyAttack'
   | 'enemyGuard'
   | 'enemyCharge'
@@ -582,6 +584,29 @@ export interface SortRound {
   belts: SortItem[][];
   /** 주문 카드: 물건 → 보낼 바구니 */
   rule: Partial<Record<SortItem, SortSide>>;
+  palette: Cmd[];
+  allowRepeat?: boolean;
+  /** 쓸 수 있는 조건(없으면 만약 블록 없음) */
+  allowIf?: Cond[];
+  /** 가장 짧은 풀이의 블록 수(별점 기준) */
+  optimal: number;
+  maxBlocks?: number;
+  unlock?: MinigameUnlock;
+  lockedText?: string;
+  intro: string;
+  hint: string;
+}
+
+/**
+ * 코딩 불빛 그림 한 판(마을 불빛 가게). 전구판(격자)의 전구마다 숫자 판(0·1)이 붙어 있어요.
+ * 불빛 붓은 왼쪽 위 전구에서 오른쪽을 보고 출발해요. '켜기'는 붓 아래 전구를 켜고, '앞으로'는 오른쪽 한 칸,
+ * '다음 줄'은 아래 줄 맨 앞으로 가요. 1인 전구를 모두 켜고 0인 전구는 꺼 둬야 성공이에요(운·코인 없음).
+ */
+export interface LightRound {
+  id: string;
+  title: string;
+  /** 숫자 그림(줄마다 '0'·'1' 글자). 그림이 여럿이면 같은 프로그램으로 모두 맞게 켜야 성공해요. */
+  pictures: string[][];
   palette: Cmd[];
   allowRepeat?: boolean;
   /** 쓸 수 있는 조건(없으면 만약 블록 없음) */

@@ -106,6 +106,17 @@ export const ASSETS: AssetSpec[] = [
   icon('icon-card-sendRight', '오른쪽으로 보내기 카드(상자와 오른쪽 화살표)', 0x49b5b1),
   icon('icon-stamp', '배달 도장(동그란 도장 자국, 상자 무늬)', 0xb94751),
 
+  // C15: 2.5D 4단계 — 마을 불빛 가게와 코딩 불빛 그림. 벽·바닥은 공방 그림을 같이 써요. 그림이 오기 전에는 임시 그림을 써요.
+  prop(32, 48, 2)('prop-light-shop', '마을 불빛 가게 건물(0 문 닫힘, 1 문 열림·창과 간판에 불빛). 문 위에 전구 간판', 0xe7b64f),
+  prop(32, 48, 2)('prop-lightboard', '불빛 그림 기계(세워 둔 전구판 격자에 숫자 판이 붙어 있고, 위에 작은 불빛 붓. 0·1 전구가 번갈아 켜져요)', 0x7962ab),
+  prop(16, 24, 7)('prop-light-frame', '불빛 그림 액자(0 불 꺼진 빈 액자, 1~6 판마다 켜진 그림: 1 점 둘, 2 버섯, 3 점선, 4 창문, 5 숫자 띠, 6 하트). 바닥에 세워요', 0xffe59a),
+  prop(32, 32, 2)('prop-lamp-shelf', '전등 진열대(작은 전등들이 놓인 선반, 0·1 불빛이 번갈아 켜져요)', 0xd39a62),
+  icon('icon-bulb-off', '꺼진 전구(놀이 판, 동그란 유리와 소켓)', 0x56657a),
+  icon('icon-bulb-on', '켜진 전구(놀이 판, 노란 빛)', 0xffe59a),
+  icon('icon-light-brush', '불빛 붓(작은 로봇 붓, 아래 끝이 빛나요)', 0xb5a0dc),
+  icon('icon-card-lightOn', '켜기 카드(전구와 반짝임)', 0xe7b64f),
+  icon('icon-card-nextRow', '다음 줄 카드(아래로 꺾여 왼쪽 끝으로 가는 화살표)', 0x4a7bd1),
+
   // C10: 윤리의 성
   tile('tile-castle', '따뜻한 빛의 성 돌바닥', 0xc7d6dc),
   block('block-castle', '성의 보랏빛 돌벽', 0x8c9bab),

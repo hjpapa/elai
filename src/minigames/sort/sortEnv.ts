@@ -110,7 +110,5 @@ export function runSort(round: SortRound, program: Block[]): SortRun {
   return { belts, outcome: failedBelt < 0 ? 'success' : belts[failedBelt].outcome, failedBelt };
 }
 
-/** 프로그램에 만약 블록이 있는지(줄이 바뀌는 판에서 "순서만 외운 프로그램"을 알아봐요) */
-export function hasIf(program: Block[]): boolean {
-  return program.some((b) => b.t === 'if' || (b.t === 'repeat' && hasIf(b.body)));
-}
+/** 프로그램에 만약 블록이 있는지(불빛 그림과 같이 써서 인터프리터로 옮겼어요) */
+export { hasIf } from '../../missions/core/interpreter';

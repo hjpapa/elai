@@ -1020,6 +1020,11 @@ h3 {
 .k-send {
   background: #2f8a86;
 }
+/* 켜기(불빛 그림): 반복(주황)과 다른 밝은 노랑, 글자는 어둡게 */
+.k-light {
+  background: #f2c94c;
+  color: #2a2520;
+}
 .pblock .cost {
   font-size: 12px;
   background: rgba(0, 0, 0, 0.35);
@@ -2183,5 +2188,187 @@ h3 {
   .sort-item,
   .sort-item.sending {
     transition-duration: 0.01s;
+  }
+}
+
+/* ── 코딩 불빛 그림(마을 불빛 가게, 2.5D 4단계) ── */
+.light-machine {
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 8px 8px 12px;
+  border: 3px solid var(--line);
+  border-radius: 16px;
+  background: linear-gradient(#7962ab, #4f3f7a);
+  box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.2);
+}
+.light-sign {
+  margin-bottom: 4px;
+  color: #ffe59a;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-align: center;
+  text-shadow: 0 2px 0 #293044;
+}
+.light-picture-label {
+  margin-bottom: 4px;
+  color: #fff4d2;
+  font-size: 14px;
+  text-align: center;
+}
+/* 전구판: 칸은 모두 정사각형이라 붓 자리를 칸 비율로 놓아요(LightGame.place). 오른쪽 끝 칸과 맨 아래 줄은 붓만 서는 자리예요. */
+.light-board {
+  position: relative;
+  display: grid;
+  padding: 8px;
+  border-radius: 12px;
+  background: #1b1f2a;
+  box-shadow: inset 0 0 0 3px #293044;
+}
+.light-cell {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  min-width: 0;
+  padding-top: 6%;
+  aspect-ratio: 1;
+}
+.light-cell .light-bulb {
+  width: 58%;
+  height: auto;
+}
+.light-cell.on .light-bulb {
+  filter: drop-shadow(0 0 6px #ffe59a);
+}
+.light-cell.wrong {
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 3px #ed7463;
+}
+.light-cell.wrong .light-bulb {
+  filter: drop-shadow(0 0 6px #ed7463);
+}
+.light-cell.bump {
+  animation: shake 0.3s;
+}
+/* 숫자 판: 전구 바로 아래 가운데 */
+.light-code {
+  position: absolute;
+  bottom: 3%;
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 1.3em;
+  padding: 0 3px;
+  border-radius: 5px;
+  background: #344d78;
+  color: #c7d6dc;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.35;
+  text-align: center;
+}
+.light-cell.one .light-code {
+  background: #e7b64f;
+  color: #2a2520;
+}
+.light-cell.margin::after {
+  content: '';
+  position: absolute;
+  inset: 20%;
+  border: 2px dashed rgba(199, 214, 220, 0.2);
+  border-radius: 8px;
+}
+.light-brush {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  transition: left 0.2s, top 0.2s;
+  pointer-events: none;
+}
+.light-brush img {
+  width: 46%;
+  height: auto;
+  margin-top: -16%;
+  filter: drop-shadow(0 2px 0 rgba(0, 0, 0, 0.45));
+}
+.light-brush.wrong img {
+  filter: drop-shadow(0 0 6px #ed7463);
+}
+.light-brush.bump {
+  animation: shake 0.3s;
+}
+.game-order.light-order {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  word-break: keep-all;
+}
+.light-order .light-rule {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  font-weight: 700;
+}
+/* 작은 숫자 그림(판 고르기 액자, 결과) */
+.light-mini {
+  display: grid;
+  gap: 2px;
+  width: 64px;
+  padding: 4px;
+  border-radius: 6px;
+  background: #1b1f2a;
+}
+.light-mini span {
+  aspect-ratio: 1;
+  border-radius: 2px;
+  background: #344d78;
+}
+.light-mini.on span.one {
+  background: #ffe59a;
+  box-shadow: 0 0 4px #ffe59a;
+}
+.light-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.light-gallery .light-frame {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 84px;
+  min-height: 98px;
+  margin: 0;
+  padding: 6px 4px;
+  border: 3px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel2);
+  text-align: center;
+}
+.light-gallery .light-mini {
+  margin-block: auto;
+}
+.light-gallery .light-frame:not(.got) .light-mini {
+  opacity: 0.55;
+}
+.light-gallery figcaption {
+  font-size: 12px;
+}
+.light-result {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 8px 0;
+}
+.light-result .light-mini {
+  width: 96px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .light-brush {
+    transition-duration: 0.01s !important;
   }
 }

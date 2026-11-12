@@ -62,6 +62,11 @@ export function run(program: Block[], env: Env, maxSteps = 300): RunResult {
   return { steps, truncated };
 }
 
+/** 프로그램에 만약 블록이 있는지(줄·그림이 바뀌는 놀이 판에서 "순서만 외운 프로그램"을 알아봐요) */
+export function hasIf(program: Block[]): boolean {
+  return program.some((b) => b.t === 'if' || (b.t === 'repeat' && hasIf(b.body)));
+}
+
 /** 블록 수(편집기에 놓인 블록 개수, 반복·만약 블록도 1개로 셈) */
 export function countBlocks(program: Block[]): number {
   let n = 0;

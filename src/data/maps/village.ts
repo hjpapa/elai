@@ -81,7 +81,8 @@ export const village: MapDef = {
     { id: 'restore-easel', type: 'prop', at: { x: 14, y: 11 }, sprite: 'prop-easel', when: { flag: 'village-restore-7' } },
     { id: 'to-ch8', type: 'portal', at: { x: 9, y: 20 }, to: { map: 'castle', at: { x: 2, y: 13 } }, label: '윤리의 성', open: { flag: 'ch7-clear' }, lockedText: '7장을 마치면\n윤리의 성으로 갈 수 있어요.', sprite: 'prop-gate' },
     { id: 'restore-banner', type: 'prop', at: { x: 10, y: 10 }, sprite: 'prop-banner', when: { flag: 'village-restore-8' } },
-    ...house('house-a', 8, 6),
+    // 마을 불빛 가게: 처음부터 열려 있어요(1장을 건너뛴 5~6학년도 들어가요). 놀이 판은 장마다 열려요.
+    { id: 'to-lightshop', type: 'portal', at: { x: 8, y: 6 }, to: { map: 'lightshop', at: { x: 6, y: 6 } }, label: '마을 불빛 가게', sprite: 'prop-light-shop' },
     // 마을 택배소: 1장을 끝내 마을이 고쳐지면(village-restore-1) 문이 열려요. 그 전에는 낡은 모습이에요.
     {
       id: 'to-parcel',

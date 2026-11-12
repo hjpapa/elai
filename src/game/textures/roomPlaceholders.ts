@@ -1,3 +1,4 @@
+import { LIGHT_ROUNDS } from '../../data/minigames/light';
 import type { AssetSpec } from '../assets';
 
 /**
@@ -192,6 +193,49 @@ export function drawRoomProp(ctx: CanvasRenderingContext2D, spec: AssetSpec, f: 
         oval(ctx, m + 3, h - 12, 3, 2, '#478bc7');
       }
       return true;
+    // C15 마을 불빛 가게
+    case 'prop-light-shop':
+      rect(ctx, 4, h - 26, w - 8, 24, '#7962ab');
+      poly(ctx, [[1, h - 25], [m, h - 44], [w - 1, h - 25]], '#293044');
+      rect(ctx, m - 4, h - 13, 8, 11, f === 1 ? '#ffe59a' : '#4e3e43');
+      oval(ctx, m, h - 20, 3, 3, f === 1 ? '#ffe59a' : '#c7d6dc');
+      rect(ctx, m - 1, h - 17, 2, 2, '#56657a');
+      rect(ctx, 6, h - 21, 5, 5, f === 1 ? '#ffe59a' : '#478bc7');
+      rect(ctx, w - 11, h - 21, 5, 5, f === 1 ? '#ffe59a' : '#478bc7');
+      for (let i = 0; i < 5; i++) oval(ctx, 5 + i * 5.5, h - 26, 1, 1, i % 2 === f % 2 ? '#ffe59a' : '#ed7463');
+      return true;
+    case 'prop-lightboard':
+      rect(ctx, m - 2, h - 10, 4, 8, '#56657a');
+      rect(ctx, m - 8, h - 4, 16, 2, '#56657a');
+      rect(ctx, 3, h - 42, w - 6, 32, '#293044');
+      for (let y = 0; y < 4; y++) for (let x = 0; x < 5; x++) oval(ctx, 7 + x * 4.5, h - 37 + y * 7, 1.6, 1.6, (x + y + f) % 2 === 0 ? '#ffe59a' : '#56657a');
+      rect(ctx, m - 3, h - 46, 6, 4, '#b5a0dc');
+      return true;
+    case 'prop-light-frame': {
+      rect(ctx, 1, h - 22, w - 2, 18, '#a76c46');
+      rect(ctx, 2, h - 21, w - 4, 16, '#293044');
+      rect(ctx, m - 1, h - 4, 2, 3, '#86513e');
+      // 1~6프레임: 그 판의 (첫) 숫자 그림을 켠 모습
+      const pic = f > 0 ? LIGHT_ROUNDS[f - 1]?.pictures[0] : undefined;
+      if (pic) {
+        const pw = pic[0].length;
+        const ph = pic.length;
+        const s = Math.max(1, Math.floor(Math.min(12 / pw, 16 / ph)));
+        const ox = 2 + Math.floor((12 - pw * s) / 2);
+        const oy = h - 21 + Math.floor((16 - ph * s) / 2);
+        pic.forEach((row, y) => [...row].forEach((c, x) => rect(ctx, ox + x * s, oy + y * s, s, s, c === '1' ? '#ffe59a' : '#344d78')));
+      }
+      return true;
+    }
+    case 'prop-lamp-shelf':
+      rect(ctx, 2, h - 22, w - 4, 20, '#a76c46');
+      rect(ctx, 2, h - 13, w - 4, 2, '#86513e');
+      for (let i = 0; i < 3; i++) {
+        const on = (i + f) % 2 === 0;
+        oval(ctx, 8 + i * 8, h - 17, 2.5, 2.5, on ? '#ffe59a' : '#c7d6dc');
+        oval(ctx, 8 + i * 8, h - 7, 2.5, 2.5, on ? '#c7d6dc' : '#ffe59a');
+      }
+      return true;
     default:
       if (!key.startsWith('prop-doll-')) return false;
       drawDoll(ctx, key, w, h, hex(color));
@@ -270,6 +314,42 @@ export function drawRoomIcon(ctx: CanvasRenderingContext2D, spec: AssetSpec): bo
     oval(ctx, w / 2, h / 2, 5.5, 5.5, '#fff4d2');
     rect(ctx, w / 2 - 3, h / 2 - 3, 6, 6, '#b94751');
     rect(ctx, w / 2 - 0.5, h / 2 - 3, 1, 6, '#fff4d2');
+    return true;
+  }
+  // C15 코딩 불빛 그림: 전구, 불빛 붓, 켜기·다음 줄 카드
+  if (key === 'icon-bulb-off' || key === 'icon-bulb-on') {
+    const on = key === 'icon-bulb-on';
+    if (on) oval(ctx, w / 2, 7, 7, 7, '#fff4d2');
+    oval(ctx, w / 2, 7, 5, 5, on ? '#e7b64f' : '#445968');
+    oval(ctx, w / 2, 7, 4, 4, on ? '#ffe59a' : '#8c9bab');
+    oval(ctx, w / 2 - 1.5, 5.5, 1.2, 1.2, '#ffffff');
+    rect(ctx, w / 2 - 2, 11, 4, 3, on ? '#bd895b' : '#56657a');
+    return true;
+  }
+  if (key === 'icon-light-brush') {
+    const m = w / 2;
+    rect(ctx, m - 4, 1, 8, 8, '#7962ab');
+    rect(ctx, m - 3, 2, 6, 6, '#b5a0dc');
+    rect(ctx, m - 2, 4, 1, 1, '#1b1f2a');
+    rect(ctx, m + 1, 4, 1, 1, '#1b1f2a');
+    poly(ctx, [[m - 3, 9], [m + 3, 9], [m, 15]], '#c7d6dc');
+    oval(ctx, m, 13.5, 1.5, 1.5, '#ffe59a');
+    return true;
+  }
+  if (key === 'icon-card-lightOn') {
+    rect(ctx, 1, 1, w - 2, h - 2, '#c58a2a');
+    oval(ctx, w / 2, 7, 4, 4, '#ffffff');
+    rect(ctx, w / 2 - 1.5, 10, 3, 3, '#fff4d2');
+    rect(ctx, 2, 6, 2, 1, '#ffffff');
+    rect(ctx, w - 4, 6, 2, 1, '#ffffff');
+    rect(ctx, w / 2 - 0.5, 1.5, 1, 1.5, '#ffffff');
+    return true;
+  }
+  if (key === 'icon-card-nextRow') {
+    rect(ctx, 1, 1, w - 2, h - 2, '#4a7bd1');
+    rect(ctx, 11, 3, 2, 7, '#ffffff');
+    rect(ctx, 6, 8, 7, 2, '#ffffff');
+    poly(ctx, [[2, 9], [6, 5.5], [6, 12.5]], '#ffffff');
     return true;
   }
   if (key === 'icon-card-grab') {

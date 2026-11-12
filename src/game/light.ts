@@ -30,6 +30,11 @@ const LIGHTS: Record<string, Light> = {
   // C14 마을 택배소: 열린 문 불빛(공방과 같아요), 분류 기계 위 불빛
   'prop-parcel-office': { at: 0.28, r: 12, frames: [1] },
   'prop-sorter': { at: 0.8, r: 10, glow: 'cool' },
+  // C15 마을 불빛 가게: 열린 문·간판 불빛, 전구판 기계, 켜진 그림 액자(1~6), 전등 진열대
+  'prop-light-shop': { at: 0.28, r: 12, frames: [1] },
+  'prop-lightboard': { at: 0.7, r: 12 },
+  'prop-light-frame': { at: 0.55, r: 6, frames: [1, 2, 3, 4, 5, 6] },
+  'prop-lamp-shelf': { at: 0.6, r: 10 },
 };
 
 const GLOW: Record<Glow, readonly number[]> = {
