@@ -2,9 +2,15 @@ import type { MapDef } from '../schema';
 import { Painter } from './paint';
 const p=new Painter(18,14,'.').border('#');
 p.rect(5,3,7,4,'#').rect(11,9,12,10,'#');
+// 앞쪽의 넓은 관찰 단은 낮게 두고, 왼쪽 계단으로 올라요.
+const hp=new Painter(18,14,'0');
+hp.rect(5,10,9,11,'2').set(5,9,'1');
 export const lab: MapDef={
  id:'lab',name:'인식의 연구소',chapter:'ch5',theme:'lab',rows:p.rows(),legend:{'.':'lab','#':'labwall'},spawn:{x:2,y:11},checkpoint:{map:'lab',at:{x:2,y:11}},
+ heights:hp.rows(),
  objects:[
+  {id:'chest-observation',type:'chest',at:{x:9,y:11},reward:{coins:8,items:[{id:'apple',qty:1}]}},
+  {id:'sign-observation',type:'sign',at:{x:7,y:11},text:'서로 다른 표본을 살펴봐요.\n닮은 점과 다른 점을 찾아요.'},
   {id:'researcher',type:'npc',at:{x:8,y:8},npc:'researcher',missions:['ch5-p1-m1','ch5-p1-m2','ch5-p2-m1','ch5-p2-m2','ch5-p3-m1'],talk:['표본은 살펴볼 예시를 말해요.\n여러 종류를 고르게 모아 봐요.']},
   {id:'slime-a',type:'mob',at:{x:13,y:5},mob:'shapeSlime',wander:1},
   {id:'slime-b',type:'mob',at:{x:14,y:10},mob:'shapeSlime',wander:1},

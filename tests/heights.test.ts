@@ -222,6 +222,7 @@ it('C16 성의 거울 둘레 8칸은 평지로 남겨요', () => {
 // C17은 소품·몹을 포함한 모든 기존 오브젝트 둘레도 평지로 보존해요.
 const moreHills: { id: string; floor: string; top: Point; height: number; stairs: Point[]; chest: string; sign: string }[] = [
   { id: 'cave', floor: 'c', top: { x: 9, y: 3 }, height: 3, stairs: [{ x: 8, y: 4 }, { x: 8, y: 5 }], chest: 'chest-rockledge', sign: 'sign-rockledge' },
+  { id: 'lab', floor: '.', top: { x: 7, y: 10 }, height: 2, stairs: [{ x: 5, y: 9 }], chest: 'chest-observation', sign: 'sign-observation' },
 ];
 
 for (const hill of moreHills) describe(`C17 ${hill.id} 높낮이`, () => {
