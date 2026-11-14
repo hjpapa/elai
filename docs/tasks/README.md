@@ -8,6 +8,12 @@ Claude가 지시서를 쓰고, 사용자가 Codex 앱에서 실행해요.
    > `docs/tasks/codex-01-assets.md` 지시서대로 작업해 줘. `AGENTS.md` 규칙을 지켜 줘.
 3. Codex가 끝나면 Claude에게 "C1 끝났어"처럼 알려 주세요. Claude가 검토하고, 테스트한 뒤 커밋·머지해요.
 
+### 남은 장 맵 언덕과 어두운 바닥 옆면 색(C17)
+Codex 앱에서 `C:\code\elai-wt\codex-17`(브랜치 `codex/17-hills-more`)을 열고 이렇게 부탁해요. 중간에 멈추면 같은 말을 다시 하면 진행 기록(`codex-17-progress.md`)을 보고 이어서 해요.
+> `docs/tasks/codex-17-hills-more.md`대로 1단계부터 차례로 진행하고, 단계마다 커밋해 줘. `AGENTS.md` 규칙을 지켜 줘.
+
+몇 단계만 끝나도 Claude에게 "C17 1~2단계 끝났어"처럼 알려 주면 커밋 단위로 검토해서 main에 머지해요.
+
 ### 장 맵 언덕·계단과 작은 그림 다듬기(C16, 완료)
 Codex 앱에서 `C:\code\elai-wt\codex-16`(브랜치 `codex/16-hills-polish`)을 열고 이렇게 부탁해요. 중간에 멈추면 같은 말을 다시 하면 진행 기록(`codex-16-progress.md`)을 보고 이어서 해요.
 > `docs/tasks/codex-16-hills-polish.md`대로 1단계부터 차례로 진행하고, 단계마다 커밋해 줘. `AGENTS.md` 규칙을 지켜 줘.
@@ -73,6 +79,7 @@ Codex 앱에서 `C:\code\elai-wt\codex-12`(브랜치 `codex/12-hires-chapters`)�
 | C14 | [codex-14-parcel.md](codex-14-parcel.md) — 마을 택배소·코딩 택배 분류 그림 11개(2배), 동굴 벽 윗면 다듬기(3단계) | 완료(검토 통과, main 병합·배포 · 기록 [codex-14-progress.md](codex-14-progress.md)) |
 | C15 | [codex-15-lightshop.md](codex-15-lightshop.md) — 마을 불빛 가게·코딩 불빛 그림 그림 9개(2배) | 완료(검토 통과, main 병합 · 기록 [codex-15-progress.md](codex-15-progress.md)) |
 | C16 | [codex-16-hills-polish.md](codex-16-hills-polish.md) — 3·4·6·8장 맵 언덕·계단(맵 데이터·테스트), 로비 머리 위 부품 자리 나누기, 버그 벌레 인형 무늬(5단계) | 완료(검토 통과, main 병합 · 기록 [codex-16-progress.md](codex-16-progress.md)) |
+| C17 | [codex-17-hills-more.md](codex-17-hills-more.md) — 동굴·천문대 옆면 색(미리 승인한 엔진 변경), 2·5·7장 맵 언덕·계단, 버그 인형 몸 무늬(5단계) | 준비(작업 폴더 `C:\code\elai-wt\codex-17`) |
 
 고치는 파일이 겹치지 않는 작업은 동시에 돌려도 돼요. 이때는 꼭 **각자의 작업 폴더**를 열어 주세요.
 
@@ -235,7 +242,8 @@ Codex 앱에서 `C:\code\elai-wt\codex-12`(브랜치 `codex/12-hires-chapters`)�
     - 버그 벌레 인형은 굵은 "01" 천 조각을 달아 방석 위 원래 크기에서도 읽혀요.
   - **검토**: 범위·팔레트·크기 그대로, `npm run assets`를 다시 돌려도 결과가 같아요. 사막 고원을 눌러 계단으로 내려갔다 다시 오르기(로비도 계단으로 따라와요), 천문대 관측 단, 공방 방석의 인형 6개, 앞·뒤 모습 로비를 브라우저에서 확인했어요.
   - **나중에 다듬을 점**:
-    - 천문대 단의 옆면이 밝은 회청색 돌이라 어두운 남색 별 바닥에서 조금 튀어 보여요. 바꾸려면 엔진 `src/game/iso/edges.ts`에서 천문대 바닥의 옆면 재질을 남색·보라로 따로 둬요.
-    - 버그 인형의 "01"은 읽히지만 몸 무늬보다 옆에 붙은 이름표처럼 보여요.
+    - 천문대 단의 옆면이 밝은 회청색 돌이라 어두운 남색 별 바닥에서 조금 튀어 보여요. 바꾸려면 엔진 `src/game/iso/edges.ts`에서 천문대 바닥의 옆면 재질을 남색·보라로 따로 둬요(→ C17 1단계, 동굴도 함께).
+    - 버그 인형의 "01"은 읽히지만 몸 무늬보다 옆에 붙은 이름표처럼 보여요(→ C17 5단계).
+    - 2·5·7장(동굴·연구소·공방) 맵은 아직 평지예요(→ C17 2~4단계).
 - 엔진은 Claude가 먼저 만들고, Claude 사용량 한도에 걸리면 남은 엔진 작업을 지시서로 넘겨요.
 - 인형뽑기 같은 놀이는 **운이 아니라 프로그램대로** 결과가 정해지고, 코인을 걸고 뽑는 방식은 쓰지 않아요(처음 계획의 "확률 뽑기 없음").
