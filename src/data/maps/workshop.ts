@@ -1,9 +1,15 @@
 import type { MapDef } from '../schema';
 import { Painter } from './paint';
 const p=new Painter(18,16,'.').border('#');p.rect(5,3,7,4,'#').rect(11,10,12,11,'#');
+// 오른쪽 전시 단은 끝을 꺾고, 아래쪽 나무 계단으로 올라요.
+const hp=new Painter(18,16,'0');
+hp.rect(11,7,15,8,'2').rect(14,9,15,9,'2').set(15,10,'1');
 export const workshop: MapDef={
  id:'workshop',name:'프롬프트 공방',chapter:'ch7',theme:'workshop',rows:p.rows(),legend:{'.':'wood','#':'wall'},spawn:{x:2,y:13},checkpoint:{map:'workshop',at:{x:2,y:13}},
+ heights:hp.rows(),
  objects:[
+  {id:'chest-exhibition',type:'chest',at:{x:11,y:7},reward:{coins:8,items:[{id:'jelly',qty:1}]}},
+  {id:'sign-exhibition',type:'sign',at:{x:13,y:7},text:'원하는 색과 모양을 적어요.\n나온 작품을 보고 고쳐 봐요.'},
   {id:'zen',type:'npc',at:{x:8,y:8},npc:'zen',missions:['ch7-p1-m1','ch7-p2-m1','ch7-p2-m2','ch7-p2-m3','ch7-p3-m1'],talk:['주문서는 부탁하는 글이에요.\n원하는 조건을 또렷하게 알려요.','이름·주소·전화번호·학교·얼굴 사진은\nAI에게 보내지 않아요.']},
   {id:'parrot-a',type:'mob',at:{x:13,y:5},mob:'babbleParrot',wander:1},
   {id:'parrot-b',type:'mob',at:{x:14,y:12},mob:'babbleParrot',wander:1},
