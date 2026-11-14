@@ -134,3 +134,75 @@ describe('맵의 높낮이', () => {
     expect(reach(def, sign)).toBe(true);
   });
 });
+
+
+// C16: 실제 높낮이 길찾기와 기존 대화·보상 자리를 함께 보호해요.
+const chapterHills: { id: string; top: Point; height: number; stairs: Point[]; chest: string; sign: string }[] = [
+  { id: 'desert', top: { x: 14, y: 3 }, height: 4, stairs: [{ x: 15, y: 4 }, { x: 16, y: 4 }, { x: 17, y: 4 }], chest: 'chest-dune', sign: 'sign-dune' },
+];
+
+for (const hill of chapterHills) describe(`C16 ${hill.id} 높낮이`, () => {
+  const def = MAPS[hill.id];
+  it('고원은 계단으로 오르내리고, 계단을 평지로 바꾸면 닿지 못해요', () => {
+    const cells = buildCells(def);
+    const pass = makePassable(def, cells, world());
+    const route = (from: Point, to: Point) => findPath(pass, from, (x, y) => x === to.x && y === to.y, to, 20000, makeStep(cells));
+    expect(heightAt(cells, hill.top.x, hill.top.y)).toBe(hill.height);
+    const path = route(def.spawn, hill.top);
+    expect(path).not.toBeNull();
+    for (const stair of hill.stairs) expect(path).toContainEqual(stair);
+    expect(route(hill.top, def.spawn)).not.toBeNull();
+    for (const p of hill.stairs) cells[p.y][p.x].h = 0;
+    expect(route(def.spawn, hill.top)).toBeNull();
+  });
+
+  it('기존 NPC·상자·포털·표지판과 출발점 둘레 8칸은 평지이고 모두 갈 수 있어요', () => {
+    const cells = buildCells(def);
+    const objects = def.objects.filter((o) => ['npc', 'chest', 'portal', 'sign'].includes(o.type) && o.id !== hill.chest && o.id !== hill.sign);
+    for (const p of [def.spawn, ...objects.map((o) => o.at)]) {
+      for (let y = p.y - 1; y <= p.y + 1; y++) for (let x = p.x - 1; x <= p.x + 1; x++) {
+        expect(heightAt(cells, x, y), `${x},${y}`).toBe(0);
+      }
+    }
+    for (const o of objects) expect(reach(def, o), o.id).toBe(true);
+  });
+
+  it('높은 곳은 바닥에만 있고 벽·가장자리와 떨어져 있으며 몹 활동 자리는 평지예요', () => {
+    const cells = buildCells(def);
+    const pass = makePassable(def, cells, world());
+    for (let y = 0; y < cells.length; y++) for (let x = 0; x < cells[y].length; x++) {
+      if (heightAt(cells, x, y) === 0) continue;
+      expect(def.rows[y][x], `${x},${y}`).toBe('.');
+      expect(x).toBeGreaterThanOrEqual(2);
+      expect(x).toBeLessThanOrEqual(cells[y].length - 3);
+      expect(y).toBeGreaterThanOrEqual(2);
+      expect(y).toBeLessThanOrEqual(cells.length - 3);
+      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) expect(def.rows[y + dy][x + dx]).not.toBe('#');
+      // 상자 등 단 위 고정 소품 칸을 빼고, 높은 모든 칸에 실제로 걸어갈 수 있어요.
+      if (pass(x, y)) expect(findPath(pass, def.spawn, (gx, gy) => gx === x && gy === y, { x, y }, 20000, makeStep(cells)), `${x},${y}`).not.toBeNull();
+    }
+    for (const o of def.objects) if (o.type === 'mob') {
+      const r = o.wander ?? 0;
+      for (let y = o.at.y - r; y <= o.at.y + r; y++) for (let x = o.at.x - r; x <= o.at.x + r; x++) expect(heightAt(cells, x, y), o.id).toBe(0);
+    }
+  });
+
+  it('언덕 상자와 표지판에 닿고, 추가 보상은 경험치 없이 작은 소모품 하나예요', () => {
+    const chest = def.objects.find((o) => o.id === hill.chest)!;
+    const sign = def.objects.find((o) => o.id === hill.sign)!;
+    expect(chest.type).toBe('chest');
+    expect(sign.type).toBe('sign');
+    for (const o of [chest, sign]) {
+      expect(heightAt(buildCells(def), o.at.x, o.at.y)).toBeGreaterThanOrEqual(2);
+      expect(reach(def, o), o.id).toBe(true);
+    }
+    if (chest.type === 'chest') {
+      expect(chest.reward.xp).toBeUndefined();
+      expect(chest.reward.coins).toBeLessThanOrEqual(10);
+      expect(chest.reward.items).toHaveLength(1);
+      expect(chest.reward.items?.[0].qty).toBe(1);
+      expect(['apple', 'jelly']).toContain(chest.reward.items?.[0].id);
+    }
+    if (sign.type === 'sign') expect(sign.text.split('\n').length).toBeLessThanOrEqual(2);
+  });
+});
