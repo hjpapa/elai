@@ -138,6 +138,7 @@ describe('맵의 높낮이', () => {
 
 // C16: 실제 높낮이 길찾기와 기존 대화·보상 자리를 함께 보호해요.
 const chapterHills: { id: string; top: Point; height: number; stairs: Point[]; chest: string; sign: string }[] = [
+  { id: 'observatory', top: { x: 10, y: 4 }, height: 3, stairs: [{ x: 10, y: 6 }, { x: 11, y: 6 }], chest: 'chest-observation', sign: 'sign-observation' },
   { id: 'harbor', top: { x: 5, y: 8 }, height: 3, stairs: [{ x: 6, y: 10 }, { x: 6, y: 11 }], chest: 'chest-pier', sign: 'sign-pier' },
   { id: 'desert', top: { x: 14, y: 3 }, height: 4, stairs: [{ x: 15, y: 4 }, { x: 16, y: 4 }, { x: 17, y: 4 }], chest: 'chest-dune', sign: 'sign-dune' },
 ];

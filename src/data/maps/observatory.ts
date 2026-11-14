@@ -2,9 +2,15 @@ import type { MapDef } from '../schema';
 import { Painter } from './paint';
 const p=new Painter(18,16,'.').border('#');
 p.rect(5,3,7,4,'#').rect(11,10,12,11,'#');
+// 망원경 위쪽의 둥근 관측 단. NPC 둘레를 비워 두고 오른쪽의 꺾인 계단으로 올라요.
+const hp = new Painter(18, 16, '0');
+hp.rect(9, 3, 11, 4, '3').set(10, 2, '3').set(10, 5, '3');
+hp.set(10, 6, '2').set(11, 6, '1');
 export const observatory: MapDef={
- id:'observatory',name:'길잡이 천문대',chapter:'ch6',theme:'observatory',rows:p.rows(),legend:{'.':'observatory','#':'observatorywall'},spawn:{x:2,y:13},checkpoint:{map:'observatory',at:{x:2,y:13}},
+ id:'observatory',name:'길잡이 천문대',chapter:'ch6',theme:'observatory',rows:p.rows(),heights:hp.rows(),legend:{'.':'observatory','#':'observatorywall'},spawn:{x:2,y:13},checkpoint:{map:'observatory',at:{x:2,y:13}},
  objects:[
+  {id:'chest-observation',type:'chest',at:{x:9,y:3},reward:{coins:8,items:[{id:'jelly',qty:1}]}},
+  {id:'sign-observation',type:'sign',at:{x:10,y:2},text:'둥근 단에서 별을 살펴봐요.\n어제와 무엇이 달라졌나요?'},
   {id:'astronomer',type:'npc',at:{x:8,y:8},npc:'astronomer',missions:['ch6-p1-m1','ch6-p2-m1','ch6-p3-m1'],talk:['기록은 앞일을 가늠하는 단서예요.\n실제와 다르면 다시 살펴봐요.']},
   {id:'fox-a',type:'mob',at:{x:13,y:5},mob:'cometFox',wander:1},
   {id:'fox-b',type:'mob',at:{x:14,y:12},mob:'cometFox',wander:1},
