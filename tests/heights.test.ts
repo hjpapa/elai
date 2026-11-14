@@ -138,6 +138,7 @@ describe('맵의 높낮이', () => {
 
 // C16: 실제 높낮이 길찾기와 기존 대화·보상 자리를 함께 보호해요.
 const chapterHills: { id: string; top: Point; height: number; stairs: Point[]; chest: string; sign: string }[] = [
+  { id: 'castle', top: { x: 11, y: 3 }, height: 4, stairs: [{ x: 9, y: 4 }, { x: 9, y: 5 }, { x: 10, y: 5 }], chest: 'chest-courtyard', sign: 'sign-courtyard' },
   { id: 'observatory', top: { x: 10, y: 4 }, height: 3, stairs: [{ x: 10, y: 6 }, { x: 11, y: 6 }], chest: 'chest-observation', sign: 'sign-observation' },
   { id: 'harbor', top: { x: 5, y: 8 }, height: 3, stairs: [{ x: 6, y: 10 }, { x: 6, y: 11 }], chest: 'chest-pier', sign: 'sign-pier' },
   { id: 'desert', top: { x: 14, y: 3 }, height: 4, stairs: [{ x: 15, y: 4 }, { x: 16, y: 4 }, { x: 17, y: 4 }], chest: 'chest-dune', sign: 'sign-dune' },
@@ -207,4 +208,12 @@ for (const hill of chapterHills) describe(`C16 ${hill.id} 높낮이`, () => {
     }
     if (sign.type === 'sign') expect(sign.text.split('\n').length).toBeLessThanOrEqual(2);
   });
+});
+
+
+it('C16 성의 거울 둘레 8칸은 평지로 남겨요', () => {
+  const def = MAPS.castle;
+  const mirror = def.objects.find((o) => o.id === 'mirror')!;
+  const cells = buildCells(def);
+  for (let y = mirror.at.y - 1; y <= mirror.at.y + 1; y++) for (let x = mirror.at.x - 1; x <= mirror.at.x + 1; x++) expect(heightAt(cells, x, y)).toBe(0);
 });
