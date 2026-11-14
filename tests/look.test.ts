@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it } from 'vitest';
 import { setDensity } from '../src/game/density';
 import { EDGE_COLORS, edgeFaces, edgeMaterial } from '../src/game/iso/edges';
@@ -94,5 +95,39 @@ describe('섬 가장자리', () => {
     expect(edgeMaterial('sand')).toBe('sand');
     expect(edgeMaterial('castle')).toBe('stone');
     for (const c of Object.values(EDGE_COLORS)) expect(c.lit).not.toBe(c.dark);
+  });
+});
+
+
+describe('C17 어두운 바닥의 옆면', () => {
+  it('동굴 바닥·벽은 동굴 재질, 천문대 바닥·벽은 밤하늘 재질이에요', () => {
+    for (const kind of ['cave', 'rockwall'] as const) expect(edgeMaterial(kind)).toBe('cave');
+    for (const kind of ['observatory', 'observatorywall'] as const) expect(edgeMaterial(kind)).toBe('night');
+  });
+
+  it('성·연구소와 나머지 바닥 종류는 원래 재질 그대로예요', () => {
+    for (const kind of ['castle', 'castlewall', 'lab', 'labwall', 'stone', 'wall', 'void'] as const) expect(edgeMaterial(kind)).toBe('stone');
+    for (const kind of ['grass', 'flower', 'hedge', 'path'] as const) expect(edgeMaterial(kind)).toBe('soil');
+    for (const kind of ['sand', 'sandstone'] as const) expect(edgeMaterial(kind)).toBe('sand');
+    for (const kind of ['dock', 'crate', 'wood', 'bridge', 'room', 'rug', 'roomwall', 'roomwindow'] as const) expect(edgeMaterial(kind)).toBe('wood');
+    expect(edgeMaterial('water')).toBe('water');
+  });
+
+  it('새 재질은 팔레트 안의 색이며 왼쪽 면이 오른쪽보다 밝고 테두리도 구별돼요', () => {
+    const palette = JSON.parse(readFileSync(new URL('../assets-src/palette.json', import.meta.url), 'utf8')) as { colors: Record<string, string> };
+    const allowed = new Set(Object.values(palette.colors).map((hex) => Number.parseInt(hex.slice(1), 16)));
+    const lightness = (color: number) => {
+      const rgb = [16, 8, 0].map((shift) => ((color >> shift) & 255) / 255).map((c) => c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
+      return rgb[0] * 0.2126 + rgb[1] * 0.7152 + rgb[2] * 0.0722;
+    };
+    for (const material of ['cave', 'night'] as const) {
+      const c = EDGE_COLORS[material];
+      for (const value of [c.lit, c.dark, c.base, ...c.rim]) expect(allowed.has(value), material).toBe(true);
+      expect(lightness(c.lit), material).toBeGreaterThan(lightness(c.dark));
+      expect(lightness(c.rim[1]), material).toBeGreaterThan(lightness(c.rim[0]));
+      // 섬 맨 아래 띠까지 현재 맵 배경과 다른 색으로 남아요.
+      const bg = material === 'cave' ? 0x0d101c : 0x293044;
+      for (const value of [c.lit, c.dark, c.base]) expect(lightness(value), material).toBeGreaterThan(lightness(bg));
+    }
   });
 });
