@@ -29,7 +29,7 @@
    - `docs/asset-spec.md`의 "고해상도 그림"
    - `src/game/assets.ts`(계약)
    - `assets-src/hires/overlay/robi-part-*.txt`, `assets-src/hires/prop/prop-doll-bug.txt`
-   - `docs/tasks/codex-12-progress.md`(로비 부품 겹침 검사), `docs/tasks/codex-13-progress.md`(인형 그림)
+   - `docs/tasks/codex-12-progress.md`(로비 부품 겹침 검사 방법), `docs/tasks/codex-13-progress.md`(인형 그림)
 7. 참고만(고치지 않아요)
    - `src/game/iso/mapRuntime.ts`의 `canStep`: 걸을 수 있는지 정하는 규칙
    - `src/game/iso/edges.ts`: 높은 칸의 옆면·윗면 테두리 색
@@ -116,7 +116,9 @@
   - 뒤 프레임(5~9)에서는 가슴이 안 보이니 그리지 않거나 아주 작게만 그려요.
 - 말풍선은 머리 옆 위(별과 떨어진 쪽)로 옮겨, 별·센서와 붙지 않게 해요.
 - 8부품을 모두 달아도 서로 겹치지 않고(28쌍 × 10프레임, 좌우 반전 포함) 얼굴 화면을 가리지 않아요.
-  - 검사는 C12 도구로 해요: `node assets-src/tools/preview-c12.mjs 9`. 겹치거나 얼굴을 가리면 실패해요.
+  - C12 도구(`assets-src/tools/preview-c12.mjs`)에 이 검사가 있지만, C13 뒤로 키가 늘어 단계 목록 검사(`c12-stages.mjs`)에서 멈춰요.
+  - 그 도구의 로비 검사(`collisions`, `faceOcclusion` 계산)를 C16 도구(예: `assets-src/tools/check-c16-robi.mjs`)로 옮겨 써요. `c12-common.mjs`의 `loadGrid`·`pose`는 그대로 써도 돼요.
+  - 겹치거나 얼굴 화면을 가리면 실패하게 해요. 합성판 `robi-16.png`도 이 도구로 만들어요.
 - 아이콘(`icon-part-*`)은 바꾸지 않아요.
 
 #### 버그 벌레 인형(`prop-doll-bug`, 32×32)
