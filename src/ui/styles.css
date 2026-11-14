@@ -2230,6 +2230,12 @@ h3 {
   align-items: flex-start;
   justify-content: center;
   min-width: 0;
+  /*
+   * 작은 화면(칸이 36px쯤)에서도 숫자 판이 전구 소켓을 가리지 않게 칸 높이를 지켜요.
+   * 너비를 적어 둬야 최소 높이가 너비까지 키우지 않아요(붓 자리는 칸 비율이라 그대로 맞아요).
+   */
+  width: 100%;
+  min-height: 48px;
   padding-top: 6%;
   aspect-ratio: 1;
 }

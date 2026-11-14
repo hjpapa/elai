@@ -101,6 +101,9 @@ const THEME: Record<MapDef['theme'], { bg: string; music: MusicTheme; floor: Bat
   room: { bg: '#2b2433', music: 'village', floor: 'tile-room' },
 };
 
+/** 0·1 프레임이 번갈아 켜지는 장식 소품(맵 데이터가 프레임을 정하지 않는 것만 넣어요) */
+const BLINK_PROPS: ReadonlySet<string> = new Set(['prop-lamp-shelf']);
+
 /** 아이소 월드: 맵 그리기, 걷기·길찾기, 오브젝트와 상호작용, 안개, 몹 돌아다니기 */
 export class WorldScene extends Phaser.Scene {
   private def!: MapDef;
@@ -650,6 +653,8 @@ export class WorldScene extends Phaser.Scene {
       if (v.obj.type === 'portal' && !v.obj.sprite && v.image) next(v.image);
       // 놀이 기계의 불빛(2프레임)도 번갈아 깜빡여요. frameTotal에는 __BASE 프레임이 함께 들어 있어요.
       if (v.obj.type === 'game' && v.image && v.image.texture.frameTotal > 2) next(v.image);
+      // 불빛이 번갈아 켜지는 장식 소품(불빛 가게 전등 진열대)도 같이 깜빡여요.
+      if (v.obj.type === 'prop' && v.image && BLINK_PROPS.has(v.obj.sprite)) next(v.image);
     }
   }
 
