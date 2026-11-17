@@ -14,8 +14,11 @@ export type Dir = 'up' | 'right' | 'down' | 'left';
 // ── 프로그램(블록) ────────────────────────────────────────
 // 퍼즐(GridEnv)과 전투(BattleEnv)가 같은 인터프리터로 실행해요.
 
-/** 퍼즐 명령: 절대 방향 이동(1~2장) + 상대 방향 이동(3장~) + 줍기 + 집기(공방 인형뽑기) + 보내기(택배 분류) + 켜기·다음 줄(불빛 그림) */
-export type GridCmd = 'up' | 'down' | 'left' | 'right' | 'forward' | 'turnLeft' | 'turnRight' | 'collect' | 'grab' | 'sendLeft' | 'sendRight' | 'lightOn' | 'nextRow';
+/**
+ * 퍼즐 명령: 절대 방향 이동(1~2장) + 상대 방향 이동(3장~) + 줍기 + 집기(공방 인형뽑기) + 보내기(택배 분류)
+ * + 켜기·다음 줄(불빛 그림) + 물결 따라가기(길찾기: 물결 숫자가 하나 작은 이웃 칸으로 한 걸음)
+ */
+export type GridCmd = 'up' | 'down' | 'left' | 'right' | 'forward' | 'turnLeft' | 'turnRight' | 'collect' | 'grab' | 'sendLeft' | 'sendRight' | 'lightOn' | 'nextRow' | 'followWave';
 /** 전투 명령 */
 export type BattleCmd = 'scan' | 'attack' | 'guard' | 'heal' | 'wait';
 export type Cmd = GridCmd | BattleCmd;
@@ -611,6 +614,31 @@ export interface LightRound {
   allowRepeat?: boolean;
   /** 쓸 수 있는 조건(없으면 만약 블록 없음) */
   allowIf?: Cond[];
+  /** 가장 짧은 풀이의 블록 수(별점 기준) */
+  optimal: number;
+  maxBlocks?: number;
+  unlock?: MinigameUnlock;
+  lockedText?: string;
+  intro: string;
+  hint: string;
+}
+
+/**
+ * 코딩 길찾기 한 판(마을 지도방). 미로에서 로봇을 깃발까지 데려가요.
+ * 깃발에서 물결을 퍼뜨리면 칸마다 '깃발까지 몇 걸음'(물결 숫자)이 적혀요(6장 물결 탐색).
+ * '물결 따라가기'는 숫자가 하나 작은 이웃 칸으로 한 걸음 가요. 깃발에 닿으면 그 자리에서 멈춰요(운·코인 없음).
+ */
+export interface RouteRound {
+  id: string;
+  title: string;
+  /** 미로(줄마다 글자: '#' 벽, '.' 길, 'S' 로봇 출발, 'G' 깃발). 미로가 여럿이면 같은 프로그램으로 모두 깃발에 닿아야 성공해요. */
+  mazes: string[][];
+  palette: Cmd[];
+  allowRepeat?: boolean;
+  /** 반복 횟수의 최대값(없으면 9) */
+  maxRepeat?: number;
+  /** 물결 숫자를 처음부터 보여 줘요(없으면 '물결 보기' 단추로 켜요) */
+  showWave?: boolean;
   /** 가장 짧은 풀이의 블록 수(별점 기준) */
   optimal: number;
   maxBlocks?: number;

@@ -35,6 +35,9 @@ const LIGHTS: Record<string, Light> = {
   'prop-lightboard': { at: 0.7, r: 12 },
   'prop-light-frame': { at: 0.55, r: 6, frames: [1, 2, 3, 4, 5, 6] },
   'prop-lamp-shelf': { at: 0.6, r: 10 },
+  // C18 마을 지도방: 열린 문 불빛(공방과 같아요), 길찾기 탁자 위 물결 고리(청록). 그림이 오면 진행 기록 표로 맞춰요.
+  'prop-route-house': { at: 0.28, r: 12, frames: [1] },
+  'prop-route-table': { at: 0.55, r: 10, glow: 'cool' },
 };
 
 const GLOW: Record<Glow, readonly number[]> = {

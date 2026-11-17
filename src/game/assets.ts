@@ -117,6 +117,13 @@ export const ASSETS: AssetSpec[] = [
   icon('icon-card-lightOn', '켜기 카드(전구와 반짝임)', 0xe7b64f),
   icon('icon-card-nextRow', '다음 줄 카드(아래로 꺾여 왼쪽 끝으로 가는 화살표)', 0x4a7bd1),
 
+  // C18: 2.5D 4단계 — 마을 지도방과 코딩 길찾기. 벽·바닥은 공방 그림을 같이 써요. 그림이 오기 전에는 임시 그림을 써요.
+  prop(32, 48, 2)('prop-route-house', '마을 지도방 건물(0 문 닫힘, 1 문 열림·창에 불빛). 문 위에 깃발 꽂힌 지도 간판', 0x4c8f4c),
+  prop(32, 48, 2)('prop-route-table', '길찾기 놀이 탁자(위에 작은 미로 판과 로봇 모형, 깃발. 0·1 물결 고리가 번갈아 퍼져요)', 0x49b5b1),
+  prop(16, 24, 7)('prop-route-map', '벽 지도(0 길이 없는 빈 미로 지도, 1~6 판마다 깃발까지 길이 그려진 지도). 바닥에 세워요', 0xedc890),
+  prop(16, 24)('prop-globe', '받침대 위 지구본(장식)', 0x478bc7),
+  icon('icon-card-followWave', '물결 따라가기 카드(작은 숫자 쪽을 가리키는 화살표와 물결 고리)', 0x2f8a86),
+
   // C10: 윤리의 성
   tile('tile-castle', '따뜻한 빛의 성 돌바닥', 0xc7d6dc),
   block('block-castle', '성의 보랏빛 돌벽', 0x8c9bab),

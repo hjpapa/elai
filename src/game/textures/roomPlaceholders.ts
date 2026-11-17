@@ -1,4 +1,6 @@
 import { LIGHT_ROUNDS } from '../../data/minigames/light';
+import { ROUTE_ROUNDS } from '../../data/minigames/route';
+import { shortestPath } from '../../minigames/route/routeEnv';
 import type { AssetSpec } from '../assets';
 
 /**
@@ -236,6 +238,67 @@ export function drawRoomProp(ctx: CanvasRenderingContext2D, spec: AssetSpec, f: 
         oval(ctx, 8 + i * 8, h - 7, 2.5, 2.5, on ? '#c7d6dc' : '#ffe59a');
       }
       return true;
+    // C18 마을 지도방
+    case 'prop-route-house':
+      rect(ctx, 4, h - 26, w - 8, 24, '#e3ab80');
+      poly(ctx, [[1, h - 25], [m, h - 44], [w - 1, h - 25]], '#4c8f4c');
+      rect(ctx, m - 4, h - 13, 8, 11, f === 1 ? '#ffe59a' : '#86513e');
+      rect(ctx, m - 6, h - 24, 12, 7, '#fff4d2');
+      rect(ctx, m - 4, h - 22, 2, 3, '#56657a');
+      rect(ctx, m, h - 21, 3, 2, '#56657a');
+      rect(ctx, m + 2, h - 26, 1, 6, '#86513e');
+      poly(ctx, [[m + 3, h - 26], [m + 7, h - 24.5], [m + 3, h - 23]], '#ed7463');
+      rect(ctx, 6, h - 21, 4, 4, f === 1 ? '#ffe59a' : '#478bc7');
+      rect(ctx, w - 10, h - 21, 4, 4, f === 1 ? '#ffe59a' : '#478bc7');
+      return true;
+    case 'prop-route-table': {
+      rect(ctx, 4, h - 14, 3, 12, '#86513e');
+      rect(ctx, w - 7, h - 14, 3, 12, '#86513e');
+      rect(ctx, 1, h - 20, w - 2, 7, '#a76c46');
+      rect(ctx, 3, h - 30, w - 6, 11, '#2f8a86');
+      // 작은 미로 판(벽 칸) + 깃발 + 로봇
+      for (const [x, y] of [[5, h - 28], [11, h - 25], [17, h - 28], [21, h - 24]] as Pt[]) rect(ctx, x, y, 3, 3, '#56657a');
+      rect(ctx, w - 7, h - 36, 1, 8, '#86513e');
+      poly(ctx, [[w - 6, h - 36], [w - 2, h - 34.5], [w - 6, h - 33]], '#ed7463');
+      rect(ctx, 6, h - 35, 6, 6, '#c7d6dc');
+      rect(ctx, 7, h - 33, 1, 1, '#1b1f2a');
+      rect(ctx, 10, h - 33, 1, 1, '#1b1f2a');
+      ctx.strokeStyle = f === 1 ? '#a4e3c2' : '#82cce0';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.ellipse(w - 6, h - 26, f === 1 ? 6 : 3.5, f === 1 ? 3 : 2, 0, 0, Math.PI * 2);
+      ctx.stroke();
+      return true;
+    }
+    case 'prop-route-map': {
+      rect(ctx, m - 1, h - 4, 2, 3, '#86513e');
+      rect(ctx, 1, h - 22, w - 2, 18, '#a76c46');
+      rect(ctx, 2, h - 21, w - 4, 16, '#fff4d2');
+      // 0프레임은 빈 미로, 1~6프레임은 그 판의 (첫) 미로에 깃발까지 길을 그려요.
+      const maze = ROUTE_ROUNDS[Math.max(0, f - 1)]?.mazes[0];
+      if (maze) {
+        const mw = maze[0].length;
+        const mh = maze.length;
+        const s = Math.max(1, Math.floor(Math.min(12 / mw, 16 / mh)));
+        const ox = 2 + Math.floor((12 - mw * s) / 2);
+        const oy = h - 21 + Math.floor((16 - mh * s) / 2);
+        const road = new Set(f > 0 ? shortestPath(maze).map((p) => `${p.x},${p.y}`) : []);
+        maze.forEach((row, y) =>
+          [...row].forEach((c, x) => {
+            const fill = c === '#' ? '#56657a' : c === 'G' ? '#ed7463' : road.has(`${x},${y}`) ? '#49b5b1' : '#edc890';
+            rect(ctx, ox + x * s, oy + y * s, s, s, fill);
+          }),
+        );
+      }
+      return true;
+    }
+    case 'prop-globe':
+      rect(ctx, m - 1, h - 9, 2, 6, '#86513e');
+      oval(ctx, m, h - 3, 4, 1.5, '#86513e');
+      oval(ctx, m, h - 15, 6, 6, '#478bc7');
+      oval(ctx, m - 2, h - 17, 2.5, 2, '#8dc567');
+      oval(ctx, m + 2.5, h - 13, 2, 1.5, '#8dc567');
+      return true;
     default:
       if (!key.startsWith('prop-doll-')) return false;
       drawDoll(ctx, key, w, h, hex(color));
@@ -350,6 +413,20 @@ export function drawRoomIcon(ctx: CanvasRenderingContext2D, spec: AssetSpec): bo
     rect(ctx, 11, 3, 2, 7, '#ffffff');
     rect(ctx, 6, 8, 7, 2, '#ffffff');
     poly(ctx, [[2, 9], [6, 5.5], [6, 12.5]], '#ffffff');
+    return true;
+  }
+  // C18 코딩 길찾기: 물결 따라가기 카드(물결 고리와 작은 숫자 쪽 화살표)
+  if (key === 'icon-card-followWave') {
+    rect(ctx, 1, 1, w - 2, h - 2, '#2f8a86');
+    ctx.strokeStyle = '#a4e3c2';
+    ctx.lineWidth = 1;
+    for (const r of [2, 4.5]) {
+      ctx.beginPath();
+      ctx.arc(4.5, h - 4.5, r, -Math.PI / 2, 0);
+      ctx.stroke();
+    }
+    rect(ctx, 6, 7, 6, 2, '#ffffff');
+    poly(ctx, [[w - 2, 8], [w - 6, 4], [w - 6, 12]], '#ffffff');
     return true;
   }
   if (key === 'icon-card-grab') {

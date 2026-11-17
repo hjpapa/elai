@@ -94,7 +94,8 @@ export const village: MapDef = {
       lockedText: '택배소는 아직 고치는 중이에요.\n1장을 끝내면 마을이 고쳐져요.',
       sprite: 'prop-parcel-office',
     },
-    ...house('house-c', 8, 13),
+    // 마을 지도방: 처음부터 열려 있어요(1~2판은 화살표만 써요). 물결 판은 6장 '물결 탐색' 뒤에 열려요.
+    { id: 'to-maproom', type: 'portal', at: { x: 8, y: 13 }, to: { map: 'maproom', at: { x: 6, y: 6 } }, label: '마을 지도방', sprite: 'prop-route-house' },
     ...house('house-d', 16, 13),
     // 마을 공방: 집 칸으로 걸어 들어가면 공방 안(실내 맵)으로 가요.
     { id: 'to-workroom', type: 'portal', at: { x: 19, y: 7 }, to: { map: 'workroom', at: { x: 6, y: 6 } }, label: '마을 공방', sprite: 'prop-workshop' },

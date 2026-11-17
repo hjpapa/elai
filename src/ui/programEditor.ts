@@ -32,6 +32,7 @@ export function cmdKind(c: Cmd): string {
   if (c === 'grab') return 'k-grab';
   if (c === 'sendLeft' || c === 'sendRight') return 'k-send';
   if (c === 'lightOn') return 'k-light';
+  if (c === 'followWave') return 'k-wave';
   return 'k-move';
 }
 

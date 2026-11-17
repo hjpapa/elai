@@ -10,6 +10,7 @@ import { labdeep } from './labdeep';
 import { observatory } from './observatory';
 import { parcel } from './parcel';
 import { lightshop } from './lightshop';
+import { maproom } from './maproom';
 import { starmaze } from './starmaze';
 import { workshop } from './workshop';
 import { bookmaze } from './bookmaze';
@@ -20,4 +21,4 @@ import { maze } from './maze';
 import { village } from './village';
 import { workroom } from './workroom';
 
-export const MAPS: Record<string, MapDef> = { village, workroom, parcel, lightshop, forest, maze, cave, cavedeep, desert, desertmaze, harbor, lighthouse, lab, labdeep, observatory, starmaze, workshop, bookmaze, castle, mirrormaze };
+export const MAPS: Record<string, MapDef> = { village, workroom, parcel, lightshop, maproom, forest, maze, cave, cavedeep, desert, desertmaze, harbor, lighthouse, lab, labdeep, observatory, starmaze, workshop, bookmaze, castle, mirrormaze };

@@ -14,6 +14,7 @@ export const CMD_LABEL: Record<Cmd, string> = {
   sendRight: '오른쪽으로 보내기',
   lightOn: '켜기',
   nextRow: '다음 줄',
+  followWave: '물결 따라가기',
   attack: '공격',
   guard: '막기',
   heal: '회복',
