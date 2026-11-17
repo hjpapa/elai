@@ -333,6 +333,26 @@
       "density": 2
     },
     {
+      "key": "prop-route-house",
+      "file": "prop/prop-route-house.png",
+      "density": 2
+    },
+    {
+      "key": "prop-route-table",
+      "file": "prop/prop-route-table.png",
+      "density": 2
+    },
+    {
+      "key": "prop-route-map",
+      "file": "prop/prop-route-map.png",
+      "density": 2
+    },
+    {
+      "key": "prop-globe",
+      "file": "prop/prop-globe.png",
+      "density": 2
+    },
+    {
       "key": "tile-castle",
       "file": "tile/tile-castle.png",
       "density": 2
