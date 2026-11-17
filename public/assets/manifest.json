@@ -358,6 +358,26 @@
       "density": 2
     },
     {
+      "key": "prop-bakery",
+      "file": "prop/prop-bakery.png",
+      "density": 2
+    },
+    {
+      "key": "prop-oven",
+      "file": "prop/prop-oven.png",
+      "density": 2
+    },
+    {
+      "key": "prop-cake-stand",
+      "file": "prop/prop-cake-stand.png",
+      "density": 2
+    },
+    {
+      "key": "prop-bread-shelf",
+      "file": "prop/prop-bread-shelf.png",
+      "density": 2
+    },
+    {
       "key": "tile-castle",
       "file": "tile/tile-castle.png",
       "density": 2
