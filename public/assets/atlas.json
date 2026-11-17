@@ -3100,7 +3100,7 @@
         "h": 32
       }
     },
-    "icon-part-ethics": {
+    "icon-card-followWave": {
       "frame": {
         "x": 1038,
         "y": 734,
@@ -3120,7 +3120,7 @@
         "h": 32
       }
     },
-    "icon-part-talk": {
+    "icon-part-ethics": {
       "frame": {
         "x": 1074,
         "y": 734,
@@ -3140,7 +3140,7 @@
         "h": 32
       }
     },
-    "icon-part-predictor": {
+    "icon-part-talk": {
       "frame": {
         "x": 1110,
         "y": 734,
@@ -3160,7 +3160,7 @@
         "h": 32
       }
     },
-    "icon-part-learnchip": {
+    "icon-part-predictor": {
       "frame": {
         "x": 1146,
         "y": 734,
@@ -3180,7 +3180,7 @@
         "h": 32
       }
     },
-    "icon-part-lens": {
+    "icon-part-learnchip": {
       "frame": {
         "x": 1182,
         "y": 734,
@@ -3200,7 +3200,7 @@
         "h": 32
       }
     },
-    "icon-card-scan": {
+    "icon-part-lens": {
       "frame": {
         "x": 1218,
         "y": 734,
@@ -3220,7 +3220,7 @@
         "h": 32
       }
     },
-    "icon-part-sensor": {
+    "icon-card-scan": {
       "frame": {
         "x": 1254,
         "y": 734,
@@ -3240,7 +3240,7 @@
         "h": 32
       }
     },
-    "icon-part-memory": {
+    "icon-part-sensor": {
       "frame": {
         "x": 1290,
         "y": 734,
@@ -3260,7 +3260,7 @@
         "h": 32
       }
     },
-    "prop-key": {
+    "icon-part-memory": {
       "frame": {
         "x": 1326,
         "y": 734,
@@ -3280,7 +3280,7 @@
         "h": 32
       }
     },
-    "prop-stump": {
+    "prop-key": {
       "frame": {
         "x": 1362,
         "y": 734,
@@ -3300,7 +3300,7 @@
         "h": 32
       }
     },
-    "prop-mushroom": {
+    "prop-stump": {
       "frame": {
         "x": 1398,
         "y": 734,
@@ -3320,7 +3320,7 @@
         "h": 32
       }
     },
-    "icon-item-cap": {
+    "prop-mushroom": {
       "frame": {
         "x": 1434,
         "y": 734,
@@ -3340,7 +3340,7 @@
         "h": 32
       }
     },
-    "icon-item-leafhat": {
+    "icon-item-cap": {
       "frame": {
         "x": 1470,
         "y": 734,
@@ -3360,7 +3360,7 @@
         "h": 32
       }
     },
-    "icon-item-rangerhat": {
+    "icon-item-leafhat": {
       "frame": {
         "x": 1506,
         "y": 734,
@@ -3380,7 +3380,7 @@
         "h": 32
       }
     },
-    "icon-item-stick": {
+    "icon-item-rangerhat": {
       "frame": {
         "x": 1542,
         "y": 734,
@@ -3400,7 +3400,7 @@
         "h": 32
       }
     },
-    "icon-item-hammer": {
+    "icon-item-stick": {
       "frame": {
         "x": 1578,
         "y": 734,
@@ -3420,7 +3420,7 @@
         "h": 32
       }
     },
-    "icon-item-brush": {
+    "icon-item-hammer": {
       "frame": {
         "x": 1614,
         "y": 734,
@@ -3440,7 +3440,7 @@
         "h": 32
       }
     },
-    "icon-item-vest": {
+    "icon-item-brush": {
       "frame": {
         "x": 1650,
         "y": 734,
@@ -3460,7 +3460,7 @@
         "h": 32
       }
     },
-    "icon-item-cloak": {
+    "icon-item-vest": {
       "frame": {
         "x": 1686,
         "y": 734,
@@ -3480,7 +3480,7 @@
         "h": 32
       }
     },
-    "icon-item-boots": {
+    "icon-item-cloak": {
       "frame": {
         "x": 1722,
         "y": 734,
@@ -3500,7 +3500,7 @@
         "h": 32
       }
     },
-    "icon-item-windboots": {
+    "icon-item-boots": {
       "frame": {
         "x": 1758,
         "y": 734,
@@ -3520,7 +3520,7 @@
         "h": 32
       }
     },
-    "icon-item-glasses": {
+    "icon-item-windboots": {
       "frame": {
         "x": 1794,
         "y": 734,
@@ -3540,7 +3540,7 @@
         "h": 32
       }
     },
-    "icon-item-flowmap": {
+    "icon-item-glasses": {
       "frame": {
         "x": 1830,
         "y": 734,
@@ -3560,7 +3560,7 @@
         "h": 32
       }
     },
-    "icon-item-apple": {
+    "icon-item-flowmap": {
       "frame": {
         "x": 1866,
         "y": 734,
@@ -3580,7 +3580,7 @@
         "h": 32
       }
     },
-    "icon-item-jelly": {
+    "icon-item-apple": {
       "frame": {
         "x": 1902,
         "y": 734,
@@ -3600,7 +3600,7 @@
         "h": 32
       }
     },
-    "icon-item-forestkey": {
+    "icon-item-jelly": {
       "frame": {
         "x": 1938,
         "y": 734,
@@ -3620,7 +3620,7 @@
         "h": 32
       }
     },
-    "icon-item-vine": {
+    "icon-item-forestkey": {
       "frame": {
         "x": 1974,
         "y": 734,
@@ -3640,7 +3640,7 @@
         "h": 32
       }
     },
-    "icon-part-wheel": {
+    "icon-item-vine": {
       "frame": {
         "x": 2010,
         "y": 734,
@@ -3660,7 +3660,7 @@
         "h": 32
       }
     },
-    "icon-card-up": {
+    "icon-part-wheel": {
       "frame": {
         "x": 2,
         "y": 770,
@@ -3680,7 +3680,7 @@
         "h": 32
       }
     },
-    "icon-card-down": {
+    "icon-card-up": {
       "frame": {
         "x": 38,
         "y": 770,
@@ -3700,7 +3700,7 @@
         "h": 32
       }
     },
-    "icon-card-left": {
+    "icon-card-down": {
       "frame": {
         "x": 74,
         "y": 770,
@@ -3720,7 +3720,7 @@
         "h": 32
       }
     },
-    "icon-card-right": {
+    "icon-card-left": {
       "frame": {
         "x": 110,
         "y": 770,
@@ -3740,7 +3740,7 @@
         "h": 32
       }
     },
-    "icon-card-forward": {
+    "icon-card-right": {
       "frame": {
         "x": 146,
         "y": 770,
@@ -3760,7 +3760,7 @@
         "h": 32
       }
     },
-    "icon-card-turnLeft": {
+    "icon-card-forward": {
       "frame": {
         "x": 182,
         "y": 770,
@@ -3780,7 +3780,7 @@
         "h": 32
       }
     },
-    "icon-card-turnRight": {
+    "icon-card-turnLeft": {
       "frame": {
         "x": 218,
         "y": 770,
@@ -3800,7 +3800,7 @@
         "h": 32
       }
     },
-    "icon-card-collect": {
+    "icon-card-turnRight": {
       "frame": {
         "x": 254,
         "y": 770,
@@ -3820,7 +3820,7 @@
         "h": 32
       }
     },
-    "icon-card-attack": {
+    "icon-card-collect": {
       "frame": {
         "x": 290,
         "y": 770,
@@ -3840,7 +3840,7 @@
         "h": 32
       }
     },
-    "icon-card-guard": {
+    "icon-card-attack": {
       "frame": {
         "x": 326,
         "y": 770,
@@ -3860,7 +3860,7 @@
         "h": 32
       }
     },
-    "icon-card-heal": {
+    "icon-card-guard": {
       "frame": {
         "x": 362,
         "y": 770,
@@ -3880,7 +3880,7 @@
         "h": 32
       }
     },
-    "icon-card-wait": {
+    "icon-card-heal": {
       "frame": {
         "x": 398,
         "y": 770,
@@ -3900,7 +3900,7 @@
         "h": 32
       }
     },
-    "icon-card-repeat": {
+    "icon-card-wait": {
       "frame": {
         "x": 434,
         "y": 770,
@@ -3920,7 +3920,7 @@
         "h": 32
       }
     },
-    "icon-card-if": {
+    "icon-card-repeat": {
       "frame": {
         "x": 470,
         "y": 770,
@@ -3940,7 +3940,7 @@
         "h": 32
       }
     },
-    "icon-intent-attack": {
+    "icon-card-if": {
       "frame": {
         "x": 506,
         "y": 770,
@@ -3960,7 +3960,7 @@
         "h": 32
       }
     },
-    "icon-intent-guard": {
+    "icon-intent-attack": {
       "frame": {
         "x": 542,
         "y": 770,
@@ -3980,7 +3980,7 @@
         "h": 32
       }
     },
-    "icon-intent-charge": {
+    "icon-intent-guard": {
       "frame": {
         "x": 578,
         "y": 770,
@@ -4000,7 +4000,7 @@
         "h": 32
       }
     },
-    "icon-intent-smash": {
+    "icon-intent-charge": {
       "frame": {
         "x": 614,
         "y": 770,
@@ -4020,7 +4020,7 @@
         "h": 32
       }
     },
-    "icon-intent-heal": {
+    "icon-intent-smash": {
       "frame": {
         "x": 650,
         "y": 770,
@@ -4040,7 +4040,7 @@
         "h": 32
       }
     },
-    "icon-intent-idle": {
+    "icon-intent-heal": {
       "frame": {
         "x": 686,
         "y": 770,
@@ -4060,7 +4060,7 @@
         "h": 32
       }
     },
-    "icon-robi": {
+    "icon-intent-idle": {
       "frame": {
         "x": 722,
         "y": 770,
@@ -4080,7 +4080,7 @@
         "h": 32
       }
     },
-    "icon-goal": {
+    "icon-robi": {
       "frame": {
         "x": 758,
         "y": 770,
@@ -4100,7 +4100,7 @@
         "h": 32
       }
     },
-    "icon-gem": {
+    "icon-goal": {
       "frame": {
         "x": 794,
         "y": 770,
@@ -4120,7 +4120,7 @@
         "h": 32
       }
     },
-    "icon-cell-tree": {
+    "icon-gem": {
       "frame": {
         "x": 830,
         "y": 770,
@@ -4140,7 +4140,7 @@
         "h": 32
       }
     },
-    "icon-cell-water": {
+    "icon-cell-tree": {
       "frame": {
         "x": 866,
         "y": 770,
@@ -4160,7 +4160,7 @@
         "h": 32
       }
     },
-    "icon-cell-rock": {
+    "icon-cell-water": {
       "frame": {
         "x": 902,
         "y": 770,
@@ -4180,7 +4180,7 @@
         "h": 32
       }
     },
-    "icon-star": {
+    "icon-cell-rock": {
       "frame": {
         "x": 938,
         "y": 770,
@@ -4200,7 +4200,7 @@
         "h": 32
       }
     },
-    "icon-star-empty": {
+    "icon-star": {
       "frame": {
         "x": 974,
         "y": 770,
@@ -4220,7 +4220,7 @@
         "h": 32
       }
     },
-    "icon-coin": {
+    "icon-star-empty": {
       "frame": {
         "x": 1010,
         "y": 770,
@@ -4240,7 +4240,7 @@
         "h": 32
       }
     },
-    "icon-heart": {
+    "icon-coin": {
       "frame": {
         "x": 1046,
         "y": 770,
@@ -4260,7 +4260,7 @@
         "h": 32
       }
     },
-    "icon-energy": {
+    "icon-heart": {
       "frame": {
         "x": 1082,
         "y": 770,
@@ -4280,7 +4280,7 @@
         "h": 32
       }
     },
-    "icon-xp": {
+    "icon-energy": {
       "frame": {
         "x": 1118,
         "y": 770,
@@ -4300,7 +4300,7 @@
         "h": 32
       }
     },
-    "icon-bag": {
+    "icon-xp": {
       "frame": {
         "x": 1154,
         "y": 770,
@@ -4320,7 +4320,7 @@
         "h": 32
       }
     },
-    "icon-book": {
+    "icon-bag": {
       "frame": {
         "x": 1190,
         "y": 770,
@@ -4340,7 +4340,7 @@
         "h": 32
       }
     },
-    "icon-gear": {
+    "icon-book": {
       "frame": {
         "x": 1226,
         "y": 770,
@@ -4360,7 +4360,7 @@
         "h": 32
       }
     },
-    "icon-lock": {
+    "icon-gear": {
       "frame": {
         "x": 1262,
         "y": 770,
@@ -4380,7 +4380,7 @@
         "h": 32
       }
     },
-    "icon-check": {
+    "icon-lock": {
       "frame": {
         "x": 1298,
         "y": 770,
@@ -4400,7 +4400,7 @@
         "h": 32
       }
     },
-    "icon-hint": {
+    "icon-check": {
       "frame": {
         "x": 1334,
         "y": 770,
@@ -4420,7 +4420,7 @@
         "h": 32
       }
     },
-    "icon-badge-1": {
+    "icon-hint": {
       "frame": {
         "x": 1370,
         "y": 770,
@@ -4440,7 +4440,7 @@
         "h": 32
       }
     },
-    "icon-badge-2": {
+    "icon-badge-1": {
       "frame": {
         "x": 1406,
         "y": 770,
@@ -4460,7 +4460,7 @@
         "h": 32
       }
     },
-    "icon-badge-3": {
+    "icon-badge-2": {
       "frame": {
         "x": 1442,
         "y": 770,
@@ -4480,7 +4480,7 @@
         "h": 32
       }
     },
-    "icon-badge-4": {
+    "icon-badge-3": {
       "frame": {
         "x": 1478,
         "y": 770,
@@ -4500,7 +4500,7 @@
         "h": 32
       }
     },
-    "icon-badge-5": {
+    "icon-badge-4": {
       "frame": {
         "x": 1514,
         "y": 770,
@@ -4520,7 +4520,7 @@
         "h": 32
       }
     },
-    "icon-badge-6": {
+    "icon-badge-5": {
       "frame": {
         "x": 1550,
         "y": 770,
@@ -4540,7 +4540,7 @@
         "h": 32
       }
     },
-    "icon-badge-7": {
+    "icon-badge-6": {
       "frame": {
         "x": 1586,
         "y": 770,
@@ -4560,7 +4560,7 @@
         "h": 32
       }
     },
-    "icon-badge-8": {
+    "icon-badge-7": {
       "frame": {
         "x": 1622,
         "y": 770,
@@ -4580,9 +4580,29 @@
         "h": 32
       }
     },
-    "fx-sparkle": {
+    "icon-badge-8": {
       "frame": {
         "x": 1658,
+        "y": 770,
+        "w": 32,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      }
+    },
+    "fx-sparkle": {
+      "frame": {
+        "x": 1694,
         "y": 770,
         "w": 64,
         "h": 16
@@ -4602,7 +4622,7 @@
     },
     "ui-bar": {
       "frame": {
-        "x": 1726,
+        "x": 1762,
         "y": 770,
         "w": 48,
         "h": 16

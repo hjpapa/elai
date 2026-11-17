@@ -353,6 +353,11 @@
       "density": 2
     },
     {
+      "key": "icon-card-followWave",
+      "file": "icon/icon-card-followWave.png",
+      "density": 2
+    },
+    {
       "key": "tile-castle",
       "file": "tile/tile-castle.png",
       "density": 2
