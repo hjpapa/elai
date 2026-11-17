@@ -378,6 +378,11 @@
       "density": 2
     },
     {
+      "key": "icon-cake",
+      "file": "icon/icon-cake.png",
+      "density": 2
+    },
+    {
       "key": "tile-castle",
       "file": "tile/tile-castle.png",
       "density": 2
