@@ -1,5 +1,7 @@
+import { BAKERY_ROUNDS } from '../../data/minigames/bakery';
 import { LIGHT_ROUNDS } from '../../data/minigames/light';
 import { ROUTE_ROUNDS } from '../../data/minigames/route';
+import { cakePixels } from '../../minigames/bakery/cakeArt';
 import { shortestPath } from '../../minigames/route/routeEnv';
 import type { AssetSpec } from '../assets';
 
@@ -299,6 +301,45 @@ export function drawRoomProp(ctx: CanvasRenderingContext2D, spec: AssetSpec, f: 
       oval(ctx, m - 2, h - 17, 2.5, 2, '#8dc567');
       oval(ctx, m + 2.5, h - 13, 2, 1.5, '#8dc567');
       return true;
+    // C19 마을 빵집
+    case 'prop-bakery':
+      rect(ctx, 4, h - 26, w - 8, 24, '#fff4d2');
+      poly(ctx, [[1, h - 25], [m, h - 44], [w - 1, h - 25]], '#b94751');
+      for (let i = 0; i < 6; i++) rect(ctx, 4 + i * 4, h - 26, 2, 3, i % 2 ? '#ffffff' : '#ed7463');
+      rect(ctx, m - 4, h - 13, 8, 11, f === 1 ? '#ffe59a' : '#86513e');
+      oval(ctx, m, h - 19, 3, 2, '#f5b1b0');
+      rect(ctx, m - 3, h - 18, 6, 2, '#fff4d2');
+      rect(ctx, 6, h - 21, 5, 5, f === 1 ? '#ffe59a' : '#478bc7');
+      rect(ctx, w - 11, h - 21, 5, 5, f === 1 ? '#ffe59a' : '#478bc7');
+      return true;
+    case 'prop-oven':
+      rect(ctx, 3, h - 40, w - 6, 38, '#bd7959');
+      rect(ctx, 5, h - 38, w - 10, 3, '#86513e');
+      oval(ctx, m, h - 22, 8, 8, '#4e3e43');
+      oval(ctx, m, h - 22, 6, 6, f === 1 ? '#ffe59a' : '#e7b64f');
+      rect(ctx, 6, h - 34, 9, 6, '#ffffff');
+      rect(ctx, 7, h - 32, 7, 1, '#8c9bab');
+      rect(ctx, 7, h - 30, 5, 1, '#8c9bab');
+      return true;
+    case 'prop-cake-stand': {
+      rect(ctx, m - 1, h - 7, 2, 5, '#86513e');
+      rect(ctx, m - 4, h - 3, 8, 2, '#86513e');
+      // 1~6프레임: 그 판의 (마지막 손님) 케이크를 접시째 그려요. 0프레임은 빈 접시예요.
+      const r = f > 0 ? BAKERY_ROUNDS[f - 1] : undefined;
+      if (r) {
+        const px = cakePixels(r.customers[r.customers.length - 1].want);
+        px.forEach((row, y) => row.forEach((c, x) => c && rect(ctx, x, 2 + y, 1, 1, c)));
+      } else {
+        rect(ctx, 1, h - 10, w - 2, 1, '#c7d6dc');
+        rect(ctx, 2, h - 9, w - 4, 1, '#8c9bab');
+      }
+      return true;
+    }
+    case 'prop-bread-shelf':
+      rect(ctx, 2, h - 26, w - 4, 24, '#a76c46');
+      rect(ctx, 2, h - 14, w - 4, 2, '#86513e');
+      for (const [x, y] of [[6, h - 20], [14, h - 20], [22, h - 20], [9, h - 8], [19, h - 8]] as Pt[]) oval(ctx, x, y, 3.5, 2.5, '#e3ab80');
+      return true;
     default:
       if (!key.startsWith('prop-doll-')) return false;
       drawDoll(ctx, key, w, h, hex(color));
@@ -413,6 +454,12 @@ export function drawRoomIcon(ctx: CanvasRenderingContext2D, spec: AssetSpec): bo
     rect(ctx, 11, 3, 2, 7, '#ffffff');
     rect(ctx, 6, 8, 7, 2, '#ffffff');
     poly(ctx, [[2, 9], [6, 5.5], [6, 12.5]], '#ffffff');
+    return true;
+  }
+  // C19 주문서 빵집: 작은 케이크(딸기 하트 케이크와 같은 그림)
+  if (key === 'icon-cake') {
+    const px = cakePixels({ flavor: 'strawberry', shape: 'round', topping: 'berry' });
+    px.forEach((row, y) => row.forEach((c, x) => c && rect(ctx, x, y, 1, 1, c)));
     return true;
   }
   // C18 코딩 길찾기: 물결 따라가기 카드(물결 고리와 작은 숫자 쪽 화살표)

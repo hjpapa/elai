@@ -2584,3 +2584,147 @@ h3 {
     transition-duration: 0.01s !important;
   }
 }
+
+/* ── 주문서 빵집(마을 빵집, 2.5D 4단계) ── */
+/* 케이크 그림: 16×16 픽셀 격자(손님 그림·구운 케이크·진열대 같은 그림) */
+.cake {
+  display: grid;
+  margin: 0 auto;
+}
+.cake span {
+  aspect-ratio: 1;
+}
+.cake.empty {
+  border: 3px dashed rgba(199, 214, 220, 0.45);
+  border-radius: 50%;
+}
+.cake-figure {
+  margin: 0;
+  text-align: center;
+}
+.cake-figure figcaption {
+  margin-top: 4px;
+  font-size: 14px;
+  font-weight: 700;
+}
+.bakery-customer,
+.bakery-oven {
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 3px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel2);
+  text-align: center;
+}
+.bakery-customer-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+.bakery-customer-head small {
+  color: var(--muted);
+}
+.bakery-say {
+  margin: 6px 0 8px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  background: #fff4d2;
+  color: #2a2520;
+  word-break: keep-all;
+}
+.bakery-oven-head {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 6px;
+  font-weight: 800;
+}
+.bakery-oven.baking {
+  animation: oven-glow 0.6s ease-in-out;
+}
+@keyframes oven-glow {
+  50% {
+    box-shadow: 0 0 18px #ffe59a;
+  }
+}
+.bakery-notes {
+  margin: 8px 0 0;
+  padding-left: 0;
+  list-style: none;
+  text-align: left;
+  font-size: 14px;
+  word-break: keep-all;
+}
+.bakery-notes li {
+  margin-top: 4px;
+  padding: 2px 8px;
+  border-left: 4px solid var(--line);
+  border-radius: 4px;
+}
+.bakery-notes li.privacy {
+  border-color: #ed7463;
+}
+.bakery-notes li.guess {
+  border-color: #e7b64f;
+}
+.bakery-notes li.diff {
+  border-color: #478bc7;
+}
+.bakery-order-title {
+  margin: 0 0 6px;
+}
+.bakery-order.locked {
+  pointer-events: none;
+  opacity: 0.75;
+}
+.order-slot.mark-diff {
+  border-color: #478bc7;
+}
+.order-slot.mark-guess {
+  border-color: #e7b64f;
+}
+.order-slot.mark-privacy {
+  border-color: #ed7463;
+}
+/* 애매한 카드는 점선, 개인정보 카드는 붉은 테두리(그래도 고를 수는 있어요) */
+.chip.vague {
+  border-style: dashed;
+}
+.chip.privacy {
+  border-color: #b94751;
+}
+.bakery-shelf {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.bakery-shelf .cake-frame {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  width: 84px;
+  min-height: 98px;
+  padding: 6px 4px;
+  border: 3px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel2);
+}
+.bakery-shelf .cake-frame:not(.got) .cake {
+  opacity: 0.55;
+}
+.bakery-result {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin: 8px 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .bakery-oven.baking {
+    animation: none;
+  }
+}

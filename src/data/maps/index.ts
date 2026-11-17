@@ -1,4 +1,5 @@
 import type { MapDef } from '../schema';
+import { bakery } from './bakery';
 import { cave } from './cave';
 import { cavedeep } from './cavedeep';
 import { desert } from './desert';
@@ -21,4 +22,4 @@ import { maze } from './maze';
 import { village } from './village';
 import { workroom } from './workroom';
 
-export const MAPS: Record<string, MapDef> = { village, workroom, parcel, lightshop, maproom, forest, maze, cave, cavedeep, desert, desertmaze, harbor, lighthouse, lab, labdeep, observatory, starmaze, workshop, bookmaze, castle, mirrormaze };
+export const MAPS: Record<string, MapDef> = { village, workroom, parcel, lightshop, maproom, bakery, forest, maze, cave, cavedeep, desert, desertmaze, harbor, lighthouse, lab, labdeep, observatory, starmaze, workshop, bookmaze, castle, mirrormaze };

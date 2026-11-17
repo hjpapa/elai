@@ -623,6 +623,50 @@ export interface LightRound {
   hint: string;
 }
 
+/** 주문서 빵집의 주문서 칸: 맛 · 모양 · 올릴 것 · 글씨 판 */
+export type CakeSlotId = 'flavor' | 'shape' | 'topping' | 'message';
+
+/** 주문서 카드 하나. value가 그 칸의 값을 정해요(애매한 카드·개인정보 카드는 값이 없어요). */
+export interface BakeryCard {
+  id: string;
+  slot: CakeSlotId;
+  text: string;
+  value?: string;
+  /** '예쁘게'처럼 애매한 말이라 오븐이 마음대로 골라요 */
+  vague?: boolean;
+  /** 이름·반·주소 같은 개인정보라 오븐이 굽지 않아요 */
+  privacy?: boolean;
+}
+
+/** 케이크 한 개(칸마다 정해진 값). 빈 칸이나 애매한 카드는 오븐이 마음대로 골라요. */
+export interface CakeOrder {
+  flavor: string;
+  shape: string;
+  topping?: string;
+  message?: string;
+}
+
+/**
+ * 주문서 빵집 한 판(마을 빵집, 7장 프롬프트 연습). 손님 그림과 같은 케이크가 나오게 주문서 칸마다 카드를 골라요.
+ * 주문서 오븐은 실제 AI가 아니라 카드대로만 굽는 작은 모델이에요. 같은 주문서면 늘 같은 케이크예요(운·코인 없음).
+ */
+export interface BakeryRound {
+  id: string;
+  title: string;
+  /** 이 판의 주문서 칸(차례대로) */
+  slots: CakeSlotId[];
+  /** 칸마다 고를 수 있는 카드 id(BAKERY_CARDS) */
+  cards: Partial<Record<CakeSlotId, string[]>>;
+  /** 손님(차례대로). 여러 명이면 주문서를 이어서 고쳐 가며 모두에게 구워 줘요. */
+  customers: { who: string; say: string; want: CakeOrder }[];
+  /** 처음 주문서(애매한 주문이나 지난 손님 주문을 고쳐 묻기) */
+  initial?: Partial<Record<CakeSlotId, string>>;
+  unlock?: MinigameUnlock;
+  lockedText?: string;
+  intro: string;
+  hint: string;
+}
+
 /**
  * 코딩 길찾기 한 판(마을 지도방). 미로에서 로봇을 깃발까지 데려가요.
  * 깃발에서 물결을 퍼뜨리면 칸마다 '깃발까지 몇 걸음'(물결 숫자)이 적혀요(6장 물결 탐색).
