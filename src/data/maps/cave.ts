@@ -18,7 +18,7 @@ export const cave: MapDef = {
   objects: [
     { id: 'chest-rockledge', type: 'chest', at: { x: 10, y: 2 }, reward: { coins: 8, items: [{ id: 'jelly', qty: 1 }] } },
     { id: 'sign-rockledge', type: 'sign', at: { x: 8, y: 2 }, text: '계단을 하나씩 올라왔어요.\n같은 걸음을 되풀이했어요.' },
-    { id: 'explorer', type: 'npc', at: { x: 8, y: 8 }, npc: 'explorer', missions: ['ch2-p1-m1', 'ch2-p1-m2', 'ch2-p2-m1', 'ch2-p2-m2', 'ch2-p2-m3', 'ch2-p3-m1', 'ch2-p3-m2'], talk: ['동굴의 무늬를 살펴봐요.\n같은 모양이 되풀이돼요.', '반복은 같은 일을 되풀이해요.\n명령 묶음을 짧게 적어 봐요.'] },
+    { id: 'explorer', type: 'npc', at: { x: 8, y: 8 }, npc: 'explorer', missions: ['ch2-p1-m1', 'ch2-p1-m2', 'ch2-p2-m1', 'ch2-p2-m2', 'ch2-p2-m3', 'ch2-p3-m1', 'ch2-p3-m2'], talk: ['동굴의 무늬를 살펴봐요.\n같은 모양이 되풀이돼요.', '반복은 같은 일을 되풀이해요.\n명령 묶음을 짧게 적어 봐요.', '제 장화 소리를 들어 봐요.\n쿵짝, 쿵짝, 무늬가 들리죠?'] },
     { id: 'echo-a', type: 'mob', at: { x: 10, y: 6 }, mob: 'echoBat', wander: 1 },
     { id: 'echo-b', type: 'mob', at: { x: 13, y: 12 }, mob: 'echoBat', wander: 1 },
     { id: 'chest-cave', type: 'chest', at: { x: 2, y: 4 }, reward: { xp: 8, coins: 15, items: [{ id: 'jelly', qty: 1 }] } },

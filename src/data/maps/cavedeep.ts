@@ -16,8 +16,8 @@ const objects: MapObject[] = [
   { id: 'echo-room-3', type: 'mob', at: { x: 18, y: 5 }, mob: 'echoBat', wander: 1 },
   { id: 'chest-cloak', type: 'chest', at: { x: 7, y: 5 }, reward: { xp: 8, items: [{ id: 'cloak', qty: 1 }] } },
   { id: 'chest-jelly', type: 'chest', at: { x: 21, y: 5 }, reward: { xp: 8, coins: 20, items: [{ id: 'jelly', qty: 2 }] } },
-  { id: 'batking', type: 'npc', at: { x: 27, y: 2 }, npc: 'batKing', missions: ['ch2-boss-m1', 'ch2-boss-m2', 'ch2-boss-m3'], when: { notFlag: 'batking-fixed' } },
-  { id: 'batking-fixed', type: 'npc', at: { x: 27, y: 2 }, npc: 'batKing', sprite: 'boss-bat-king', frame: 3, missions: ['ch2-boss-m1', 'ch2-boss-m2', 'ch2-boss-m3'], talk: ['메아리가 다시 고르게 울려요.\n마을에도 수정빛이 켜졌대요.'], when: { flag: 'batking-fixed' } },
+  { id: 'batking', type: 'npc', at: { x: 27, y: 2 }, npc: 'batKing', missions: ['ch2-boss-m1', 'ch2-boss-m2', 'ch2-boss-m3'], talk: ['메아리가 한 소절씩 밀려와요.', '제 노래가 어디서 바뀌었을까요?', '한 번만 듣는 것보다 흥얼거려 봐요.'], when: { notFlag: 'batking-fixed' } },
+  { id: 'batking-fixed', type: 'npc', at: { x: 27, y: 2 }, npc: 'batKing', sprite: 'boss-bat-king', frame: 3, missions: ['ch2-boss-m1', 'ch2-boss-m2', 'ch2-boss-m3'], talk: ['메아리가 다시 고르게 울려요.\n마을에도 수정빛이 켜졌대요.', '이제 긴 노래도 기억하겠어요.\n되풀이되는 후렴이 있거든요!'], when: { flag: 'batking-fixed' } },
   { id: 'to-village', type: 'portal', at: { x: 28, y: 3 }, to: { map: 'village', at: { x: 12, y: 14 } }, label: '코딩 마을', when: { flag: 'ch2-clear' } },
 ];
 // 상자는 통로 옆 작은 홈에 두어 유일한 길을 막지 않아요.
