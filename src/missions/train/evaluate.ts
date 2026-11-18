@@ -35,11 +35,22 @@ export function evaluateTraining(data: TrainData, model: ClassificationModel | n
   return { rows, accuracy, success: !!matchingSnapshot && correctLabels && rows.length > 0 && (model?.samples.length ?? 0) >= data.minExamples && accuracy >= data.threshold };
 }
 
-export interface ComparisonTrial { count: number; accuracy: number }
-export function evaluateComparison(data: TrainData, trials: ComparisonTrial[], answer: number | null): boolean {
+export interface ComparisonResult {
+  id: string;
+  model: ClassificationModel;
+  report: TrainingReport;
+}
+
+export function evaluateComparison(data: TrainData, results: ComparisonResult[], answer: number | null): boolean {
   const rule = data.comparison;
   if (!rule) return true;
-  const valid = trials.filter(t => Number.isInteger(t.count) && t.count > 0 && Number.isFinite(t.accuracy) && t.accuracy >= 0 && t.accuracy <= 1);
-  const small = valid.find(t => t.count === rule.smallCount), large = valid.find(t => t.count === data.examples.length);
-  return !!small && !!large && large.accuracy > small.accuracy && answer === rule.answer;
+  if (answer !== rule.answer) return false;
+  return rule.trials.every(trial => {
+    const result = results.find(r => r.id === trial.id);
+    if (!result || !Number.isFinite(result.report.accuracy)) return false;
+    if (result.model.samples.length !== trial.examples.length) return false;
+    const correct = data.tests.filter(sample => predictLabel(result.model.samples, sample.features, data.k) === sample.label);
+    if (result.report.accuracy !== correct.length / data.tests.length) return false;
+    return trial.id !== rule.finalTrial || result.report.success && result.report.accuracy >= data.threshold;
+  });
 }

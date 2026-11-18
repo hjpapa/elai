@@ -18,8 +18,8 @@ export const observatory: MapDef={
   {id:'telescope',type:'prop',at:{x:9,y:7},sprite:'prop-telescope',solid:true},
   {id:'lamp',type:'prop',at:{x:4,y:5},sprite:'prop-starlamp',frame:1,solid:true},
   {id:'sign-start',type:'sign',at:{x:3,y:13},text:'별지기 온유와 기록을 비교해요.\n예측 모듈을 얻고 미궁으로 가요.'},
-  {id:'sign-door',type:'sign',at:{x:15,y:2},text:'적은 기록과 많은 기록을 비교하면\n별자리 미궁 문이 열려요.'},
+  {id:'sign-door',type:'sign',at:{x:15,y:2},text:'예시 수를 바꿔 비교하면\n별자리 미궁 문이 열려요.'},
   {id:'to-village',type:'portal',at:{x:1,y:13},to:{map:'village',at:{x:13,y:19}},label:'코딩 마을'},
-  {id:'to-starmaze',type:'portal',at:{x:16,y:2},to:{map:'starmaze',at:{x:2,y:10}},label:'별자리 미궁',open:{mission:'ch6-p3-m1'},lockedText:'두 예측 결과를 비교하면\n미궁 문이 열려요.',sprite:'prop-gate'},
+  {id:'to-starmaze',type:'portal',at:{x:16,y:2},to:{map:'starmaze',at:{x:2,y:10}},label:'별자리 미궁',open:{mission:'ch6-p3-m1'},lockedText:'정확도 막대를 비교하면\n미궁 문이 열려요.',sprite:'prop-gate'},
  ],
 };

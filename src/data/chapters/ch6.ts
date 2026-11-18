@@ -221,7 +221,7 @@ export const ch6: Chapter = {
       kind: 'part',
       title: '데이터가 적으면? 많으면?',
       summary: '데이터 양을 바꿔 가며 예측 정확도를 비교해요.',
-      activity: '같은 시험 자료에 학습 예시 2개와 8개를 적용해 정확도 막대를 비교해요.',
+      activity: '같은 시험 자료에 학습 예시 수와 이름표를 바꾸어 정확도 막대를 비교해요.',
       missions: [
   {
     "id": "ch6-p3-m1",
@@ -233,7 +233,7 @@ export const ch6: Chapter = {
       "robiPart": "predictModule"
     },
     "data": {
-      "intro": "같은 시험에 예시 수만 바꿔 봐요.\n두 결과의 맞힌 비율을 비교해요.",
+      "intro": "구름·바람·습도 기록으로 비를 예측해요.\n예시 수만 바꾸며 시험해 봐요.",
       "features": [
         "구름 양",
         "바람 세기",
@@ -251,132 +251,279 @@ export const ch6: Chapter = {
       ],
       "examples": [
         {
-          "id": "weather1",
-          "features": [
-            1,
-            1,
-            2
-          ],
-          "label": "sunny"
-        },
-        {
-          "id": "weather2",
-          "features": [
-            2,
-            2,
-            1
-          ],
-          "label": "sunny"
-        },
-        {
-          "id": "weather3",
-          "features": [
-            1,
-            3,
-            2
-          ],
-          "label": "sunny"
-        },
-        {
-          "id": "weather4",
+          "id": "sky1",
           "features": [
             3,
-            1,
+            4,
+            4
+          ],
+          "label": "sunny"
+        },
+        {
+          "id": "sky2",
+          "features": [
+            9,
+            5,
+            6
+          ],
+          "label": "rain"
+        },
+        {
+          "id": "sky3",
+          "features": [
+            3,
+            3,
             3
           ],
           "label": "sunny"
         },
         {
-          "id": "weather5",
+          "id": "sky4",
           "features": [
-            7,
-            7,
+            2,
+            6,
             8
           ],
           "label": "rain"
         },
         {
-          "id": "weather6",
+          "id": "sky5",
           "features": [
             8,
-            8,
+            3,
+            3
+          ],
+          "label": "sunny"
+        },
+        {
+          "id": "sky6",
+          "features": [
+            7,
+            6,
+            8
+          ],
+          "label": "rain"
+        },
+        {
+          "id": "sky7",
+          "features": [
+            7,
+            3,
+            3
+          ],
+          "label": "sunny"
+        },
+        {
+          "id": "sky8",
+          "features": [
+            7,
+            4,
+            6
+          ],
+          "label": "rain"
+        },
+        {
+          "id": "sky9",
+          "features": [
+            9,
+            3,
+            2
+          ],
+          "label": "sunny"
+        },
+        {
+          "id": "sky10",
+          "features": [
+            3,
+            4,
             7
           ],
           "label": "rain"
         },
         {
-          "id": "weather7",
+          "id": "sky11",
           "features": [
-            7,
-            9,
-            8
+            8,
+            3,
+            2
           ],
-          "label": "rain"
+          "label": "sunny"
         },
         {
-          "id": "weather8",
+          "id": "sky12",
           "features": [
-            9,
-            7,
-            9
+            2,
+            4,
+            6
           ],
           "label": "rain"
         }
       ],
       "tests": [
         {
-          "id": "forecast1",
-          "features": [
-            2,
-            1,
-            2
-          ],
-          "label": "sunny"
-        },
-        {
-          "id": "forecast2",
+          "id": "skyTest1",
           "features": [
             2,
             3,
-            2
+            4
           ],
           "label": "sunny"
         },
         {
-          "id": "forecast3",
+          "id": "skyTest2",
           "features": [
-            8,
-            7,
+            9,
+            6,
             8
           ],
           "label": "rain"
         },
         {
-          "id": "forecast4",
+          "id": "skyTest3",
+          "features": [
+            9,
+            4,
+            3
+          ],
+          "label": "sunny"
+        },
+        {
+          "id": "skyTest4",
+          "features": [
+            3,
+            5,
+            7
+          ],
+          "label": "rain"
+        },
+        {
+          "id": "skyTest5",
+          "features": [
+            2,
+            2,
+            2
+          ],
+          "label": "sunny"
+        },
+        {
+          "id": "skyTest6",
           "features": [
             8,
-            9,
-            8
+            5,
+            7
+          ],
+          "label": "rain"
+        },
+        {
+          "id": "skyTest7",
+          "features": [
+            8,
+            2,
+            2
+          ],
+          "label": "sunny"
+        },
+        {
+          "id": "skyTest8",
+          "features": [
+            1,
+            6,
+            6
           ],
           "label": "rain"
         }
       ],
-      "minExamples": 6,
+      "minExamples": 12,
       "k": 3,
       "threshold": 1,
       "presetLabels": true,
       "saveModel": false,
-      "hint": "맑음과 비의 기록을 고르게 골라요.\n배운 뒤 시험 결과를 살펴봐요.",
-      "explain": "이번에는 고른 예시가 도움이 됐어요.\n많아도 틀린 자료라면 잘못 배워요.",
+      "hint": "맑음과 비는 늘 같은 수예요.\n막대가 어떻게 달라지는지 봐요.",
+      "explain": "여러 상황을 고루 보면 더 잘 맞혀요.\n이름표가 틀리면 많아도 나빠져요.",
       "comparison": {
-        "smallCount": 2,
-        "question": "이번 시험에서 무엇을 알 수 있나요?",
-        "choices": [
-          "예시가 많으면 언제나 완벽해요",
-          "여러 종류를 고르게 모으는 것이 좋아요",
-          "예측은 절대 틀리지 않아요"
+        "trials": [
+          {
+            "id": "amount2",
+            "label": "예시 2개",
+            "examples": [
+              "sky1",
+              "sky2"
+            ]
+          },
+          {
+            "id": "amount4",
+            "label": "예시 4개",
+            "examples": [
+              "sky1",
+              "sky2",
+              "sky3",
+              "sky4"
+            ]
+          },
+          {
+            "id": "amount8",
+            "label": "예시 8개",
+            "examples": [
+              "sky1",
+              "sky2",
+              "sky3",
+              "sky4",
+              "sky5",
+              "sky6",
+              "sky7",
+              "sky8"
+            ]
+          },
+          {
+            "id": "amount12",
+            "label": "예시 12개",
+            "examples": [
+              "sky1",
+              "sky2",
+              "sky3",
+              "sky4",
+              "sky5",
+              "sky6",
+              "sky7",
+              "sky8",
+              "sky9",
+              "sky10",
+              "sky11",
+              "sky12"
+            ]
+          },
+          {
+            "id": "noisy12",
+            "label": "12개, 이름표 3개 틀림",
+            "examples": [
+              "sky1",
+              "sky2",
+              "sky3",
+              "sky4",
+              "sky5",
+              "sky6",
+              "sky7",
+              "sky8",
+              "sky9",
+              "sky10",
+              "sky11",
+              "sky12"
+            ],
+            "wrongLabels": {
+              "sky4": "sunny",
+              "sky7": "rain",
+              "sky12": "sunny"
+            }
+          }
         ],
-        "answer": 1
+        "finalTrial": "amount12",
+        "question": "이번 실험에서 알 수 있는 것은?",
+        "choices": [
+          "고른 자료가 늘수록 더 잘 맞혔어요",
+          "예시가 많으면 언제나 100%예요",
+          "이름표가 틀려도 많기만 하면 돼요"
+        ],
+        "answer": 0
       }
     }
   }

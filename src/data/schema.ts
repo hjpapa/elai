@@ -194,8 +194,14 @@ export interface ClassifyData {
 
 export interface TrainingSample { features: number[]; label: string }
 export interface ClassificationModel { samples: TrainingSample[]; k: number }
+export interface TrainTrial {
+  id: string;
+  label: string;
+  examples: string[];
+  wrongLabels?: Record<string, string>;
+}
 export interface TrainData {
-  comparison?: { smallCount: number; question: string; choices: string[]; answer: number };
+  comparison?: { trials: TrainTrial[]; finalTrial: string; question: string; choices: string[]; answer: number };
   presetLabels?: boolean;
   intro: string;
   features: string[];

@@ -340,7 +340,7 @@ export const ch5: Chapter = {
       "robiPart": "learningChip"
     },
     "data": {
-      "intro": "예시에 이름표를 붙여 학습해요.\n처음 보는 표본으로 시험해 봐요.",
+      "intro": "먼저 친구 예시만 가르쳐요.\n두 종류를 가르친 뒤와 비교해요.",
       "features": [
         "뛰는 높이",
         "점무늬 수"
@@ -460,7 +460,43 @@ export const ch5: Chapter = {
       "threshold": 1,
       "saveModel": true,
       "hint": "1~3은 친구, 7~9는 장난꾸러기예요.\n두 종류에서 고르게 예시를 골라요.",
-      "explain": "가까운 예시 세 개로 이름표를 정해요.\n학습한 모델을 전투에서 써 봐요."
+      "explain": "가까운 예시 세 개로 이름표를 정해요.\n학습한 모델을 전투에서 써 봐요.",
+      "comparison": {
+        "trials": [
+          {
+            "id": "friendOnly",
+            "label": "친구 예시만",
+            "examples": [
+              "sample1",
+              "sample2",
+              "sample3",
+              "sample4"
+            ]
+          },
+          {
+            "id": "both",
+            "label": "두 종류 모두",
+            "examples": [
+              "sample1",
+              "sample2",
+              "sample3",
+              "sample4",
+              "sample5",
+              "sample6",
+              "sample7",
+              "sample8"
+            ]
+          }
+        ],
+        "finalTrial": "both",
+        "question": "친구 예시만 배운 모델은 왜 틀렸을까요?",
+        "choices": [
+          "장난꾸러기를 본 적이 없어서요",
+          "시험 문제가 너무 적어서요",
+          "예시에 숫자가 있어서요"
+        ],
+        "answer": 0
+      }
     }
   }
 ],

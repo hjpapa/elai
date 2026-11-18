@@ -32,17 +32,21 @@ describe('가까운 이웃으로 분류 학습',()=>{
   });
 });
 
-it('같은 시험 자료로 소량과 충분한 예시를 모두 시험하고 비교해야 해요',()=>{
- const compare={...data,comparison:{smallCount:2,question:'어느 결과가 더 잘 맞았나요?',choices:['소량','전체'],answer:1}};
- const trials=[{count:2,accuracy:.5},{count:6,accuracy:1}];
- expect(evaluateComparison(compare,trials,1)).toBe(true);expect(evaluateComparison(compare,trials,0)).toBe(false);
- expect(evaluateComparison(compare,[trials[1]],1)).toBe(false);expect(evaluateComparison(compare,[trials[0]],1)).toBe(false);
- expect(evaluateComparison(compare,[trials[0],{count:6,accuracy:NaN}],1)).toBe(false);
- expect(evaluateComparison(compare,[{count:2,accuracy:1},trials[1]],1)).toBe(false);
-});
-
-it('비교 미션은 최소 표본만 채워도 전체 표본 비교를 생략할 수 없어요',()=>{
- const compare={...data,minExamples:4,comparison:{smallCount:2,question:'',choices:['전체'],answer:0}};
- expect(evaluateComparison(compare,[{count:2,accuracy:.5},{count:4,accuracy:1}],0)).toBe(false);
- expect(evaluateComparison(compare,[{count:2,accuracy:.5},{count:6,accuracy:1}],0)).toBe(true);
+it('두 시험을 모두 치르고 최종 모델이 합격한 뒤 맞는 해석을 골라야 해요',()=>{
+ const rule={trials:[{id:'small',label:'작은 묶음',examples:['a','b']},{id:'full',label:'전체',examples:data.examples.map(e=>e.id)}],finalTrial:'full',question:'무엇이 달라졌나요?',choices:['소량','전체'],answer:1};
+ const compare={...data,comparison:rule};
+ const results=rule.trials.map(t=>{
+   const chosen=Object.fromEntries(t.examples.map(id=>[id,selected[id]]));
+   const model=trainSelection(data,chosen)!;
+   return {id:t.id,model,report:evaluateTraining(compare,model,chosen)};
+ });
+ expect(results.map(r=>r.report.accuracy)).toEqual([.5,1]);
+ expect(evaluateComparison(compare,results,1)).toBe(true);
+ expect(evaluateComparison(compare,results,0)).toBe(false);
+ for(const result of results)expect(evaluateComparison(compare,[result],1)).toBe(false);
+ const first=results[0];
+ expect(evaluateComparison(compare,[{...first,report:{...first.report,accuracy:1}},results[1]],1)).toBe(false);
+ const full=results[1];
+ for(const accuracy of [NaN,0.5])expect(evaluateComparison(compare,[results[0],{...full,report:{...full.report,accuracy}}],1)).toBe(false);
+ expect(evaluateComparison({...compare,minExamples:4},[results[0],{...full,model:{...full.model,samples:full.model.samples.slice(0,4)}}],1)).toBe(false);
 });
