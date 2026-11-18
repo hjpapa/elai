@@ -6,6 +6,7 @@ import { MAPS } from '../data/maps';
 import { classPath, currentChapter, startsDirectly } from '../game/rpg/unlock';
 import { friendlyError, getSupabase } from '../services/supabase';
 import { append, clear, h } from '../ui/dom';
+import { MINIGAME_CSV_HEADER, minigameCsvCells, minigameTable } from './minigames';
 
 interface ClassRow {
   id: string;
@@ -111,14 +112,14 @@ async function renderClass(c: ClassRow): Promise<void> {
   const [{ data: prog }, { data: saves }] = ids.length
     ? await Promise.all([
         sb!.from('elai_progress').select('student_id,mission_id,stars,attempts,hints_used,completed_at').in('student_id', ids),
-        sb!.from('elai_saves').select('student_id,updated_at,level:data->level,location:data->location').in('student_id', ids),
+        sb!.from('elai_saves').select('student_id,updated_at,level:data->level,location:data->location,minigames:data->minigames').in('student_id', ids),
       ])
     : [{ data: [] }, { data: [] }];
   const progress = new Map<string, { stars: number; attempts: number; hints_used: number; completed_at: string | null }>();
   for (const p of (prog ?? []) as { student_id: string; mission_id: string; stars: number; attempts: number; hints_used: number; completed_at: string | null }[]) {
     progress.set(`${p.student_id}/${p.mission_id}`, p);
   }
-  const saveOf = new Map(((saves ?? []) as { student_id: string; updated_at: string; level: number; location?: { map?: string } | null }[]).map((x) => [x.student_id, x]));
+  const saveOf = new Map(((saves ?? []) as { student_id: string; updated_at: string; level: number; location?: { map?: string } | null; minigames?: unknown }[]).map((x) => [x.student_id, x]));
   /** 학생이 저장한 위치의 장(게임 목표 안내와 같은 규칙으로 "지금" 장을 정해요) */
   const hereOf = (sid: string) => MAPS[saveOf.get(sid)?.location?.map ?? '']?.chapter;
 
@@ -239,10 +240,10 @@ async function renderClass(c: ClassRow): Promise<void> {
     tableWrap.append(h('table', { class: 't-table' }, thead, tbody));
   }
 
-  const csv: string[][] = [['별명', 'Lv', '별 합계', ...MISSIONS.map((m) => m.mission.id)]];
+  const csv: string[][] = [['별명', 'Lv', '별 합계', ...MISSIONS.map((m) => m.mission.id), ...MINIGAME_CSV_HEADER]];
   for (const st of students) {
     const lv = String(saveOf.get(st.id)?.level ?? 1);
-    csv.push([st.nickname, lv, String(totalOf(st.id)), ...MISSIONS.map((m) => String(progress.get(`${st.id}/${m.mission.id}`)?.stars ?? ''))]);
+    csv.push([st.nickname, lv, String(totalOf(st.id)), ...MISSIONS.map((m) => String(progress.get(`${st.id}/${m.mission.id}`)?.stars ?? '')), ...minigameCsvCells(saveOf.get(st.id)?.minigames)]);
   }
   if (students.length) drawTable();
   const download = h('button', {
@@ -264,6 +265,17 @@ async function renderClass(c: ClassRow): Promise<void> {
       h('p', { class: 't-legend' }, '★ 별점(가장 좋은 기록) · 시도 = 실행·제출 횟수 · 힌트 = 힌트를 본 횟수. 결과보다 시도와 힌트의 변화를 보면 과정을 알 수 있어요.'),
     ),
   );
+  if (students.length) {
+    wrap.append(
+      h(
+        'div',
+        { class: 't-card' },
+        h('h2', {}, '마을 놀이 기록'),
+        h('div', { class: 't-table-wrap' }, minigameTable(students, (id) => saveOf.get(id)?.minigames)),
+        h('p', { class: 't-legend' }, '건물 안 놀이의 판마다 가장 좋은 별을 더했어요. 칸에 마우스를 올리면 판별 별이 보여요. 위 표의 미션 별 합계와는 따로 세요.'),
+      ),
+    );
+  }
 }
 
 void render();

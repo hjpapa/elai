@@ -13,6 +13,7 @@ npm run dev
 - 게임: http://localhost:5173
 - 교사 페이지: http://localhost:5173/teacher.html
 - 그림 검토 화면: http://localhost:5173/?gallery
+- 시연 모드: http://localhost:5173/?demo
 
 | 명령 | 하는 일 |
 |---|---|
@@ -22,6 +23,9 @@ npm run dev
 | `npm run assets` | `assets-src/` 텍스트 격자 → `public/assets/` PNG·매니페스트 |
 
 Supabase 설정이 없으면 **체험 모드**(이 기기에만 저장)로 동작해요.
+
+## 시연 모드
+주소 뒤에 `?demo`를 붙이면 발표용 화면이 열려요. 학급 서버에 연결하지 않고 이 기기의 시연 저장만 써서 학생 기록에 영향을 주지 않아요. 오른쪽 위 **시연** 단추로 0~8장, 엔딩 앞, 마을 건물 6곳, 모든 미션에 바로 갈 수 있어요. 발표 순서는 [docs/demo-guide.md](docs/demo-guide.md)에 있어요.
 
 ## 폴더 구조
 ```
@@ -66,7 +70,7 @@ GitHub 저장소를 Vercel에 연결하면 `main`에 push할 때마다 자동으
 - 가입·로그인
 - 학급 만들기(학생 입장 코드 발급), 입장 안내 인쇄
 - 장 미리 열기
-- 학생별 미션 별점·시도 횟수·힌트 사용 표, CSV 내려받기
+- 학생별 미션 별점·시도 횟수·힌트 사용 표, 마을 놀이 별·깬 판 표, CSV 내려받기
 - 학생 비밀 숫자 다시 정하기
 
 ## Claude·Codex 공동 작업

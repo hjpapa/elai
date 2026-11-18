@@ -336,6 +336,6 @@ describe('마을 과일 가게', () => {
     expect(ASSET_BY_KEY.get('prop-fruit-crate')?.frames).toBe(FRUIT_ROUNDS.length + 1);
     expect(lightOf('prop-fruit-shop', 0)).toBeNull();
     expect(lightOf('prop-fruit-shop', 1)).not.toBeNull();
-    expect(lightOf('prop-fruit-ai', 0)).not.toBeNull();
+    expect(lightOf('prop-fruit-ai', 0)).toMatchObject({ at: 0.58, r: 10, glow: 'cool' });
   });
 });
