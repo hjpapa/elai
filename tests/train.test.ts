@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
+import { allMissions } from '../src/data/chapters';
 import type { TrainData } from '../src/data/schema';
-import { evaluateTraining, evaluateComparison, predictLabel, trainSelection } from '../src/missions/train/evaluate';
+import { evaluateTraining, evaluateComparison, predictLabel, trainSelection, trialsAfterLabelChange, type ComparisonResult } from '../src/missions/train/evaluate';
 const data: TrainData = { intro:'',features:['높이','점'],labels:[{id:'friend',label:'친구'},{id:'playful',label:'장난꾸러기'}],
   examples:[{id:'a',features:[1,1],label:'friend'},{id:'b',features:[2,1],label:'friend'},{id:'c',features:[1,2],label:'friend'},
     {id:'d',features:[8,8],label:'playful'},{id:'e',features:[9,8],label:'playful'},{id:'f',features:[8,9],label:'playful'}],
@@ -49,4 +50,41 @@ it('두 시험을 모두 치르고 최종 모델이 합격한 뒤 맞는 해석�
  const full=results[1];
  for(const accuracy of [NaN,0.5])expect(evaluateComparison(compare,[results[0],{...full,report:{...full.report,accuracy}}],1)).toBe(false);
  expect(evaluateComparison({...compare,minExamples:4},[results[0],{...full,model:{...full.model,samples:full.model.samples.slice(0,4)}}],1)).toBe(false);
+});
+
+it('이름표를 바꾸면 그 예시로 학습한 시험 결과만 지워요',()=>{
+ const rule={trials:[{id:'small',label:'작은 묶음',examples:['a','b']},{id:'full',label:'전체',examples:data.examples.map(e=>e.id)}],finalTrial:'full',question:'무엇이 달라졌나요?',choices:['소량','전체'],answer:1};
+ const compare={...data,comparison:rule};
+ const results:ComparisonResult[]=rule.trials.map(t=>{
+  const chosen=Object.fromEntries(t.examples.map(id=>[id,selected[id]]));
+  const model=trainSelection(data,chosen)!;
+  return {id:t.id,model,report:evaluateTraining(compare,model,chosen)};
+ });
+ const kept=(exampleId:string,from=results)=>trialsAfterLabelChange(compare,from,exampleId).map(r=>r.id);
+ expect(kept('d')).toEqual(['small']);
+ expect(kept('a')).toEqual([]);
+ expect(kept('d',[results[0]])).toEqual(['small']);
+ expect(kept('a',[results[0]])).toEqual([]);
+});
+
+it('5장은 친구 예시를 시험한 뒤 나머지 이름표를 붙여도 첫 결과가 남아요',()=>{
+ const mission=allMissions().find(e=>e.mission.id==='ch5-p3-m1')!.mission;
+ if(mission.kind!=='train')throw Error('ch5-p3-m1');
+ const d=mission.data!,rule=d.comparison!,labels:Record<string,string>={};
+ let results:ComparisonResult[]=[];
+ const label=(ids:string[])=>{for(const id of ids){labels[id]=d.examples.find(s=>s.id===id)!.label;results=trialsAfterLabelChange(d,results,id);}};
+ const test=(trial:(typeof rule.trials)[number])=>{
+  const chosen=Object.fromEntries(trial.examples.map(id=>[id,labels[id]]));
+  const model=trainSelection(d,chosen)!;
+  results=[...results.filter(r=>r.id!==trial.id),{id:trial.id,model,report:evaluateTraining(d,model,chosen)}];
+ };
+ const [friendOnly,both]=rule.trials;
+ label(friendOnly.examples);test(friendOnly);
+ label(both.examples.filter(id=>!friendOnly.examples.includes(id)));
+ expect(results.map(r=>r.id)).toEqual(['friendOnly']);
+ test(both);
+ expect(results.map(r=>r.report.accuracy)).toEqual([.5,1]);
+ expect(evaluateComparison(d,results,rule.answer)).toBe(true);
+ label([friendOnly.examples[0]]);
+ expect(results).toEqual([]);
 });

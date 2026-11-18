@@ -41,6 +41,12 @@ export interface ComparisonResult {
   report: TrainingReport;
 }
 
+/** 이름표가 바뀐 예시로 학습한 시험 결과만 지워요. 그 예시를 쓰지 않은 시험은 그대로 남아요. */
+export function trialsAfterLabelChange(data: TrainData, results: ComparisonResult[], exampleId: string): ComparisonResult[] {
+  const trials = data.comparison?.trials ?? [];
+  return results.filter(result => !trials.find(trial => trial.id === result.id)?.examples.includes(exampleId));
+}
+
 export function evaluateComparison(data: TrainData, results: ComparisonResult[], answer: number | null): boolean {
   const rule = data.comparison;
   if (!rule) return true;

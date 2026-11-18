@@ -2,7 +2,7 @@ import type { ClassificationModel, TrainData } from '../../data/schema';
 import { app } from '../../game/app';
 import { clear, h, lines } from '../../ui/dom';
 import type { MissionContext, MissionEngine } from '../core/types';
-import { evaluateTraining, evaluateComparison, trainSelection, type ComparisonResult, type TrainingReport } from './evaluate';
+import { evaluateTraining, evaluateComparison, trainSelection, trialsAfterLabelChange, type ComparisonResult, type TrainingReport } from './evaluate';
 
 export class TrainMission implements MissionEngine {
   private ctx!: MissionContext;
@@ -46,7 +46,11 @@ export class TrainMission implements MissionEngine {
       } }, trial.label))));
     for (const [index, sample] of d.examples.entries()) {
       const sampleName = `예시 ${index + 1}`;
-      const select = h('select', { disabled: d.presetLabels, 'aria-label': sampleName + ' 이름표', style: 'min-height:44px;max-width:100%', onchange: (e: Event) => { this.trials = []; this.comparisonAnswer = null; this.selected[sample.id] = (e.target as HTMLSelectElement).value; this.invalidate(); } },
+      const select = h('select', { disabled: d.presetLabels, 'aria-label': sampleName + ' 이름표', style: 'min-height:44px;max-width:100%', onchange: (e: Event) => {
+        const kept = trialsAfterLabelChange(d, this.trials, sample.id);
+        if (kept.length !== this.trials.length) this.comparisonAnswer = null;
+        this.trials = kept; this.selected[sample.id] = (e.target as HTMLSelectElement).value; this.invalidate();
+      } },
         h('option', { value: '' }, '이름표를 골라요'), ...d.labels.map(l => h('option', { value: l.id }, l.label)));
       select.value = this.choices()[sample.id] ?? this.selected[sample.id] ?? '';
       root.append(h('div', { class: 'card', style: 'cursor:default' }, h('label', { style: 'display:block;min-height:44px' },
