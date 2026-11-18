@@ -1,4 +1,6 @@
 import { showEnding } from '../../ui/ending';
+import { storyForVisit } from '../rpg/story';
+import { shouldShowEnding } from '../rpg/ending';
 import Phaser from 'phaser';
 import { MAPS } from '../../data/maps';
 import { NPCS } from '../../data/npcs';
@@ -292,7 +294,11 @@ export class WorldScene extends Phaser.Scene {
     this.refresh();
     app.hud.refresh();
     app.ui.toast(this.def.name, icon('icon-book'), 1600);
-    if (this.def.id === 'village') this.time.delayedCall(400, () => { void showEnding(); });
+    if (this.def.id === 'village') this.time.delayedCall(400, () => {
+      if (shouldShowEnding(s.data)) void showEnding().then(() => {
+        if (this.scene.isActive() && this.def.id === 'village') void this.showVisitStory();
+      });
+    });
     // 마을에 올 때마다 선생님이 연 장을 다시 받아요(문 그림과 목표 안내가 바로 바뀌어요).
     const link = app.classLink;
     if (link && this.def.id === 'village') {
@@ -304,6 +310,14 @@ export class WorldScene extends Phaser.Scene {
           app.hud.refresh();
         });
     }
+    void this.showVisitStory();
+  }
+
+  private async showVisitStory(): Promise<void> {
+    const state = app.state;
+    const visit = storyForVisit(state.data, this.def.id, app.demo, app.ui.isBusy() || app.missions.busy || app.minigames.busy);
+    if (visit.lines.length) await app.ui.dialogue(visit.lines);
+    for (const flag of visit.flags) state.setFlag(flag);
   }
 
   // ── 그리기 ──
