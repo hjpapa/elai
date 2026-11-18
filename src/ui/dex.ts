@@ -1,3 +1,4 @@
+import { CATALOG } from '../minigames/catalog';
 import { CHAPTERS } from '../data/chapters';
 import { ITEMS } from '../data/rpg/items';
 import { MOBS } from '../data/rpg/mobs';
@@ -13,6 +14,7 @@ const TABS = [
   { id: 'items', label: '아이템' },
   { id: 'badges', label: '배지·칭호' },
   { id: 'robi', label: '로비' },
+  { id: 'games', label: '마을 놀이' },
 ] as const;
 type Tab = (typeof TABS)[number]['id'];
 
@@ -67,6 +69,18 @@ export function openDex(): void {
             table,
           ),
         );
+      }
+    } else if (tab === 'games') {
+      for (const game of CATALOG) {
+        const record = d.minigames?.[game.id] ?? {};
+        const stars = game.rounds.map(round => record[round.id] ?? 0);
+        const total = stars.reduce((sum, n) => sum + n, 0);
+        grid.append(h('article', { class: 'dex-card' },
+          pxImg(icon(game.icon), 40), h('h3', {}, game.name), h('div', {}, game.building),
+          h('p', {}, '받은 별 ' + total + ' / ' + stars.length * 3),
+          total ? h('div', { class: 'dex-rounds' }, ...stars.map((n, i) => h('span', {}, (i + 1) + '판 · 별 ' + n + '개')))
+            : h('p', { class: 'muted' }, '아직 해 보지 않았어요.'),
+          d.titles.includes(game.title) ? h('p', {}, '칭호 · ' + game.title) : null));
       }
     } else if (tab === 'items') {
       for (const it of Object.values(ITEMS)) {

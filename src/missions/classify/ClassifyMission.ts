@@ -32,12 +32,12 @@ export class ClassifyMission implements MissionEngine {
         h('div', { class: 'row' }, h('button', { class: 'btn', 'aria-label': '물결 한 칸 퍼뜨리기', onclick: () => { this.wave = Math.min(this.wave + 1, Math.max(...result.distances.flat())); this.render(); } }, '물결 한 칸 퍼뜨리기'),
         h('button', { class: 'btn', 'aria-label': '길 다시 고르기', onclick: () => { this.path = [{ ...result.start }]; this.render(); } }, '길 다시 고르기')),
         h('p', {}, '지금 물결: ' + this.wave + '칸 · 고른 길: ' + (this.path.length - 1) + '칸'));
-      const board = h('div', { role: 'group', 'aria-label': '물결 탐색 지도', style: 'display:grid;grid-template-columns:repeat(' + grid[0].length + ',32px);gap:2px;max-width:100%' });
+      const board = h('div', { role: 'group', 'aria-label': '물결 탐색 지도', style: 'display:grid;grid-template-columns:repeat(' + grid[0].length + ',minmax(0,32px));gap:2px;max-width:100%' });
       grid.forEach((row, y) => [...row].forEach((cell, x) => {
         const distance = result.distances[y][x], visible = distance >= 0 && distance <= this.wave;
         const chosen = this.path.some(p => p.x === x && p.y === y);
-        board.append(h('button', { class: 'btn small', disabled: cell === '#' || !visible,
-          style: 'padding:0;width:32px;height:32px;background:' + (chosen ? '#388e9e' : cell === '#' ? '#0e1420' : '#273d52'),
+        board.append(h('button', { class: 'wave-cell', disabled: cell === '#' || !visible,
+          style: 'padding:0;min-width:0;width:100%;height:auto;aspect-ratio:1;background:' + (chosen ? '#388e9e' : cell === '#' ? '#0e1420' : '#273d52'),
           'aria-label': (y + 1) + '행 ' + (x + 1) + '열 ' + (cell === '#' ? '벽' : cell === 'S' ? '출발' : cell === 'G' ? '목표' : visible ? distance + '칸' : '아직 안 본 길'),
           onclick: () => {
             const last = this.path.at(-1)!;

@@ -3028,3 +3028,23 @@ button.fruit-card,
     animation: none;
   }
 }
+
+.demo-menu .btn, .demo-menu select { min-height: 40px; min-width: 40px; }
+.demo-menu .row { flex-wrap: wrap; }
+.demo-building { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 5px; align-items: center; margin-bottom: 6px; }
+.demo-menu select { max-width: 100%; }
+.demo-missions { display: grid; gap: 5px; margin: 8px 0 16px; }
+.hud-buttons .demo-toggle { width: auto; min-height: 40px; }
+
+.panel .btn.small, .battle-bottom .btn { min-height: 40px; }
+.wave-cell { border: 1px solid var(--line); border-radius: 3px; color: var(--text); font: 600 12px/1 var(--font-body); white-space: nowrap; }
+.wave-cell:disabled { opacity: .72; }
+@media (max-width: 390px) {
+  .demo-building { grid-template-columns: 1fr 1fr; margin-bottom: 12px; }
+  .demo-building b { grid-column: 1 / -1; }
+}
+
+.toast-layer > .toast { pointer-events: none; }
+#ui:has(.panel[class*="mission-"], .minigame, .demo-menu, .dialog-layer > *) .toast-layer { visibility: hidden; }
+
+.dex-rounds { display: grid; grid-template-columns: repeat(auto-fit,minmax(72px,1fr)); gap: 4px; }

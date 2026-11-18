@@ -5,6 +5,7 @@ import { app, classUnlock } from '../game/app';
 import { GUIDE_EVENT, guideTarget } from '../game/rpg/guide';
 import { objective } from '../game/rpg/progress';
 import { clear, h } from './dom';
+import { openDemoMenu } from './demoMenu';
 import { openDex } from './dex';
 import { icon, pxImg } from './icons';
 import { openInventory } from './inventory';
@@ -34,6 +35,7 @@ export class Hud {
       h('button', { class: 'btn hud-btn', title: '도감', 'aria-label': '도감', onclick: () => openDex() }, pxImg(icon('icon-book'), 30)),
       h('button', { class: 'btn hud-btn', title: '메뉴', 'aria-label': '메뉴', onclick: () => openMenu() }, pxImg(icon('icon-gear'), 30)),
     );
+    if (app.demo) buttons.append(h('button', { class: 'btn hud-btn demo-toggle', title: '시연', 'aria-label': '시연', onclick: openDemoMenu }, pxImg(icon('icon-goal'), 24), '시연'));
     this.mini.append(this.canvas, h('div', { class: 'cap' }, '순서도 지도'));
     this.root = h('div', { class: 'hud' }, card, buttons, this.goal, this.mini);
     app.ui.hud.append(this.root);

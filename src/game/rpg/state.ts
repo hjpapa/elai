@@ -81,6 +81,11 @@ export class GameState {
     }
   }
 
+  replaceData(next: SaveData): void {
+    this.data = new GameState(next).data;
+    this.changed();
+  }
+
   private cleanClassificationModel(model: ClassificationModel | undefined): ClassificationModel {
     const samples = (Array.isArray(model?.samples) ? model.samples : [])
       .filter(sample => sample && ['friend', 'playful'].includes(sample.label) && Array.isArray(sample.features)
