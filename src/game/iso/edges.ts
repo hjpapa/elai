@@ -138,7 +138,7 @@ export const EDGE_COLORS: Record<EdgeMaterial, { lit: number; dark: number; base
   water: { lit: 0x367a96, dark: 0x294a68, base: 0x344d78, rim: [0x294a68, 0x82cce0] },
   stone: { lit: 0x718693, dark: 0x56657a, base: 0x445968, rim: [0x445968, 0xc7d6dc] },
   // 어두운 바닥 전용. 섬 아래 띠도 배경에서 읽히는 팔레트 색을 써요.
-  cave: { lit: 0x56657a, dark: 0x445968, base: 0x293044, rim: [0x294a68, 0x49b5b1] },
+  cave: { lit: 0x56657a, dark: 0x445968, base: 0x293044, rim: [0x294a68, 0x367a96] },
   night: { lit: 0x406c8a, dark: 0x344d78, base: 0x294a68, rim: [0x7962ab, 0xe7b64f] },
   wood: { lit: 0x815b45, dark: 0x684b3f, base: 0x4e3e43, rim: [0x4e3e43, 0xd39a62] },
 };

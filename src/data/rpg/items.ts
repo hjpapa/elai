@@ -23,7 +23,7 @@ const list: ItemDef[] = [
   { id: 'jelly', name: '에너지 젤리', icon: 'icon-item-jelly', kind: 'consumable', rarity: 'common', effect: { energy: 2 }, desc: '전투 중에 먹는 말랑한 젤리예요.\n이번 차례 에너지가 2 늘어요.', price: 12 },
   // 퀘스트·재료
   { id: 'forestkey', name: '숲 열쇠', icon: 'icon-item-forestkey', kind: 'quest', rarity: 'uncommon', desc: '미로의 덩굴 문에 쓰는 열쇠예요.\n문 가까이 가서 열어 봐요.' },
-  { id: 'vine', name: '덩굴 조각', icon: 'icon-item-vine', kind: 'material', rarity: 'common', desc: '슬라임이 남긴 덩굴 재료예요.\n공방에서 쓰는 기능은 준비 중이에요.' },
+  { id: 'vine', name: '덩굴 조각', icon: 'icon-item-vine', kind: 'material', rarity: 'common', desc: '숲에서 모은 덩굴 조각이에요.\n슬라임과 만난 날의 기념품이에요.' },
   { id: 'dataVest', name: '기록가 조끼', icon: 'icon-item-vest', kind: 'equip', slot: 'outfit', rarity: 'rare', stats: { maxHp: 8, def: 2 }, desc: '항구의 기록가가 준 조끼예요.\n체력과 몸을 지키는 힘이 늘어요.' },
   { id: 'researchBoots', name: '연구원 신발', icon: 'icon-item-windboots', kind: 'equip', slot: 'shoes', rarity: 'rare', stats: { maxHp: 5, maxEn: 1 }, desc: '표본을 살피며 걸을 때 편해요.\n최대 체력과 에너지가 늘어요.' },
   { id: 'starCap', name: '별길 모자', icon: 'icon-item-rangerhat', kind: 'equip', slot: 'hat', rarity: 'rare', stats: { maxHp: 7, def: 3 }, overlay: 'equip-hat-ranger', desc: '별지기가 건넨 따뜻한 모자예요.\n체력과 몸을 지키는 힘이 늘어요.' },
