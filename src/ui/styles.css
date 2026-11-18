@@ -3028,3 +3028,10 @@ button.fruit-card,
     animation: none;
   }
 }
+
+.demo-menu .btn, .demo-menu select { min-height: 40px; min-width: 40px; }
+.demo-menu .row { flex-wrap: wrap; }
+.demo-building { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 5px; align-items: center; margin-bottom: 6px; }
+.demo-menu select { max-width: 100%; }
+.demo-missions { display: grid; gap: 5px; margin: 8px 0 16px; }
+.hud-buttons .demo-toggle { width: auto; min-height: 40px; }

@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import './ui/styles.css';
+import { isDemoSearch } from './game/rpg/demo';
 import { app } from './game/app';
 import { BattleScene } from './game/scenes/BattleScene';
 import { BootScene } from './game/scenes/BootScene';
@@ -14,6 +15,7 @@ import { CUSTOM, ENGINES } from './missions/registry';
 import { portraitFor } from './ui/portraits';
 import { UI } from './ui/ui';
 
+app.demo = isDemoSearch(location.search);
 app.ui = new UI(document.getElementById('ui')!);
 app.ui.portrait = (who) => (app.state ? portraitFor(app.state.data, who) : '');
 app.missions = new MissionHost(ENGINES, CUSTOM);

@@ -47,7 +47,7 @@ export class MinigameHost {
           sfx: playSfx,
           helpers: { debugGlasses: s.helpers.debugGlasses },
           best: () => s.data.minigames?.[gameId] ?? {},
-          unlocked: (cond) => minigameUnlocked(s, cond),
+          unlocked: (cond) => app.demo || minigameUnlocked(s, cond),
           hasFlag: (name) => s.hasFlag(name),
           clear: (roundId, stars, firstReward) => {
             const rec = s.recordMinigame(gameId, roundId, stars);

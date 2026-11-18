@@ -13,6 +13,7 @@ import { drawEdges } from '../iso/edgeArt';
 import { edgeFaces } from '../iso/edges';
 import { isoToScreen } from '../iso/iso';
 import type { Cell } from '../iso/mapRuntime';
+import { buildDemoSave } from '../rpg/demo';
 import { GameState, freshSave } from '../rpg/state';
 import { TITLE_ZOOM, canvasRatio, crispZoom } from '../screen';
 import { addShadow } from '../shadow';
@@ -85,6 +86,14 @@ export class TitleScene extends Phaser.Scene {
 
   private render(): void {
     clear(this.box);
+    if (app.demo) {
+      setSaveProfile('demo');
+      const saved = loadLocal();
+      this.box.append(h('h2', {}, '시연 모드'),
+        h('button', { class: 'btn primary', onclick: () => this.begin(saved ?? buildDemoSave(0), null) }, '시연 시작'),
+        h('button', { class: 'btn', onclick: () => this.begin(buildDemoSave(0, saved?.settings), null) }, '처음 상태로 시작'));
+      return;
+    }
     if (supabaseConfigured) {
       const tab = (m: Mode, label: string) =>
         h(
