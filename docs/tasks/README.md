@@ -8,6 +8,16 @@ Claude가 지시서를 쓰고, 사용자가 Codex 앱에서 실행해요.
    > `docs/tasks/codex-01-assets.md` 지시서대로 작업해 줘. `AGENTS.md` 규칙을 지켜 줘.
 3. Codex가 끝나면 Claude에게 "C1 끝났어"처럼 알려 주세요. Claude가 검토하고, 테스트한 뒤 커밋·머지해요.
 
+### 내일 시연 준비(C20 + C21, 2026-11-18)
+Codex 앱 창 두 개에서 **동시에** 돌려요. 고치는 파일이 겹치지 않아요. 중간에 멈추면 같은 말을 다시 하면 진행 기록을 보고 이어서 해요.
+
+| 창 | 여는 폴더(브랜치) | 부탁할 말 |
+|---|---|---|
+| 그림 | `C:codeelai-wtcodex-20`(`codex/20-fruitshop`) | `docs/tasks/codex-20-fruitshop.md`대로 1단계부터 차례로 진행하고, 단계마다 커밋해 줘. `AGENTS.md` 규칙을 지켜 줘. |
+| 시연 준비 | `C:codeelai-wtcodex-21`(`codex/21-demo-ready`) | `docs/tasks/codex-21-demo-ready.md`대로 1단계부터 차례로 진행하고, 단계마다 커밋해 줘. `AGENTS.md` 규칙을 지켜 줘. |
+
+둘 다 끝나면 Claude가 엔진·로직을 점검하고, 교사 페이지 놀이 기록(Codex가 고치지 않는 영역)을 더한 뒤, 합쳐서 커밋·push해요.
+
 ### 마을 과일 가게 그림(C20)
 Codex 앱에서 `C:codeelai-wtcodex-20`(브랜치 `codex/20-fruitshop`)을 열고 이렇게 부탁해요. 중간에 멈추면 같은 말을 다시 하면 진행 기록(`codex-20-progress.md`)을 보고 이어서 해요.
 > `docs/tasks/codex-20-fruitshop.md`대로 1단계부터 차례로 진행하고, 단계마다 커밋해 줘. `AGENTS.md` 규칙을 지켜 줘.
@@ -100,7 +110,8 @@ Codex 앱에서 `C:\code\elai-wt\codex-12`(브랜치 `codex/12-hires-chapters`)�
 | C17 | [codex-17-hills-more.md](codex-17-hills-more.md) — 동굴·천문대 옆면 색(미리 승인한 엔진 변경), 2·5·7장 맵 언덕·계단, 버그 인형 몸 무늬(5단계) | 완료(검토 통과, main 병합 · 기록 [codex-17-progress.md](codex-17-progress.md)) |
 | C18 | [codex-18-maproom.md](codex-18-maproom.md) — 마을 지도방·코딩 길찾기 그림 5개(2배): 건물, 길찾기 탁자, 벽 지도 7프레임, 지구본, 물결 따라가기 카드(2단계) | 완료(검토 통과, main 병합·배포 · 기록 [codex-18-progress.md](codex-18-progress.md)) |
 | C19 | [codex-19-bakery.md](codex-19-bakery.md) — 마을 빵집·주문서 빵집 그림 5개(2배): 건물, 주문서 오븐, 케이크 진열대 7프레임, 빵 선반, 케이크 아이콘(2단계) | 완료(검토 통과, main 병합·배포 · 기록 [codex-19-progress.md](codex-19-progress.md)) |
-| C20 | [codex-20-fruitshop.md](codex-20-fruitshop.md) — 마을 과일 가게·과일 AI 가르치기 그림 5개(2배): 건물, 학습 로봇, 과일 상자 7프레임, 과일 매대, 과일 바구니 아이콘(2단계) | 준비(작업 폴더 `C:codeelai-wtcodex-20`) |
+| C20 | [codex-20-fruitshop.md](codex-20-fruitshop.md) — 마을 과일 가게·과일 AI 가르치기 그림 5개(2배): 건물, 학습 로봇, 과일 상자 7프레임, 과일 매대, 과일 바구니 아이콘, 물결 카드 다듬기(3단계) | 준비(작업 폴더 `C:codeelai-wtcodex-20`) |
+| C21 | [codex-21-demo-ready.md](codex-21-demo-ready.md) — 내일 시연 준비: 시연 모드(`/?demo`), 전 화면 점검, 새 놀이 알림·도감 놀이 기록, 작은 다듬기, 시연 안내서(5단계) | 준비(작업 폴더 `C:codeelai-wtcodex-21`) |
 
 고치는 파일이 겹치지 않는 작업은 동시에 돌려도 돼요. 이때는 꼭 **각자의 작업 폴더**를 열어 주세요.
 
