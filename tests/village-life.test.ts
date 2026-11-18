@@ -35,3 +35,13 @@ it('여섯 장식을 모두 사도 하루와 모든 마을 시설에 갈 수 있
     }
   }
 });
+
+it.each(['workroom','parcel','lightshop','maproom','bakery','fruitshop'])('%s에서 손님과 기계와 나가는 문까지 닿아요', room => {
+  const map = MAPS[room], state = new GameState(freshSave('새싹'));
+  const guests = map.objects.filter(o => o.type === 'npc');
+  expect(guests).toHaveLength(1);
+  const guest = guests[0];
+  expect(map.objects.filter(o=>o.at.x===guest.at.x && o.at.y===guest.at.y)).toHaveLength(1);
+  expect(Math.max(Math.abs(map.spawn.x-guest.at.x),Math.abs(map.spawn.y-guest.at.y))).toBeGreaterThan(1);
+  for(const o of map.objects.filter(o=>['npc','portal','game'].includes(o.type))) expect(reachable(map,o,state),o.id).toBe(true);
+});
