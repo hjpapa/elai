@@ -194,8 +194,14 @@ export interface ClassifyData {
 
 export interface TrainingSample { features: number[]; label: string }
 export interface ClassificationModel { samples: TrainingSample[]; k: number }
+export interface TrainTrial {
+  id: string;
+  label: string;
+  examples: string[];
+  wrongLabels?: Record<string, string>;
+}
 export interface TrainData {
-  comparison?: { smallCount: number; question: string; choices: string[]; answer: number };
+  comparison?: { trials: TrainTrial[]; finalTrial: string; question: string; choices: string[]; answer: number };
   presetLabels?: boolean;
   intro: string;
   features: string[];
@@ -242,6 +248,8 @@ export interface MissionDataMap {
 export type MissionKind = keyof MissionDataMap;
 
 interface MissionBase {
+  /** 선택 미션은 진도를 막지 않고 경험치를 주지 않아요. */
+  optional?: boolean;
   id: string;
   title: string;
   /** 미션을 주는 NPC id */

@@ -1,3 +1,4 @@
+import { getMission } from '../../data/chapters';
 import { MAPS } from '../../data/maps';
 import type { MapObject, Point } from '../../data/schema';
 import { objectVisible } from '../iso/mapRuntime';
@@ -26,7 +27,7 @@ export interface GuideTarget {
 
 /** 이 NPC에게 지금 시작할 수 있는 미션이 있는지(머리 위 느낌표) */
 export function hasNewMission(state: GameState, npc: Npc): boolean {
-  return (npc.missions ?? []).some((id) => !state.missionDone(id) && canStart(state, id));
+  return (npc.missions ?? []).some((id) => !getMission(id)?.mission.optional && !state.missionDone(id) && canStart(state, id));
 }
 
 /** 미션을 주는 NPC(보이는 NPC만). 지금 맵(prefer)에 있으면 그쪽이 먼저예요. */
@@ -81,4 +82,14 @@ export function guideTarget(state: GameState, unlock: ClassUnlock, mapId: string
   if (dest.map === mapId) return { at: dest.at, kind: 'npc', goalMap: dest.map };
   const portal = firstPortalToward(state, unlock, mapId, dest.map);
   return portal ? { at: portal.at, kind: 'portal', goalMap: dest.map } : null;
+}
+
+export function extraMissionFor(state: GameState, ids: readonly string[], afterId?: string): string | undefined {
+  const available = ids.filter(id => getMission(id)?.mission.optional && !state.missionDone(id) && canStart(state, id));
+  const part = afterId ? getMission(afterId)?.part : undefined;
+  return available.find(id => getMission(id)?.part === part) ?? available[0];
+}
+
+export function hasExtraMission(state: GameState, npc: Npc): boolean {
+  return extraMissionFor(state, npc.missions ?? []) !== undefined;
 }

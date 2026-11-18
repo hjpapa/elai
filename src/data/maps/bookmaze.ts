@@ -10,8 +10,8 @@ export const bookmaze: MapDef={
   {id:'books-a',type:'prop',at:{x:4,y:6},sprite:'prop-bookshelf',solid:true},
   {id:'books-b',type:'prop',at:{x:12,y:2},sprite:'prop-bookshelf',solid:true},
   {id:'chest-bookmaze',type:'chest',at:{x:3,y:6},reward:{xp:15,coins:30,items:[{id:'jelly',qty:2}]}},
-  {id:'chief',type:'npc',at:{x:8,y:2},npc:'babbleKing',missions:['ch7-boss-m1','ch7-boss-m2','ch7-boss-m3'],when:{notFlag:'parrot-fixed'}},
-  {id:'chief-fixed',type:'npc',at:{x:8,y:2},npc:'babbleKing',sprite:'boss-babble-king',frame:3,missions:['ch7-boss-m1','ch7-boss-m2','ch7-boss-m3'],when:{flag:'parrot-fixed'},talk:['말하기 전에 자료를 확인할게요.\n도움을 받은 것도 밝힐게요.']},
+  {id:'chief',type:'npc',at:{x:8,y:2},npc:'babbleKing',missions:['ch7-boss-m1','ch7-boss-m2','ch7-boss-m3'],talk: ['어디서 들은 말인지 떠오르지 않아요.', '그럴듯한 문장이 부리 끝에 맴돌아요.', '책갈피를 왜 꽂았는지 궁금해요.'], when:{notFlag:'parrot-fixed'}},
+  {id:'chief-fixed',type:'npc',at:{x:8,y:2},npc:'babbleKing',sprite:'boss-babble-king',frame:3,missions:['ch7-boss-m1','ch7-boss-m2','ch7-boss-m3'],when:{flag:'parrot-fixed'},talk:['말하기 전에 자료를 확인할게요.\n도움을 받은 것도 밝힐게요.', '오늘은 제 소식에 책갈피를 달아요.\n어느 책에서 찾았는지 보이게요.']},
   {id:'to-village',type:'portal',at:{x:9,y:2},to:{map:'village',at:{x:12,y:14}},label:'코딩 마을',when:{flag:'ch7-clear'}},
  ],
 };

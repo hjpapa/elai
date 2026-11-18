@@ -13,8 +13,8 @@ export const mirrormaze: MapDef = {
   {id:'mirror-b',type:'prop',at:{x:12,y:2},sprite:'prop-mirror',frame:1,solid:true},
   {id:'banner',type:'prop',at:{x:11,y:6},sprite:'prop-banner',solid:true},
   {id:'chest-mirror',type:'chest',at:{x:3,y:6},reward:{xp:15,coins:35,items:[{id:'jelly',qty:2}]}},
-  {id:'chief',type:'npc',at:{x:8,y:2},npc:'biasGolem',missions:['ch8-boss-m1','ch8-boss-quiz','ch8-boss-m2'],when:{notFlag:'golem-fixed'}},
-  {id:'chief-fixed',type:'npc',at:{x:8,y:2},npc:'biasGolem',sprite:'boss-bias-golem',frame:3,missions:['ch8-boss-m1','ch8-boss-quiz','ch8-boss-m2'],when:{flag:'golem-fixed'},talk:['빠진 친구도 함께 살펴볼게요.\n이제 마을에서 로비를 만나 봐요.']},
+  {id:'chief',type:'npc',at:{x:8,y:2},npc:'biasGolem',missions:['ch8-boss-m1','ch8-boss-quiz','ch8-boss-m2'],talk: ['제 거울엔 한쪽 길만 비쳐요.', '이 소식은 누구에게 들었을까요?', '아직 못 본 친구가 있을까요?'], when:{notFlag:'golem-fixed'}},
+  {id:'chief-fixed',type:'npc',at:{x:8,y:2},npc:'biasGolem',sprite:'boss-bias-golem',frame:3,missions:['ch8-boss-m1','ch8-boss-quiz','ch8-boss-m2'],when:{flag:'golem-fixed'},talk:['빠진 친구도 함께 살펴볼게요.\n이제 마을에서 로비를 만나 봐요.', '이야기를 다 들었다고 생각했는데\n빈 의자가 하나 더 있었어요.']},
   {id:'to-village',type:'portal',at:{x:9,y:2},to:{map:'village',at:{x:12,y:14}},label:'코딩 마을',when:{flag:'ch8-clear'}},
  ],
 };

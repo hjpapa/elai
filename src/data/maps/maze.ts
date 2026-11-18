@@ -162,7 +162,7 @@ export function buildMaze(seed = 20261104): MapDef {
       { id: 'bug-m', type: 'mob', at: bug, mob: 'bugWorm', wander: 1 },
       { id: 'vine-door', type: 'door', at: DOOR, key: 'forestkey' },
       { id: 'sign-door', type: 'sign', at: { x: DOOR.x, y: DOOR.y + 1 }, text: '덩굴 문\n숲 열쇠가 있어야 열려요.' },
-      { id: 'guardian', type: 'npc', at: { x: 8, y: 2 }, npc: 'guardian', missions: ['ch1-boss-m1', 'ch1-boss-m2', 'ch1-boss-m3'], when: { notFlag: 'guardian-fixed' } },
+      { id: 'guardian', type: 'npc', at: { x: 8, y: 2 }, npc: 'guardian', missions: ['ch1-boss-m1', 'ch1-boss-m2', 'ch1-boss-m3'], talk: ['제 발자국이 자꾸 엉켜요.', '첫걸음이 어디였을까요?', '같이 걸으면 놓친 걸 볼 수 있어요.'], when: { notFlag: 'guardian-fixed' } },
       {
         id: 'guardian-fixed',
         type: 'npc',
@@ -171,7 +171,7 @@ export function buildMaze(seed = 20261104): MapDef {
         sprite: 'boss-forest-guardian',
         frame: 3,
         missions: ['ch1-boss-m1', 'ch1-boss-m2', 'ch1-boss-m3'],
-        talk: ['숲이 다시 조용해졌어요.', '코딩 마을에도 가 봐요. 무언가 달라졌을 거예요.'],
+        talk: ['숲이 다시 조용해졌어요.', '코딩 마을에도 가 봐요. 무언가 달라졌을 거예요.', '새싹이 자란 자리에 표시했어요.\n내일도 같은 길로 가 볼래요.'],
         when: { flag: 'guardian-fixed' },
       },
       { id: 'to-forest', type: 'portal', at: { x: SPAWN.x, y: N - 1 }, to: { map: 'forest', at: { x: 13, y: 4 } }, label: '순서의 숲' },

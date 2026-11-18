@@ -1,5 +1,5 @@
 import { hasEndingRequirements } from './ending';
-import { CHAPTERS, getMission } from '../../data/chapters';
+import { CHAPTERS, getMission, requiredMissions } from '../../data/chapters';
 import { MAPS } from '../../data/maps';
 import { npcName } from '../../data/npcs';
 import type { Chapter, MapObject, Mission, Part } from '../../data/schema';
@@ -19,7 +19,7 @@ export function canStart(state: GameState, missionId: string): boolean {
   for (const part of scope) {
     for (const m of part.missions) {
       if (m.id === missionId) return true;
-      if (!state.missionDone(m.id)) return false;
+      if (!m.optional && !state.missionDone(m.id)) return false;
     }
   }
   return true;
@@ -68,7 +68,7 @@ export function nextGoal(state: GameState, unlock: ClassUnlock = null): NextGoal
   for (const chapter of guideOrder(unlock, MAPS[state.data.location.map]?.chapter)) {
     if (chapter.status !== 'playable') continue;
     for (const part of chapter.parts) {
-      const mission = part.missions.find((x) => !state.missionDone(x.id));
+      const mission = requiredMissions(part).find((x) => !state.missionDone(x.id));
       if (mission) return { kind: 'mission', chapter, part, mission };
     }
   }

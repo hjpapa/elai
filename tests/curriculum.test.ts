@@ -336,12 +336,23 @@ describe('6장 탐색과 예측 자료',()=>{
    expect(evaluateSearch(grid,[result.start,result.goal]),id).toBe(false);
   }
  });
- it('같은 시험에 두 예시는50%, 여덟 예시는100%를 맞혀 비교할 수 있어요',()=>{
-  const m=allMissions().find(e=>e.mission.id==='ch6-p3-m1')!.mission;if(m.kind!=='train')throw new Error('comparison');const d=m.data!;
-  const small=Object.fromEntries(d.examples.slice(0,d.comparison!.smallCount).map(e=>[e.id,e.label]));const full=Object.fromEntries(d.examples.map(e=>[e.id,e.label]));
-  expect(evaluateTraining(d,trainSelection(d,small),small).accuracy).toBe(.5);expect(evaluateTraining(d,trainSelection(d,full),full)).toMatchObject({success:true,accuracy:1});
-  const p2=allMissions().find(e=>e.mission.id==='ch6-p2-m1')!.mission;if(p2.kind!=='train')throw new Error('forecast');
-  expect(d.tests).toEqual(p2.data!.tests);expect(d.saveModel).toBe(false);expect(d.presetLabels).toBe(true);
+ it('같은 시험에서 양과 이름표의 영향을 비교해요',()=>{
+  for(const [id,expected] of [['ch5-p3-m1',[.5,1]],['ch6-p3-m1',[.5,.75,.875,1,.75]]] as const){
+   const mission=allMissions().find(e=>e.mission.id===id)!.mission;
+   if(mission.kind!=='train')throw Error(id);
+   const d=mission.data!;
+   expect(d.comparison!.trials.map(t=>{
+    const samples=d.examples.filter(s=>t.examples.includes(s.id));
+    if(id==='ch6-p3-m1')expect(samples.filter(s=>s.label==='sunny')).toHaveLength(samples.length/2);
+    const selected=Object.fromEntries(samples.map(s=>[s.id,t.wrongLabels?.[s.id]??s.label]));
+    const report=evaluateTraining(d,trainSelection(d,selected),selected);
+    if(t.id===d.comparison!.finalTrial)expect(report.success).toBe(true);
+    return report.accuracy;
+   })).toEqual(expected);
+   expect(d.comparison!.trials.find(t=>t.id===d.comparison!.finalTrial)?.wrongLabels).toBeUndefined();
+   expect(d.saveModel).toBe(id==='ch5-p3-m1');
+   if(id==='ch6-p3-m1')expect(d.presetLabels).toBe(true);
+  }
  });
 });
 

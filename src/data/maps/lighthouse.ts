@@ -9,8 +9,8 @@ export const lighthouse: MapDef={
     {id:'sign-floor',type:'sign',at:{x:3,y:10},text:'등불 신호로 문을 열었어요.\n기록실을 지나 대장을 찾아가요.'},
     {id:'jelly-floor',type:'mob',at:{x:7,y:8},mob:'fogJelly',wander:1},
     {id:'chest-lighthouse',type:'chest',at:{x:10,y:5},reward:{xp:12,coins:20,items:[{id:'jelly',qty:2}]}},
-    {id:'chief',type:'npc',at:{x:6,y:1},npc:'ledgerOcto',missions:['ch4-boss-m1','ch4-boss-m2','ch4-boss-m3','ch4-boss-m4'],when:{notFlag:'ledger-fixed'}},
-    {id:'chief-fixed',type:'npc',at:{x:6,y:1},npc:'ledgerOcto',sprite:'boss-ledger-octo',frame:3,missions:['ch4-boss-m1','ch4-boss-m2','ch4-boss-m3','ch4-boss-m4'],when:{flag:'ledger-fixed'},talk:['기록이 다시 가지런해졌어요.\n함께 항구를 살펴봐요.']},
+    {id:'chief',type:'npc',at:{x:6,y:1},npc:'ledgerOcto',missions:['ch4-boss-m1','ch4-boss-m2','ch4-boss-m3','ch4-boss-m4'],talk: ['공책 여덟 권을 한꺼번에 펼쳤어요.', '같은 날의 메모가 어디 있었죠?', '물방울이 번진 줄에 표시해 뒀어요.'], when:{notFlag:'ledger-fixed'}},
+    {id:'chief-fixed',type:'npc',at:{x:6,y:1},npc:'ledgerOcto',sprite:'boss-ledger-octo',frame:3,missions:['ch4-boss-m1','ch4-boss-m2','ch4-boss-m3','ch4-boss-m4'],when:{flag:'ledger-fixed'},talk:['기록이 다시 가지런해졌어요.\n함께 항구를 살펴봐요.', '팔마다 다른 기록을 들고 있어요.\n서로 맞춰 볼 때가 제일 즐거워요.']},
     {id:'to-village',type:'portal',at:{x:8,y:1},to:{map:'village',at:{x:12,y:14}},label:'코딩 마을',when:{flag:'ch4-clear'}},
   ],
 };

@@ -11,8 +11,8 @@ export const labdeep: MapDef={
   {id:'jar-one',type:'prop',at:{x:3,y:3},sprite:'prop-jar',solid:true},
   {id:'jar-two',type:'prop',at:{x:9,y:2},sprite:'prop-jar',frame:1,solid:true},
   {id:'chest-labdeep',type:'chest',at:{x:15,y:8},reward:{xp:12,coins:25,items:[{id:'jelly',qty:2}]}},
-  {id:'chief',type:'npc',at:{x:16,y:2},npc:'shiftKing',missions:['ch5-boss-m1','ch5-boss-quiz','ch5-boss-m2'],when:{notFlag:'shift-fixed'}},
-  {id:'chief-fixed',type:'npc',at:{x:16,y:2},npc:'shiftKing',sprite:'boss-shift-king',frame:3,missions:['ch5-boss-m1','ch5-boss-quiz','ch5-boss-m2'],when:{flag:'shift-fixed'},talk:['처음 보는 표본도 살펴봤군요.\n마을에 새 연구 도구가 생겼어요.']},
+  {id:'chief',type:'npc',at:{x:16,y:2},npc:'shiftKing',missions:['ch5-boss-m1','ch5-boss-quiz','ch5-boss-m2'],talk: ['제가 모양을 바꾸면 알아볼까요?', '연구 노트의 빈칸이 궁금해요.', '비슷한 두 표본이 눈에 밟혀요.'], when:{notFlag:'shift-fixed'}},
+  {id:'chief-fixed',type:'npc',at:{x:16,y:2},npc:'shiftKing',sprite:'boss-shift-king',frame:3,missions:['ch5-boss-m1','ch5-boss-quiz','ch5-boss-m2'],when:{flag:'shift-fixed'},talk:['처음 보는 표본도 살펴봤군요.\n마을에 새 연구 도구가 생겼어요.', '어제는 동그랗고 오늘은 길쭉해요.\n저를 어떤 특징으로 알아봤어요?']},
   {id:'to-village',type:'portal',at:{x:17,y:2},to:{map:'village',at:{x:12,y:14}},label:'코딩 마을',when:{flag:'ch5-clear'}},
  ],
 };

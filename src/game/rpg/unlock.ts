@@ -1,4 +1,4 @@
-import { CHAPTERS } from '../../data/chapters';
+import { CHAPTERS, requiredMissions } from '../../data/chapters';
 import type { Chapter, SaveData } from '../../data/schema';
 
 /**
@@ -27,7 +27,7 @@ export function isOpened(unlock: ClassUnlock, chapter: Chapter): boolean {
 
 /** 장의 미션을 모두 끝냈는지 */
 export function chapterDone(chapter: Chapter, done: Done): boolean {
-  return chapter.parts.every((p) => p.missions.every((m) => done(m.id)));
+  return chapter.parts.every((p) => requiredMissions(p).every((m) => done(m.id)));
 }
 
 /** 마을 연습(0장)을 마쳤는지: 건너뛰기 전에 조작·로비·첫 장비·연습 전투는 꼭 해요. */
@@ -84,5 +84,5 @@ export function guideOrder(unlock: ClassUnlock, here?: string): Chapter[] {
 /** 지금 하고 있는 장: 안내 순서에서 아직 끝내지 않은 첫 장(모두 끝냈으면 길의 마지막 장) */
 export function currentChapter(unlock: ClassUnlock, done: Done, here?: string): Chapter {
   const path = classPath(unlock);
-  return guideOrder(unlock, here).find((c) => c.parts.some((p) => p.missions.some((m) => m.data !== undefined && !done(m.id)))) ?? path[path.length - 1];
+  return guideOrder(unlock, here).find((c) => c.parts.some((p) => requiredMissions(p).some((m) => m.data !== undefined && !done(m.id)))) ?? path[path.length - 1];
 }

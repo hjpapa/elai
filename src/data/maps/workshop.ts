@@ -10,7 +10,7 @@ export const workshop: MapDef={
  objects:[
   {id:'chest-exhibition',type:'chest',at:{x:11,y:7},reward:{coins:8,items:[{id:'jelly',qty:1}]}},
   {id:'sign-exhibition',type:'sign',at:{x:13,y:7},text:'원하는 색과 모양을 적어요.\n나온 작품을 보고 고쳐 봐요.'},
-  {id:'zen',type:'npc',at:{x:8,y:8},npc:'zen',missions:['ch7-p1-m1','ch7-p2-m1','ch7-p2-m2','ch7-p2-m3','ch7-p3-m1'],talk:['주문서는 부탁하는 글이에요.\n원하는 조건을 또렷하게 알려요.','이름·주소·전화번호·학교·얼굴 사진은\nAI에게 보내지 않아요.']},
+  {id:'zen',type:'npc',at:{x:8,y:8},npc:'zen',missions:['ch7-p1-m1','ch7-p1-x1','ch7-p2-m1','ch7-p2-m2','ch7-p2-m3','ch7-p3-m1','ch7-p3-x1'],talk:['주문서는 부탁하는 글이에요.\n원하는 조건을 또렷하게 알려요.','이름·주소·전화번호·학교·얼굴 사진은\nAI에게 보내지 않아요.', '어떤 날은 같은 부탁을 두 번 읽어요.\n듣는 사람이 다르면 말도 바뀌죠.']},
   {id:'parrot-a',type:'mob',at:{x:13,y:5},mob:'babbleParrot',wander:1},
   {id:'parrot-b',type:'mob',at:{x:14,y:12},mob:'babbleParrot',wander:1},
   {id:'chest-workshop',type:'chest',at:{x:2,y:4},reward:{xp:15,coins:30,items:[{id:'apple',qty:2}]}},

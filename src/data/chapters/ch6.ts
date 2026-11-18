@@ -58,8 +58,42 @@ export const ch6: Chapter = {
       "hint": "낮은 숫자부터 하나씩 이어 가요.\n벽을 건너뛰거나 멀리 뛰지 않아요.",
       "explain": "가까운 칸부터 차례로 살펴보면\n걸음 수가 가장 적은 길을 찾아요."
     }
-  }
-],
+  },
+        {
+          "id": "ch6-p1-x1",
+          "kind": "classify",
+          "title": "두 갈래 별길",
+          "npc": "astronomer",
+          "optional": true,
+          "reward": {
+            "coins": 8
+          },
+          "data": {
+            "mode": "search",
+            "intro": "별 우체통까지 두 길이 이어져요.\n걸음 수가 적은 길을 골라요.",
+            "cards": [
+              {
+                "id": "lanes",
+                "label": "별 우체통",
+                "group": "path",
+                "features": [
+                  "#######",
+                  "#S....#",
+                  "#.###.#",
+                  "#.###.#",
+                  "#.###.#",
+                  "#.###G#",
+                  "#.....#",
+                  "#######"
+                ]
+              }
+            ],
+            "groups": [],
+            "hint": "깃발보다 아래로 내려가면\n다시 올라오는 걸음도 세어야 해요.",
+            "explain": "이어진 길이 여럿일 때에는\n걸음 수를 비교해 길을 골라요."
+          }
+        }
+      ],
     },
     {
       id: 'ch6-p2',
@@ -213,15 +247,162 @@ export const ch6: Chapter = {
       "hint": "맑음과 비의 기록을 고르게 골라요.\n배운 뒤 시험 결과를 살펴봐요.",
       "explain": "이번 자료에서는 가까운 기록으로\n새 기록의 날씨를 맞혀 봤어요."
     }
-  }
-],
+  },
+        {
+          "id": "ch6-p2-x1",
+          "kind": "train",
+          "title": "별똥별 관측 예보",
+          "npc": "astronomer",
+          "optional": true,
+          "reward": {
+            "coins": 8
+          },
+          "data": {
+            "features": [
+              "구름 양",
+              "달빛",
+              "바람 세기"
+            ],
+            "labels": [
+              {
+                "id": "seen",
+                "label": "보여요"
+              },
+              {
+                "id": "hidden",
+                "label": "안 보여요"
+              }
+            ],
+            "examples": [
+              {
+                "id": "e1",
+                "features": [
+                  1,
+                  1,
+                  2
+                ],
+                "label": "seen"
+              },
+              {
+                "id": "e2",
+                "features": [
+                  2,
+                  2,
+                  1
+                ],
+                "label": "seen"
+              },
+              {
+                "id": "e3",
+                "features": [
+                  1,
+                  3,
+                  1
+                ],
+                "label": "seen"
+              },
+              {
+                "id": "e4",
+                "features": [
+                  3,
+                  1,
+                  2
+                ],
+                "label": "seen"
+              },
+              {
+                "id": "e5",
+                "features": [
+                  7,
+                  8,
+                  7
+                ],
+                "label": "hidden"
+              },
+              {
+                "id": "e6",
+                "features": [
+                  9,
+                  8,
+                  8
+                ],
+                "label": "hidden"
+              },
+              {
+                "id": "e7",
+                "features": [
+                  8,
+                  7,
+                  9
+                ],
+                "label": "hidden"
+              },
+              {
+                "id": "e8",
+                "features": [
+                  8,
+                  9,
+                  8
+                ],
+                "label": "hidden"
+              }
+            ],
+            "tests": [
+              {
+                "id": "t1",
+                "features": [
+                  2,
+                  1,
+                  1
+                ],
+                "label": "seen"
+              },
+              {
+                "id": "t2",
+                "features": [
+                  8,
+                  8,
+                  9
+                ],
+                "label": "hidden"
+              },
+              {
+                "id": "t3",
+                "features": [
+                  1,
+                  2,
+                  3
+                ],
+                "label": "seen"
+              },
+              {
+                "id": "t4",
+                "features": [
+                  9,
+                  9,
+                  7
+                ],
+                "label": "hidden"
+              }
+            ],
+            "minExamples": 8,
+            "k": 3,
+            "saveModel": false,
+            "threshold": 1,
+            "presetLabels": true,
+            "intro": "섬의 관측 연습 기록을 읽어요.\n그날 별똥별이 보였을까요?",
+            "hint": "새 기록과 비슷한 날에는\n별똥별을 보았는지 살펴봐요.",
+            "explain": "이 모델은 연습 기록으로 예측해요.\n실제 밤하늘은 더 복잡해요."
+          }
+        }
+      ],
     },
     {
       id: 'ch6-p3',
       kind: 'part',
       title: '데이터가 적으면? 많으면?',
       summary: '데이터 양을 바꿔 가며 예측 정확도를 비교해요.',
-      activity: '같은 시험 자료에 학습 예시 2개와 8개를 적용해 정확도 막대를 비교해요.',
+      activity: '같은 시험 자료에 학습 예시 수와 이름표를 바꾸어 정확도 막대를 비교해요.',
       missions: [
   {
     "id": "ch6-p3-m1",
@@ -233,7 +414,7 @@ export const ch6: Chapter = {
       "robiPart": "predictModule"
     },
     "data": {
-      "intro": "같은 시험에 예시 수만 바꿔 봐요.\n두 결과의 맞힌 비율을 비교해요.",
+      "intro": "구름·바람·습도 기록으로 비를 예측해요.\n예시 수만 바꾸며 시험해 봐요.",
       "features": [
         "구름 양",
         "바람 세기",
@@ -251,136 +432,328 @@ export const ch6: Chapter = {
       ],
       "examples": [
         {
-          "id": "weather1",
-          "features": [
-            1,
-            1,
-            2
-          ],
-          "label": "sunny"
-        },
-        {
-          "id": "weather2",
-          "features": [
-            2,
-            2,
-            1
-          ],
-          "label": "sunny"
-        },
-        {
-          "id": "weather3",
-          "features": [
-            1,
-            3,
-            2
-          ],
-          "label": "sunny"
-        },
-        {
-          "id": "weather4",
+          "id": "sky1",
           "features": [
             3,
-            1,
+            4,
+            4
+          ],
+          "label": "sunny"
+        },
+        {
+          "id": "sky2",
+          "features": [
+            9,
+            5,
+            6
+          ],
+          "label": "rain"
+        },
+        {
+          "id": "sky3",
+          "features": [
+            3,
+            3,
             3
           ],
           "label": "sunny"
         },
         {
-          "id": "weather5",
+          "id": "sky4",
           "features": [
-            7,
-            7,
+            2,
+            6,
             8
           ],
           "label": "rain"
         },
         {
-          "id": "weather6",
+          "id": "sky5",
           "features": [
             8,
-            8,
+            3,
+            3
+          ],
+          "label": "sunny"
+        },
+        {
+          "id": "sky6",
+          "features": [
+            7,
+            6,
+            8
+          ],
+          "label": "rain"
+        },
+        {
+          "id": "sky7",
+          "features": [
+            7,
+            3,
+            3
+          ],
+          "label": "sunny"
+        },
+        {
+          "id": "sky8",
+          "features": [
+            7,
+            4,
+            6
+          ],
+          "label": "rain"
+        },
+        {
+          "id": "sky9",
+          "features": [
+            9,
+            3,
+            2
+          ],
+          "label": "sunny"
+        },
+        {
+          "id": "sky10",
+          "features": [
+            3,
+            4,
             7
           ],
           "label": "rain"
         },
         {
-          "id": "weather7",
+          "id": "sky11",
           "features": [
-            7,
-            9,
-            8
+            8,
+            3,
+            2
           ],
-          "label": "rain"
+          "label": "sunny"
         },
         {
-          "id": "weather8",
+          "id": "sky12",
           "features": [
-            9,
-            7,
-            9
+            2,
+            4,
+            6
           ],
           "label": "rain"
         }
       ],
       "tests": [
         {
-          "id": "forecast1",
-          "features": [
-            2,
-            1,
-            2
-          ],
-          "label": "sunny"
-        },
-        {
-          "id": "forecast2",
+          "id": "skyTest1",
           "features": [
             2,
             3,
-            2
+            4
           ],
           "label": "sunny"
         },
         {
-          "id": "forecast3",
+          "id": "skyTest2",
           "features": [
-            8,
-            7,
+            9,
+            6,
             8
           ],
           "label": "rain"
         },
         {
-          "id": "forecast4",
+          "id": "skyTest3",
+          "features": [
+            9,
+            4,
+            3
+          ],
+          "label": "sunny"
+        },
+        {
+          "id": "skyTest4",
+          "features": [
+            3,
+            5,
+            7
+          ],
+          "label": "rain"
+        },
+        {
+          "id": "skyTest5",
+          "features": [
+            2,
+            2,
+            2
+          ],
+          "label": "sunny"
+        },
+        {
+          "id": "skyTest6",
           "features": [
             8,
-            9,
-            8
+            5,
+            7
+          ],
+          "label": "rain"
+        },
+        {
+          "id": "skyTest7",
+          "features": [
+            8,
+            2,
+            2
+          ],
+          "label": "sunny"
+        },
+        {
+          "id": "skyTest8",
+          "features": [
+            1,
+            6,
+            6
           ],
           "label": "rain"
         }
       ],
-      "minExamples": 6,
+      "minExamples": 12,
       "k": 3,
       "threshold": 1,
       "presetLabels": true,
       "saveModel": false,
-      "hint": "맑음과 비의 기록을 고르게 골라요.\n배운 뒤 시험 결과를 살펴봐요.",
-      "explain": "이번에는 고른 예시가 도움이 됐어요.\n많아도 틀린 자료라면 잘못 배워요.",
+      "hint": "맑음과 비는 늘 같은 수예요.\n막대가 어떻게 달라지는지 봐요.",
+      "explain": "여러 상황을 고루 보면 더 잘 맞혀요.\n이름표가 틀리면 많아도 나빠져요.",
       "comparison": {
-        "smallCount": 2,
-        "question": "이번 시험에서 무엇을 알 수 있나요?",
-        "choices": [
-          "예시가 많으면 언제나 완벽해요",
-          "여러 종류를 고르게 모으는 것이 좋아요",
-          "예측은 절대 틀리지 않아요"
+        "trials": [
+          {
+            "id": "amount2",
+            "label": "예시 2개",
+            "examples": [
+              "sky1",
+              "sky2"
+            ]
+          },
+          {
+            "id": "amount4",
+            "label": "예시 4개",
+            "examples": [
+              "sky1",
+              "sky2",
+              "sky3",
+              "sky4"
+            ]
+          },
+          {
+            "id": "amount8",
+            "label": "예시 8개",
+            "examples": [
+              "sky1",
+              "sky2",
+              "sky3",
+              "sky4",
+              "sky5",
+              "sky6",
+              "sky7",
+              "sky8"
+            ]
+          },
+          {
+            "id": "amount12",
+            "label": "예시 12개",
+            "examples": [
+              "sky1",
+              "sky2",
+              "sky3",
+              "sky4",
+              "sky5",
+              "sky6",
+              "sky7",
+              "sky8",
+              "sky9",
+              "sky10",
+              "sky11",
+              "sky12"
+            ]
+          },
+          {
+            "id": "noisy12",
+            "label": "12개, 이름표 3개 틀림",
+            "examples": [
+              "sky1",
+              "sky2",
+              "sky3",
+              "sky4",
+              "sky5",
+              "sky6",
+              "sky7",
+              "sky8",
+              "sky9",
+              "sky10",
+              "sky11",
+              "sky12"
+            ],
+            "wrongLabels": {
+              "sky4": "sunny",
+              "sky7": "rain",
+              "sky12": "sunny"
+            }
+          }
         ],
-        "answer": 1
+        "finalTrial": "amount12",
+        "question": "이번 실험에서 알 수 있는 것은?",
+        "choices": [
+          "고른 자료가 늘수록 더 잘 맞혔어요",
+          "예시가 많으면 언제나 100%예요",
+          "이름표가 틀려도 많기만 하면 돼요"
+        ],
+        "answer": 0
       }
     }
-  }
-],
+  },
+        {
+          "id": "ch6-p3-x1",
+          "kind": "quiz",
+          "title": "정확도 막대 읽기",
+          "npc": "astronomer",
+          "optional": true,
+          "reward": {
+            "coins": 8
+          },
+          "data": {
+            "intro": "관측소의 다섯 막대를 읽어요.\n무엇을 바꾼 시험인지 살펴봐요.",
+            "questions": [
+              {
+                "q": "예시를 2·4·8·12개로 늘렸더니\n50·75·88·100%예요. 이번 결과는요?",
+                "choices": [
+                  "예시가 늘며 더 잘 맞혔어요",
+                  "시험 문제가 갈수록 줄었어요",
+                  "막대가 길수록 비가 자주 왔어요"
+                ],
+                "answer": 0,
+                "explain": "같은 시험 자료에서 바른\n예시 수를 늘린 결과예요."
+              },
+              {
+                "q": "이름표 세 개를 틀리니 75%예요.\n영향을 살필 비교 대상은요?",
+                "choices": [
+                  "같은 점수인 예시 4개의 75%",
+                  "바른 예시 12개의 100%",
+                  "예시가 가장 적은 2개의 50%"
+                ],
+                "answer": 1,
+                "explain": "두 시험의 예시 수를 12개로\n맞춰야 이름표만 달라져요."
+              },
+              {
+                "q": "여덟 문제를 모두 맞혔어요. 다른\n날의 예측은 어떻게 확인할까요?",
+                "choices": [
+                  "맞힌 여덟 문제만 계속 풀어요",
+                  "마지막 시험 점수를 그대로 써요",
+                  "새날의 실제 기록과 비교해요"
+                ],
+                "answer": 2,
+                "explain": "이번 시험에 없던 날에도 맞는지는\n새 기록으로 살펴야 해요."
+              }
+            ]
+          }
+        }
+      ],
     },
     {
       id: 'ch6-boss',
@@ -399,7 +772,7 @@ export const ch6: Chapter = {
     },
     "data": {
       "mode": "search",
-      "intro": "한 걸음씩 물결을 퍼뜨려 봐요.\n숫자를 보며 가장 짧은 길을 골라요.",
+      "intro": "별빛 미궁이 더 넓어졌어요.\n물결 숫자로 짧은 길을 찾아요.",
       "cards": [
         {
           "id": "maze",
@@ -417,8 +790,8 @@ export const ch6: Chapter = {
         }
       ],
       "groups": [],
-      "hint": "낮은 숫자부터 하나씩 이어 가요.\n벽을 건너뛰거나 멀리 뛰지 않아요.",
-      "explain": "가까운 칸부터 차례로 살펴보면\n걸음 수가 가장 적은 길을 찾아요."
+      "hint": "깃발에 닿은 숫자를 살펴봐요.\n한 칸씩 줄어드는 길을 짚어요.",
+      "explain": "넓은 미궁에도 물결이 퍼져요.\n깃발의 숫자가 가장 적은 걸음 수예요."
     }
   },
   {
@@ -450,34 +823,34 @@ export const ch6: Chapter = {
     "data": {
       "questions": [
         {
-          "q": "물결 탐색은 어디부터 살펴보나요?",
+          "q": "별길 입구에서 물결 탐색을\n시작해요. 먼저 살펴볼 칸은요?",
           "choices": [
-            "가까운 칸부터",
-            "아무 칸부터",
-            "가장 먼 칸부터"
-          ],
-          "answer": 0,
-          "explain": "한 걸음, 두 걸음 거리로 넓혀 가며\n가장 짧은 길을 찾을 수 있어요."
-        },
-        {
-          "q": "예측이 비라고 하면 꼭 비가 올까요?",
-          "choices": [
-            "언제나 맞아요",
-            "틀릴 수도 있어요",
-            "자료는 필요 없어요"
-          ],
-          "answer": 1,
-          "explain": "예측은 기록에서 찾은 가능성이에요.\n실제 결과와 다를 수도 있어요."
-        },
-        {
-          "q": "어떤 학습 자료가 좋을까요?",
-          "choices": [
-            "한 종류만 아주 많이 모아요",
-            "잘못 적혀도 많기만 하면 돼요",
-            "여러 상황을 정확하게 기록해요"
+            "목표와 모양이 닮은 칸",
+            "지도의 가운데 있는 칸",
+            "입구와 이어진 옆 칸"
           ],
           "answer": 2,
-          "explain": "자료의 수뿐 아니라 종류와 정확함도\n판단에 영향을 줘요."
+          "explain": "출발점에서 한 칸, 두 칸씩\n넓히면 가까운 곳부터 살펴요."
+        },
+        {
+          "q": "기록을 보고 내일 비를 예측했어요.\n다음 날 무엇을 할까요?",
+          "choices": [
+            "실제 날씨와 비교해요",
+            "예측대로 관측 기록을 고쳐요",
+            "틀린 날에는 기록을 빼요"
+          ],
+          "answer": 0,
+          "explain": "예측은 예상이에요. 실제 관측과\n비교해야 얼마나 맞는지 알아요."
+        },
+        {
+          "q": "비 오는 날을 예측할 자료를 고른다면요?",
+          "choices": [
+            "맑은 날만 아주 많이 모은 값",
+            "여러 날의 바른 관측값",
+            "확인 없이 이름을 붙인 값"
+          ],
+          "answer": 1,
+          "explain": "다양한 상황과 맞는 이름표가\n있어야 두 날씨의 차이를 배워요."
         }
       ]
     }

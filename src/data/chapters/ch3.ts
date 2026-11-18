@@ -53,8 +53,36 @@ export const ch3: Chapter = {
       "hint": "반복 안에 만약을 넣어요.\n빨강이면 쉬고, 아니면 앞으로 가요.",
       "explain": "조건은 무엇을 할지 정하는 기준이에요.\n신호에 맞게 다르게 움직였어요."
     }
-  }
-],
+  },
+        {
+          "id": "ch3-p1-x1",
+          "kind": "blockCode",
+          "title": "두 번째 신호등",
+          "npc": "guide",
+          "optional": true,
+          "reward": {
+            "coins": 8
+          },
+          "data": {
+            "intro": "깃발 앞에 신호등이 둘 있어요.\n둘 다 살피며 길을 건너요.",
+            "grid": [
+              "S!..!..G"
+            ],
+            "palette": [
+              "forward",
+              "wait"
+            ],
+            "allowRepeat": true,
+            "allowIf": [
+              "signalRed"
+            ],
+            "optimal": 4,
+            "maxBlocks": 4,
+            "hint": "방금 지나온 신호와 달라도\n다음 신호를 보고 정하면 돼요.",
+            "explain": "신호를 볼 때마다 판단하면\n새 신호등에서도 규칙이 통해요."
+          }
+        }
+      ],
     },
     {
       id: 'ch3-p2',
@@ -102,7 +130,7 @@ export const ch3: Chapter = {
       "xp": 15
     },
     "data": {
-      "intro": "센서로 앞에 막힌 칸이 있는지 봐요.\n막혔으면 돌고, 아니면 앞으로 가요.",
+      "intro": "길 모양이 달라졌어요.\n앞을 살피는 규칙을 써 볼까요?",
       "grid": [
         "S..",
         "##.",
@@ -119,8 +147,8 @@ export const ch3: Chapter = {
       ],
       "optimal": 4,
       "maxBlocks": 4,
-      "hint": "만약 앞이 막혔으면 오른쪽으로 돌아요.\n아니면 앞으로 가요. 반복도 써요.",
-      "explain": "센서는 주변을 알아내는 장치예요.\n조건에 따라 다른 명령을 실행해요."
+      "hint": "길을 외울 필요가 없어요.\n앞이 막힌 때만 돌아요.",
+      "explain": "길 모양이 바뀌어도\n같은 규칙으로 걸을 수 있어요."
     }
   },
   {
@@ -133,7 +161,7 @@ export const ch3: Chapter = {
       "robiPart": "sensor"
     },
     "data": {
-      "intro": "센서로 앞에 막힌 칸이 있는지 봐요.\n막혔으면 돌고, 아니면 앞으로 가요.",
+      "intro": "이번 길은 더 길어요.\n블록 네 개로 갈 수 있을까요?",
       "grid": [
         "S...",
         "###.",
@@ -150,8 +178,8 @@ export const ch3: Chapter = {
       ],
       "optimal": 4,
       "maxBlocks": 4,
-      "hint": "만약 앞이 막혔으면 오른쪽으로 돌아요.\n아니면 앞으로 가요. 반복도 써요.",
-      "explain": "센서는 주변을 알아내는 장치예요.\n조건에 따라 다른 명령을 실행해요."
+      "hint": "길어진 만큼 블록을 늘릴까요?\n같은 판단을 되풀이해 봐요.",
+      "explain": "같은 네 블록을 되풀이해서\n더 긴 길도 끝까지 갔어요."
     }
   }
 ],
@@ -166,7 +194,7 @@ export const ch3: Chapter = {
   {
     "id": "ch3-p3-m1",
     "kind": "classify",
-    "title": "사막 동물 맞히기",
+    "title": "스무고개 동물 맞히기",
     "npc": "guide",
     "reward": {
       "xp": 20
@@ -198,7 +226,7 @@ export const ch3: Chapter = {
           "label": "고양이",
           "group": "mammal",
           "features": [
-            "fur"
+            "milk"
           ]
         },
         {
@@ -206,7 +234,7 @@ export const ch3: Chapter = {
           "label": "여우",
           "group": "mammal",
           "features": [
-            "fur"
+            "milk"
           ]
         },
         {
@@ -268,17 +296,131 @@ export const ch3: Chapter = {
           "feature": "feathers"
         },
         {
-          "id": "fur",
-          "label": "털이 있나요?",
-          "feature": "fur"
+          "id": "milk",
+          "label": "새끼에게 젖을 먹이나요?",
+          "feature": "milk"
         }
       ],
       "maxQuestions": 3,
-      "hint": "날개만 있으면 새와 곤충이 섞여요.\n깃털과 털도 물어봐요.",
+      "hint": "날개만 있으면 새와 곤충이 섞여요.\n깃털과 젖 먹이기도 물어봐요.",
       "explain": "질문 규칙을 잇는 것이 질문 나무예요.\n카드의 특징으로 종류를 나눴어요."
     }
-  }
-],
+  },
+        {
+          "id": "ch3-p3-x1",
+          "kind": "classify",
+          "title": "교실 물건 스무고개",
+          "npc": "guide",
+          "optional": true,
+          "reward": {
+            "coins": 8
+          },
+          "data": {
+            "mode": "tree",
+            "intro": "물건 여덟 개를 쓰임으로 나눠요.\n어떤 특징을 물어볼까요?",
+            "cards": [
+              {
+                "id": "measure0",
+                "label": "나무 자",
+                "group": "measure",
+                "features": [
+                  "scale"
+                ]
+              },
+              {
+                "id": "measure1",
+                "label": "플라스틱 자",
+                "group": "measure",
+                "features": [
+                  "scale"
+                ]
+              },
+              {
+                "id": "cut0",
+                "label": "종이 가위",
+                "group": "cut",
+                "features": [
+                  "blades"
+                ]
+              },
+              {
+                "id": "cut1",
+                "label": "천 가위",
+                "group": "cut",
+                "features": [
+                  "blades"
+                ]
+              },
+              {
+                "id": "tape0",
+                "label": "풀 막대",
+                "group": "tape",
+                "features": [
+                  "sticky"
+                ]
+              },
+              {
+                "id": "tape1",
+                "label": "풀 통",
+                "group": "tape",
+                "features": [
+                  "sticky"
+                ]
+              },
+              {
+                "id": "store0",
+                "label": "연필통",
+                "group": "store",
+                "features": []
+              },
+              {
+                "id": "store1",
+                "label": "물감 통",
+                "group": "store",
+                "features": []
+              }
+            ],
+            "groups": [
+              {
+                "id": "measure",
+                "label": "길이 재기"
+              },
+              {
+                "id": "cut",
+                "label": "자르기"
+              },
+              {
+                "id": "tape",
+                "label": "붙이기"
+              },
+              {
+                "id": "store",
+                "label": "담기"
+              }
+            ],
+            "questions": [
+              {
+                "id": "scale",
+                "label": "길이 눈금이 있나요?",
+                "feature": "scale"
+              },
+              {
+                "id": "blades",
+                "label": "두 날로 자르나요?",
+                "feature": "blades"
+              },
+              {
+                "id": "sticky",
+                "label": "풀로 붙이나요?",
+                "feature": "sticky"
+              }
+            ],
+            "maxQuestions": 3,
+            "hint": "한 질문 뒤에도 여러 쓰임이\n섞여 있다면 또 물어봐요.",
+            "explain": "묻는 특징을 하나씩 보태면\n같은 쓰임끼리 모을 수 있어요."
+          }
+        }
+      ],
     },
     {
       id: 'ch3-boss',
@@ -353,34 +495,34 @@ export const ch3: Chapter = {
     "data": {
       "questions": [
         {
-          "q": "조건은 어떤 역할을 하나요?",
+          "q": "갈림길에 선 로비는\n조건으로 무엇을 정할까요?",
           "choices": [
-            "상황에 맞는 행동을 골라요",
-            "항상 같은 행동만 해요",
-            "순서를 지워요"
+            "상황에 맞는 행동",
+            "언제나 같은 행동",
+            "길을 지난 횟수"
           ],
           "answer": 0,
-          "explain": "조건을 확인한 결과에 따라\n다른 명령을 실행해요."
+          "explain": "조건이 맞을 때와 아닐 때의\n행동을 나누어 정해요."
         },
         {
-          "q": "센서는 무엇을 하나요?",
+          "q": "처음 보는 길에서 벽 앞에 멈추려면\n센서가 무엇을 살펴야 할까요?",
           "choices": [
-            "바퀴를 돌려요",
-            "주변 정보를 알아내요",
-            "정답을 모두 외워요"
-          ],
-          "answer": 1,
-          "explain": "센서는 주변을 알아내는 입력 장치예요.\n로봇은 그 정보로 행동을 정해요."
-        },
-        {
-          "q": "질문 하나로 종류가 섞여 있다면?",
-          "choices": [
-            "아무 이름이나 붙여요",
-            "나누기를 포기해요",
-            "다른 특징도 질문해요"
+            "전에 벽을 몇 번 만났는지",
+            "끝까지 몇 칸을 걸어갈지",
+            "지금 앞에 벽이 있는지"
           ],
           "answer": 2,
-          "explain": "구별할 수 있는 특징을 더 물으면\n같은 종류끼리 나눌 수 있어요."
+          "explain": "센서는 지금 주변이 어떤지 살펴요.\n이 정보를 보고 행동을 골라요."
+        },
+        {
+          "q": "날개가 있는 동물을 모았더니 새와\n벌이 섞였어요. 다음에는요?",
+          "choices": [
+            "같은 질문을 또 해요",
+            "다른 특징을 물어요",
+            "모두 새로 이름 붙여요"
+          ],
+          "answer": 1,
+          "explain": "깃털처럼 두 무리가 다른 점을\n물으면 더 나눌 수 있어요."
         }
       ]
     }

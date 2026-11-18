@@ -1,5 +1,21 @@
-import type { Chapter } from '../schema';
+import type { Chapter, PromptData } from '../schema';
 import { imagePromptData } from './imagePromptData';
+
+const forestRobotRequest: PromptData = {
+  client: '숲 관찰 모임', request: '낮의 숲에 작은 로봇을 그려요.\n또렷한 픽셀 그림으로 부탁해요.',
+  initialChoice: { role: 'robot', how: 'day', format: 'pixel' },
+  image: imagePromptData.image,
+  fallback: { opening: '숲 모임의 주문서를 읽어요.', body: ['빠진 칸을 찾아 다시 부탁해요.'] },
+  slots: imagePromptData.slots.map(slot => {
+    const wanted = { role: 'robot', task: 'forest', how: 'day', format: 'pixel' }[slot.id];
+    return { ...slot, options: slot.options.map(option => ({
+      id: option.id, text: option.id === 'night' ? '별이 뜬 밤' : option.text,
+      quality: option.id === wanted ? 'good' : 'bad',
+      feedback: option.id === wanted ? undefined : '의뢰한 주인공·장소·시간·느낌을 살펴요.',
+    })) };
+  }),
+  explain: '빠진 조건을 보태 부탁하면\n원하는 그림에 가까워져요.',
+};
 
 export const ch7: Chapter = {
   id: 'ch7',
@@ -75,6 +91,52 @@ export const ch7: Chapter = {
   "explain": "많이 나온 말도 틀릴 수 있어요.\n글 모음에 따라 다음 말이 달라져요."
 },
         },
+        {
+          "id": "ch7-p1-x1",
+          "kind": "nextWord",
+          "title": "다른 글 모음",
+          "npc": "zen",
+          "optional": true,
+          "reward": {
+            "coins": 8
+          },
+          "data": {
+            "intro": "공방 소식과 인형극 글을 읽어요.\n같은 첫 낱말 뒤를 이어 봐요.",
+            "corpora": [
+              {
+                "id": "notice",
+                "label": "공방 소식",
+                "sentences": [
+                  "오늘 등불이 환하게 켜져요.",
+                  "오늘 등불이 길을 밝혀요.",
+                  "오늘 문이 활짝 열려요."
+                ]
+              },
+              {
+                "id": "play",
+                "label": "인형극 대본",
+                "sentences": [
+                  "오늘 등불이 노래를 불러요.",
+                  "오늘 토끼가 별을 따요.",
+                  "오늘 토끼가 달을 밀어요."
+                ]
+              }
+            ],
+            "start": "오늘",
+            "steps": 3,
+            "question": {
+              "q": "인형극에서 자주 나온 말은 섬 소식으로 써도 될까요?",
+              "choices": [
+                "많이 나온 순서만 확인해요",
+                "대본과 실제 기록을 구별해요",
+                "두 글 모음의 길이를 맞춰요"
+              ],
+              "answer": 1
+            },
+            "hint": "첫 낱말 뒤에 무엇이 많은지\n두 글 모음에서 각각 살펴요.",
+            "explain": "어떤 글을 모았는지에 따라\n그럴듯한 다음 말이 달라져요."
+          }
+        }
       ],
     },
     {
@@ -456,6 +518,17 @@ export const ch7: Chapter = {
           reward: { xp: 20, robiPart: 'talkModule' },
           data: imagePromptData,
         },
+        {
+          "id": "ch7-p3-x1",
+          "kind": "prompt",
+          "title": "숲속 로봇 그림",
+          "npc": "zen",
+          "optional": true,
+          "reward": {
+            "coins": 8
+          },
+          "data": forestRobotRequest
+        }
       ],
     },
     {
@@ -564,34 +637,34 @@ export const ch7: Chapter = {
       "intro": "이름·주소·전화번호·학교·얼굴 사진은\nAI 주문서에 넣지 않아요.",
       "questions": [
         {
-          "q": "AI에게 안전하게 부탁하는 말은?",
+          "q": "가상 섬 축제 안내문을 AI와\n쓰고 싶어요. 안전한 부탁은요?",
           "choices": [
-            "내 주소와 얼굴 사진을 넣어 줘",
-            "가상의 섬에 관한 짧은 이야기를 써 줘",
-            "우리 학교와 친구 전화번호를 넣어 줘"
+            "친구의 연락처로 안내장을 채워요",
+            "지어낸 섬 이름으로 안내해 줘요",
+            "실제 반 명단에서 등장인물을 골라요"
           ],
           "answer": 1,
-          "explain": "실제 개인정보 없이\n가상의 상황으로 부탁할 수 있어요."
+          "explain": "가상의 이름과 상황만으로도\n원하는 글을 부탁할 수 있어요."
         },
         {
-          "q": "AI 도움을 받아 글을 썼다면?",
+          "q": "AI 초안을 고쳐 모둠 소식지에\n실어요. 어떤 설명을 덧붙일까요?",
           "choices": [
-            "도움을 받은 부분을 밝혀요",
-            "전부 혼자 썼다고 해요",
-            "확인 없이 그대로 내요"
+            "AI가 도운 부분을 밝혀요",
+            "고친 글이니 도움은 숨겨요",
+            "첫 문장만 바꾸고 내 글로 써요"
           ],
           "answer": 0,
-          "explain": "AI 도움을 정직하게 밝히고\n내용은 사람이 확인해요."
+          "explain": "도움받은 부분을 알려야 읽는 사람이\n글을 만든 과정을 이해해요."
         },
         {
-          "q": "AI 답이 자신 있게 쓰여 있다면?",
+          "q": "AI가 섬의 역사를 자세하게\n썼어요. 발표 전 할 일은요?",
           "choices": [
-            "무조건 맞아요",
-            "확인할 필요가 없어요",
-            "믿을 만한 자료와 비교해요"
+            "원래 기록과 비교해요",
+            "말투가 자신 있는지만 봐요",
+            "같은 AI에 똑같이 다시 물어요"
           ],
-          "answer": 2,
-          "explain": "말투가 자신 있어도 틀릴 수 있어요.\n근거를 확인하는 습관을 가져요."
+          "answer": 0,
+          "explain": "그럴듯한 말도 틀릴 수 있어요.\n다른 근거로 사실을 확인해요."
         }
       ]
     }

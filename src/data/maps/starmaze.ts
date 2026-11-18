@@ -12,8 +12,8 @@ export const starmaze: MapDef={
   {id:'fox-maze',type:'mob',at:{x:10,y:6},mob:'cometFox',wander:1},
   {id:'chest-starmaze',type:'chest',at:{x:3,y:6},reward:{xp:15,coins:30,items:[{id:'jelly',qty:2}]}},
   {id:'star-a',type:'prop',at:{x:6,y:6},sprite:'prop-starlamp',frame:1,solid:true},
-  {id:'chief',type:'npc',at:{x:13,y:2},npc:'starFox',missions:['ch6-boss-maze','ch6-boss-m1','ch6-boss-quiz','ch6-boss-m2'],when:{notFlag:'star-fixed'}},
-  {id:'chief-fixed',type:'npc',at:{x:13,y:2},npc:'starFox',sprite:'boss-star-fox',frame:3,missions:['ch6-boss-maze','ch6-boss-m1','ch6-boss-quiz','ch6-boss-m2'],when:{flag:'star-fixed'},talk:['별빛이 돌아왔어요.\n앞으로도 기록을 함께 살펴봐요.']},
+  {id:'chief',type:'npc',at:{x:13,y:2},npc:'starFox',missions:['ch6-boss-maze','ch6-boss-m1','ch6-boss-quiz','ch6-boss-m2'],talk: ['별지도를 거꾸로 들고 왔어요.', '두 길이 모두 반짝여서 고민이에요.', '꼬리로 별을 세다 하나 놓쳤어요.'], when:{notFlag:'star-fixed'}},
+  {id:'chief-fixed',type:'npc',at:{x:13,y:2},npc:'starFox',sprite:'boss-star-fox',frame:3,missions:['ch6-boss-maze','ch6-boss-m1','ch6-boss-quiz','ch6-boss-m2'],when:{flag:'star-fixed'},talk:['별빛이 돌아왔어요.\n앞으로도 기록을 함께 살펴봐요.', '별 하나를 찍고 그 옆을 보아요.\n제 지도에 길이 보이기 시작해요.']},
   {id:'to-village',type:'portal',at:{x:14,y:2},to:{map:'village',at:{x:12,y:14}},label:'코딩 마을',when:{flag:'ch6-clear'}},
  ],
 };

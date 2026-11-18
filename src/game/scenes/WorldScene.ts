@@ -34,7 +34,8 @@ import {
   type Cell,
   type StepFn,
 } from '../iso/mapRuntime';
-import { GUIDE_EVENT, guideTarget, hasNewMission, type GuideTarget } from '../rpg/guide';
+import { getMission } from '../../data/chapters';
+import { GUIDE_EVENT, guideTarget, extraMissionFor, hasExtraMission, hasNewMission, type GuideTarget } from '../rpg/guide';
 import { canStart, entryChapter, portalGate } from '../rpg/progress';
 import { applySkipKit } from '../rpg/skip';
 import { DAYLIGHT_DEPTH, NO_DAYLIGHT, daylightNow, hasDayCycle } from '../daylight';
@@ -537,11 +538,13 @@ export class WorldScene extends Phaser.Scene {
     this.questNeed.clear();
     for (const v of this.views) {
       if (v.obj.type !== 'npc' || !v.actor) continue;
-      const need = v.actor.sprite.visible && hasNewMission(s, v.obj);
+      const required = hasNewMission(s, v.obj);
+      const need = v.actor.sprite.visible && (required || hasExtraMission(s, v.obj));
       if (need) this.questNeed.add(v);
       if (need && !this.questMarks.has(v)) {
         this.questMarks.set(v, fitArt(this.add.image(0, 0, 'icon-quest-new')).setOrigin(0.5, 1).setDepth(900000));
       }
+      this.questMarks.get(v)?.setTint(required ? 0xffffff : 0x82cce0);
     }
     if (this.target?.kind === 'portal') {
       this.targetMark ??= fitArt(this.add.image(0, 0, 'icon-guide-arrow')).setAngle(90).setDepth(900000);
@@ -1091,10 +1094,14 @@ export class WorldScene extends Phaser.Scene {
     const s = app.state;
     const o = v.obj;
     const ids = o.missions ?? [];
-    const next = ids.find((id) => !s.missionDone(id));
+    const next = ids.find((id) => !getMission(id)?.mission.optional && !s.missionDone(id));
     if (next) {
       if (canStart(s, next)) {
-        await app.missions.run(next);
+        const result = await app.missions.run(next);
+        if (result?.success) {
+          const extra = extraMissionFor(s, ids, next);
+          if (extra && getMission(extra)?.part === getMission(next)?.part) await this.offerExtra(extra);
+        }
         this.dirty = true;
         app.hud.refresh();
       } else {
@@ -1105,9 +1112,18 @@ export class WorldScene extends Phaser.Scene {
     const lines = o.talk?.length ? o.talk : ['고마워요, 탐험가!'];
     await app.ui.dialogue([{ who: o.npc, text: lines[v.talkIndex % lines.length] }]);
     v.talkIndex++;
+    const extra = extraMissionFor(s, ids);
+    if (extra) return this.offerExtra(extra);
     const replay = ids.find((id) => (s.data.missions[id]?.stars ?? 0) < 3 && canStart(s, id));
     if (replay && (await app.ui.confirm('별을 더 받으러 미션을 다시 해 볼까요?', '다시 하기', '괜찮아요'))) {
       await app.missions.run(replay);
+      this.dirty = true;
+    }
+  }
+
+  private async offerExtra(id: string): Promise<void> {
+    if (await app.ui.confirm('더 해 볼 미션이 있어요.\n지금 해 볼까요?', '해 볼게요', '다음에요')) {
+      await app.missions.run(id);
       this.dirty = true;
     }
   }

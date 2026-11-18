@@ -68,24 +68,24 @@ export const ch5: Chapter = {
     "data": {
       "questions": [
         {
-          "q": "사과와 토마토가 둘 다 빨갛다면?",
+          "q": "빨간 사과와 빨간 토마토를 가려야\n해요. 어떤 특징을 더 볼까요?",
           "choices": [
-            "빨강만으로 완전히 구별해요",
-            "모양과 꼭지도 함께 살펴봐요",
-            "둘은 무조건 같은 종류예요"
+            "빨간색의 이름",
+            "바구니에 놓인 순서",
+            "꼭지와 모양"
           ],
-          "answer": 1,
-          "explain": "특징은 대상을 구별하는 단서예요.\n여러 특징을 함께 살펴봐요."
+          "answer": 2,
+          "explain": "두 종류에 같은 색이 있으면\n모양처럼 다른 특징도 보아요."
         },
         {
-          "q": "픽셀은 무엇일까요?",
+          "q": "그림을 키우니 작은 색 칸이\n보여요. 픽셀은 무엇일까요?",
           "choices": [
-            "그림을 이루는 작은 칸",
-            "컴퓨터의 이름",
-            "그림의 제목"
+            "그림을 이루는 한 칸",
+            "같은 색 칸을 모은 줄",
+            "그림 전체의 가로 길이"
           ],
           "answer": 0,
-          "explain": "작은 칸마다 색을 나타내면\n칸들이 모여 그림이 돼요."
+          "explain": "작은 색 칸들이 모여\n하나의 그림을 이루어요."
         }
       ]
     }
@@ -340,7 +340,7 @@ export const ch5: Chapter = {
       "robiPart": "learningChip"
     },
     "data": {
-      "intro": "예시에 이름표를 붙여 학습해요.\n처음 보는 표본으로 시험해 봐요.",
+      "intro": "먼저 친구 예시만 가르쳐요.\n두 종류를 가르친 뒤와 비교해요.",
       "features": [
         "뛰는 높이",
         "점무늬 수"
@@ -460,10 +460,180 @@ export const ch5: Chapter = {
       "threshold": 1,
       "saveModel": true,
       "hint": "1~3은 친구, 7~9는 장난꾸러기예요.\n두 종류에서 고르게 예시를 골라요.",
-      "explain": "가까운 예시 세 개로 이름표를 정해요.\n학습한 모델을 전투에서 써 봐요."
+      "explain": "가까운 예시 세 개로 이름표를 정해요.\n학습한 모델을 전투에서 써 봐요.",
+      "comparison": {
+        "trials": [
+          {
+            "id": "friendOnly",
+            "label": "친구 예시만",
+            "examples": [
+              "sample1",
+              "sample2",
+              "sample3",
+              "sample4"
+            ]
+          },
+          {
+            "id": "both",
+            "label": "두 종류 모두",
+            "examples": [
+              "sample1",
+              "sample2",
+              "sample3",
+              "sample4",
+              "sample5",
+              "sample6",
+              "sample7",
+              "sample8"
+            ]
+          }
+        ],
+        "finalTrial": "both",
+        "question": "친구 예시만 배운 모델은 왜 틀렸을까요?",
+        "choices": [
+          "장난꾸러기를 본 적이 없어서요",
+          "시험 문제가 너무 적어서요",
+          "예시에 숫자가 있어서요"
+        ],
+        "answer": 0
+      }
     }
-  }
-],
+  },
+        {
+          "id": "ch5-p3-x1",
+          "kind": "train",
+          "title": "헷갈리는 표본",
+          "npc": "researcher",
+          "optional": true,
+          "reward": {
+            "coins": 8
+          },
+          "data": {
+            "features": [
+              "뛰는 높이",
+              "점무늬 수"
+            ],
+            "labels": [
+              {
+                "id": "friend",
+                "label": "친구"
+              },
+              {
+                "id": "playful",
+                "label": "장난꾸러기"
+              }
+            ],
+            "examples": [
+              {
+                "id": "e1",
+                "features": [
+                  1,
+                  1
+                ],
+                "label": "friend"
+              },
+              {
+                "id": "e2",
+                "features": [
+                  1,
+                  3
+                ],
+                "label": "friend"
+              },
+              {
+                "id": "e3",
+                "features": [
+                  3,
+                  1
+                ],
+                "label": "friend"
+              },
+              {
+                "id": "e4",
+                "features": [
+                  3,
+                  3
+                ],
+                "label": "friend"
+              },
+              {
+                "id": "e5",
+                "features": [
+                  7,
+                  7
+                ],
+                "label": "playful"
+              },
+              {
+                "id": "e6",
+                "features": [
+                  7,
+                  9
+                ],
+                "label": "playful"
+              },
+              {
+                "id": "e7",
+                "features": [
+                  9,
+                  7
+                ],
+                "label": "playful"
+              },
+              {
+                "id": "e8",
+                "features": [
+                  9,
+                  9
+                ],
+                "label": "playful"
+              }
+            ],
+            "tests": [
+              {
+                "id": "t1",
+                "features": [
+                  2,
+                  2
+                ],
+                "label": "friend"
+              },
+              {
+                "id": "t2",
+                "features": [
+                  8,
+                  8
+                ],
+                "label": "playful"
+              },
+              {
+                "id": "t3",
+                "features": [
+                  2,
+                  3
+                ],
+                "label": "friend"
+              },
+              {
+                "id": "t4",
+                "features": [
+                  4,
+                  4
+                ],
+                "label": "playful"
+              }
+            ],
+            "minExamples": 8,
+            "k": 3,
+            "saveModel": false,
+            "threshold": 0.75,
+            "presetLabels": true,
+            "intro": "연구원이 경계 표본을 가져왔어요.\n두 가지 특징만으로 나눠 봐요.",
+            "hint": "비슷해 보이는 표본도 있어요.\n예상과 실제 이름표를 대조해요.",
+            "explain": "모든 예시를 써도 틀릴 수 있어요.\n사람이 다시 살펴봐야 해요."
+          }
+        }
+      ],
     },
     {
       id: 'ch5-boss',
@@ -501,34 +671,34 @@ export const ch5: Chapter = {
     "data": {
       "questions": [
         {
-          "q": "이름표를 붙인 예시로 배우는 것은?",
+          "q": "연구원이 표본마다 종류를 적고 AI에\n보여 줘요. AI는 무엇으로 배울까요?",
           "choices": [
-            "지도학습",
-            "무작위 추측",
-            "자료 지우기"
-          ],
-          "answer": 0,
-          "explain": "입력과 정답 이름표를 함께 보고\n분류하는 규칙을 배워요."
-        },
-        {
-          "q": "친구 예시만 넣으면 어떻게 될까요?",
-          "choices": [
-            "모든 종류를 완벽히 알아요",
-            "장난꾸러기를 잘못 알아볼 수 있어요",
-            "시험이 필요 없어요"
+            "시험할 때 알려 준 정답",
+            "특징과 이름표의 짝",
+            "모은 표본의 차례만"
           ],
           "answer": 1,
-          "explain": "한쪽으로 치우친 예시만 보면\n다른 종류를 구별하기 어려워요."
+          "explain": "이름표가 있는 예시에서 특징과\n종류의 관계를 배워요."
         },
         {
-          "q": "학습 뒤 새 표본으로 시험하는 까닭은?",
+          "q": "친구 표본만 배운 로비가 장난꾸러기\n표본을 봤어요. 예상되는 일은요?",
           "choices": [
-            "외운 예시만 확인하려고",
-            "이름표를 없애려고",
-            "처음 보는 것에도 맞는지 보려고"
+            "친구로 잘못 고를 수 있어요",
+            "새 이름표를 저절로 만들어요",
+            "예전 표본과 같은 만큼 맞혀요"
+          ],
+          "answer": 0,
+          "explain": "배운 이름표가 한쪽에만 있으면\n다른 종류를 구별하기 어려워요."
+        },
+        {
+          "q": "학습에 쓴 표본을 모두 맞혔어요.\n다음 시험에 쓸 것은요?",
+          "choices": [
+            "이름표를 외운 표본",
+            "점수가 가장 높았던 표본",
+            "처음 보는 표본"
           ],
           "answer": 2,
-          "explain": "배운 예시와 다른 표본으로\n잘 구별하는지 확인해야 해요."
+          "explain": "새 표본으로 시험해야 처음 보는\n상황도 구별하는지 알 수 있어요."
         }
       ]
     }
