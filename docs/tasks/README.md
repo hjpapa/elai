@@ -8,8 +8,8 @@ Claude가 지시서를 쓰고, 사용자가 Codex 앱에서 실행해요.
    > `docs/tasks/codex-01-assets.md` 지시서대로 작업해 줘. `AGENTS.md` 규칙을 지켜 줘.
 3. Codex가 끝나면 Claude에게 "C1 끝났어"처럼 알려 주세요. Claude가 검토하고, 테스트한 뒤 커밋·머지해요.
 
-### 콘텐츠 대보강(C22 + C23 + C24, 2026-11-19, 검토 완료)
-Codex 앱 창 세 개에서 **동시에** 돌렸어요. 공통 규칙은 [codex-22-24-common.md](codex-22-24-common.md)예요. Claude가 세 브랜치를 `integrate/c22-c24`에 합쳐 검토하고 교사 페이지 연결까지 마쳤어요.
+### 콘텐츠 대보강(C22 + C23 + C24, 2026-11-19, 완료)
+Codex 앱 창 세 개에서 **동시에** 돌렸어요. 공통 규칙은 [codex-22-24-common.md](codex-22-24-common.md)예요. Claude가 세 브랜치를 `integrate/c22-c24`에 합쳐 검토하고 교사 페이지를 연결한 뒤, main에 합쳐 배포했어요.
 
 | 창 | 여는 폴더(브랜치) | 부탁할 말 |
 |---|---|---|
@@ -119,9 +119,9 @@ Codex 앱에서 `C:\code\elai-wt\codex-12`(브랜치 `codex/12-hires-chapters`)�
 | C19 | [codex-19-bakery.md](codex-19-bakery.md) — 마을 빵집·주문서 빵집 그림 5개(2배): 건물, 주문서 오븐, 케이크 진열대 7프레임, 빵 선반, 케이크 아이콘(2단계) | 완료(검토 통과, main 병합·배포 · 기록 [codex-19-progress.md](codex-19-progress.md)) |
 | C20 | [codex-20-fruitshop.md](codex-20-fruitshop.md) — 마을 과일 가게·과일 AI 가르치기 그림 5개(2배): 건물, 학습 로봇, 과일 상자 7프레임, 과일 매대, 과일 바구니 아이콘, 물결 카드 다듬기(3단계) | 완료(검토 통과, main 병합·배포 · 기록 [codex-20-progress.md](codex-20-progress.md)) |
 | C21 | [codex-21-demo-ready.md](codex-21-demo-ready.md) — 시연 준비: 시연 모드(`/?demo`), 전 화면 점검, 새 놀이 알림·도감 놀이 기록, 작은 다듬기, 시연 안내서(5단계) | 완료(검토 통과, main 병합·배포 · 기록 [codex-21-progress.md](codex-21-progress.md)) |
-| C22 | [codex-22-learning-content.md](codex-22-learning-content.md) — 학습 콘텐츠 대보강: 글·사실 오류, 선택 미션, 5·6장 실험, 퀴즈, NPC 대사, 교사용 안내 자료(7단계) | 완료(검토 통과, `integrate/c22-c24` 통합 · 기록 [codex-22-progress.md](codex-22-progress.md)) |
-| C23 | [codex-23-village-life.md](codex-23-village-life.md) — 마을 상점, 마을 꾸미기, 도감 완성, 건물 안 사람들, 장 이야기 장면(6단계) | 완료(검토 통과, `integrate/c22-c24` 통합 · 기록 [codex-23-progress.md](codex-23-progress.md)) |
-| C24 | [codex-24-maze-workshop.md](codex-24-maze-workshop.md) — 마을 미로 공작소와 코딩 미로 만들기, 미로 코드 나누기, 그림(6단계) | 완료(검토 통과, `integrate/c22-c24` 통합 · 기록 [codex-24-progress.md](codex-24-progress.md)) |
+| C22 | [codex-22-learning-content.md](codex-22-learning-content.md) — 학습 콘텐츠 대보강: 글·사실 오류, 선택 미션, 5·6장 실험, 퀴즈, NPC 대사, 교사용 안내 자료(7단계) | 완료(검토 통과, main 병합·배포 · 기록 [codex-22-progress.md](codex-22-progress.md)) |
+| C23 | [codex-23-village-life.md](codex-23-village-life.md) — 마을 상점, 마을 꾸미기, 도감 완성, 건물 안 사람들, 장 이야기 장면(6단계) | 완료(검토 통과, main 병합·배포 · 기록 [codex-23-progress.md](codex-23-progress.md)) |
+| C24 | [codex-24-maze-workshop.md](codex-24-maze-workshop.md) — 마을 미로 공작소와 코딩 미로 만들기, 미로 코드 나누기, 그림(6단계) | 완료(검토 통과, main 병합·배포 · 기록 [codex-24-progress.md](codex-24-progress.md)) |
 
 고치는 파일이 겹치지 않는 작업은 동시에 돌려도 돼요. 이때는 꼭 **각자의 작업 폴더**를 열어 주세요.
 
@@ -372,7 +372,7 @@ Codex 앱에서 `C:\code\elai-wt\codex-12`(브랜치 `codex/12-hires-chapters`)�
     - 새 놀이 알림은 처음 성공한 미션의 보상 전후에 열린 판을 비교하고, 결과 창을 닫은 뒤에 보여 줘요. 재도전, 부품으로 먼저 연 판, 시연 모드에서는 나오지 않아요.
     - **브라우저 확인(5177)**: 0~8장·엔딩 앞 이동, 건물 6곳 입장, 놀이 6개 모든 판 열림, 과일 1판 별 3개와 상자, 안내서의 미션 다섯 개, 처음 상태로, 일반 저장 그대로, 일반 모드 시연 단추 없음·잠긴 판, 새 놀이 알림, 도감 '마을 놀이', 390px 시연 메뉴.
   - **교사 페이지**: 학급 화면에 '마을 놀이 기록' 표를 더했어요(`src/teacher/minigames.ts`). `elai_saves`의 `data->minigames`를 읽고 지금 있는 판의 1~3 별만 세요. CSV 끝에는 놀이별 별 합계가 붙어요.
-- C22·C23·C24 콘텐츠 대보강을 `integrate/c22-c24`에 합쳤어요(2026-11-19). 이제 247개 그림이 모두 2배이고, 아틀라스는 2048×2048 한 장이에요.
+- C22·C23·C24 콘텐츠 대보강을 `integrate/c22-c24`에서 검토한 뒤 main에 합쳐 배포했어요(2026-11-19). 이제 247개 그림이 모두 2배이고, 아틀라스는 2048×2048 한 장이에요.
   - **C22 검토**: 선택 미션은 진도·문 열림·목표 안내를 막지 않고, 예전 저장도 다음 필수 미션을 그대로 가리켜요. 5장은 친구 예시만 50% → 두 종류 100%, 6장은 예시 2·4·8·12개가 50·75·88·100%, 틀린 이름표 12개가 75%예요. 8장 개인정보 문항은 어른과 확인하는 답으로, 합성 문항 해설은 동의를 말하도록 고쳤어요.
   - **C23 검토**: 상점 구매는 동전과 아이템을 함께 바꿔요. 마을 장식은 길 위나 나무 뒤를 피하도록 자리를 옮겼어요. 이야기 장면은 끝낸 장이 많아도 가장 최근 장 하나만 나와요. 상점 코드는 교실 네트워크에서도 안정되게 처음부터 함께 불러요.
   - **C24 검토**: 그림은 크기·팔레트·반투명 조건을 지키고, `npm run assets`를 다시 돌려도 결과가 같아요. 판마다 짧은 안내를 넣고, 그 판과 관계없는 조건은 숨겼어요. 미로 코드에는 벽과 출발·깃발 자리만 들어가요.
