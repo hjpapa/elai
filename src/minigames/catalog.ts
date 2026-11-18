@@ -1,3 +1,4 @@
+import { MAZE_ROUNDS, MAZE_TITLE } from '../data/minigames/maze';
 import { CLAW_ROUNDS, CLAW_TITLE } from '../data/minigames/claw';
 import { SORT_ROUNDS, SORT_TITLE } from '../data/minigames/sort';
 import { LIGHT_ROUNDS, LIGHT_TITLE } from '../data/minigames/light';
@@ -15,6 +16,7 @@ export const CATALOG = [
   { id: 'route', building: '마을 지도방', map: 'maproom', name: '코딩 길찾기', icon: 'icon-goal', rounds: ROUTE_ROUNDS, title: ROUTE_TITLE },
   { id: 'bakery', building: '마을 빵집', map: 'bakery', name: '주문서 빵집', icon: 'icon-cake', rounds: BAKERY_ROUNDS, title: BAKERY_TITLE },
   { id: 'fruit', building: '마을 과일 가게', map: 'fruitshop', name: '과일 AI 가르치기', icon: 'icon-fruit', rounds: FRUIT_ROUNDS, title: FRUIT_TITLE },
+  { id: 'mazemaker', building: '마을 미로 공작소', map: 'mazeroom', name: '코딩 미로 만들기', icon: 'icon-maze', rounds: MAZE_ROUNDS, title: MAZE_TITLE },
 ] as const;
 
 /** 미션을 끝내기 전후에 열려 있는 판을 비교해요. */
