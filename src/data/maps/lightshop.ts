@@ -26,6 +26,10 @@ export const lightshop: MapDef = {
   legend: { '.': 'room', w: 'roomwall', W: 'roomwindow' },
   spawn: { x: 6, y: 6 },
   objects: [
+    {
+      id: 'visitor-astronomer', type: 'npc', at: { x: 3, y: 3 }, npc: 'astronomer',
+      talk: ['멀리서 보니 별 그림 같아요.', '여기선 1은 켜고 0은 꺼요.', '작은 불빛이 모여 그림이 돼요.'],
+    },
     { id: 'lightboard', type: 'game', at: { x: 5, y: 1 }, game: 'light', sprite: 'prop-lightboard' },
     { id: 'lamp', type: 'prop', at: { x: 3, y: 1 }, sprite: 'prop-floorlamp', solid: true },
     { id: 'shelf', type: 'prop', at: { x: 8, y: 2 }, sprite: 'prop-lamp-shelf', solid: true },

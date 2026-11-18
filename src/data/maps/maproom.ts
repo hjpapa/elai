@@ -26,6 +26,10 @@ export const maproom: MapDef = {
   legend: { '.': 'room', w: 'roomwall', W: 'roomwindow' },
   spawn: { x: 6, y: 6 },
   objects: [
+    {
+      id: 'visitor-guide', type: 'npc', at: { x: 7, y: 3 }, npc: 'guide',
+      talk: ['돌아가는 길도 지름길도 있어요.', '한 칸씩 가며 숫자를 놓아 봐요.', '두 길의 걸음 수를 비교해요.'],
+    },
     { id: 'route-table', type: 'game', at: { x: 5, y: 2 }, game: 'route', sprite: 'prop-route-table' },
     { id: 'lamp', type: 'prop', at: { x: 3, y: 1 }, sprite: 'prop-floorlamp', solid: true },
     { id: 'globe', type: 'prop', at: { x: 8, y: 2 }, sprite: 'prop-globe', solid: true },

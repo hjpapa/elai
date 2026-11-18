@@ -26,6 +26,10 @@ export const workroom: MapDef = {
   legend: { '.': 'room', r: 'rug', w: 'roomwall', W: 'roomwindow' },
   spawn: { x: 6, y: 6 },
   objects: [
+    {
+      id: 'visitor-ranger', type: 'npc', at: { x: 3, y: 3 }, npc: 'ranger',
+      talk: ['집게의 발자국을 세어 봤어요?', '집게도 정해 준 순서대로 가요.', '같은 걸음을 묶으면 짧아져요.'],
+    },
     { id: 'claw', type: 'game', at: { x: 5, y: 1 }, game: 'claw', sprite: 'prop-claw-machine' },
     { id: 'plant', type: 'prop', at: { x: 2, y: 1 }, sprite: 'prop-plant', solid: true },
     { id: 'lamp', type: 'prop', at: { x: 3, y: 1 }, sprite: 'prop-floorlamp', solid: true },

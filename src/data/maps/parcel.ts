@@ -22,6 +22,10 @@ export const parcel: MapDef = {
   legend: { '.': 'room', w: 'roomwall', W: 'roomwindow' },
   spawn: { x: 6, y: 6 },
   objects: [
+    {
+      id: 'visitor-harborKeeper', type: 'npc', at: { x: 7, y: 3 }, npc: 'harborKeeper',
+      talk: ['오늘도 상자가 줄을 섰어요.', '무엇이 같으면 한곳에 둘까요?', '다음 줄에도 그 규칙을 써 봐요.'],
+    },
     { id: 'sorter', type: 'game', at: { x: 5, y: 1 }, game: 'sort', sprite: 'prop-sorter' },
     { id: 'plant', type: 'prop', at: { x: 3, y: 1 }, sprite: 'prop-plant', solid: true },
     { id: 'lamp', type: 'prop', at: { x: 7, y: 1 }, sprite: 'prop-floorlamp', solid: true },

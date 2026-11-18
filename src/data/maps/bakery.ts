@@ -26,6 +26,10 @@ export const bakery: MapDef = {
   legend: { '.': 'room', w: 'roomwall', W: 'roomwindow' },
   spawn: { x: 6, y: 6 },
   objects: [
+    {
+      id: 'visitor-chef', type: 'npc', at: { x: 3, y: 3 }, npc: 'chef',
+      talk: ['오늘은 어떤 케이크를 만들까요?', '주문서에 모양이 빠졌네요.', '다르게 나오면 고쳐서 부탁해요.'],
+    },
     { id: 'oven', type: 'game', at: { x: 5, y: 1 }, game: 'bakery', sprite: 'prop-oven' },
     { id: 'lamp', type: 'prop', at: { x: 3, y: 1 }, sprite: 'prop-floorlamp', solid: true },
     { id: 'bread', type: 'prop', at: { x: 8, y: 2 }, sprite: 'prop-bread-shelf', solid: true },

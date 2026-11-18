@@ -359,6 +359,7 @@ export type MapObject =
   | (ObjectBase & {
       type: 'npc';
       npc: string;
+      shop?: boolean;
       /** 이 NPC가 주는 미션(아직 안 끝낸 첫 미션을 줘요. 장 안에서는 앞 미션을 끝내야 열려요) */
       missions?: string[];
       /** 미션이 없거나 다 끝났을 때 하는 말 */
@@ -452,6 +453,8 @@ export interface ItemDef {
 // ── 몹 ───────────────────────────────────────────────────
 export type MobAction = 'attack' | 'guard' | 'charge' | 'smash' | 'heal' | 'idle';
 export interface MobDef {
+  /** 전투 없이 만나는 대장은 미션을 마치면 도감에 기록돼요. */
+  dexMission?: string;
   id: string;
   name: string;
   sprite: string;

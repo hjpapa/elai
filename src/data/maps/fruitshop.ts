@@ -26,6 +26,10 @@ export const fruitshop: MapDef = {
   legend: { '.': 'room', w: 'roomwall', W: 'roomwindow' },
   spawn: { x: 6, y: 6 },
   objects: [
+    {
+      id: 'visitor-researcher', type: 'npc', at: { x: 7, y: 3 }, npc: 'researcher',
+      talk: ['이 바구니엔 초록 사과도 있어요.', '다른 빛깔의 예시도 보여 줘요.', '붙인 이름표가 맞는지 살펴봐요.'],
+    },
     { id: 'fruit-robot', type: 'game', at: { x: 5, y: 1 }, game: 'fruit', sprite: 'prop-fruit-ai' },
     { id: 'lamp', type: 'prop', at: { x: 3, y: 1 }, sprite: 'prop-floorlamp', solid: true },
     { id: 'fruit-stand', type: 'prop', at: { x: 8, y: 2 }, sprite: 'prop-fruit-stand', solid: true },
