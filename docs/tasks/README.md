@@ -8,6 +8,17 @@ Claude가 지시서를 쓰고, 사용자가 Codex 앱에서 실행해요.
    > `docs/tasks/codex-01-assets.md` 지시서대로 작업해 줘. `AGENTS.md` 규칙을 지켜 줘.
 3. Codex가 끝나면 Claude에게 "C1 끝났어"처럼 알려 주세요. Claude가 검토하고, 테스트한 뒤 커밋·머지해요.
 
+### 콘텐츠 대보강(C22 + C23 + C24, 2026-11-19)
+Codex 앱 창 세 개에서 **동시에** 돌려요. 공통 규칙은 [codex-22-24-common.md](codex-22-24-common.md)예요. 이 작업들은 `main`과 분리되어 있어서 운영 사이트에 영향을 주지 않아요. 끝나면 Claude가 검토해서 합쳐요.
+
+| 창 | 여는 폴더(브랜치) | 부탁할 말 |
+|---|---|---|
+| 학습 내용 | `C:\code\elai-wt\codex-22`(`codex/22-learning-content`) | `docs/tasks/codex-22-learning-content.md`와 `docs/tasks/codex-22-24-common.md`대로 1단계부터 차례로 진행하고, 단계마다 커밋해 줘. `AGENTS.md` 규칙을 지켜 줘. |
+| 마을과 이야기 | `C:\code\elai-wt\codex-23`(`codex/23-village-life`) | `docs/tasks/codex-23-village-life.md`와 `docs/tasks/codex-22-24-common.md`대로 1단계부터 차례로 진행하고, 단계마다 커밋해 줘. `AGENTS.md` 규칙을 지켜 줘. |
+| 미로 공작소 | `C:\code\elai-wt\codex-24`(`codex/24-maze-workshop`) | `docs/tasks/codex-24-maze-workshop.md`와 `docs/tasks/codex-22-24-common.md`대로 1단계부터 차례로 진행하고, 단계마다 커밋해 줘. `AGENTS.md` 규칙을 지켜 줘. |
+
+Claude가 합칠 때 할 일: 세 브랜치 검토, `LESSON_GUIDE`와 선택 미션 표시를 교사 페이지에 연결, 문서 갱신, 전체 테스트와 브라우저 확인.
+
 ### 시연 준비(C20 + C21, 2026-11-18, 완료)
 Codex 앱 창 두 개에서 **동시에** 돌렸어요. 고치는 파일이 겹치지 않았어요. 두 작업은 main에 합쳐 배포했고(`e928472`), Claude가 엔진·로직을 다시 점검한 뒤 교사 페이지 놀이 기록을 더했어요. 발표 순서는 [demo-guide.md](../demo-guide.md)예요.
 
@@ -110,6 +121,9 @@ Codex 앱에서 `C:\code\elai-wt\codex-12`(브랜치 `codex/12-hires-chapters`)�
 | C19 | [codex-19-bakery.md](codex-19-bakery.md) — 마을 빵집·주문서 빵집 그림 5개(2배): 건물, 주문서 오븐, 케이크 진열대 7프레임, 빵 선반, 케이크 아이콘(2단계) | 완료(검토 통과, main 병합·배포 · 기록 [codex-19-progress.md](codex-19-progress.md)) |
 | C20 | [codex-20-fruitshop.md](codex-20-fruitshop.md) — 마을 과일 가게·과일 AI 가르치기 그림 5개(2배): 건물, 학습 로봇, 과일 상자 7프레임, 과일 매대, 과일 바구니 아이콘, 물결 카드 다듬기(3단계) | 완료(검토 통과, main 병합·배포 · 기록 [codex-20-progress.md](codex-20-progress.md)) |
 | C21 | [codex-21-demo-ready.md](codex-21-demo-ready.md) — 시연 준비: 시연 모드(`/?demo`), 전 화면 점검, 새 놀이 알림·도감 놀이 기록, 작은 다듬기, 시연 안내서(5단계) | 완료(검토 통과, main 병합·배포 · 기록 [codex-21-progress.md](codex-21-progress.md)) |
+| C22 | [codex-22-learning-content.md](codex-22-learning-content.md) — 학습 콘텐츠 대보강: 글·사실 오류, 선택 미션, 5·6장 실험, 퀴즈, NPC 대사, 교사용 안내 자료(7단계) | 준비(작업 폴더 `C:\code\elai-wt\codex-22`) |
+| C23 | [codex-23-village-life.md](codex-23-village-life.md) — 마을 상점, 마을 꾸미기, 도감 완성, 건물 안 사람들, 장 이야기 장면(6단계) | 준비(작업 폴더 `C:\code\elai-wt\codex-23`) |
+| C24 | [codex-24-maze-workshop.md](codex-24-maze-workshop.md) — 마을 미로 공작소와 코딩 미로 만들기, 미로 코드 나누기, 그림(6단계) | 준비(작업 폴더 `C:\code\elai-wt\codex-24`) |
 
 고치는 파일이 겹치지 않는 작업은 동시에 돌려도 돼요. 이때는 꼭 **각자의 작업 폴더**를 열어 주세요.
 
