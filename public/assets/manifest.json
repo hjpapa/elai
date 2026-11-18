@@ -383,6 +383,26 @@
       "density": 2
     },
     {
+      "key": "prop-fruit-shop",
+      "file": "prop/prop-fruit-shop.png",
+      "density": 2
+    },
+    {
+      "key": "prop-fruit-ai",
+      "file": "prop/prop-fruit-ai.png",
+      "density": 2
+    },
+    {
+      "key": "prop-fruit-crate",
+      "file": "prop/prop-fruit-crate.png",
+      "density": 2
+    },
+    {
+      "key": "prop-fruit-stand",
+      "file": "prop/prop-fruit-stand.png",
+      "density": 2
+    },
+    {
       "key": "tile-castle",
       "file": "tile/tile-castle.png",
       "density": 2
