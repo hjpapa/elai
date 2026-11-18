@@ -3046,3 +3046,5 @@ button.fruit-card,
 
 .toast-layer > .toast { pointer-events: none; }
 #ui:has(.panel[class*="mission-"], .minigame, .demo-menu, .dialog-layer > *) .toast-layer { visibility: hidden; }
+
+.dex-rounds { display: grid; grid-template-columns: repeat(auto-fit,minmax(72px,1fr)); gap: 4px; }

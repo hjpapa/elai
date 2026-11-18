@@ -1,3 +1,4 @@
+import { newlyOpened, openedRounds } from '../../minigames/catalog';
 import { getMission } from '../../data/chapters';
 import type { Mission, MissionKind } from '../../data/schema';
 import { app } from '../../game/app';
@@ -32,7 +33,9 @@ export class MissionHost {
       if (!result) return null;
       const wasDone = app.state.missionDone(mission.id);
       const prevStars = app.state.data.missions[mission.id]?.stars ?? 0;
+      const before = !app.demo && !wasDone && result.success ? openedRounds(app.state) : null;
       const { reward } = app.state.completeMission(mission.id, result);
+      const opened = before ? newlyOpened(before, openedRounds(app.state)) : [];
       const explain = mission.data && 'explain' in mission.data ? mission.data.explain : undefined;
       const hasReward = !!reward && (reward.xp > 0 || reward.coins > 0 || reward.items.length > 0 || !!reward.robiPart || !!reward.badge);
       if (mission.kind !== 'dialogue' || hasReward) {
@@ -46,6 +49,7 @@ export class MissionHost {
           improved: wasDone && result.stars > prevStars,
         });
       }
+      if (opened.length) app.ui.toast(['새 놀이가 열렸어요', ...opened].join('\n'), icon('icon-goal'), 4500);
       return result;
     } finally {
       this.running = false;
