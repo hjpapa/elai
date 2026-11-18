@@ -1,3 +1,5 @@
+import { MAZE_ROUNDS } from '../../data/minigames/maze';
+import { decodeMaze, encodeMaze } from '../../minigames/maze/mazeCode';
 import { getMission, getPart, requiredMissions } from '../../data/chapters';
 import { ITEMS } from '../../data/rpg/items';
 import { DECORATIONS, decorReason, shopOffers } from '../../data/rpg/shop';
@@ -42,6 +44,17 @@ export function cleanMinigames(raw: unknown): Record<string, Record<string, numb
   return out;
 }
 
+export function cleanMazeWorks(raw: unknown): Record<string, string> {
+  const works: Record<string, string> = {};
+  if (!raw || typeof raw !== 'object') return works;
+  for (const round of MAZE_ROUNDS) {
+    const code = (raw as Record<string, unknown>)[round.id];
+    const rows = typeof code === 'string' && decodeMaze(code);
+    if (rows) works[round.id] = encodeMaze(rows)!;
+  }
+  return works;
+}
+
 export function freshSave(nickname: string): SaveData {
   return {
     version: 1,
@@ -73,6 +86,7 @@ export class GameState {
 
   constructor(public data: SaveData) {
     data.classificationModel = this.cleanClassificationModel(data.classificationModel);
+    data.mazeWorks = cleanMazeWorks(data.mazeWorks);
     data.minigames = cleanMinigames(data.minigames);
     const saved = data.observations ?? {};
     data.observations = {};
@@ -349,6 +363,13 @@ export class GameState {
     if (next > prev) rec[round] = next;
     this.changed();
     return { first: prev === 0, improved: prev > 0 && next > prev };
+  }
+
+  saveMazeWork(round: string, code: string): void {
+    const work = cleanMazeWorks({ [round]: code })[round];
+    if (!work) return;
+    (this.data.mazeWorks ??= {})[round] = work;
+    this.changed();
   }
 
   /** 미션을 처음 성공했을 때만 보상을 줘요. 다시 해서 별을 올리는 건 언제든 가능해요. */

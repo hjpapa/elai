@@ -138,6 +138,13 @@ export const ASSETS: AssetSpec[] = [
   prop(32, 32)('prop-fruit-stand', '과일 바구니가 놓인 나무 매대(장식)', 0xd39a62),
   icon('icon-fruit', '과일 바구니(빨간 사과, 노란 바나나). 판 고르기 카드와 로봇 생각 표시에 써요', 0xb94751),
 
+  // C24: 마을 미로 공작소
+  prop(32, 48, 2)('prop-maze-house', '마을 미로 공작소 건물(0 문 닫힘, 1 문 열림·창에 불빛). 노란 지붕과 남색 격자무늬', 0xe7b64f),
+  prop(32, 48, 2)('prop-maze-bench', '미로 설계대(0·1 격자 화면 불빛이 번갈아 켜져요)', 0x82cce0),
+  prop(16, 24, 7)('prop-maze-frame', '벽 미로 액자(0 빈 액자, 1~6 판마다 다른 작은 미로)', 0xd39a62),
+  prop(32, 32)('prop-maze-shelf', '자·연필·종이 미로가 놓인 선반(장식)', 0xbd7959),
+  icon('icon-maze', '깃발로 이어지는 작은 미로. 판 고르기 카드에 써요', 0x478bc7),
+
   // C10: 윤리의 성
   tile('tile-castle', '따뜻한 빛의 성 돌바닥', 0xc7d6dc),
   block('block-castle', '성의 보랏빛 돌벽', 0x8c9bab),

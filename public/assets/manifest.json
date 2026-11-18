@@ -408,6 +408,31 @@
       "density": 2
     },
     {
+      "key": "prop-maze-house",
+      "file": "prop/prop-maze-house.png",
+      "density": 2
+    },
+    {
+      "key": "prop-maze-bench",
+      "file": "prop/prop-maze-bench.png",
+      "density": 2
+    },
+    {
+      "key": "prop-maze-frame",
+      "file": "prop/prop-maze-frame.png",
+      "density": 2
+    },
+    {
+      "key": "prop-maze-shelf",
+      "file": "prop/prop-maze-shelf.png",
+      "density": 2
+    },
+    {
+      "key": "icon-maze",
+      "file": "icon/icon-maze.png",
+      "density": 2
+    },
+    {
       "key": "tile-castle",
       "file": "tile/tile-castle.png",
       "density": 2

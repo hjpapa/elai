@@ -343,6 +343,30 @@ export function drawRoomProp(ctx: CanvasRenderingContext2D, spec: AssetSpec, f: 
       for (const [x, y] of [[6, h - 20], [14, h - 20], [22, h - 20], [9, h - 8], [19, h - 8]] as Pt[]) oval(ctx, x, y, 3.5, 2.5, '#e3ab80');
       return true;
     // C20 마을 과일 가게
+    case 'prop-maze-house':
+      rect(ctx, 4, h-27, w-8, 25, '#344d78');
+      poly(ctx, [[1,h-27],[m,h-44],[w-1,h-27]], '#e7b64f');
+      rect(ctx, m-3,h-14,7,12, f ? '#ffe59a' : '#86513e');
+      rect(ctx, 6,h-20,5,5, f ? '#ffe59a' : '#478bc7');
+      return true;
+    case 'prop-maze-bench':
+      rect(ctx, 3,h-19,26,17,'#815b45');
+      rect(ctx, 7,h-34,19,16,'#344d78');
+      for (let y=0;y<3;y++) for (let x=0;x<4;x++)
+        rect(ctx,9+x*4,h-32+y*4,3,3, f ? '#82cce0' : '#367a96');
+      return true;
+    case 'prop-maze-frame':
+      rect(ctx,1,h-18,14,15,'#815b45');
+      rect(ctx,3,h-16,10,11,'#fff4d2');
+      rect(ctx,2,h-4,12,2,'#bd895b');
+      if(f) { rect(ctx,4,h-9,7,1,'#344d78'); rect(ctx,4+f,h-14,1,6,'#344d78'); }
+      return true;
+    case 'prop-maze-shelf':
+      rect(ctx,2,h-24,28,22,'#a76c46');
+      rect(ctx,3,h-18,26,2,'#815b45');
+      rect(ctx,5,h-13,13,6,'#fff4d2');
+      rect(ctx,22,h-27,3,11,'#e7b64f');
+      return true;
     case 'prop-fruit-shop':
       rect(ctx, 4, h - 26, w - 8, 24, '#fff4d2');
       poly(ctx, [[1, h - 25], [m, h - 44], [w - 1, h - 25]], '#e08b69');
@@ -513,6 +537,12 @@ export function drawRoomIcon(ctx: CanvasRenderingContext2D, spec: AssetSpec): bo
     return true;
   }
   // C20 과일 AI 가르치기: 과일 바구니
+  if (key === 'icon-maze') {
+    rect(ctx,1,1,14,14,'#344d78');
+    rect(ctx,3,4,7,2,'#fff4d2'); rect(ctx,8,4,2,8,'#fff4d2');
+    rect(ctx,9,9,4,2,'#ed7463');
+    return true;
+  }
   if (key === 'icon-fruit') {
     oval(ctx, 5.5, 6, 3.5, 3.5, '#b94751');
     oval(ctx, 4.5, 5, 1, 1, '#ed7463');

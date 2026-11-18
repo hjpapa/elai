@@ -95,6 +95,7 @@ export const village: MapDef = {
     { id: 'to-bakery', type: 'portal', at: { x: 16, y: 13 }, to: { map: 'bakery', at: { x: 6, y: 6 } }, label: '마을 빵집', sprite: 'prop-bakery' },
     // 마을 과일 가게: 처음부터 열려 있어요(1~2판은 예시 고르기·이름표 고치기). 나머지 판은 5·6·8장 뒤에 열려요.
     { id: 'to-fruitshop', type: 'portal', at: { x: 19, y: 13 }, to: { map: 'fruitshop', at: { x: 6, y: 6 } }, label: '마을 과일 가게', sprite: 'prop-fruit-shop' },
+    { id: 'to-mazeroom', type: 'portal', at: { x: 21, y: 16 }, to: { map: 'mazeroom', at: { x: 6, y: 6 } }, label: '마을 미로 공작소', sprite: 'prop-maze-house' },
     // 마을 공방: 집 칸으로 걸어 들어가면 공방 안(실내 맵)으로 가요.
     { id: 'to-workroom', type: 'portal', at: { x: 19, y: 7 }, to: { map: 'workroom', at: { x: 6, y: 6 } }, label: '마을 공방', sprite: 'prop-workshop' },
     { id: 'fountain-dry', type: 'prop', at: { x: 12, y: 10 }, sprite: 'prop-fountain', frame: 0, solid: true, when: broken },
