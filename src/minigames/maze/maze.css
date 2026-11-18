@@ -1,0 +1,21 @@
+.minigame-mazemaker .maze-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  width: min(100%, 322px);
+  gap: 2px;
+  margin: .6rem auto;
+}
+.maze-square {
+  display:grid; place-items:center; aspect-ratio:1; min-width:0; padding:0;
+  color:#344d78; background:#fff4d2; border:1px solid #8c9bab;
+  font-family: inherit; font-weight: bold; font-size:1rem; border-radius:3px;
+}
+.maze-square[data-cell="#"] { background:#344d78; color:#82cce0; }
+.maze-square[data-cell="S"], .maze-square[data-cell="G"] { background:#ffe59a; color:#293044; }
+.maze-square.maze-player { background:#a4e3c2; outline:3px solid #367a96; outline-offset:-3px; }
+.maze-actions { display:flex; flex-wrap:wrap; gap:.3rem; margin:.5rem 0; }
+.maze-actions [aria-pressed="true"] { box-shadow:inset 0 0 0 3px #478bc7; }
+.maze-checks { padding-inline-start:1.3rem; }
+.maze-code { display:block; margin:.7rem 0; font: bold clamp(1rem, 5vw, 1.7rem)/1.4 monospace; user-select:all; }
+.minigame-mazemaker .game-card small { display:block; }
+.minigame-mazemaker input { max-width:100%; box-sizing:border-box; }
