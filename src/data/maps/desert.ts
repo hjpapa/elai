@@ -15,7 +15,7 @@ export const desert: MapDef = {
   objects: [
     {id:'chest-dune',type:'chest',at:{x:13,y:3},reward:{coins:8,items:[{id:'jelly',qty:1}]}},
     {id:'sign-dune',type:'sign',at:{x:14,y:2},text:'계단을 따라 올라왔어요.\n모래 언덕이 한눈에 보여요.'},
-    {id:'guide',type:'npc',at:{x:8,y:8},npc:'guide',missions:['ch3-p1-m1','ch3-p2-m1','ch3-p2-m2','ch3-p2-m3','ch3-p3-m1'],talk:['센서는 주변을 알아내는 장치예요.\n상황에 맞는 규칙을 만들어 봐요.']},
+    {id:'guide',type:'npc',at:{x:8,y:8},npc:'guide',missions:['ch3-p1-m1','ch3-p1-x1','ch3-p2-m1','ch3-p2-m2','ch3-p2-m3','ch3-p3-m1','ch3-p3-x1'],talk:['센서는 주변을 알아내는 장치예요.\n상황에 맞는 규칙을 만들어 봐요.']},
     {id:'lizard-a',type:'mob',at:{x:10,y:5},mob:'mirageLizard',wander:1},
     {id:'lizard-b',type:'mob',at:{x:13,y:12},mob:'mirageLizard',wander:1},
     {id:'chest-desert',type:'chest',at:{x:2,y:4},reward:{xp:10,coins:20,items:[{id:'apple',qty:2}]}},

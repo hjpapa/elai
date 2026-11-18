@@ -11,7 +11,7 @@ export const lab: MapDef={
  objects:[
   {id:'chest-observation',type:'chest',at:{x:9,y:11},reward:{coins:8,items:[{id:'apple',qty:1}]}},
   {id:'sign-observation',type:'sign',at:{x:7,y:11},text:'서로 다른 표본을 살펴봐요.\n닮은 점과 다른 점을 찾아요.'},
-  {id:'researcher',type:'npc',at:{x:8,y:8},npc:'researcher',missions:['ch5-p1-m1','ch5-p1-m2','ch5-p2-m1','ch5-p2-m2','ch5-p3-m1'],talk:['표본은 살펴볼 예시를 말해요.\n여러 종류를 고르게 모아 봐요.']},
+  {id:'researcher',type:'npc',at:{x:8,y:8},npc:'researcher',missions:['ch5-p1-m1','ch5-p1-m2','ch5-p2-m1','ch5-p2-m2','ch5-p3-m1','ch5-p3-x1'],talk:['표본은 살펴볼 예시를 말해요.\n여러 종류를 고르게 모아 봐요.']},
   {id:'slime-a',type:'mob',at:{x:13,y:5},mob:'shapeSlime',wander:1},
   {id:'slime-b',type:'mob',at:{x:14,y:10},mob:'shapeSlime',wander:1},
   {id:'chest-lab',type:'chest',at:{x:2,y:3},reward:{xp:12,coins:25,items:[{id:'apple',qty:2}]}},

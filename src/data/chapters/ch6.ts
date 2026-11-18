@@ -58,8 +58,42 @@ export const ch6: Chapter = {
       "hint": "낮은 숫자부터 하나씩 이어 가요.\n벽을 건너뛰거나 멀리 뛰지 않아요.",
       "explain": "가까운 칸부터 차례로 살펴보면\n걸음 수가 가장 적은 길을 찾아요."
     }
-  }
-],
+  },
+        {
+          "id": "ch6-p1-x1",
+          "kind": "classify",
+          "title": "두 갈래 별길",
+          "npc": "astronomer",
+          "optional": true,
+          "reward": {
+            "coins": 8
+          },
+          "data": {
+            "mode": "search",
+            "intro": "별 우체통까지 두 길이 이어져요.\n걸음 수가 적은 길을 골라요.",
+            "cards": [
+              {
+                "id": "lanes",
+                "label": "별 우체통",
+                "group": "path",
+                "features": [
+                  "#######",
+                  "#S....#",
+                  "#.###.#",
+                  "#.###.#",
+                  "#.###.#",
+                  "#.###G#",
+                  "#.....#",
+                  "#######"
+                ]
+              }
+            ],
+            "groups": [],
+            "hint": "깃발보다 아래로 내려가면\n다시 올라오는 걸음도 세어야 해요.",
+            "explain": "이어진 길이 여럿일 때에는\n걸음 수를 비교해 길을 골라요."
+          }
+        }
+      ],
     },
     {
       id: 'ch6-p2',
@@ -213,8 +247,155 @@ export const ch6: Chapter = {
       "hint": "맑음과 비의 기록을 고르게 골라요.\n배운 뒤 시험 결과를 살펴봐요.",
       "explain": "이번 자료에서는 가까운 기록으로\n새 기록의 날씨를 맞혀 봤어요."
     }
-  }
-],
+  },
+        {
+          "id": "ch6-p2-x1",
+          "kind": "train",
+          "title": "별똥별 관측 예보",
+          "npc": "astronomer",
+          "optional": true,
+          "reward": {
+            "coins": 8
+          },
+          "data": {
+            "features": [
+              "구름 양",
+              "달빛",
+              "바람 세기"
+            ],
+            "labels": [
+              {
+                "id": "seen",
+                "label": "보여요"
+              },
+              {
+                "id": "hidden",
+                "label": "안 보여요"
+              }
+            ],
+            "examples": [
+              {
+                "id": "e1",
+                "features": [
+                  1,
+                  1,
+                  2
+                ],
+                "label": "seen"
+              },
+              {
+                "id": "e2",
+                "features": [
+                  2,
+                  2,
+                  1
+                ],
+                "label": "seen"
+              },
+              {
+                "id": "e3",
+                "features": [
+                  1,
+                  3,
+                  1
+                ],
+                "label": "seen"
+              },
+              {
+                "id": "e4",
+                "features": [
+                  3,
+                  1,
+                  2
+                ],
+                "label": "seen"
+              },
+              {
+                "id": "e5",
+                "features": [
+                  7,
+                  8,
+                  7
+                ],
+                "label": "hidden"
+              },
+              {
+                "id": "e6",
+                "features": [
+                  9,
+                  8,
+                  8
+                ],
+                "label": "hidden"
+              },
+              {
+                "id": "e7",
+                "features": [
+                  8,
+                  7,
+                  9
+                ],
+                "label": "hidden"
+              },
+              {
+                "id": "e8",
+                "features": [
+                  8,
+                  9,
+                  8
+                ],
+                "label": "hidden"
+              }
+            ],
+            "tests": [
+              {
+                "id": "t1",
+                "features": [
+                  2,
+                  1,
+                  1
+                ],
+                "label": "seen"
+              },
+              {
+                "id": "t2",
+                "features": [
+                  8,
+                  8,
+                  9
+                ],
+                "label": "hidden"
+              },
+              {
+                "id": "t3",
+                "features": [
+                  1,
+                  2,
+                  3
+                ],
+                "label": "seen"
+              },
+              {
+                "id": "t4",
+                "features": [
+                  9,
+                  9,
+                  7
+                ],
+                "label": "hidden"
+              }
+            ],
+            "minExamples": 8,
+            "k": 3,
+            "saveModel": false,
+            "threshold": 1,
+            "presetLabels": true,
+            "intro": "섬의 관측 연습 기록을 읽어요.\n그날 별똥별이 보였을까요?",
+            "hint": "새 기록과 비슷한 날에는\n별똥별을 보았는지 살펴봐요.",
+            "explain": "이 모델은 연습 기록으로 예측해요.\n실제 밤하늘은 더 복잡해요."
+          }
+        }
+      ],
     },
     {
       id: 'ch6-p3',
@@ -526,8 +707,53 @@ export const ch6: Chapter = {
         "answer": 0
       }
     }
-  }
-],
+  },
+        {
+          "id": "ch6-p3-x1",
+          "kind": "quiz",
+          "title": "정확도 막대 읽기",
+          "npc": "astronomer",
+          "optional": true,
+          "reward": {
+            "coins": 8
+          },
+          "data": {
+            "intro": "관측소의 다섯 막대를 읽어요.\n무엇을 바꾼 시험인지 살펴봐요.",
+            "questions": [
+              {
+                "q": "예시 2·4·8·12개의 막대가 50·75·88·100%예요. 이번 자료에서 보인 변화는요?",
+                "choices": [
+                  "시험할 때마다 시험지가 달라졌어요",
+                  "고른 예시가 늘며 더 잘 맞혔어요",
+                  "이름표가 많아 시험 수가 줄었어요"
+                ],
+                "answer": 1,
+                "explain": "같은 시험에서 예시 수를 늘렸어요."
+              },
+              {
+                "q": "12개에 틀린 이름표를 섞으니 75%예요. 어느 막대와 비교할까요?",
+                "choices": [
+                  "예시 2개의 50%",
+                  "예시 8개의 88%",
+                  "바른 이름표 12개의 100%"
+                ],
+                "answer": 2,
+                "explain": "예시 수가 같아야 이름표의 영향을 살펴요."
+              },
+              {
+                "q": "여덟 시험을 모두 맞혔어요. 새날의 예측은요?",
+                "choices": [
+                  "새 기록으로 다시 확인해요",
+                  "여덟 시험을 그대로 되풀이해요",
+                  "한 번 맞혔으니 계속 믿어요"
+                ],
+                "answer": 0,
+                "explain": "이번 결과만으로 다른 날도 모두 맞힐지는 몰라요."
+              }
+            ]
+          }
+        }
+      ],
     },
     {
       id: 'ch6-boss',

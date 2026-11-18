@@ -498,8 +498,142 @@ export const ch5: Chapter = {
         "answer": 0
       }
     }
-  }
-],
+  },
+        {
+          "id": "ch5-p3-x1",
+          "kind": "train",
+          "title": "헷갈리는 표본",
+          "npc": "researcher",
+          "optional": true,
+          "reward": {
+            "coins": 8
+          },
+          "data": {
+            "features": [
+              "뛰는 높이",
+              "점무늬 수"
+            ],
+            "labels": [
+              {
+                "id": "friend",
+                "label": "친구"
+              },
+              {
+                "id": "playful",
+                "label": "장난꾸러기"
+              }
+            ],
+            "examples": [
+              {
+                "id": "e1",
+                "features": [
+                  1,
+                  1
+                ],
+                "label": "friend"
+              },
+              {
+                "id": "e2",
+                "features": [
+                  1,
+                  3
+                ],
+                "label": "friend"
+              },
+              {
+                "id": "e3",
+                "features": [
+                  3,
+                  1
+                ],
+                "label": "friend"
+              },
+              {
+                "id": "e4",
+                "features": [
+                  3,
+                  3
+                ],
+                "label": "friend"
+              },
+              {
+                "id": "e5",
+                "features": [
+                  7,
+                  7
+                ],
+                "label": "playful"
+              },
+              {
+                "id": "e6",
+                "features": [
+                  7,
+                  9
+                ],
+                "label": "playful"
+              },
+              {
+                "id": "e7",
+                "features": [
+                  9,
+                  7
+                ],
+                "label": "playful"
+              },
+              {
+                "id": "e8",
+                "features": [
+                  9,
+                  9
+                ],
+                "label": "playful"
+              }
+            ],
+            "tests": [
+              {
+                "id": "t1",
+                "features": [
+                  2,
+                  2
+                ],
+                "label": "friend"
+              },
+              {
+                "id": "t2",
+                "features": [
+                  8,
+                  8
+                ],
+                "label": "playful"
+              },
+              {
+                "id": "t3",
+                "features": [
+                  2,
+                  3
+                ],
+                "label": "friend"
+              },
+              {
+                "id": "t4",
+                "features": [
+                  4,
+                  4
+                ],
+                "label": "playful"
+              }
+            ],
+            "minExamples": 8,
+            "k": 3,
+            "saveModel": false,
+            "threshold": 0.75,
+            "presetLabels": true,
+            "intro": "연구원이 경계 표본을 가져왔어요.\n두 가지 특징만으로 나눠 봐요.",
+            "hint": "비슷해 보이는 표본도 있어요.\n예상과 실제 이름표를 대조해요.",
+            "explain": "모든 예시를 써도 틀릴 수 있어요.\n사람이 다시 살펴봐야 해요."
+          }
+        }
+      ],
     },
     {
       id: 'ch5-boss',

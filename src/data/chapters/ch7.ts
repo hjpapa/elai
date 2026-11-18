@@ -1,5 +1,21 @@
-import type { Chapter } from '../schema';
+import type { Chapter, PromptData } from '../schema';
 import { imagePromptData } from './imagePromptData';
+
+const forestRobotRequest: PromptData = {
+  client: '숲 관찰 모임', request: '낮의 숲에 작은 로봇을 그려요.\n또렷한 픽셀 그림으로 부탁해요.',
+  initialChoice: { role: 'robot', how: 'day', format: 'pixel' },
+  image: imagePromptData.image,
+  fallback: { opening: '숲 모임의 주문서를 읽어요.', body: ['빠진 칸을 찾아 다시 부탁해요.'] },
+  slots: imagePromptData.slots.map(slot => {
+    const wanted = { role: 'robot', task: 'forest', how: 'day', format: 'pixel' }[slot.id];
+    return { ...slot, options: slot.options.map(option => ({
+      id: option.id, text: option.id === 'night' ? '별이 뜬 밤' : option.text,
+      quality: option.id === wanted ? 'good' : 'bad',
+      feedback: option.id === wanted ? undefined : '의뢰한 주인공·장소·시간·느낌을 살펴요.',
+    })) };
+  }),
+  explain: '빠진 조건을 보태 부탁하면\n원하는 그림에 가까워져요.',
+};
 
 export const ch7: Chapter = {
   id: 'ch7',
@@ -75,6 +91,52 @@ export const ch7: Chapter = {
   "explain": "많이 나온 말도 틀릴 수 있어요.\n글 모음에 따라 다음 말이 달라져요."
 },
         },
+        {
+          "id": "ch7-p1-x1",
+          "kind": "nextWord",
+          "title": "다른 글 모음",
+          "npc": "zen",
+          "optional": true,
+          "reward": {
+            "coins": 8
+          },
+          "data": {
+            "intro": "공방 소식과 인형극 글을 읽어요.\n같은 첫 낱말 뒤를 이어 봐요.",
+            "corpora": [
+              {
+                "id": "notice",
+                "label": "공방 소식",
+                "sentences": [
+                  "오늘 등불이 환하게 켜져요.",
+                  "오늘 등불이 길을 밝혀요.",
+                  "오늘 문이 활짝 열려요."
+                ]
+              },
+              {
+                "id": "play",
+                "label": "인형극 대본",
+                "sentences": [
+                  "오늘 등불이 노래를 불러요.",
+                  "오늘 토끼가 별을 따요.",
+                  "오늘 토끼가 달을 밀어요."
+                ]
+              }
+            ],
+            "start": "오늘",
+            "steps": 3,
+            "question": {
+              "q": "인형극에서 자주 나온 말은 섬 소식으로 써도 될까요?",
+              "choices": [
+                "많이 나온 순서만 확인해요",
+                "대본과 실제 기록을 구별해요",
+                "두 글 모음의 길이를 맞춰요"
+              ],
+              "answer": 1
+            },
+            "hint": "첫 낱말 뒤에 무엇이 많은지\n두 글 모음에서 각각 살펴요.",
+            "explain": "어떤 글을 모았는지에 따라\n그럴듯한 다음 말이 달라져요."
+          }
+        }
       ],
     },
     {
@@ -456,6 +518,17 @@ export const ch7: Chapter = {
           reward: { xp: 20, robiPart: 'talkModule' },
           data: imagePromptData,
         },
+        {
+          "id": "ch7-p3-x1",
+          "kind": "prompt",
+          "title": "숲속 로봇 그림",
+          "npc": "zen",
+          "optional": true,
+          "reward": {
+            "coins": 8
+          },
+          "data": forestRobotRequest
+        }
       ],
     },
     {

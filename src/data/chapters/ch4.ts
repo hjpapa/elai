@@ -368,8 +368,45 @@ export const ch4: Chapter = {
       "hint": "5는 4와 1의 등불을 켜요.\n10은 8과 2의 등불을 켜요.",
       "explain": "0과 1로 수를 나타냈어요.\n데이터 렌즈와 등대 문이 열렸어요."
     }
-  }
-],
+  },
+        {
+          "id": "ch4-p3-x1",
+          "kind": "classify",
+          "title": "등대 글자 신호",
+          "npc": "harborKeeper",
+          "optional": true,
+          "reward": {
+            "coins": 8
+          },
+          "data": {
+            "mode": "binary",
+            "intro": "등대 약속표: 달 2, 별 9, 해 6.\n세 글자의 번호를 보내요.",
+            "cards": [
+              {
+                "id": "moon",
+                "label": "첫 글자 달",
+                "group": "2",
+                "features": []
+              },
+              {
+                "id": "star",
+                "label": "둘째 글자 별",
+                "group": "9",
+                "features": []
+              },
+              {
+                "id": "sun",
+                "label": "셋째 글자 해",
+                "group": "6",
+                "features": []
+              }
+            ],
+            "groups": [],
+            "hint": "글자를 먼저 번호로 바꿔요.\n8·4·2·1 중 켤 자리를 찾아요.",
+            "explain": "컴퓨터도 글자마다 정한 번호를\n0과 1로 나타내요."
+          }
+        }
+      ],
     },
     {
       id: 'ch4-boss',

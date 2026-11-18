@@ -162,8 +162,117 @@ export const ch8: Chapter = {
       "hint": "성의 자료를 실제 구성에 맞춰요.\n바퀴·발·날개를 네 대씩 기록해요.",
       "explain": "이 섬의 실제 수가 네 대씩이에요.\n같은 수가 늘 공정한 것은 아니에요."
     }
-  }
-],
+  },
+        {
+          "id": "ch8-p1-x1",
+          "kind": "classify",
+          "title": "실제 구성 맞추기",
+          "npc": "keeper",
+          "optional": true,
+          "reward": {
+            "coins": 8
+          },
+          "data": {
+            "mode": "balance",
+            "intro": "오늘 모인 로봇 수가 달라요.\n오늘의 실제 명단에 맞춰요.",
+            "cards": [
+              {
+                "id": "bot1",
+                "label": "바퀴1",
+                "group": "wheel",
+                "features": []
+              },
+              {
+                "id": "bot2",
+                "label": "바퀴2",
+                "group": "wheel",
+                "features": []
+              },
+              {
+                "id": "bot3",
+                "label": "바퀴3",
+                "group": "wheel",
+                "features": []
+              },
+              {
+                "id": "bot4",
+                "label": "바퀴4",
+                "group": "wheel",
+                "features": []
+              },
+              {
+                "id": "bot5",
+                "label": "바퀴5",
+                "group": "wheel",
+                "features": []
+              },
+              {
+                "id": "bot6",
+                "label": "바퀴6",
+                "group": "wheel",
+                "features": []
+              },
+              {
+                "id": "bot7",
+                "label": "발7",
+                "group": "foot",
+                "features": []
+              },
+              {
+                "id": "bot8",
+                "label": "발8",
+                "group": "foot",
+                "features": []
+              },
+              {
+                "id": "bot9",
+                "label": "발9",
+                "group": "foot",
+                "features": []
+              },
+              {
+                "id": "bot10",
+                "label": "날개10",
+                "group": "wing",
+                "features": []
+              },
+              {
+                "id": "bot11",
+                "label": "날개11",
+                "group": "wing",
+                "features": []
+              },
+              {
+                "id": "bot12",
+                "label": "날개12",
+                "group": "wing",
+                "features": []
+              }
+            ],
+            "groups": [
+              {
+                "id": "wheel",
+                "label": "바퀴"
+              },
+              {
+                "id": "foot",
+                "label": "발"
+              },
+              {
+                "id": "wing",
+                "label": "날개"
+              }
+            ],
+            "initialCounts": {
+              "wheel": 4,
+              "foot": 4,
+              "wing": 4
+            },
+            "hint": "종류마다 같은 수로 정할까요?\n오늘의 명단부터 세어 봐요.",
+            "explain": "무조건 같은 수로 맞추지 않아요.\n살펴볼 집단의 실제 구성을 봐요."
+          }
+        }
+      ],
     },
     {
       id: 'ch8-p2',
@@ -387,8 +496,57 @@ export const ch8: Chapter = {
       "hint": "그림만 보고 진위를 정하지 않아요.\n제작 기록과 믿을 만한 자료를 읽어요.",
       "explain": "원본과 만든 사람의 기록을 확인해요.\n동의를 지키고 AI 도움을 밝혀요."
     }
-  }
-],
+  },
+        {
+          "id": "ch8-p3-x1",
+          "kind": "factCheck",
+          "title": "소문 확인하기",
+          "npc": "keeper",
+          "optional": true,
+          "reward": {
+            "coins": 8
+          },
+          "data": {
+            "intro": "섬 소식지에 소문이 들어왔어요.\n원본 기록을 찾아 고쳐 봐요.",
+            "sources": [
+              {
+                "id": "log",
+                "title": "공작소 작업 일지",
+                "text": "초록 등 하나를 고쳤어요.\n다른 두 등은 내일 살펴요."
+              },
+              {
+                "id": "poster",
+                "title": "축제 포스터 제작 기록",
+                "text": "종이별을 오려 붙인 그림이에요.\n실제 밤하늘 사진은 아니에요."
+              }
+            ],
+            "claims": [
+              {
+                "id": "lamp",
+                "text": "세 등을 모두 고쳤어요.",
+                "source": "log",
+                "choices": [
+                  "세 등을 모두 고쳤어요",
+                  "초록 등 하나를 고쳤어요"
+                ],
+                "answer": 1
+              },
+              {
+                "id": "stars",
+                "text": "포스터는 종이별로 만든 그림이에요.",
+                "source": "poster",
+                "choices": [
+                  "기록대로 이 문장을 써요",
+                  "실제 밤하늘을 찍은 사진이에요"
+                ],
+                "answer": 0
+              }
+            ],
+            "hint": "작업 일지에는 고친 수가 있어요.\n그림은 제작 기록을 읽어 봐요.",
+            "explain": "소문을 곧바로 옮기기 전에\n그 일을 기록한 자료를 확인해요."
+          }
+        }
+      ],
     },
     {
       id: 'ch8-boss',

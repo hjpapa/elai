@@ -12,7 +12,7 @@ export const harbor: MapDef={
   objects:[
     {id:'chest-pier',type:'chest',at:{x:3,y:8},reward:{coins:8,items:[{id:'apple',qty:1}]}},
     {id:'sign-pier',type:'sign',at:{x:2,y:7},text:'높은 부두에 올라왔어요.\n멀리 있는 등대도 찾아봐요.'},
-    {id:'keeper',type:'npc',at:{x:8,y:8},npc:'harborKeeper',missions:['ch4-p1-m1','ch4-p1-m2','ch4-p2-m1','ch4-p2-m2','ch4-p3-m1'],talk:['서로 다른 기록도 함께 모아 봐요.\n정리하면 새로운 규칙이 보여요.']},
+    {id:'keeper',type:'npc',at:{x:8,y:8},npc:'harborKeeper',missions:['ch4-p1-m1','ch4-p1-m2','ch4-p2-m1','ch4-p2-m2','ch4-p3-m1','ch4-p3-x1'],talk:['서로 다른 기록도 함께 모아 봐요.\n정리하면 새로운 규칙이 보여요.']},
     {id:'jelly-a',type:'mob',at:{x:10,y:5},mob:'fogJelly',wander:1},
     {id:'jelly-b',type:'mob',at:{x:13,y:12},mob:'fogJelly',wander:1},
     {id:'chest-harbor',type:'chest',at:{x:2,y:4},reward:{xp:12,coins:20,items:[{id:'apple',qty:2}]}},

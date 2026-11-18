@@ -53,8 +53,36 @@ export const ch3: Chapter = {
       "hint": "반복 안에 만약을 넣어요.\n빨강이면 쉬고, 아니면 앞으로 가요.",
       "explain": "조건은 무엇을 할지 정하는 기준이에요.\n신호에 맞게 다르게 움직였어요."
     }
-  }
-],
+  },
+        {
+          "id": "ch3-p1-x1",
+          "kind": "blockCode",
+          "title": "두 번째 신호등",
+          "npc": "guide",
+          "optional": true,
+          "reward": {
+            "coins": 8
+          },
+          "data": {
+            "intro": "깃발 앞에 신호등이 둘 있어요.\n둘 다 살피며 길을 건너요.",
+            "grid": [
+              "S!..!..G"
+            ],
+            "palette": [
+              "forward",
+              "wait"
+            ],
+            "allowRepeat": true,
+            "allowIf": [
+              "signalRed"
+            ],
+            "optimal": 4,
+            "maxBlocks": 4,
+            "hint": "방금 지나온 신호와 달라도\n다음 신호를 보고 정하면 돼요.",
+            "explain": "신호를 볼 때마다 판단하면\n새 신호등에서도 규칙이 통해요."
+          }
+        }
+      ],
     },
     {
       id: 'ch3-p2',
@@ -277,8 +305,122 @@ export const ch3: Chapter = {
       "hint": "날개만 있으면 새와 곤충이 섞여요.\n깃털과 젖 먹이기도 물어봐요.",
       "explain": "질문 규칙을 잇는 것이 질문 나무예요.\n카드의 특징으로 종류를 나눴어요."
     }
-  }
-],
+  },
+        {
+          "id": "ch3-p3-x1",
+          "kind": "classify",
+          "title": "교실 물건 스무고개",
+          "npc": "guide",
+          "optional": true,
+          "reward": {
+            "coins": 8
+          },
+          "data": {
+            "mode": "tree",
+            "intro": "물건 여덟 개를 쓰임으로 나눠요.\n어떤 특징을 물어볼까요?",
+            "cards": [
+              {
+                "id": "measure0",
+                "label": "나무 자",
+                "group": "measure",
+                "features": [
+                  "scale"
+                ]
+              },
+              {
+                "id": "measure1",
+                "label": "플라스틱 자",
+                "group": "measure",
+                "features": [
+                  "scale"
+                ]
+              },
+              {
+                "id": "cut0",
+                "label": "종이 가위",
+                "group": "cut",
+                "features": [
+                  "blades"
+                ]
+              },
+              {
+                "id": "cut1",
+                "label": "천 가위",
+                "group": "cut",
+                "features": [
+                  "blades"
+                ]
+              },
+              {
+                "id": "tape0",
+                "label": "풀 막대",
+                "group": "tape",
+                "features": [
+                  "sticky"
+                ]
+              },
+              {
+                "id": "tape1",
+                "label": "풀 통",
+                "group": "tape",
+                "features": [
+                  "sticky"
+                ]
+              },
+              {
+                "id": "store0",
+                "label": "연필통",
+                "group": "store",
+                "features": []
+              },
+              {
+                "id": "store1",
+                "label": "물감 통",
+                "group": "store",
+                "features": []
+              }
+            ],
+            "groups": [
+              {
+                "id": "measure",
+                "label": "길이 재기"
+              },
+              {
+                "id": "cut",
+                "label": "자르기"
+              },
+              {
+                "id": "tape",
+                "label": "붙이기"
+              },
+              {
+                "id": "store",
+                "label": "담기"
+              }
+            ],
+            "questions": [
+              {
+                "id": "scale",
+                "label": "길이 눈금이 있나요?",
+                "feature": "scale"
+              },
+              {
+                "id": "blades",
+                "label": "두 날로 자르나요?",
+                "feature": "blades"
+              },
+              {
+                "id": "sticky",
+                "label": "풀로 붙이나요?",
+                "feature": "sticky"
+              }
+            ],
+            "maxQuestions": 3,
+            "hint": "한 질문 뒤에도 여러 쓰임이\n섞여 있다면 또 물어봐요.",
+            "explain": "묻는 특징을 하나씩 보태면\n같은 쓰임끼리 모을 수 있어요."
+          }
+        }
+      ],
     },
     {
       id: 'ch3-boss',

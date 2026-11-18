@@ -11,7 +11,7 @@ export const observatory: MapDef={
  objects:[
   {id:'chest-observation',type:'chest',at:{x:9,y:3},reward:{coins:8,items:[{id:'jelly',qty:1}]}},
   {id:'sign-observation',type:'sign',at:{x:10,y:2},text:'둥근 단에서 별을 살펴봐요.\n어제와 무엇이 달라졌나요?'},
-  {id:'astronomer',type:'npc',at:{x:8,y:8},npc:'astronomer',missions:['ch6-p1-m1','ch6-p2-m1','ch6-p3-m1'],talk:['기록은 앞일을 가늠하는 단서예요.\n실제와 다르면 다시 살펴봐요.']},
+  {id:'astronomer',type:'npc',at:{x:8,y:8},npc:'astronomer',missions:['ch6-p1-m1','ch6-p1-x1','ch6-p2-m1','ch6-p2-x1','ch6-p3-m1','ch6-p3-x1'],talk:['기록은 앞일을 가늠하는 단서예요.\n실제와 다르면 다시 살펴봐요.']},
   {id:'fox-a',type:'mob',at:{x:13,y:5},mob:'cometFox',wander:1},
   {id:'fox-b',type:'mob',at:{x:14,y:12},mob:'cometFox',wander:1},
   {id:'chest-observatory',type:'chest',at:{x:2,y:4},reward:{xp:15,coins:30,items:[{id:'apple',qty:2}]}},
