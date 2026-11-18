@@ -23,7 +23,7 @@ p.dots(
     { x: 20, y: 18 },
     { x: 3, y: 12 },
     { x: 9, y: 19 },
-    { x: 19, y: 13 },
+    { x: 21, y: 12 },
   ],
   'T',
 );
@@ -93,6 +93,8 @@ export const village: MapDef = {
     { id: 'to-maproom', type: 'portal', at: { x: 8, y: 13 }, to: { map: 'maproom', at: { x: 6, y: 6 } }, label: '마을 지도방', sprite: 'prop-route-house' },
     // 마을 빵집: 처음부터 열려 있어요(1~2판은 두세 칸 주문서). 7장 주문서 판은 7장 미션 뒤에 열려요.
     { id: 'to-bakery', type: 'portal', at: { x: 16, y: 13 }, to: { map: 'bakery', at: { x: 6, y: 6 } }, label: '마을 빵집', sprite: 'prop-bakery' },
+    // 마을 과일 가게: 처음부터 열려 있어요(1~2판은 예시 고르기·이름표 고치기). 나머지 판은 5·6·8장 뒤에 열려요.
+    { id: 'to-fruitshop', type: 'portal', at: { x: 19, y: 13 }, to: { map: 'fruitshop', at: { x: 6, y: 6 } }, label: '마을 과일 가게', sprite: 'prop-fruit-shop' },
     // 마을 공방: 집 칸으로 걸어 들어가면 공방 안(실내 맵)으로 가요.
     { id: 'to-workroom', type: 'portal', at: { x: 19, y: 7 }, to: { map: 'workroom', at: { x: 6, y: 6 } }, label: '마을 공방', sprite: 'prop-workshop' },
     { id: 'fountain-dry', type: 'prop', at: { x: 12, y: 10 }, sprite: 'prop-fountain', frame: 0, solid: true, when: broken },

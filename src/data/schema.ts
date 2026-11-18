@@ -691,3 +691,57 @@ export interface RouteRound {
   intro: string;
   hint: string;
 }
+
+/** 과일 AI 가르치기(마을 과일 가게)에서 로봇이 보는 과일 특징: 색 · 모양 · 무늬 */
+export type FruitColor = 'red' | 'green' | 'yellow' | 'purple' | 'orange';
+export type FruitShape = 'round' | 'long' | 'bunch' | 'oval';
+export type FruitPattern = 'plain' | 'stripes';
+
+/** 과일 그림 하나. kind는 사람이 아는 진짜 종류(정답)이고, 로봇은 color·shape·pattern만 봐요. */
+export interface FruitPic {
+  kind: string;
+  /** 화면에 보이는 이름(예: 초록 사과) */
+  name: string;
+  color: FruitColor;
+  shape: FruitShape;
+  pattern: FruitPattern;
+}
+
+/** 예시 카드: 과일 그림(FRUITS 키) + 이름표(과일 종류). 이름표가 그림과 다른(틀린) 카드도 있어요. */
+export interface FruitCard {
+  id: string;
+  fruit: string;
+  label: string;
+}
+
+/**
+ * 과일 AI 가르치기 한 판(마을 과일 가게, 5장 지도학습 · 6장 데이터 양 · 8장 치우친 데이터).
+ * 예시 카드를 학습 상자에 넣으면, 로봇은 시험 과일마다 특징이 가장 많이 같은 예시의 이름표를 따라 해요.
+ * 그런 예시들의 이름표가 서로 다르면 '헷갈려요'예요. 같은 상자면 늘 같은 결과예요(운·코인 없음).
+ */
+export interface FruitRound {
+  id: string;
+  title: string;
+  /** 이 판의 이름표(과일 종류, 차례대로) */
+  labels: string[];
+  /** 고를 수 있는 예시 카드 */
+  pool: FruitCard[];
+  /** 처음부터 학습 상자에 든 카드 id */
+  initial?: string[];
+  /** 학습 상자 카드의 이름표를 고칠 수 있어요(틀린 이름표 판) */
+  relabel?: boolean;
+  /** 학습 상자 칸 수 */
+  boxSize: number;
+  /** 시험 바구니(과일 그림 키). 여럿이면 같은 학습 상자로 모두 맞혀야 성공해요. */
+  baskets: { name: string; fruits: string[] }[];
+  /** 시험할 때마다 정확도 막대를 쌓아 보여 줘요(6장 정확도 비교) */
+  history?: boolean;
+  /** 치우친 데이터 판: 잘 맞히는 모습과 못 맞히는 모습이 갈리면 그 점을 알려 줘요(8장) */
+  bias?: boolean;
+  unlock?: MinigameUnlock;
+  lockedText?: string;
+  intro: string;
+  hint: string;
+  /** 성공 화면에서 정리해 주는 말 */
+  lesson: string;
+}

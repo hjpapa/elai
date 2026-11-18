@@ -1,7 +1,9 @@
 import { BAKERY_ROUNDS } from '../../data/minigames/bakery';
+import { CRATE_FRUITS, FRUITS, FRUIT_ROUNDS } from '../../data/minigames/fruit';
 import { LIGHT_ROUNDS } from '../../data/minigames/light';
 import { ROUTE_ROUNDS } from '../../data/minigames/route';
 import { cakePixels } from '../../minigames/bakery/cakeArt';
+import { fruitPixels } from '../../minigames/fruit/fruitArt';
 import { shortestPath } from '../../minigames/route/routeEnv';
 import type { AssetSpec } from '../assets';
 
@@ -340,6 +342,54 @@ export function drawRoomProp(ctx: CanvasRenderingContext2D, spec: AssetSpec, f: 
       rect(ctx, 2, h - 14, w - 4, 2, '#86513e');
       for (const [x, y] of [[6, h - 20], [14, h - 20], [22, h - 20], [9, h - 8], [19, h - 8]] as Pt[]) oval(ctx, x, y, 3.5, 2.5, '#e3ab80');
       return true;
+    // C20 마을 과일 가게
+    case 'prop-fruit-shop':
+      rect(ctx, 4, h - 26, w - 8, 24, '#fff4d2');
+      poly(ctx, [[1, h - 25], [m, h - 44], [w - 1, h - 25]], '#e08b69');
+      for (let i = 0; i < 6; i++) rect(ctx, 4 + i * 4, h - 26, 2, 3, i % 2 ? '#ffffff' : '#4c8f4c');
+      rect(ctx, m - 4, h - 13, 8, 11, f === 1 ? '#ffe59a' : '#86513e');
+      oval(ctx, m, h - 19, 2.5, 2.5, '#b94751');
+      rect(ctx, 6, h - 21, 5, 5, f === 1 ? '#ffe59a' : '#478bc7');
+      rect(ctx, w - 11, h - 21, 5, 5, f === 1 ? '#ffe59a' : '#478bc7');
+      rect(ctx, 5, h - 7, 6, 4, '#a76c46');
+      oval(ctx, 7, h - 8, 1.5, 1.5, '#b94751');
+      oval(ctx, 10, h - 8, 1.5, 1.5, '#e7b64f');
+      return true;
+    case 'prop-fruit-ai':
+      rect(ctx, 7, h - 24, w - 14, 18, '#8c9bab');
+      rect(ctx, 10, h - 21, w - 20, 8, f === 1 ? '#a4e3c2' : '#49b5b1');
+      oval(ctx, m, h - 33, 10, 8, '#c7d6dc');
+      oval(ctx, m, h - 33, 5.5, 5.5, '#293044');
+      oval(ctx, m, h - 33, 3.5, 3.5, f === 1 ? '#b9e4df' : '#82cce0');
+      rect(ctx, m - 1, h - 45, 2, 5, '#56657a');
+      oval(ctx, m, h - 45, 1.5, 1.5, f === 1 ? '#ffe59a' : '#ed7463');
+      rect(ctx, 4, h - 9, w - 8, 7, '#a76c46');
+      rect(ctx, 5, h - 8, w - 10, 2, '#d39a62');
+      return true;
+    case 'prop-fruit-crate': {
+      // 1~6프레임: 그 판의 과일을 절반 크기로 상자 위에 얹어요. 0프레임은 빈 상자예요.
+      const r = f > 0 ? FRUIT_ROUNDS[f - 1] : undefined;
+      const fruits = r ? CRATE_FRUITS[r.id] : [];
+      fruits.forEach((id, i) => {
+        const px = fruitPixels(FRUITS[id]);
+        const ox = fruits.length > 2 ? i * 4 : i * 8;
+        for (let y = 0; y < 8; y++) for (let x = 0; x < 8; x++) {
+          const c = px[y * 2 + 1][x * 2];
+          if (c) rect(ctx, ox + x, h - 18 + y, 1, 1, c);
+        }
+      });
+      rect(ctx, 1, h - 11, w - 2, 9, '#a76c46');
+      rect(ctx, 1, h - 11, w - 2, 2, '#d39a62');
+      rect(ctx, 1, h - 6, w - 2, 1, '#86513e');
+      return true;
+    }
+    case 'prop-fruit-stand':
+      rect(ctx, 2, h - 14, w - 4, 12, '#a76c46');
+      rect(ctx, 1, h - 17, w - 2, 4, '#d39a62');
+      rect(ctx, 4, h - 23, 10, 6, '#bd895b');
+      rect(ctx, 18, h - 23, 10, 6, '#bd895b');
+      for (const [x, c] of [[6, '#b94751'], [9, '#ed7463'], [12, '#b94751'], [20, '#e7b64f'], [23, '#ffe59a'], [26, '#7962ab']] as [number, string][]) oval(ctx, x, h - 24, 2, 2, c);
+      return true;
     default:
       if (!key.startsWith('prop-doll-')) return false;
       drawDoll(ctx, key, w, h, hex(color));
@@ -460,6 +510,16 @@ export function drawRoomIcon(ctx: CanvasRenderingContext2D, spec: AssetSpec): bo
   if (key === 'icon-cake') {
     const px = cakePixels({ flavor: 'strawberry', shape: 'round', topping: 'berry' });
     px.forEach((row, y) => row.forEach((c, x) => c && rect(ctx, x, y, 1, 1, c)));
+    return true;
+  }
+  // C20 과일 AI 가르치기: 과일 바구니
+  if (key === 'icon-fruit') {
+    oval(ctx, 5.5, 6, 3.5, 3.5, '#b94751');
+    oval(ctx, 4.5, 5, 1, 1, '#ed7463');
+    rect(ctx, 8, 3, 5, 3, '#e7b64f');
+    rect(ctx, 10, 5, 3, 3, '#e7b64f');
+    rect(ctx, 2, 8, w - 4, 6, '#a76c46');
+    rect(ctx, 1, 8, w - 2, 2, '#d39a62');
     return true;
   }
   // C18 코딩 길찾기: 물결 따라가기 카드(물결 고리와 작은 숫자 쪽 화살표)

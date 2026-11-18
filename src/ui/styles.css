@@ -2728,3 +2728,303 @@ h3 {
     animation: none;
   }
 }
+
+/* ── 과일 AI 가르치기(마을 과일 가게, 2.5D 4단계) ── */
+.fruit-title {
+  margin: 0 0 6px;
+}
+.fruit-basket,
+.fruit-score,
+.fruit-why {
+  margin-bottom: 10px;
+  padding: 8px;
+  border: 3px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel2);
+}
+.fruit-basket-head,
+.fruit-score-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 2px 8px;
+  margin-bottom: 6px;
+}
+.fruit-basket-head small,
+.fruit-score-head small,
+.fruit-score-sub {
+  color: var(--muted);
+}
+.fruit-score-sub {
+  display: block;
+  margin: 8px 0 4px;
+  font-size: 14px;
+}
+/* 시험 바구니의 과일 */
+.fruit-tiles,
+.fruit-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(68px, 1fr));
+  gap: 6px;
+}
+.fruit-tile,
+.fruit-card,
+.fruit-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  min-height: 96px;
+  padding: 4px 2px;
+  border: 3px solid var(--line);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.16);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 14px;
+}
+.fruit-tile small,
+.fruit-card small {
+  font-size: 14px;
+  line-height: 1.15;
+  text-align: center;
+  word-break: keep-all;
+}
+button.fruit-tile,
+button.fruit-card,
+.fruit-card-pic,
+.fruit-tag.edit {
+  cursor: pointer;
+}
+@media (hover: hover) {
+  button.fruit-card:hover {
+    border-color: var(--accent);
+  }
+}
+.fruit-tile.ok {
+  border-color: #70ac61;
+}
+.fruit-tile.no {
+  border-color: #ed7463;
+}
+.fruit-tile.huh {
+  border-color: #e7b64f;
+  border-style: dashed;
+}
+.fruit-tile.on {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+.fruit-answer {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0 3px;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.15;
+}
+/* 예시 카드와 학습 상자 */
+.fruit-cards {
+  margin-bottom: 10px;
+}
+.fruit-cards.locked {
+  pointer-events: none;
+  opacity: 0.75;
+}
+.fruit-slot {
+  border-style: dashed;
+  background: none;
+  opacity: 0.55;
+}
+.fruit-card.in {
+  background: var(--panel2);
+}
+.fruit-card-pic {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+}
+.fruit-out {
+  color: var(--muted);
+  font-size: 13px;
+  text-decoration: underline;
+}
+.fruit-tag {
+  display: inline-block;
+  max-width: 100%;
+  padding: 1px 7px;
+  border: 2px solid #bd895b;
+  border-radius: 6px;
+  background: #fff4d2;
+  color: #2a2520;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+.fruit-tag.edit {
+  min-height: 32px;
+  border-color: #e7b64f;
+  box-shadow: 0 2px 0 #ad884b;
+}
+.fruit-actions {
+  margin-top: 4px;
+}
+/* 맞힌 수 */
+.fruit-bar {
+  height: 12px;
+  overflow: hidden;
+  border: 2px solid var(--line);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.25);
+}
+.fruit-bar span {
+  display: block;
+  height: 100%;
+  background: #70ac61;
+}
+.fruit-groups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.fruit-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 6px 0 2px;
+  border: 2px solid var(--line);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+}
+.fruit-group.ok {
+  border-color: #70ac61;
+}
+.fruit-group.some {
+  border-color: #e7b64f;
+}
+.fruit-group.no {
+  border-color: #ed7463;
+}
+.fruit-history-row {
+  display: grid;
+  grid-template-columns: 34px 1fr 42px;
+  align-items: center;
+  gap: 6px;
+  margin-top: 3px;
+}
+.fruit-history-row small:last-child {
+  text-align: right;
+}
+/* 로봇 생각 */
+.fruit-why-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+  font-weight: 800;
+}
+.fruit-why p {
+  margin: 4px 0 0;
+  word-break: keep-all;
+}
+.fruit-why.thinking {
+  animation: fruit-think 0.7s ease-in-out infinite;
+}
+@keyframes fruit-think {
+  50% {
+    box-shadow: 0 0 14px #82cce0;
+  }
+}
+.fruit-why-fruit,
+.fruit-why-list li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.fruit-why-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  word-break: keep-all;
+}
+.fruit-why-text small {
+  color: var(--muted);
+  font-size: 14px;
+}
+.fruit-why-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.fruit-why-list li + li {
+  margin-top: 3px;
+}
+.fruit-why-answer {
+  padding: 3px 8px;
+  border-left: 4px solid var(--line);
+  border-radius: 4px;
+  font-weight: 700;
+}
+.fruit-why-answer.ok {
+  border-color: #70ac61;
+}
+.fruit-why-answer.no {
+  border-color: #ed7463;
+}
+.fruit-why-answer.huh {
+  border-color: #e7b64f;
+}
+/* 판 고르기의 과일 상자, 결과 화면 */
+.fruit-crates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.fruit-crate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  width: 84px;
+  min-height: 72px;
+  padding: 6px 4px;
+  border: 3px dashed var(--line);
+  border-radius: 10px;
+  background: var(--panel2);
+}
+.fruit-crate.got {
+  border-style: solid;
+}
+.fruit-crate-pics {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  min-height: 32px;
+}
+.fruit-result {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 8px 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .fruit-why.thinking {
+    animation: none;
+  }
+}

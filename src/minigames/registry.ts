@@ -1,5 +1,6 @@
 import { BakeryGame } from './bakery/BakeryGame';
 import { ClawGame } from './claw/ClawGame';
+import { FruitGame } from './fruit/FruitGame';
 import { LightGame } from './light/LightGame';
 import { RouteGame } from './route/RouteGame';
 import { SortGame } from './sort/SortGame';
@@ -12,4 +13,5 @@ export const MINIGAMES: Record<string, MinigameDef> = {
   light: { id: 'light', title: '코딩 불빛 그림', create: () => new LightGame() },
   route: { id: 'route', title: '코딩 길찾기', create: () => new RouteGame() },
   bakery: { id: 'bakery', title: '주문서 빵집', create: () => new BakeryGame() },
+  fruit: { id: 'fruit', title: '과일 AI 가르치기', create: () => new FruitGame() },
 };
