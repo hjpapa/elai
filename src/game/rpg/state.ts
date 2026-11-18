@@ -1,4 +1,4 @@
-import { getMission, getPart } from '../../data/chapters';
+import { getMission, getPart, requiredMissions } from '../../data/chapters';
 import { ITEMS } from '../../data/rpg/items';
 import { MOBS } from '../../data/rpg/mobs';
 import type { Observation } from '../battle/sim';
@@ -156,12 +156,12 @@ export class GameState {
   }
   partDone(partId: string): boolean {
     const p = getPart(partId);
-    return !!p && p.part.missions.every((m) => this.missionDone(m.id));
+    return !!p && requiredMissions(p.part).every((m) => this.missionDone(m.id));
   }
   /** 이 파트에서 다음에 할 미션(앞 미션을 끝내야 다음이 열려요) */
   nextMissionOf(partId: string): string | undefined {
     const p = getPart(partId);
-    return p?.part.missions.find((m) => !this.missionDone(m.id))?.id;
+    return p && requiredMissions(p.part).find((m) => !this.missionDone(m.id))?.id;
   }
   check(cond: Condition | undefined): boolean {
     if (!cond) return true;

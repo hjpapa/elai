@@ -46,3 +46,8 @@ export function allMissions(): MissionEntry[] {
 export function isPlayable(m: Mission): boolean {
   return m.data !== undefined;
 }
+
+/** 장을 진행하는 데 필요한 미션만 돌려줘요. */
+export function requiredMissions(part: Part): Mission[] {
+  return part.missions.filter(mission => !mission.optional);
+}

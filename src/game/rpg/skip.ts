@@ -1,4 +1,4 @@
-import { CHAPTERS } from '../../data/chapters';
+import { CHAPTERS, requiredMissions } from '../../data/chapters';
 import { MAPS } from '../../data/maps';
 import { ITEMS } from '../../data/rpg/items';
 import { MOBS } from '../../data/rpg/mobs';
@@ -28,7 +28,7 @@ export function skipKit(chapter: Chapter): SkipKit {
   const found: string[] = [];
   for (const c of CHAPTERS.filter((x) => x.index < chapter.index)) {
     for (const p of c.parts) {
-      for (const m of p.missions) {
+      for (const m of requiredMissions(p)) {
         xp += m.reward?.xp ?? 0;
         if (m.reward?.robiPart) parts.push(m.reward.robiPart);
         for (const it of m.reward?.items ?? []) found.push(it.id);
