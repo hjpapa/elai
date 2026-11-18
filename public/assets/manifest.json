@@ -403,6 +403,11 @@
       "density": 2
     },
     {
+      "key": "icon-fruit",
+      "file": "icon/icon-fruit.png",
+      "density": 2
+    },
+    {
       "key": "tile-castle",
       "file": "tile/tile-castle.png",
       "density": 2
