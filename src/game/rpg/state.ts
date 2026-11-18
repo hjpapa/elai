@@ -1,5 +1,6 @@
 import { getMission, getPart } from '../../data/chapters';
 import { ITEMS } from '../../data/rpg/items';
+import { DECORATIONS, decorReason, shopOffers } from '../../data/rpg/shop';
 import { MOBS } from '../../data/rpg/mobs';
 import type { Observation } from '../battle/sim';
 import { levelForXp } from '../../data/rpg/levels';
@@ -196,6 +197,22 @@ export class GameState {
   addCoins(n: number): void {
     this.data.coins = Math.max(0, this.data.coins + n);
     this.changed();
+  }
+
+  buyItem(id: string): boolean {
+    const offer = shopOffers(this).find(row => row.item.id === id);
+    if (!offer?.available) return false;
+    this.data.coins -= offer.price;
+    this.addItem(id);
+    return true;
+  }
+
+  buyDecor(id: string): boolean {
+    const decor = DECORATIONS.find(row => row.id === id);
+    if (!decor || decorReason(this, decor)) return false;
+    this.data.coins -= decor.price;
+    this.setFlag('decor:' + id);
+    return true;
   }
 
   addItem(id: string, qty = 1): void {
