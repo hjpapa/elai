@@ -9,7 +9,14 @@ export const GOODS = [
 ] as const;
 
 export interface Decoration { id: string; name: string; price: number; icon: string; desc: string }
-export const DECORATIONS: readonly Decoration[] = [];
+export const DECORATIONS: readonly Decoration[] = [
+  { id: 'pots', name: '광장 화분', price: 40, icon: 'prop-plant', desc: '광장 곁에 잎이 무성한 화분을 놓아요.' },
+  { id: 'lanterns', name: '길가 등불', price: 60, icon: 'prop-lamp', desc: '마을 큰길에 따뜻한 등을 켜요.' },
+  { id: 'stars', name: '별 등불', price: 80, icon: 'prop-starlamp', desc: '길 가장자리에 작은 별빛을 밝혀요.' },
+  { id: 'garden', name: '작은 숲 정원', price: 100, icon: 'prop-bush', desc: '풀숲과 버섯이 자라는 자리를 꾸며요.' },
+  { id: 'crystal', name: '수정 장식', price: 120, icon: 'prop-crystal', desc: '언덕 곁에 반짝이는 수정을 놓아요.' },
+  { id: 'festival', name: '축제 깃발', price: 150, icon: 'prop-banner', desc: '광장에 알록달록한 깃발을 세워요.' },
+];
 
 export function shopOffers(state: GameState) {
   return GOODS.map(good => {
