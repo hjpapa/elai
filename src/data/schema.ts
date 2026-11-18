@@ -351,6 +351,7 @@ export type MapObject =
   | (ObjectBase & {
       type: 'npc';
       npc: string;
+      shop?: boolean;
       /** 이 NPC가 주는 미션(아직 안 끝낸 첫 미션을 줘요. 장 안에서는 앞 미션을 끝내야 열려요) */
       missions?: string[];
       /** 미션이 없거나 다 끝났을 때 하는 말 */

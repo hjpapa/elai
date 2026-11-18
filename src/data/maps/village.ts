@@ -127,6 +127,8 @@ export const village: MapDef = {
       when: { mission: 'ch0-m1' },
     },
     { id: 'chest-village', type: 'chest', at: { x: 3, y: 4 }, reward: { xp: 3, coins: 5, items: [{ id: 'apple', qty: 1 }] } },
+    { id: 'haru-shop', type: 'npc', at: { x: 3, y: 10 }, npc: 'explorer', shop: true, when: { mission: 'ch0-m5' }, talk: ['필요한 걸 함께 골라 봐요.'] },
+    { id: 'haru-stand', type: 'prop', at: { x: 2, y: 10 }, sprite: 'prop-fruit-stand', when: { mission: 'ch0-m5' } },
 
     { id: 'sign-street', type: 'sign', at: { x: 13, y: 17 }, text: '위쪽 길은 광장과 숲으로 이어져요.\n오른쪽 길에는 공방이 있어요.' },
     { id: 'sign-forest', type: 'sign', at: { x: 6, y: 2 }, text: '순서의 숲으로 가는 입구예요.\n연습 전투를 마치면 열려요.' },

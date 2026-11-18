@@ -1,0 +1,8 @@
+.shop-window .shop-list { display:grid; gap:.65rem; }
+.shop-window .shop-product { display:grid; grid-template-columns:40px minmax(0,1fr); align-items:start; gap:.35rem .75rem; padding:.75rem; border:1px solid var(--line); border-radius:8px; }
+.shop-product .shop-copy { min-width:0; overflow-wrap:anywhere; }
+.shop-product .shop-copy p { margin:.25rem 0; }
+.shop-product button { grid-column:2; justify-self:start; min-height:40px; }
+.shop-window .shop-feedback { min-height:1.4em; }
+.shop-window .row { flex-wrap:wrap; }
+.shop-window .row button { min-height:40px; }

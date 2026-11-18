@@ -1058,6 +1058,11 @@ export class WorldScene extends Phaser.Scene {
     const o = v.obj;
     switch (o.type) {
       case 'npc':
+        if (o.shop) {
+          const { openShop } = await import('../../ui/shop');
+          openShop();
+          return;
+        }
         return this.talk(v);
       case 'chest':
         return this.openChest(v);
