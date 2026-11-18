@@ -50,7 +50,7 @@ export function openDex(): void {
     const grid = h('div', { class: 'dex-grid' });
     if (tab === 'mobs') {
       for (const m of Object.values(MOBS)) {
-        const known = d.dex.mobs.includes(m.id);
+        const known = d.dex.mobs.includes(m.id) || (!!m.dexMission && app.state.missionDone(m.dexMission));
         const observations = d.observations?.[m.id] ?? [];
         const observed = observations.length > 0;
         const table = observed ? h('table', { class: 'observation-table' },

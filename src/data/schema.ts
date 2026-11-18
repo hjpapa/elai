@@ -445,6 +445,8 @@ export interface ItemDef {
 // ── 몹 ───────────────────────────────────────────────────
 export type MobAction = 'attack' | 'guard' | 'charge' | 'smash' | 'heal' | 'idle';
 export interface MobDef {
+  /** 전투 없이 만나는 대장은 미션을 마치면 도감에 기록돼요. */
+  dexMission?: string;
   id: string;
   name: string;
   sprite: string;

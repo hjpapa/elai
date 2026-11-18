@@ -446,6 +446,7 @@ const list: MobDef[] = [
 },
 {
   "id": "babbleKing",
+  "dexMission": "ch7-boss-m1",
   "name": "헛소리 앵무새 대장",
   "sprite": "boss-babble-king",
   "size": 48,
