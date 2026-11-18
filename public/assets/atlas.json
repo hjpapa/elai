@@ -3400,9 +3400,29 @@
         "h": 32
       }
     },
-    "icon-part-ethics": {
+    "icon-maze": {
       "frame": {
         "x": 902,
+        "y": 818,
+        "w": 32,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      }
+    },
+    "icon-part-ethics": {
+      "frame": {
+        "x": 938,
         "y": 818,
         "w": 32,
         "h": 32
@@ -3422,7 +3442,7 @@
     },
     "icon-part-talk": {
       "frame": {
-        "x": 938,
+        "x": 974,
         "y": 818,
         "w": 32,
         "h": 32
@@ -3442,7 +3462,7 @@
     },
     "icon-part-predictor": {
       "frame": {
-        "x": 974,
+        "x": 1010,
         "y": 818,
         "w": 32,
         "h": 32
@@ -3462,7 +3482,7 @@
     },
     "icon-part-learnchip": {
       "frame": {
-        "x": 1010,
+        "x": 1046,
         "y": 818,
         "w": 32,
         "h": 32
@@ -3482,7 +3502,7 @@
     },
     "icon-part-lens": {
       "frame": {
-        "x": 1046,
+        "x": 1082,
         "y": 818,
         "w": 32,
         "h": 32
@@ -3502,7 +3522,7 @@
     },
     "icon-card-scan": {
       "frame": {
-        "x": 1082,
+        "x": 1118,
         "y": 818,
         "w": 32,
         "h": 32
@@ -3522,7 +3542,7 @@
     },
     "icon-part-sensor": {
       "frame": {
-        "x": 1118,
+        "x": 1154,
         "y": 818,
         "w": 32,
         "h": 32
@@ -3542,7 +3562,7 @@
     },
     "icon-part-memory": {
       "frame": {
-        "x": 1154,
+        "x": 1190,
         "y": 818,
         "w": 32,
         "h": 32
@@ -3562,7 +3582,7 @@
     },
     "prop-key": {
       "frame": {
-        "x": 1190,
+        "x": 1226,
         "y": 818,
         "w": 32,
         "h": 32
@@ -3582,7 +3602,7 @@
     },
     "prop-stump": {
       "frame": {
-        "x": 1226,
+        "x": 1262,
         "y": 818,
         "w": 32,
         "h": 32
@@ -3602,7 +3622,7 @@
     },
     "prop-mushroom": {
       "frame": {
-        "x": 1262,
+        "x": 1298,
         "y": 818,
         "w": 32,
         "h": 32
@@ -3622,7 +3642,7 @@
     },
     "icon-item-cap": {
       "frame": {
-        "x": 1298,
+        "x": 1334,
         "y": 818,
         "w": 32,
         "h": 32
@@ -3642,7 +3662,7 @@
     },
     "icon-item-leafhat": {
       "frame": {
-        "x": 1334,
+        "x": 1370,
         "y": 818,
         "w": 32,
         "h": 32
@@ -3662,7 +3682,7 @@
     },
     "icon-item-rangerhat": {
       "frame": {
-        "x": 1370,
+        "x": 1406,
         "y": 818,
         "w": 32,
         "h": 32
@@ -3682,7 +3702,7 @@
     },
     "icon-item-stick": {
       "frame": {
-        "x": 1406,
+        "x": 1442,
         "y": 818,
         "w": 32,
         "h": 32
@@ -3702,7 +3722,7 @@
     },
     "icon-item-hammer": {
       "frame": {
-        "x": 1442,
+        "x": 1478,
         "y": 818,
         "w": 32,
         "h": 32
@@ -3722,7 +3742,7 @@
     },
     "icon-item-brush": {
       "frame": {
-        "x": 1478,
+        "x": 1514,
         "y": 818,
         "w": 32,
         "h": 32
@@ -3742,7 +3762,7 @@
     },
     "icon-item-vest": {
       "frame": {
-        "x": 1514,
+        "x": 1550,
         "y": 818,
         "w": 32,
         "h": 32
@@ -3762,7 +3782,7 @@
     },
     "icon-item-cloak": {
       "frame": {
-        "x": 1550,
+        "x": 1586,
         "y": 818,
         "w": 32,
         "h": 32
@@ -3782,7 +3802,7 @@
     },
     "icon-item-boots": {
       "frame": {
-        "x": 1586,
+        "x": 1622,
         "y": 818,
         "w": 32,
         "h": 32
@@ -3802,7 +3822,7 @@
     },
     "icon-item-windboots": {
       "frame": {
-        "x": 1622,
+        "x": 1658,
         "y": 818,
         "w": 32,
         "h": 32
@@ -3822,7 +3842,7 @@
     },
     "icon-item-glasses": {
       "frame": {
-        "x": 1658,
+        "x": 1694,
         "y": 818,
         "w": 32,
         "h": 32
@@ -3842,7 +3862,7 @@
     },
     "icon-item-flowmap": {
       "frame": {
-        "x": 1694,
+        "x": 1730,
         "y": 818,
         "w": 32,
         "h": 32
@@ -3862,7 +3882,7 @@
     },
     "icon-item-apple": {
       "frame": {
-        "x": 1730,
+        "x": 1766,
         "y": 818,
         "w": 32,
         "h": 32
@@ -3882,7 +3902,7 @@
     },
     "icon-item-jelly": {
       "frame": {
-        "x": 1766,
+        "x": 1802,
         "y": 818,
         "w": 32,
         "h": 32
@@ -3902,7 +3922,7 @@
     },
     "icon-item-forestkey": {
       "frame": {
-        "x": 1802,
+        "x": 1838,
         "y": 818,
         "w": 32,
         "h": 32
@@ -3922,7 +3942,7 @@
     },
     "icon-item-vine": {
       "frame": {
-        "x": 1838,
+        "x": 1874,
         "y": 818,
         "w": 32,
         "h": 32
@@ -3942,7 +3962,7 @@
     },
     "icon-part-wheel": {
       "frame": {
-        "x": 1874,
+        "x": 1910,
         "y": 818,
         "w": 32,
         "h": 32
@@ -3962,7 +3982,7 @@
     },
     "icon-card-up": {
       "frame": {
-        "x": 1910,
+        "x": 1946,
         "y": 818,
         "w": 32,
         "h": 32
@@ -3982,7 +4002,7 @@
     },
     "icon-card-down": {
       "frame": {
-        "x": 1946,
+        "x": 1982,
         "y": 818,
         "w": 32,
         "h": 32
@@ -4002,26 +4022,6 @@
     },
     "icon-card-left": {
       "frame": {
-        "x": 1982,
-        "y": 818,
-        "w": 32,
-        "h": 32
-      },
-      "rotated": false,
-      "trimmed": false,
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 32,
-        "h": 32
-      },
-      "sourceSize": {
-        "w": 32,
-        "h": 32
-      }
-    },
-    "icon-card-right": {
-      "frame": {
         "x": 2,
         "y": 854,
         "w": 32,
@@ -4040,7 +4040,7 @@
         "h": 32
       }
     },
-    "icon-card-forward": {
+    "icon-card-right": {
       "frame": {
         "x": 38,
         "y": 854,
@@ -4060,7 +4060,7 @@
         "h": 32
       }
     },
-    "icon-card-turnLeft": {
+    "icon-card-forward": {
       "frame": {
         "x": 74,
         "y": 854,
@@ -4080,7 +4080,7 @@
         "h": 32
       }
     },
-    "icon-card-turnRight": {
+    "icon-card-turnLeft": {
       "frame": {
         "x": 110,
         "y": 854,
@@ -4100,7 +4100,7 @@
         "h": 32
       }
     },
-    "icon-card-collect": {
+    "icon-card-turnRight": {
       "frame": {
         "x": 146,
         "y": 854,
@@ -4120,7 +4120,7 @@
         "h": 32
       }
     },
-    "icon-card-attack": {
+    "icon-card-collect": {
       "frame": {
         "x": 182,
         "y": 854,
@@ -4140,7 +4140,7 @@
         "h": 32
       }
     },
-    "icon-card-guard": {
+    "icon-card-attack": {
       "frame": {
         "x": 218,
         "y": 854,
@@ -4160,7 +4160,7 @@
         "h": 32
       }
     },
-    "icon-card-heal": {
+    "icon-card-guard": {
       "frame": {
         "x": 254,
         "y": 854,
@@ -4180,7 +4180,7 @@
         "h": 32
       }
     },
-    "icon-card-wait": {
+    "icon-card-heal": {
       "frame": {
         "x": 290,
         "y": 854,
@@ -4200,7 +4200,7 @@
         "h": 32
       }
     },
-    "icon-card-repeat": {
+    "icon-card-wait": {
       "frame": {
         "x": 326,
         "y": 854,
@@ -4220,7 +4220,7 @@
         "h": 32
       }
     },
-    "icon-card-if": {
+    "icon-card-repeat": {
       "frame": {
         "x": 362,
         "y": 854,
@@ -4240,7 +4240,7 @@
         "h": 32
       }
     },
-    "icon-intent-attack": {
+    "icon-card-if": {
       "frame": {
         "x": 398,
         "y": 854,
@@ -4260,7 +4260,7 @@
         "h": 32
       }
     },
-    "icon-intent-guard": {
+    "icon-intent-attack": {
       "frame": {
         "x": 434,
         "y": 854,
@@ -4280,7 +4280,7 @@
         "h": 32
       }
     },
-    "icon-intent-charge": {
+    "icon-intent-guard": {
       "frame": {
         "x": 470,
         "y": 854,
@@ -4300,7 +4300,7 @@
         "h": 32
       }
     },
-    "icon-intent-smash": {
+    "icon-intent-charge": {
       "frame": {
         "x": 506,
         "y": 854,
@@ -4320,7 +4320,7 @@
         "h": 32
       }
     },
-    "icon-intent-heal": {
+    "icon-intent-smash": {
       "frame": {
         "x": 542,
         "y": 854,
@@ -4340,7 +4340,7 @@
         "h": 32
       }
     },
-    "icon-intent-idle": {
+    "icon-intent-heal": {
       "frame": {
         "x": 578,
         "y": 854,
@@ -4360,7 +4360,7 @@
         "h": 32
       }
     },
-    "icon-robi": {
+    "icon-intent-idle": {
       "frame": {
         "x": 614,
         "y": 854,
@@ -4380,7 +4380,7 @@
         "h": 32
       }
     },
-    "icon-goal": {
+    "icon-robi": {
       "frame": {
         "x": 650,
         "y": 854,
@@ -4400,7 +4400,7 @@
         "h": 32
       }
     },
-    "icon-gem": {
+    "icon-goal": {
       "frame": {
         "x": 686,
         "y": 854,
@@ -4420,7 +4420,7 @@
         "h": 32
       }
     },
-    "icon-cell-tree": {
+    "icon-gem": {
       "frame": {
         "x": 722,
         "y": 854,
@@ -4440,7 +4440,7 @@
         "h": 32
       }
     },
-    "icon-cell-water": {
+    "icon-cell-tree": {
       "frame": {
         "x": 758,
         "y": 854,
@@ -4460,7 +4460,7 @@
         "h": 32
       }
     },
-    "icon-cell-rock": {
+    "icon-cell-water": {
       "frame": {
         "x": 794,
         "y": 854,
@@ -4480,7 +4480,7 @@
         "h": 32
       }
     },
-    "icon-star": {
+    "icon-cell-rock": {
       "frame": {
         "x": 830,
         "y": 854,
@@ -4500,7 +4500,7 @@
         "h": 32
       }
     },
-    "icon-star-empty": {
+    "icon-star": {
       "frame": {
         "x": 866,
         "y": 854,
@@ -4520,7 +4520,7 @@
         "h": 32
       }
     },
-    "icon-coin": {
+    "icon-star-empty": {
       "frame": {
         "x": 902,
         "y": 854,
@@ -4540,7 +4540,7 @@
         "h": 32
       }
     },
-    "icon-heart": {
+    "icon-coin": {
       "frame": {
         "x": 938,
         "y": 854,
@@ -4560,7 +4560,7 @@
         "h": 32
       }
     },
-    "icon-energy": {
+    "icon-heart": {
       "frame": {
         "x": 974,
         "y": 854,
@@ -4580,7 +4580,7 @@
         "h": 32
       }
     },
-    "icon-xp": {
+    "icon-energy": {
       "frame": {
         "x": 1010,
         "y": 854,
@@ -4600,7 +4600,7 @@
         "h": 32
       }
     },
-    "icon-bag": {
+    "icon-xp": {
       "frame": {
         "x": 1046,
         "y": 854,
@@ -4620,7 +4620,7 @@
         "h": 32
       }
     },
-    "icon-book": {
+    "icon-bag": {
       "frame": {
         "x": 1082,
         "y": 854,
@@ -4640,7 +4640,7 @@
         "h": 32
       }
     },
-    "icon-gear": {
+    "icon-book": {
       "frame": {
         "x": 1118,
         "y": 854,
@@ -4660,7 +4660,7 @@
         "h": 32
       }
     },
-    "icon-lock": {
+    "icon-gear": {
       "frame": {
         "x": 1154,
         "y": 854,
@@ -4680,7 +4680,7 @@
         "h": 32
       }
     },
-    "icon-check": {
+    "icon-lock": {
       "frame": {
         "x": 1190,
         "y": 854,
@@ -4700,7 +4700,7 @@
         "h": 32
       }
     },
-    "icon-hint": {
+    "icon-check": {
       "frame": {
         "x": 1226,
         "y": 854,
@@ -4720,7 +4720,7 @@
         "h": 32
       }
     },
-    "icon-badge-1": {
+    "icon-hint": {
       "frame": {
         "x": 1262,
         "y": 854,
@@ -4740,7 +4740,7 @@
         "h": 32
       }
     },
-    "icon-badge-2": {
+    "icon-badge-1": {
       "frame": {
         "x": 1298,
         "y": 854,
@@ -4760,7 +4760,7 @@
         "h": 32
       }
     },
-    "icon-badge-3": {
+    "icon-badge-2": {
       "frame": {
         "x": 1334,
         "y": 854,
@@ -4780,7 +4780,7 @@
         "h": 32
       }
     },
-    "icon-badge-4": {
+    "icon-badge-3": {
       "frame": {
         "x": 1370,
         "y": 854,
@@ -4800,7 +4800,7 @@
         "h": 32
       }
     },
-    "icon-badge-5": {
+    "icon-badge-4": {
       "frame": {
         "x": 1406,
         "y": 854,
@@ -4820,7 +4820,7 @@
         "h": 32
       }
     },
-    "icon-badge-6": {
+    "icon-badge-5": {
       "frame": {
         "x": 1442,
         "y": 854,
@@ -4840,7 +4840,7 @@
         "h": 32
       }
     },
-    "icon-badge-7": {
+    "icon-badge-6": {
       "frame": {
         "x": 1478,
         "y": 854,
@@ -4860,7 +4860,7 @@
         "h": 32
       }
     },
-    "icon-badge-8": {
+    "icon-badge-7": {
       "frame": {
         "x": 1514,
         "y": 854,
@@ -4880,9 +4880,29 @@
         "h": 32
       }
     },
-    "fx-sparkle": {
+    "icon-badge-8": {
       "frame": {
         "x": 1550,
+        "y": 854,
+        "w": 32,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      }
+    },
+    "fx-sparkle": {
+      "frame": {
+        "x": 1586,
         "y": 854,
         "w": 64,
         "h": 16
@@ -4902,7 +4922,7 @@
     },
     "ui-bar": {
       "frame": {
-        "x": 1618,
+        "x": 1654,
         "y": 854,
         "w": 48,
         "h": 16

@@ -428,6 +428,11 @@
       "density": 2
     },
     {
+      "key": "icon-maze",
+      "file": "icon/icon-maze.png",
+      "density": 2
+    },
+    {
       "key": "tile-castle",
       "file": "tile/tile-castle.png",
       "density": 2
