@@ -534,9 +534,9 @@ export interface SaveData {
   visited: Record<string, string>;
   /** volume: 소리 크기 0~1(없으면 기본값) · timeLight: 시간대 빛(없으면 켜짐) */
   settings: { sound: boolean; volume?: number; timeLight?: boolean };
-  /** 미니게임 판별 가장 좋은 별(예: { claw: { r1: 3 } }). 뽑은 인형은 플래그 doll:<id>예요. */
   /** 판별로 저장한 내 미로 코드 */
   mazeWorks?: Record<string, string>;
+  /** 미니게임 판별 가장 좋은 별(예: { claw: { r1: 3 } }). 뽑은 인형은 플래그 doll:<id>예요. */
   minigames?: Record<string, Record<string, number>>;
   updatedAt: string;
 }
@@ -762,6 +762,8 @@ export interface FruitRound {
 export interface MazeRound {
   id: string;
   title: string;
+  /** 판을 시작할 때 보여 주는 안내(2줄 이내) */
+  intro: string;
   steps: number;
   deadEnds?: number;
   detour?: boolean;

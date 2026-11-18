@@ -39,7 +39,7 @@ export class TrainMission implements MissionEngine {
     const focus = document.activeElement?.getAttribute('aria-label'); clear(root);
     root.append(h('div', { class: 'mission-intro' }, ...lines(d.intro)), h('p', {}, d.presetLabels ? '1. 정답이 기록된 예시를 골라요.' : '1. 예시를 골라 이름표를 붙여요.'));
     if (d.comparison) root.append(h('div', { class: 'row' }, ...d.comparison.trials.map(trial =>
-      h('button', { class: 'btn', 'aria-pressed': trial.id === this.trialId ? 'true' : 'false', onclick: () => {
+      h('button', { class: trial.id === this.trialId ? 'btn primary' : 'btn', 'aria-pressed': trial.id === this.trialId ? 'true' : 'false', onclick: () => {
         this.trialId = trial.id;
         this.included = new Set(trial.examples);
         this.invalidate();
@@ -64,8 +64,9 @@ export class TrainMission implements MissionEngine {
           this.trials = [...this.trials.filter(t => t.id !== result.id), result];
         }
         const baseline = !!d.comparison && this.trialId !== d.comparison.finalTrial;
-        this.message = d.comparison && this.model ? '시험 결과를 기록했어요.\n막대를 비교해 봐요.' :
-          this.report.success ? '새 예시를 잘 구별했어요!' : '서로 다른 예시와 이름표를 봐요.';
+        this.message = d.comparison
+          ? this.model ? '시험 결과를 기록했어요.\n막대를 비교해 봐요.' : '먼저 학습하기를 눌러요.'
+          : this.report.success ? '새 예시를 잘 구별했어요!\n이 모델을 로비에게 전해요.' : '서로 다른 예시와 이름표를 봐요.\n' + d.minExamples + '개 이상 골라 다시 학습해요.';
         if (!this.report.success && !baseline && this.attempts >= 2) this.help();
         this.ctx.sfx(baseline ? 'click' : this.report.success ? 'success' : 'fail'); this.render();
       } }, '새 예시로 시험'));
@@ -75,7 +76,7 @@ export class TrainMission implements MissionEngine {
       root.append(h('p', { class: 'muted' }, '이번 시험을 잘해도 늘 맞지는 않아요.\n다양한 새 자료로 다시 확인해요.'));
     }
     if (d.comparison) {
-      root.append(h('h3', {}, '같은 시험 자료의 정확도 비교'));
+      root.append(h('h3', {}, '같은 시험 자료의 정확도 비교 (' + this.trials.length + '/' + d.comparison.trials.length + ')'));
       for (const trial of d.comparison.trials) {
         const result = this.trials.find(t => t.id === trial.id);
         if (!result) continue;

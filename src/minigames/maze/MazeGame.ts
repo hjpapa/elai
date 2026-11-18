@@ -1,7 +1,7 @@
 import { ISLAND_MAZES, MAZE_ROUNDS, MAZE_TITLE } from '../../data/minigames/maze';
 import type { Block, Cmd } from '../../data/schema';
 import { app } from '../../game/app';
-import { h, sleep } from '../../ui/dom';
+import { h, lines, sleep } from '../../ui/dom';
 import { pxImg } from '../../ui/icons';
 import { ProgramEditor } from '../../ui/programEditor';
 import { runRoute, usesCmd } from '../route/routeEnv';
@@ -59,7 +59,7 @@ export class MazeGame implements MinigameEngine {
   }
 
   private grid(edit?: (x: number, y: number) => void): HTMLElement {
-    const grid = h('div', { class: 'maze-grid', 'aria-label': '일곱 줄 미로' });
+    const grid = h('div', { class: 'maze-grid', role: 'group', 'aria-label': '일곱 줄 미로' });
     this.rows.forEach((row, y) => [...row].forEach((c, x) => {
       const name = (y + 1) + '행 ' + (x + 1) + '열 ' + labels[c];
       const props = { class: 'maze-square', dataset: { cell: c }, 'aria-label': name };
@@ -96,12 +96,12 @@ export class MazeGame implements MinigameEngine {
     const conditions = h('ul', { class: 'maze-checks', 'aria-live': 'polite' });
     const add = (ok: boolean, text: string) => conditions.append(h('li', {}, (ok ? '✓ ' : '□ ') + text));
     add(stats.connected, '출발과 깃발을 이어요.');
-    add(stats.steps >= round.steps, '최단 ' + stats.steps + '걸음 / 목표 ' + round.steps + '걸음 이상');
-    add(stats.deadEnds >= (round.deadEnds ?? 0), '막다른 길 ' + stats.deadEnds + '개' + (round.deadEnds ? ' / 목표 ' + round.deadEnds + '개' : ''));
-    add(!round.detour || stats.detour, '갈래 길 ' + (stats.detour ? '있어요.' : '없어요.') + (round.detour ? ' (필요해요)' : ''));
+    add(stats.steps >= round.steps, '가장 짧은 길 ' + stats.steps + '걸음 / 목표 ' + round.steps + '걸음 이상');
+    if (round.deadEnds) add(stats.deadEnds >= round.deadEnds, '막다른 길 ' + stats.deadEnds + '개 / 목표 ' + round.deadEnds + '개 이상');
+    if (round.detour) add(stats.detour, stats.detour ? '돌아갈 수 있는 길이 있어요.' : '돌아갈 수 있는 길을 만들어요.');
     const solve = button('직접 풀어 보기', () => this.solve());
     solve.disabled = !designFits(round, stats);
-    this.ctx.root.replaceChildren(button('← 판 고르기', () => this.list()), tools, grid, conditions, solve);
+    this.ctx.root.replaceChildren(button('← 판 고르기', () => this.list()), h('div', { class: 'mission-intro' }, ...lines(round.intro)), tools, grid, conditions, solve);
     if (focus !== undefined) grid.querySelectorAll('button')[focus].focus({ preventScroll: true });
   }
 
@@ -121,7 +121,7 @@ export class MazeGame implements MinigameEngine {
     const previous = saved && decodeMaze(saved);
     const resume = previous ? button('내가 푼 미로', () => { this.rows = previous; this.solve(); }) : null;
     const examples = ISLAND_MAZES.map(m => button(m.author + '의 미로', () => { this.rows = [...m.rows]; this.solve(); }));
-    this.ctx.root.replaceChildren(button('← 판 고르기', () => this.list()),h('p', {}, '친구의 미로 코드를 넣어요.'),
+    this.ctx.root.replaceChildren(button('← 판 고르기', () => this.list()), h('div', { class: 'mission-intro' }, ...lines(this.round.intro)),
       input, button('친구 코드 열기', start), ...(resume ? [resume] : []), note, h('h3', {}, '섬 친구 미로'), h('div', {class:'maze-actions'}, ...examples));
   }
 

@@ -1,4 +1,5 @@
 import { showEnding } from '../../ui/ending';
+import { openShop } from '../../ui/shop';
 import { storyForVisit } from '../rpg/story';
 import { shouldShowEnding } from '../rpg/ending';
 import Phaser from 'phaser';
@@ -1075,11 +1076,7 @@ export class WorldScene extends Phaser.Scene {
     const o = v.obj;
     switch (o.type) {
       case 'npc':
-        if (o.shop) {
-          const { openShop } = await import('../../ui/shop');
-          openShop();
-          return;
-        }
+        if (o.shop) return openShop();
         return this.talk(v);
       case 'chest':
         return this.openChest(v);

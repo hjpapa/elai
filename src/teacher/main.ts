@@ -6,6 +6,7 @@ import { MAPS } from '../data/maps';
 import { classPath, currentChapter, startsDirectly } from '../game/rpg/unlock';
 import { friendlyError, getSupabase } from '../services/supabase';
 import { append, clear, h } from '../ui/dom';
+import { lessonCard } from './lessons';
 import { MINIGAME_CSV_HEADER, minigameCsvCells, minigameTable } from './minigames';
 
 interface ClassRow {
@@ -22,6 +23,8 @@ root.append(wrap);
 
 /** 표에 보여 줄 미션(지금 플레이할 수 있는 것) */
 const MISSIONS = allMissions().filter((e) => e.mission.data !== undefined);
+/** 별 합계에 넣는 필수 미션(더 해 보기 미션은 표에만 보여요) */
+const REQUIRED_MISSIONS = MISSIONS.filter((e) => !e.mission.optional);
 
 function head(email?: string): HTMLElement {
   return h(
@@ -98,7 +101,7 @@ async function renderClasses(): Promise<void> {
     h('div', { class: 'row', style: 'margin-top:12px' }, name, h('button', { class: 'btn primary', onclick: () => void create() }, '학급 만들기')),
     msg,
   ]);
-  wrap.append(card);
+  wrap.append(card, lessonCard());
 }
 
 async function renderClass(c: ClassRow): Promise<void> {
@@ -188,10 +191,11 @@ async function renderClass(c: ClassRow): Promise<void> {
         alert(error ? friendlyError(error) : '비밀 숫자를 바꿨어요.');
       },
     }, '비밀 숫자');
-  const totalOf = (sid: string) => MISSIONS.reduce((n, m) => n + (progress.get(`${sid}/${m.mission.id}`)?.stars ?? 0), 0);
+  const totalOf = (sid: string) => REQUIRED_MISSIONS.reduce((n, m) => n + (progress.get(`${sid}/${m.mission.id}`)?.stars ?? 0), 0);
   const tabs = h('div', { class: 'tabs', style: 'margin:10px 0 0' });
   const tableWrap = h('div', { class: 't-table-wrap', style: 'margin-top:10px' });
   let shown: string | null = null;
+  let guideChapter = CHAPTERS[0].id;
   function drawTable(): void {
     // 학생마다 지금 하고 있는 장(게임의 목표 안내와 같은 규칙)
     const list = sorted();
@@ -201,6 +205,7 @@ async function renderClass(c: ClassRow): Promise<void> {
     // 처음에는 가장 많은 학생이 하고 있는 장(같으면 앞 장)
     const busiest = CHAPTERS.reduce((best, ch) => ((count.get(ch.id) ?? 0) > (count.get(best.id) ?? 0) ? ch : best), CHAPTERS[0]);
     const selected = CHAPTERS.find((ch) => ch.id === shown) ?? busiest;
+    guideChapter = selected.id;
     clear(tabs);
     for (const ch of CHAPTERS) {
       const n = count.get(ch.id) ?? 0;
@@ -216,7 +221,7 @@ async function renderClass(c: ClassRow): Promise<void> {
     const thead = h(
       'thead',
       {},
-      h('tr', {}, h('th', {}, '별명'), h('th', {}, 'Lv'), h('th', { title: '지금 하고 있는 장' }, '지금'), h('th', { title: '모든 장의 별 합계' }, '별'), ...cols.map((m) => h('th', { title: m.part.title }, m.mission.title)), h('th', {}, '')),
+      h('tr', {}, h('th', {}, '별명'), h('th', {}, 'Lv'), h('th', { title: '지금 하고 있는 장' }, '지금'), h('th', { title: '모든 장 필수 미션의 별 합계' }, '별'), ...cols.map((m) => h('th', { title: m.mission.optional ? `${m.part.title} · 더 해 보기` : m.part.title }, m.mission.optional ? `${m.mission.title}(선택)` : m.mission.title)), h('th', {}, '')),
     );
     const tbody = h('tbody');
     for (const st of students) {
@@ -261,7 +266,7 @@ async function renderClass(c: ClassRow): Promise<void> {
       h('div', { class: 'row' }, h('h2', { style: 'margin:0;flex:1' }, `학생 ${students.length}명`), h('button', { class: 'btn small', onclick: () => void renderClass(c) }, '새로고침'), download),
       students.length ? tabs : null,
       students.length ? tableWrap : h('p', { class: 'muted' }, '아직 들어온 학생이 없어요.'),
-      h('p', { class: 't-legend' }, '장 단추의 숫자는 그 장을 하고 있는 학생 수예요. 지금 = 학생이 하고 있는 장 · 별 = 모든 장의 별 합계.'),
+      h('p', { class: 't-legend' }, '장 단추의 숫자는 그 장을 하고 있는 학생 수예요. 지금 = 학생이 하고 있는 장 · 별 = 모든 장 필수 미션의 별 합계 · (선택) = 먼저 끝낸 학생이 하는 더 해 보기 미션.'),
       h('p', { class: 't-legend' }, '★ 별점(가장 좋은 기록) · 시도 = 실행·제출 횟수 · 힌트 = 힌트를 본 횟수. 결과보다 시도와 힌트의 변화를 보면 과정을 알 수 있어요.'),
     ),
   );
@@ -276,6 +281,7 @@ async function renderClass(c: ClassRow): Promise<void> {
       ),
     );
   }
+  wrap.append(lessonCard(guideChapter));
 }
 
 void render();

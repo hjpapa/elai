@@ -42,10 +42,11 @@ const LIGHTS: Record<string, Light> = {
   'prop-bakery': { at: 0.28, r: 12, frames: [1] },
   'prop-oven': { at: 0.45, r: 10 },
   // C20 마을 과일 가게: 열린 문 불빛(공방과 같아요), 학습 로봇의 눈(청록). 눈 중심(2배 그림 y36/96)을 발 기준으로 바꾼 값이에요.
-  'prop-maze-house': { at: 0.28, r: 12, frames: [1] },
-  'prop-maze-bench': { at: 0.54, r: 10, glow: 'cool' },
   'prop-fruit-shop': { at: 0.28, r: 12, frames: [1] },
   'prop-fruit-ai': { at: 0.58, r: 10, glow: 'cool' },
+  // C24 마을 미로 공작소: 열린 문 불빛(공방과 같아요), 설계대 화면(청록).
+  'prop-maze-house': { at: 0.28, r: 12, frames: [1] },
+  'prop-maze-bench': { at: 0.54, r: 10, glow: 'cool' },
 };
 
 const GLOW: Record<Glow, readonly number[]> = {

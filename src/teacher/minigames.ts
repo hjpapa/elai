@@ -47,7 +47,7 @@ export function minigameTable(students: readonly { id: string; nickname: string 
   const thead = h(
     'thead',
     {},
-    h('tr', {}, h('th', {}, '별명'), ...CATALOG.map((game) => h('th', { title: game.building }, game.name)), h('th', { title: '여섯 놀이를 모두 더한 값' }, '합계')),
+    h('tr', {}, h('th', {}, '별명'), ...CATALOG.map((game) => h('th', { title: game.building }, game.name)), h('th', { title: '모든 놀이를 더한 값' }, '합계')),
   );
   const tbody = h('tbody');
   for (const student of students) {

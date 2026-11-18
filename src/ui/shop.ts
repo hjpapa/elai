@@ -29,6 +29,8 @@ export function openShop(): void {
     coins.textContent = '가진 동전 ' + state.data.coins + '개';
     itemTab.setAttribute('aria-pressed', String(!decorating));
     decorTab.setAttribute('aria-pressed', String(decorating));
+    itemTab.classList.toggle('primary', !decorating);
+    decorTab.classList.toggle('primary', decorating);
     const rows = decorating
       ? DECORATIONS.map(d => product(d.name,d.icon,d.desc,d.price,decorReason(state,d),()=>state.buyDecor(d.id),'마을에 장식을 놓았어요.'))
       : shopOffers(state).map(({item,price,qty,reason}) => product(item.name,item.icon,item.desc + '\n가진 수 ' + qty + '개',price,reason,()=>state.buyItem(item.id),item.slot ? '가방에서 착용해요.' : item.name + ' 구매를 마쳤어요.'));
