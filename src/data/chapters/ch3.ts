@@ -102,7 +102,7 @@ export const ch3: Chapter = {
       "xp": 15
     },
     "data": {
-      "intro": "센서로 앞에 막힌 칸이 있는지 봐요.\n막혔으면 돌고, 아니면 앞으로 가요.",
+      "intro": "길 모양이 달라졌어요.\n앞을 살피는 규칙을 써 볼까요?",
       "grid": [
         "S..",
         "##.",
@@ -119,8 +119,8 @@ export const ch3: Chapter = {
       ],
       "optimal": 4,
       "maxBlocks": 4,
-      "hint": "만약 앞이 막혔으면 오른쪽으로 돌아요.\n아니면 앞으로 가요. 반복도 써요.",
-      "explain": "센서는 주변을 알아내는 장치예요.\n조건에 따라 다른 명령을 실행해요."
+      "hint": "길을 외울 필요가 없어요.\n앞이 막힌 때만 돌아요.",
+      "explain": "길 모양이 바뀌어도\n같은 규칙으로 걸을 수 있어요."
     }
   },
   {
@@ -133,7 +133,7 @@ export const ch3: Chapter = {
       "robiPart": "sensor"
     },
     "data": {
-      "intro": "센서로 앞에 막힌 칸이 있는지 봐요.\n막혔으면 돌고, 아니면 앞으로 가요.",
+      "intro": "이번 길은 더 길어요.\n블록 네 개로 갈 수 있을까요?",
       "grid": [
         "S...",
         "###.",
@@ -150,8 +150,8 @@ export const ch3: Chapter = {
       ],
       "optimal": 4,
       "maxBlocks": 4,
-      "hint": "만약 앞이 막혔으면 오른쪽으로 돌아요.\n아니면 앞으로 가요. 반복도 써요.",
-      "explain": "센서는 주변을 알아내는 장치예요.\n조건에 따라 다른 명령을 실행해요."
+      "hint": "길어진 만큼 블록을 늘릴까요?\n같은 판단을 되풀이해 봐요.",
+      "explain": "같은 네 블록을 되풀이해서\n더 긴 길도 끝까지 갔어요."
     }
   }
 ],
@@ -166,7 +166,7 @@ export const ch3: Chapter = {
   {
     "id": "ch3-p3-m1",
     "kind": "classify",
-    "title": "사막 동물 맞히기",
+    "title": "스무고개 동물 맞히기",
     "npc": "guide",
     "reward": {
       "xp": 20
@@ -198,7 +198,7 @@ export const ch3: Chapter = {
           "label": "고양이",
           "group": "mammal",
           "features": [
-            "fur"
+            "milk"
           ]
         },
         {
@@ -206,7 +206,7 @@ export const ch3: Chapter = {
           "label": "여우",
           "group": "mammal",
           "features": [
-            "fur"
+            "milk"
           ]
         },
         {
@@ -268,13 +268,13 @@ export const ch3: Chapter = {
           "feature": "feathers"
         },
         {
-          "id": "fur",
-          "label": "털이 있나요?",
-          "feature": "fur"
+          "id": "milk",
+          "label": "새끼에게 젖을 먹이나요?",
+          "feature": "milk"
         }
       ],
       "maxQuestions": 3,
-      "hint": "날개만 있으면 새와 곤충이 섞여요.\n깃털과 털도 물어봐요.",
+      "hint": "날개만 있으면 새와 곤충이 섞여요.\n깃털과 젖 먹이기도 물어봐요.",
       "explain": "질문 규칙을 잇는 것이 질문 나무예요.\n카드의 특징으로 종류를 나눴어요."
     }
   }
