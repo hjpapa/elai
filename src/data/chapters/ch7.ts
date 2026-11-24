@@ -152,6 +152,14 @@ export const ch7: Chapter = {
           npc: 'zen',
           reward: { xp: 15, coins: 10 },
           data: {
+            criteria: { cards: [
+              { id: 'reason', wanted: true, text: '양치를 하는 까닭이 있어요', check: { slot: 'task', options: ['why'] }, feedback: '방법만 알려 주지는 않았나요?\n왜 닦는지 답에서 찾아봐요.' },
+              { id: 'detail', wanted: false, text: '까닭마다 긴 설명이 붙어요', feedback: '동생은 세 가지를 짧게\n읽고 싶다고 했어요.' },
+              { id: 'plain', wanted: true, text: '1학년이 아는 말로 써요', check: { plain: true }, feedback: '동생이 처음 볼 만한\n어려운 낱말을 짚어 봐요.' },
+              { id: 'list', wanted: true, text: '세 가지를 한 줄씩 보여 줘요', check: { slot: 'format', options: ['list'] }, feedback: '세 가지를 따로 읽을 수 있게\n각 줄이 나뉘었는지 봐요.' },
+              { id: 'tools', wanted: false, text: '필요한 양치 도구도 알려 줘요', feedback: '챙길 물건을 물었나요?\n동생이 궁금한 건 까닭이에요.' },
+              { id: 'safe', wanted: true, text: '개인정보 없이 알려 줘요', check: { safe: true }, feedback: '양치를 설명할 때는\n집 주소가 필요 없어요.' },
+            ] },
             client: '1학년 동생 하늘',
             request: '양치를 왜 해야 하는지 알려 주세요.\n저도 알 수 있게, 세 가지로 짧게요!',
             fallback: {
@@ -277,6 +285,13 @@ export const ch7: Chapter = {
           npc: 'zen',
           reward: { xp: 15, coins: 10 },
           data: {
+            criteria: { cards: [
+              { id: 'rules', wanted: true, text: '도서관에서 지킬 약속을 써요', check: { slot: 'task', options: ['rules'] }, feedback: '친구들이 도서관에서\n어떻게 행동할지 찾아봐요.' },
+              { id: 'events', wanted: false, text: '도서관의 행사도 소개해요', feedback: '게시판에 붙일 글이지만\n행사 소식은 부탁하지 않았어요.' },
+              { id: 'layout', wanted: true, text: '약속을 한눈에 볼 수 있게 나눠요', check: { slot: 'format', options: ['list'] }, feedback: '게시판 앞에서 읽을 때\n각 약속이 따로 보이나요?' },
+              { id: 'terms', wanted: false, text: '도서관 전문 용어를 써요', feedback: '안내문을 읽을 친구들은\n3학년이에요. 쉬운 말이 좋아요.' },
+              { id: 'plain', wanted: true, text: '3학년이 읽기 쉬운 말이에요', check: { plain: true }, feedback: '안내문에서 뜻을 다시 물을\n낱말이 있는지 살펴봐요.' },
+            ] },
             client: '도서부 친구 나래',
             request: '도서관에서 지킬 약속을 게시판에 붙일 안내문으로\n만들어 주세요. 3학년이 읽기 쉽게요.',
             fallback: {
