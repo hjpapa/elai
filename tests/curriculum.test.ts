@@ -366,10 +366,22 @@ describe('7장 생성과 사실 확인',()=>{
    expect(createHash('sha256').update(JSON.stringify({...m,data})).digest('hex'),id).toBe(hash);
   }
  });
- it('글 모음을 바꾸면 다음 말 분포가 바뀌고 두 문장과 비교 답을 요구해요',()=>{
-  const m=allMissions().find(e=>e.mission.id==='ch7-p1-m1')!.mission;if(m.kind!=='nextWord')throw new Error('words');const d=m.data!;
-  expect(nextWords(d.corpora[0].sentences,d.start)[0]).toMatchObject({word:'동굴에서',count:2});expect(nextWords(d.corpora[1].sentences,d.start)[0]).toMatchObject({word:'달에서',count:2});
-  const stories={island:['로비는','동굴에서','수정을','찾아요.'],pretend:['로비는','달에서','수정을','먹어요.']};expect(evaluateNextWord(d,stories,0)).toBe(true);expect(evaluateNextWord(d,{island:stories.island},0)).toBe(false);expect(evaluateNextWord(d,stories,1)).toBe(false);
+ it('같은 글 모음에서 앞말 수를 비교하고 두 문장과 두 판단을 모두 요구해요', () => {
+  const mission = allMissions().find(e => e.mission.id === 'ch7-p1-m1')!.mission;
+  if (mission.kind !== 'nextWord' || !mission.data?.samples) throw new Error('앞말 비교 자료');
+  const d = mission.data, corpus = d.corpora[0];
+  expect(d.corpora).toHaveLength(1);
+  expect(nextWords(corpus.sentences, ['수정을']).map(c => c.word)).toContain('먹어요.');
+  expect(nextWords(corpus.sentences, ['동굴에서', '수정을']).map(c => c.word)).not.toContain('먹어요.');
+  const mixed = ['로비는', '동굴에서', '수정을', '먹어요.'];
+  const wide = ['로비는', '동굴에서', '수정을', '찾아요.'];
+  const stories = { 'journal@1': mixed, 'journal@2': wide };
+  const answer = d.question.answer, sample = mission.data.samples.question.answer;
+  expect(evaluateNextWord(d, stories, answer, sample)).toBe(true);
+  expect(evaluateNextWord(d, { 'journal@1': mixed }, answer, sample)).toBe(false);
+  expect(evaluateNextWord(d, { ...stories, 'journal@2': mixed }, answer, sample)).toBe(false);
+  expect(evaluateNextWord(d, stories, (answer + 1) % 3, sample)).toBe(false);
+  expect(evaluateNextWord(d, stories, answer, null)).toBe(false);
  });
  it('대장의 다섯 문장 중 두 문장을 근거를 읽고 고쳐야 정화해요',()=>{
   const m=allMissions().find(e=>e.mission.id==='ch7-boss-m1')!.mission;expect(m.kind).toBe('factCheck');if(m.kind!=='factCheck')throw new Error('facts');const d=m.data!;
