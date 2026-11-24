@@ -8,6 +8,13 @@ Claude가 지시서를 쓰고, 사용자가 Codex 앱에서 실행해요.
    > `docs/tasks/codex-01-assets.md` 지시서대로 작업해 줘. `AGENTS.md` 규칙을 지켜 줘.
 3. Codex가 끝나면 Claude에게 "C1 끝났어"처럼 알려 주세요. Claude가 검토하고, 테스트한 뒤 커밋·머지해요.
 
+### 7장 프롬프트 학습 깊이 더하기(C25, 2026-11-24)
+Claude가 엔진(앞말 비교·젠의 답, 기준표, 원인 찾기, 두 답 비교)과 교사 시연 대본·기록지를 이 브랜치에 먼저 만들었어요. Codex는 7장 미션 자료와 글을 채워요.
+
+| 여는 폴더(브랜치) | 부탁할 말 |
+|---|---|
+| `C:\code\elai-wt\codex-25`(`codex/25-ch7-deep-prompt`) | `docs/tasks/codex-25-ch7-deep-prompt.md`와 `docs/tasks/codex-22-24-common.md`대로 1단계부터 차례로 진행하고, 단계마다 커밋해 줘. `AGENTS.md` 규칙을 지켜 줘. |
+
 ### 콘텐츠 대보강(C22 + C23 + C24, 2026-11-19, 완료)
 Codex 앱 창 세 개에서 **동시에** 돌렸어요. 공통 규칙은 [codex-22-24-common.md](codex-22-24-common.md)예요. Claude가 세 브랜치를 `integrate/c22-c24`에 합쳐 검토하고 교사 페이지를 연결한 뒤, main에 합쳐 배포했어요.
 
@@ -122,6 +129,7 @@ Codex 앱에서 `C:\code\elai-wt\codex-12`(브랜치 `codex/12-hires-chapters`)�
 | C22 | [codex-22-learning-content.md](codex-22-learning-content.md) — 학습 콘텐츠 대보강: 글·사실 오류, 선택 미션, 5·6장 실험, 퀴즈, NPC 대사, 교사용 안내 자료(7단계) | 완료(검토 통과, main 병합·배포 · 기록 [codex-22-progress.md](codex-22-progress.md)) |
 | C23 | [codex-23-village-life.md](codex-23-village-life.md) — 마을 상점, 마을 꾸미기, 도감 완성, 건물 안 사람들, 장 이야기 장면(6단계) | 완료(검토 통과, main 병합·배포 · 기록 [codex-23-progress.md](codex-23-progress.md)) |
 | C24 | [codex-24-maze-workshop.md](codex-24-maze-workshop.md) — 마을 미로 공작소와 코딩 미로 만들기, 미로 코드 나누기, 그림(6단계) | 완료(검토 통과, main 병합·배포 · 기록 [codex-24-progress.md](codex-24-progress.md)) |
+| C25 | [codex-25-ch7-deep-prompt.md](codex-25-ch7-deep-prompt.md) — 7장 프롬프트 학습 깊이 더하기: 앞말 비교와 젠의 답, 기준표, 원인 찾기, 두 답 비교, 7장 정리(5단계) | 진행 전(엔진·교사 자료는 Claude가 준비) |
 
 고치는 파일이 겹치지 않는 작업은 동시에 돌려도 돼요. 이때는 꼭 **각자의 작업 폴더**를 열어 주세요.
 

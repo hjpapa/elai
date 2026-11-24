@@ -1,5 +1,5 @@
 import { CHAPTERS, requiredMissions } from '../data/chapters';
-import { LESSON_GUIDE } from '../data/lessonGuide';
+import { LESSON_GUIDE, type LessonDemo, type LessonWorksheet } from '../data/lessonGuide';
 import type { Chapter, Part } from '../data/schema';
 import { clear, h } from '../ui/dom';
 
@@ -15,6 +15,8 @@ export interface LessonPartView {
 export interface LessonView {
   chapter: Chapter;
   unplugged: string;
+  demo?: LessonDemo;
+  worksheet?: LessonWorksheet;
   parts: LessonPartView[];
 }
 
@@ -35,7 +37,59 @@ export function lessonView(chapterId: string): LessonView | null {
       optional: part.missions.filter((m) => !required.includes(m)).map((m) => m.title),
     };
   });
-  return { chapter, unplugged: guide.unplugged, parts };
+  return { chapter, unplugged: guide.unplugged, demo: guide.demo, worksheet: guide.worksheet, parts };
+}
+
+/** 교사 시연: 실제 AI에 입력할 부탁과 함께 볼 점 */
+function demoBlock(demo: LessonDemo): HTMLElement {
+  return h(
+    'details',
+    { class: 't-guide-part t-demo' },
+    h('summary', {}, '교사 시연: 실제 AI로 보여 주기'),
+    h('p', {}, demo.intro),
+    h('ol', {}, ...demo.steps.map((step) => h('li', {},
+      h('b', {}, step.title),
+      ...step.ask.map((ask) => h('blockquote', { class: 't-ask' }, ask)),
+      h('p', {}, step.look)))),
+    list('시연 전에 지킬 점', demo.safety),
+  );
+}
+
+function sheetTables(sheet: LessonWorksheet): HTMLElement[] {
+  return sheet.tables.map((table) => h('div', {},
+    h('h4', {}, table.title),
+    h('table', { class: 't-sheet' },
+      h('tr', {}, ...table.columns.map((c) => h('th', {}, c))),
+      ...table.rows.map((row) => h('tr', {}, h('td', {}, row), ...table.columns.slice(1).map(() => h('td', {}, '')))))));
+}
+
+/** 기록지만 인쇄해요. 화면에서는 보이지 않는 인쇄용 상자를 잠깐 붙였다가, 인쇄가 끝나면 떼어 내요. */
+export function printWorksheet(sheet: LessonWorksheet): void {
+  const holder = h('section', { class: 't-print-sheet' },
+    h('h1', {}, sheet.title), h('p', {}, sheet.intro), ...sheetTables(sheet),
+    h('ul', { class: 't-sheet-checks' }, ...sheet.checks.map((c) => h('li', {}, '□ ' + c))));
+  document.body.append(holder);
+  document.body.classList.add('t-printing');
+  const done = () => {
+    holder.remove();
+    document.body.classList.remove('t-printing');
+    window.removeEventListener('afterprint', done);
+  };
+  window.addEventListener('afterprint', done);
+  window.print();
+}
+
+function worksheetBlock(sheet: LessonWorksheet): HTMLElement {
+  return h(
+    'details',
+    { class: 't-guide-part' },
+    h('summary', {}, `학생 기록지: ${sheet.title}`),
+    h('p', {}, sheet.intro),
+    ...sheetTables(sheet),
+    h('h4', {}, '스스로 확인'),
+    h('ul', { class: 't-sheet-checks' }, ...sheet.checks.map((c) => h('li', {}, '□ ' + c))),
+    h('div', { class: 'row end' }, h('button', { class: 'btn small', onclick: () => printWorksheet(sheet) }, '기록지 인쇄')),
+  );
 }
 
 function list(title: string, rows: string[]): HTMLElement | null {
@@ -88,6 +142,8 @@ export function lessonCard(initial: string = CHAPTERS[0].id): HTMLElement {
       list('학습 목표', chapter.goals) ?? '',
       h('p', { class: 'muted' }, standards(chapter)),
       h('p', { class: 't-guide-watch' }, h('b', {}, '교실 활동 '), view.unplugged),
+      view.demo ? demoBlock(view.demo) : '',
+      view.worksheet ? worksheetBlock(view.worksheet) : '',
       ...view.parts.map((part, i) => partBlock(part, i === 0)),
     );
   };

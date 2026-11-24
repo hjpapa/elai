@@ -170,6 +170,42 @@ table.t-table {
   cursor: pointer;
   font-weight: 700;
 }
+.t-demo ol {
+  margin: 6px 0;
+  padding-left: 20px;
+}
+.t-demo li {
+  margin-bottom: 8px;
+}
+.t-ask {
+  margin: 6px 0;
+  padding: 6px 10px;
+  border-left: 3px solid var(--accent);
+  background: var(--panel2);
+  white-space: pre-line;
+}
+.t-sheet {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 4px 0 8px;
+}
+.t-sheet th,
+.t-sheet td {
+  border: 1px solid var(--line);
+  padding: 6px 8px;
+  text-align: left;
+  vertical-align: top;
+}
+.t-sheet td:first-child {
+  white-space: nowrap;
+}
+.t-guide .t-sheet-checks {
+  list-style: none;
+  padding-left: 0;
+}
+.t-print-sheet {
+  display: none;
+}
 
 @media print {
   body {
@@ -188,5 +224,32 @@ table.t-table {
   .t-print .t-code {
     color: #000;
     font-size: 72px;
+  }
+  /* 기록지 인쇄: 인쇄용 상자만 보여요. */
+  body.t-printing > *:not(.t-print-sheet) {
+    display: none !important;
+  }
+  body.t-printing .t-print-sheet {
+    display: block;
+    color: #000;
+    font-size: 14px;
+  }
+  .t-print-sheet h1 {
+    font-size: 22px;
+    margin: 0 0 6px;
+  }
+  .t-print-sheet h4 {
+    font-size: 16px;
+    margin: 14px 0 4px;
+    color: #000;
+  }
+  .t-print-sheet .t-sheet th,
+  .t-print-sheet .t-sheet td {
+    border: 1px solid #000;
+    height: 48px;
+  }
+  .t-print-sheet .t-sheet-checks {
+    list-style: none;
+    padding: 0;
   }
 }

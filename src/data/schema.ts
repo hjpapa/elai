@@ -150,6 +150,35 @@ export interface PromptSlot {
   /** 칸을 비웠을 때 젠의 설명 */
   missing: string;
 }
+/** 기준표 카드가 답에서 지켜졌는지 보는 방법 */
+export type PromptCheck =
+  /** 이 칸에서 이 선택지 중 하나를 골랐어요 */
+  | { slot: PromptSlotId; options: string[] }
+  /** 답의 본문이 어려운 글(hardBody)이 아니에요 */
+  | { plain: true }
+  /** 개인정보가 든 선택지를 고르지 않았어요 */
+  | { safe: true };
+export interface PromptCriterion {
+  id: string;
+  text: string;
+  /** 의뢰문에 들어 있는 조건이면 true, 함정 카드면 false */
+  wanted: boolean;
+  /** wanted 카드만: 답이 이 조건을 지켰는지 보는 방법 */
+  check?: PromptCheck;
+  /** 함정 카드를 골랐을 때, 또는 답이 이 조건을 못 지켰을 때 젠의 설명 */
+  feedback: string;
+}
+/** 고쳐 묻는 말 하나 */
+export interface PromptFollowUp {
+  id: string;
+  text: string;
+  /** 이 말로 고쳐 물으면 바뀌는 칸(빈 객체면 아무것도 바뀌지 않아요) */
+  change: Partial<Record<PromptSlotId, string>>;
+  /** 무엇을 어떻게 바꿀지 콕 집어 말했는지 */
+  specific: boolean;
+  /** 고쳐 물은 뒤 젠의 설명 */
+  feedback: string;
+}
 export interface PromptData {
   initialChoice?: Partial<Record<PromptSlotId, string>>;
   image?: { width: number; height: number; palette: Record<string, string>; layers: { slot: PromptSlotId; option: string; rows: string[] }[] };
@@ -158,6 +187,10 @@ export interface PromptData {
   slots: PromptSlot[];
   /** 칸을 비웠을 때 나오는 결과(role 칸 → opening, task 칸 → body) */
   fallback: { opening: string; body: string[] };
+  /** 기준표: 부탁하기 전에 의뢰문에서 좋은 답의 조건을 고르고 답을 예상한 뒤, 답을 받으면 학생이 먼저 확인해요. */
+  criteria?: { cards: PromptCriterion[] };
+  /** 원인 찾기: 가려진 주문서로 나온 답을 보고 문제 칸을 찾은 뒤, 고쳐 묻는 말을 골라요. */
+  diagnose?: { intro: string; hidden: Partial<Record<PromptSlotId, string>>; followUps: PromptFollowUp[]; hint: string };
   explain?: string;
 }
 
@@ -216,19 +249,41 @@ export interface TrainData {
   saveModel?: boolean;
 }
 
+/** 젠이 같은 시작으로 미리 이어 쓴 답 하나 */
+export interface NextWordSample {
+  id: string;
+  label: string;
+  /** 첫 낱말(start)부터 끝까지 */
+  words: string[];
+}
 export interface NextWordData {
   intro: string;
   corpora: { id: string; label: string; sentences: string[] }[];
   start: string;
   steps: number;
+  /** 젠이 보는 앞말 수. 두 개 이상이면 글 모음마다 앞말 수를 바꿔 가며 문장을 이어요(없으면 [1]). */
+  windows?: number[];
   question: { q: string; choices: string[]; answer: number };
+  /** 젠이 같은 시작으로 미리 이어 쓴 답들. 낱말마다 그때 나온 비율을 보여 줘요. */
+  samples?: {
+    intro: string;
+    corpus: string;
+    window: number;
+    answers: NextWordSample[];
+    question: { q: string; choices: string[]; answer: number };
+  };
   hint: string;
   explain?: string;
 }
 export interface FactCheckData {
   intro: string;
   sources: { id: string; title: string; text: string }[];
-  claims: { id: string; text: string; source: string; choices: string[]; answer: number; visual?: { key: string; frame?: number; caption: string } }[];
+  /** source는 근거 자료 id예요. 'none'이면 어느 자료에서도 찾을 수 없는 말이에요(모든 자료를 읽어야 고를 수 있어요). */
+  claims: { id: string; text: string; source: string; choices: string[]; answer: number; visual?: { key: string; frame?: number; caption: string }; /** asks가 있을 때 이 문장이 나온 답 */ ask?: string }[];
+  /** 같은 질문을 두 가지로 부탁해 받은 답들. 문장(claims)을 ask로 묶어 답마다 보여 줘요. */
+  asks?: { id: string; label: string; prompt: string }[];
+  /** 두 답을 비교하는 마지막 질문 */
+  compare?: { q: string; choices: string[]; answer: number };
   hint: string;
   explain?: string;
 }

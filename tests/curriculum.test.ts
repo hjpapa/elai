@@ -358,9 +358,13 @@ describe('6장 탐색과 예측 자료',()=>{
 
 
 describe('7장 생성과 사실 확인',()=>{
- it('기존 글 체험 두 미션의 데이터·평가조건·보상을 그대로 보존해요',()=>{
+ it('기존 글 체험 두 미션의 데이터·평가조건·보상을 그대로 보존해요(기준표는 더해도 돼요)',()=>{
   const hashes:Record<string,string>={'ch7-p2-m1':'16ec78b87f72e75a3a982e52e0156829e3c4bdbb90d747617cb344b5da4370d9','ch7-p2-m2':'decedd9b44ca7baf590e9dea732fff9286b8b59f03d7a8d9ecc5319ab6eeb7ce'};
-  for(const [id,hash]of Object.entries(hashes)){const m=allMissions().find(e=>e.mission.id===id)!.mission;expect(createHash('sha256').update(JSON.stringify(m)).digest('hex'),id).toBe(hash);}
+  for(const [id,hash]of Object.entries(hashes)){
+   const m=allMissions().find(e=>e.mission.id===id)!.mission;if(m.kind!=='prompt'||!m.data)throw new Error(id);
+   const {criteria:_criteria,...data}=m.data;
+   expect(createHash('sha256').update(JSON.stringify({...m,data})).digest('hex'),id).toBe(hash);
+  }
  });
  it('글 모음을 바꾸면 다음 말 분포가 바뀌고 두 문장과 비교 답을 요구해요',()=>{
   const m=allMissions().find(e=>e.mission.id==='ch7-p1-m1')!.mission;if(m.kind!=='nextWord')throw new Error('words');const d=m.data!;

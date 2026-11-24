@@ -26,4 +26,24 @@ describe('교사 페이지 수업 안내', () => {
   it('없는 장은 보여 주지 않아요', () => {
     expect(lessonView('없는 장')).toBeNull();
   });
+
+  it('7장은 교사 시연 대본과 인쇄용 기록지를 함께 보여 줘요', () => {
+    const view = lessonView('ch7')!;
+    const demo = view.demo!;
+    expect(demo.steps.length).toBe(4);
+    for (const step of demo.steps) {
+      expect(step.title.trim()).not.toBe('');
+      expect(step.ask.length).toBeGreaterThan(0);
+      expect(step.look.trim()).not.toBe('');
+      // 시연 부탁에는 실제 개인정보를 넣지 않고 가상의 섬 이야기만 써요.
+      for (const ask of step.ask) expect(ask).not.toMatch(/주소|전화|학교 이름|얼굴 사진|우리 반/);
+    }
+    expect(demo.safety.join(' ')).toMatch(/13세/);
+    expect(demo.safety.join(' ')).toMatch(/개인정보/);
+    const sheet = view.worksheet!;
+    expect(sheet.tables.map((t) => t.rows.length)).toEqual([demo.steps.length, 10]);
+    for (const table of sheet.tables) expect(table.columns.length).toBeGreaterThanOrEqual(2);
+    expect(sheet.checks.some((c) => c.includes('얼굴 사진'))).toBe(true);
+    expect(lessonView('ch1')!.demo).toBeUndefined();
+  });
 });
