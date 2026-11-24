@@ -383,12 +383,22 @@ describe('7장 생성과 사실 확인',()=>{
   expect(evaluateNextWord(d, stories, (answer + 1) % 3, sample)).toBe(false);
   expect(evaluateNextWord(d, stories, answer, null)).toBe(false);
  });
- it('대장의 다섯 문장 중 두 문장을 근거를 읽고 고쳐야 정화해요',()=>{
-  const m=allMissions().find(e=>e.mission.id==='ch7-boss-m1')!.mission;expect(m.kind).toBe('factCheck');if(m.kind!=='factCheck')throw new Error('facts');const d=m.data!;
-  expect(d.claims).toHaveLength(5);expect(d.claims.filter(c=>c.answer!==0)).toHaveLength(2);
-  const right=Object.fromEntries(d.claims.map(c=>[c.id,{choice:c.answer,source:c.source}]));const read=d.sources.map(s=>s.id);
-  expect(evaluateFactCheck(d,right,read)).toBe(true);expect(evaluateFactCheck(d,right,[])).toBe(false);
-  expect(evaluateFactCheck(d,Object.fromEntries(d.claims.map(c=>[c.id,{choice:0,source:c.source}])),read)).toBe(false);expect(evaluateFactCheck(d,{},read)).toBe(false);
+ it('두 답의 판단·근거·비교가 모두 맞아야 대장을 정화해요', () => {
+  const m = allMissions().find(e => e.mission.id === 'ch7-boss-m1')!.mission;
+  if (m.kind !== 'factCheck' || !m.data?.compare) throw new Error('두 답 비교');
+  const d = m.data, compare = m.data.compare.answer;
+  expect(d.asks?.map(a => a.id)).toEqual(['plain', 'grounded']);
+  expect(d.claims.filter(c => c.ask === 'plain' && c.source === 'none')).toHaveLength(2);
+  const right = Object.fromEntries(d.claims.map(c => [c.id, { choice: c.answer, source: c.source }]));
+  const read = d.sources.map(s => s.id);
+  expect(evaluateFactCheck(d, right, read, compare)).toBe(true);
+  expect(evaluateFactCheck(d, {}, read, compare)).toBe(false);
+  for (const claim of d.claims) {
+    const wrong = { ...right, [claim.id]: { choice: (claim.answer + 1) % 3, source: claim.source } };
+    expect(evaluateFactCheck(d, wrong, read, compare), claim.id).toBe(false);
+    const other = read.find(id => id !== claim.source)!;
+    expect(evaluateFactCheck(d, { ...right, [claim.id]: { choice: claim.answer, source: other } }, read, compare)).toBe(false);
+  }
  });
 });
 
