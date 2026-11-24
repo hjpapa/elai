@@ -61,7 +61,7 @@ export class FactCheckMission implements MissionEngine {
     const source = h('select', { 'aria-label': '문장 ' + number + ' 근거 자료', style: 'width:100%;min-height:44px',
       onchange: (event: Event) => { this.answers[claim.id] = { ...answer, source: (event.target as HTMLSelectElement).value }; this.render(); },
     }, h('option', { value: '' }, '근거 자료를 골라요'), ...d.sources.map(item => h('option', { value: item.id }, item.title)),
-    ...(this.allowsNone ? [h('option', { value: NO_SOURCE }, '자료에서 찾을 수 없어요')] : []));
+    ...(this.allowsNone ? [h('option', { value: NO_SOURCE, disabled: !d.sources.every(item => this.readSources.has(item.id)) }, '자료에서 찾을 수 없어요')] : []));
     source.value = answer.source;
     card.append(h('label', { style: 'display:block' }, '어떤 자료에서 확인했나요?', source));
     return card;
@@ -91,7 +91,7 @@ export class FactCheckMission implements MissionEngine {
     }
     if (d.asks) {
       root.append(h('h3', {}, '2. 두 답의 문장을 자료와 비교해요.'),
-        h('p', {}, '자료에 없는 말은 근거를 "자료에서 찾을 수 없어요"로 골라요.'));
+        h('p', {}, '자료를 모두 읽으면 "자료에서 찾을 수 없어요"를 고를 수 있어요.'));
       let number = 0;
       for (const ask of d.asks) {
         const group = h('section', { class: 'ask-answer', 'aria-label': ask.label },
