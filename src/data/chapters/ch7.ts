@@ -399,7 +399,7 @@ export const ch7: Chapter = {
         {
   "id": "ch7-p2-m3",
   "kind": "prompt",
-  "title": "빠진 주문 고쳐 묻기",
+  "title": "답을 보고 원인 찾기",
   "npc": "zen",
   "reward": {
     "xp": 20
@@ -407,10 +407,6 @@ export const ch7: Chapter = {
   "data": {
     "client": "섬 책장 지킴이",
     "request": "공동 책장의 약속을 알려 주세요.\n쉬운 말로 세 줄이면 좋겠어요.",
-    "initialChoice": {
-      "role": "kind",
-      "task": "books"
-    },
     "fallback": {
       "opening": "책장을 안내해요.",
       "body": [
@@ -508,11 +504,71 @@ export const ch7: Chapter = {
             "quality": "bad",
             "render": "paragraph",
             "feedback": "세 줄로 나누면 읽기 쉬워요."
+          },
+          {
+            "id": "poem",
+            "text": "시처럼 꾸며서",
+            "quality": "bad",
+            "render": "poem",
+            "feedback": "읽을 약속을 하나씩 나눠요."
           }
         ]
       }
     ],
-    "explain": "빠진 조건을 넣어 고쳐 물었어요.\n결과를 보고 다시 부탁해도 괜찮아요."
+    "explain": "답에서 어긋난 곳을 찾았어요.\n고칠 곳을 짚어야 부탁이 또렷해요.",
+    "diagnose": {
+      "intro": "친구가 쓴 주문서를 가렸어요.\n답에서 어긋난 흔적을 찾아요.",
+      "hidden": {
+        "role": "kind",
+        "task": "rules",
+        "how": "long",
+        "format": "paragraph"
+      },
+      "hint": "낱말을 동생이 알아들을까요?\n약속 셋이 따로 보이나요?",
+      "followUps": [
+        {
+          "id": "again",
+          "text": "한 번 더 써 줘요.",
+          "change": {},
+          "specific": false,
+          "feedback": "어디를 고칠지 빠졌어요.\n같은 답이 나왔어요."
+        },
+        {
+          "id": "lines",
+          "text": "약속 하나씩 번호를 붙여 줘요.",
+          "change": {
+            "format": "list"
+          },
+          "specific": true,
+          "feedback": "약속이 세 줄로 나뉘었어요.\n하나씩 짚어 읽을 수 있어요."
+        },
+        {
+          "id": "fancy",
+          "text": "좀 더 멋지게 써 줘요.",
+          "change": {
+            "format": "poem"
+          },
+          "specific": false,
+          "feedback": "젠은 시처럼 꾸몄어요.\n부탁한 세 줄 목록인가요?"
+        },
+        {
+          "id": "words",
+          "text": "동생이 아는 쉬운 말로 바꿔 줘요.",
+          "change": {
+            "how": "easy"
+          },
+          "specific": true,
+          "feedback": "어려운 낱말이 바뀌었어요.\n동생에게 읽어 줘 봐요."
+        },
+        {
+          "id": "better",
+          "text": "더 잘 써 줘요.",
+          "change": {},
+          "specific": false,
+          "feedback": "무엇이 더 좋아져야 할까요?\n바꿀 부분을 짚어 봐요."
+        }
+      ]
+    }
   }
 },
       ],
